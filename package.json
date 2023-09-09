@@ -1,0 +1,13 @@
+{
+  "name": "@ngxtension-platform/source",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {},
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "@nx/js": "16.8.1",
+    "@nx/workspace": "16.8.1",
+    "nx": "16.8.1"
+  }
+}
