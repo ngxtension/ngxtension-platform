@@ -1,0 +1,51 @@
+{
+	"name": "ngxtension",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/ngxtension/src",
+	"prefix": "libs/ngxtension-platform",
+	"tags": [],
+	"projectType": "library",
+	"targets": {
+		"build": {
+			"executor": "@nx/angular:package",
+			"outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+			"options": {
+				"project": "libs/ngxtension/ng-package.json"
+			},
+			"configurations": {
+				"production": {
+					"tsConfig": "libs/ngxtension/tsconfig.lib.prod.json"
+				},
+				"development": {
+					"tsConfig": "libs/ngxtension/tsconfig.lib.json"
+				}
+			},
+			"defaultConfiguration": "production"
+		},
+		"test": {
+			"executor": "@nx/jest:jest",
+			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+			"options": {
+				"jestConfig": "libs/ngxtension/jest.config.ts",
+				"passWithNoTests": true
+			},
+			"configurations": {
+				"ci": {
+					"ci": true,
+					"codeCoverage": true
+				}
+			}
+		},
+		"lint": {
+			"executor": "@nx/linter:eslint",
+			"outputs": ["{options.outputFile}"],
+			"options": {
+				"lintFilePatterns": [
+					"libs/ngxtension/**/*.ts",
+					"libs/ngxtension/**/*.html",
+					"libs/ngxtension/package.json"
+				]
+			}
+		}
+	}
+}
