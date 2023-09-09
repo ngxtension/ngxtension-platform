@@ -1,0 +1,49 @@
+{
+	"plugins": {
+		"@release-it/conventional-changelog": {
+			"preset": {
+				"name": "conventionalcommits",
+				"types": [
+					{
+						"type": "feat",
+						"section": "Features"
+					},
+					{
+						"type": "fix",
+						"section": "Bug Fixes"
+					},
+					{
+						"type": "cleanup",
+						"section": "Cleanup"
+					},
+					{
+						"type": "docs",
+						"section": "Documentations"
+					},
+					{
+						"type": "refactor",
+						"section": "Refactor"
+					}
+				]
+			},
+			"infile": "CHANGELOG.md"
+		},
+		"@release-it/bumper": {
+			"in": "libs/ngxtension/version.json",
+			"out": ["libs/ngxtension/version.json", "dist/libs/**/package.json"]
+		}
+	},
+	"git": {
+		"commitMessage": "chore: release ${version}"
+	},
+	"npm": {
+		"publish": false
+	},
+	"github": {
+		"release": true,
+		"releaseName": "Release ${version}"
+	},
+	"hooks": {
+		"after:bump": ["git checkout -- package.json"]
+	}
+}
