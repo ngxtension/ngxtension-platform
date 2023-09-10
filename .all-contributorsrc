@@ -1,22 +1,35 @@
 {
-	"projectName": "ngxtension-platform",
-	"projectOwner": "nartc",
-	"repoType": "github",
-	"repoHost": "https://github.com",
-	"files": ["README.md"],
-	"imageSize": 100,
-	"commit": true,
-	"commitConvention": "angular",
-	"contributors": [
-		{
-			"login": "nartc",
-			"name": "Chau Tran",
-			"avatar_url": "https://avatars.githubusercontent.com/u/25516557?v=4",
-			"profile": "https://nartc.me/",
-			"contributions": ["code"]
-		}
-	],
-	"contributorsPerLine": 7,
-	"linkToUsage": true
+  "projectName": "ngxtension-platform",
+  "projectOwner": "nartc",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "nartc",
+      "name": "Chau Tran",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25516557?v=4",
+      "profile": "https://nartc.me/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "eneajaho",
+      "name": "Enea Jahollari",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25394362?v=4",
+      "profile": "https://eneajaho.me",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "linkToUsage": true,
+  "commitType": "docs"
 }
-
