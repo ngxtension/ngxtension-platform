@@ -1,6 +1,9 @@
 {
 	"name": "ngxtension",
 	"version": "0.0.0",
+	"engines": {
+		"node": ">=16"
+	},
 	"peerDependencies": {
 		"@angular/common": "^16.0.0",
 		"@angular/core": "^16.0.0",

@@ -6,6 +6,10 @@
 		"release": "dotenv release-it --"
 	},
 	"private": true,
+	"engines": {
+		"node": ">=16",
+		"pnpm": ">=8"
+	},
 	"dependencies": {
 		"@angular/animations": "~16.2.0",
 		"@angular/common": "~16.2.0",
