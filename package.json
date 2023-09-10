@@ -50,6 +50,7 @@
 		"jsonc-eslint-parser": "^2.1.0",
 		"ng-packagr": "~16.2.0",
 		"nx": "16.8.1",
+		"nx-cloud": "^16.4.0",
 		"postcss": "^8.4.5",
 		"postcss-import": "~14.1.0",
 		"postcss-preset-env": "~7.5.0",

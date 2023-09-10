@@ -2,3 +2,4 @@
 /dist
 /coverage
 .angular
+pnpm-lock.yaml
