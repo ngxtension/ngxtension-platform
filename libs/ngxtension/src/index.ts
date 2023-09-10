@@ -1,1 +1,1 @@
-export * from './lib/ngxtension/ngxtension.component';
+export default void 0;

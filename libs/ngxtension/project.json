@@ -43,8 +43,18 @@
 				"lintFilePatterns": [
 					"libs/ngxtension/**/*.ts",
 					"libs/ngxtension/**/*.html",
-					"libs/ngxtension/package.json"
+					"libs/ngxtension/package.json",
+					"libs/ngxtension/resize/**/*.ts",
+					"libs/ngxtension/resize/**/*.html",
+					"libs/ngxtension/create-injection-token/**/*.ts",
+					"libs/ngxtension/create-injection-token/**/*.html"
 				]
+			}
+		},
+		"publish": {
+			"command": "npm publish",
+			"options": {
+				"cwd": "dist/libs/ngxtension"
 			}
 		}
 	}

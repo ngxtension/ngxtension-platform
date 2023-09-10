@@ -15,7 +15,11 @@
 		"skipDefaultLibCheck": true,
 		"baseUrl": ".",
 		"paths": {
-			"ngxtension": ["libs/ngxtension/src/index.ts"]
+			"ngxtension": ["libs/ngxtension/src/index.ts"],
+			"ngxtension/create-injection-token": [
+				"libs/ngxtension/create-injection-token/src/index.ts"
+			],
+			"ngxtension/resize": ["libs/ngxtension/resize/src/index.ts"]
 		}
 	},
 	"exclude": ["node_modules", "tmp"]
