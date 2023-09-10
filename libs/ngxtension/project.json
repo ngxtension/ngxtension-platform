@@ -50,6 +50,12 @@
 					"libs/ngxtension/create-injection-token/**/*.html"
 				]
 			}
+		},
+		"publish": {
+			"command": "npm publish",
+			"options": {
+				"cwd": "dist/libs/ngxtension"
+			}
 		}
 	}
 }

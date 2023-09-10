@@ -1,4 +1,5 @@
 import {
+	EnvironmentProviders,
 	Host,
 	InjectionToken,
 	Optional,
@@ -44,7 +45,7 @@ export type CreateInjectionTokenOptions<
 				deps: CreateInjectionTokenDeps<TFactory, TFactoryDeps>;
 		  }) & {
 		token?: InjectionToken<ReturnType<TFactory>>;
-		extraProviders?: Provider;
+		extraProviders?: Provider | EnvironmentProviders;
 	};
 
 type InjectFn<
@@ -78,7 +79,7 @@ function createProvideFn<
 	token: InjectionToken<TValue>,
 	factory: (...args: any[]) => TValue,
 	deps?: CreateInjectionTokenDeps<TFactory, TFactoryDeps>,
-	extraProviders?: Provider
+	extraProviders?: Provider | EnvironmentProviders
 ) {
 	return (value?: TValue) => {
 		let provider: Provider;
@@ -134,7 +135,7 @@ createInjectionToken is creating a root InjectionToken but an external token is 
 				TFactory,
 				TFactoryReturn
 			>[0],
-			createProvideFn(token, factory, opts.deps as any[]),
+			createProvideFn(token, factory, opts.deps),
 			token,
 		];
 	}
@@ -147,7 +148,7 @@ createInjectionToken is creating a root InjectionToken but an external token is 
 			TFactory,
 			TFactoryReturn
 		>[0],
-		createProvideFn(token, factory, opts.deps as any[], opts.extraProviders),
+		createProvideFn(token, factory, opts.deps, opts.extraProviders),
 		token,
 	];
 }

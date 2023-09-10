@@ -74,7 +74,7 @@ describe(createInjectionToken.name, () => {
 
 	describe('given injection token with deps', () => {
 		const [, , DEP] = createInjectionToken(() => 1);
-		const [injectFn, , TOKEN] = createInjectionToken((dep: number) => dep + 1, {
+		const [injectFn] = createInjectionToken((dep: number) => dep + 1, {
 			deps: [DEP],
 		});
 

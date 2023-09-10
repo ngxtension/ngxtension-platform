@@ -9,26 +9,14 @@
 				"plugin:@angular-eslint/template/process-inline-templates"
 			],
 			"rules": {
-				"@angular-eslint/directive-class-suffix": 0,
-				"@typescript-eslint/no-explicit-any": 0
+				"@angular-eslint/component-class-suffix": 0,
+				"@angular-eslint/no-host-metadata-property": 0
 			}
 		},
 		{
 			"files": ["*.html"],
 			"extends": ["plugin:@nx/angular-template"],
 			"rules": {}
-		},
-		{
-			"files": ["*.json"],
-			"parser": "jsonc-eslint-parser",
-			"rules": {
-				"@nx/dependency-checks": [
-					"error",
-					{
-						"ignoredDependencies": ["tslib"]
-					}
-				]
-			}
 		}
 	]
 }
