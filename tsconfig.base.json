@@ -19,6 +19,9 @@
 			"ngxtension/assert-injector": [
 				"libs/ngxtension/assert-injector/src/index.ts"
 			],
+			"ngxtension/computed-from": [
+				"libs/ngxtension/computed-from/src/index.ts"
+			],
 			"ngxtension/create-injection-token": [
 				"libs/ngxtension/create-injection-token/src/index.ts"
 			],

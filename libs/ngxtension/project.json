@@ -51,7 +51,9 @@
 					"libs/ngxtension/assert-injector/**/*.ts",
 					"libs/ngxtension/assert-injector/**/*.html",
 					"libs/ngxtension/repeat/**/*.ts",
-					"libs/ngxtension/repeat/**/*.html"
+					"libs/ngxtension/repeat/**/*.html",
+					"libs/ngxtension/computed-from/**/*.ts",
+					"libs/ngxtension/computed-from/**/*.html"
 				]
 			}
 		},
