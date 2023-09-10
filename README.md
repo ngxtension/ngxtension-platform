@@ -1,6 +1,9 @@
 # NgxtensionPlatform
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
@@ -70,6 +73,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://nartc.me/"><img src="https://avatars.githubusercontent.com/u/25516557?v=4?s=100" width="100px;" alt="Chau Tran"/><br /><sub><b>Chau Tran</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=nartc" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://eneajaho.me"><img src="https://avatars.githubusercontent.com/u/25394362?v=4?s=100" width="100px;" alt="Enea Jahollari"/><br /><sub><b>Enea Jahollari</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=eneajaho" title="Code">💻</a></td>
     </tr>
   </tbody>
   <tfoot>
