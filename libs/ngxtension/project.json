@@ -55,7 +55,9 @@
 					"libs/ngxtension/computed-from/**/*.ts",
 					"libs/ngxtension/computed-from/**/*.html",
 					"libs/ngxtension/inject-destroy/**/*.ts",
-					"libs/ngxtension/inject-destroy/**/*.html"
+					"libs/ngxtension/inject-destroy/**/*.html",
+					"libs/ngxtension/connect/**/*.ts",
+					"libs/ngxtension/connect/**/*.html"
 				]
 			}
 		},
