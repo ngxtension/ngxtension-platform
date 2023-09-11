@@ -10,6 +10,7 @@
 			],
 			"rules": {
 				"@angular-eslint/directive-class-suffix": 0,
+				"@angular-eslint/component-class-suffix": 0,
 				"@typescript-eslint/no-explicit-any": 0,
 				"@typescript-eslint/ban-types": [
 					"error",
