@@ -16,6 +16,9 @@
 		"baseUrl": ".",
 		"paths": {
 			"ngxtension": ["libs/ngxtension/src/index.ts"],
+			"ngxtension/assert-injector": [
+				"libs/ngxtension/assert-injector/src/index.ts"
+			],
 			"ngxtension/create-injection-token": [
 				"libs/ngxtension/create-injection-token/src/index.ts"
 			],

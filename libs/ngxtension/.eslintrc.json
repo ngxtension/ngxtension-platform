@@ -10,7 +10,17 @@
 			],
 			"rules": {
 				"@angular-eslint/directive-class-suffix": 0,
-				"@typescript-eslint/no-explicit-any": 0
+				"@typescript-eslint/no-explicit-any": 0,
+				"@typescript-eslint/ban-types": [
+					"error",
+					{
+						"types": {
+							"Function": false,
+							"object": false
+						},
+						"extendDefaults": true
+					}
+				]
 			}
 		},
 		{
