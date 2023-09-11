@@ -1,11 +1,11 @@
 import {
-	EnvironmentProviders,
 	Host,
 	InjectionToken,
 	Optional,
 	Self,
 	SkipSelf,
 	inject,
+	type EnvironmentProviders,
 	type FactoryProvider,
 	type InjectOptions,
 	type Provider,
