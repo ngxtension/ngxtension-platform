@@ -49,7 +49,9 @@
 					"libs/ngxtension/create-injection-token/**/*.ts",
 					"libs/ngxtension/create-injection-token/**/*.html",
 					"libs/ngxtension/assert-injector/**/*.ts",
-					"libs/ngxtension/assert-injector/**/*.html"
+					"libs/ngxtension/assert-injector/**/*.html",
+					"libs/ngxtension/repeat/**/*.ts",
+					"libs/ngxtension/repeat/**/*.html"
 				]
 			}
 		},
