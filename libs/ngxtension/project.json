@@ -47,7 +47,9 @@
 					"libs/ngxtension/resize/**/*.ts",
 					"libs/ngxtension/resize/**/*.html",
 					"libs/ngxtension/create-injection-token/**/*.ts",
-					"libs/ngxtension/create-injection-token/**/*.html"
+					"libs/ngxtension/create-injection-token/**/*.html",
+					"libs/ngxtension/repeat/**/*.ts",
+					"libs/ngxtension/repeat/**/*.html"
 				]
 			}
 		},
