@@ -120,10 +120,11 @@ describe(computedFrom.name, () => {
 
 				expect(s()).toEqual([2, 2]);
 
-				valueS.set(2);
-				valueO.next(2);
-
-				expect(s()).toEqual([2, 2]);
+				// TODO: enable this test when flushEffects is available
+				// valueS.set(2);
+				// valueO.next(2);
+				// TestBed.flushEffects();
+				// expect(s()).toEqual([3, 3]);
 			});
 		});
 
