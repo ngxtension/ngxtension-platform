@@ -147,9 +147,6 @@ describe(computedFrom.name, () => {
 			let fixture: ComponentFixture<TestComponent>;
 
 			beforeEach(async () => {
-				await TestBed.configureTestingModule({
-					imports: [TestComponent],
-				}).compileComponents();
 				fixture = TestBed.createComponent(TestComponent);
 				component = fixture.componentInstance;
 			});
@@ -209,9 +206,6 @@ describe(computedFrom.name, () => {
 			let component: InInitComponent;
 
 			beforeEach(async () => {
-				await TestBed.configureTestingModule({
-					imports: [InInitComponent],
-				}).compileComponents();
 				const fixture = TestBed.createComponent(InInitComponent);
 				component = fixture.componentInstance;
 			});

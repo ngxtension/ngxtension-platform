@@ -53,7 +53,9 @@
 					"libs/ngxtension/repeat/**/*.ts",
 					"libs/ngxtension/repeat/**/*.html",
 					"libs/ngxtension/computed-from/**/*.ts",
-					"libs/ngxtension/computed-from/**/*.html"
+					"libs/ngxtension/computed-from/**/*.html",
+					"libs/ngxtension/inject-destroy/**/*.ts",
+					"libs/ngxtension/inject-destroy/**/*.html"
 				]
 			}
 		},
