@@ -57,6 +57,18 @@ export type ResizeResult = {
 	readonly dpr: number;
 };
 
+/**
+ * `injectResize` returns an `Observable<ResizeResult>` that observes the `resize` event on the Host element
+ * of the component. `options` passed in is merged with default options
+ *
+ * @see {@link defaultResizeOptions}
+ *
+ * @param {Partial<ResizeOptions>} [options={}]
+ * @see {@link ResizeOptions}
+ *
+ * @returns {Observable<ResizeResult>}
+ * @see {@link ResizeResult}
+ */
 export function injectResize(
 	options: Partial<ResizeOptions> = {}
 ): Observable<ResizeResult> {
@@ -69,6 +81,16 @@ export function injectResize(
 	return createResizeStream(mergedOptions, nativeElement, document, zone);
 }
 
+/**
+ * A directive to be used on any element instead of the Host element. For Host element, there are 3 approaches:
+ * - use {@link injectResize}
+ * - use `hostDirectives`  with `HostListener` on `ngxResize`
+ *
+ * @param {Partial<ResizeOptions>} - partial options to control `Resize` behavior. merged with default options
+ * @see {@link defaultResizeOptions}
+ *
+ * @returns {ResizeResult} - as an Output `(ngxResize)`
+ */
 @Directive({ selector: '[ngxResize]', standalone: true })
 export class NgxResize implements OnInit {
 	@Input() ngxResizeOptions: Partial<ResizeOptions> = {};

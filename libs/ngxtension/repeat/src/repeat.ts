@@ -1,6 +1,20 @@
 import { NgFor } from '@angular/common';
 import { Directive, Input } from '@angular/core';
 
+/**
+ * An extension of `NgFor` directive that allows consumers to iterate "x times" instead of through a list of items
+ *
+ * @param {number} count - a positive integer starting from 0
+ *
+ * @example
+ *
+ * ```html
+ * <!-- before -->
+ * <p *ngFor="let i of [0, 1, 2]">{{i}}</p>
+ * <!-- after -->
+ * <p *ngFor="let i; repeat: 3">{{i}}</p>
+ * ```
+ */
 @Directive({
 	standalone: true,
 	selector: '[ngFor][ngForRepeat]',
