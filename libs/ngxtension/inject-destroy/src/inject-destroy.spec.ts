@@ -26,9 +26,6 @@ describe(injectDestroy.name, () => {
 		let fixture: ComponentFixture<TestComponent>;
 
 		beforeEach(async () => {
-			await TestBed.configureTestingModule({
-				imports: [TestComponent],
-			}).compileComponents();
 			fixture = TestBed.createComponent(TestComponent);
 			component = fixture.componentInstance;
 		});
