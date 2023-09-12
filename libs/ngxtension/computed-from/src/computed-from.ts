@@ -33,6 +33,32 @@ export function computedFrom<Input extends object, Output = Input>(
 	injector?: Injector
 ): Signal<Output>;
 
+/**
+ * `computedFrom` is a function that takes an array/object with `Observable` or `Signal` values and returns a `Signal` that
+ * emits the values of the `Observable` or `Signal` values. It is similar to `combineLatest` but it will emit
+ * when the value of the `Observable` or `Signal` changes.
+ *
+ * @param {ObservableSignalInputTuple} sources - array/object of `Observable` or `Signal` values
+ * @param {OperatorFunction} [operator] - operator to apply to the `Observable` or `Signal` values
+ * @param {Injector} [injector] - injector to use to inject the `Observable` or `Signal` values
+ * @returns {Signal} - `Signal` that emits the values of the `Observable` or `Signal` values
+ *
+ * @example
+ *
+ * ```ts
+ * export class MyComponent {
+ *  private readonly filtersService = inject(FiltersService);
+ *  readonly pageNumber = signal(1);
+ *
+ *  readonly data = computedFrom(
+ *   [this.pageNumber, this.filtersService.filters$],
+ *   pipe(
+ *     switchMap(([pageNumber, filters]) => this.dataService.getData(pageNumber, filters)),
+ *     startWith([])
+ *   );
+ * }
+ * ```
+ */
 export function computedFrom(
 	sources: any,
 	operator?: OperatorFunction<any, any>,
