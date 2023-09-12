@@ -97,6 +97,23 @@ function createProvideFn<
 	};
 }
 
+/**
+ * `createInjectionToken` accepts a factory function and returns a tuple of `injectFn`, `provideFn`, and the `InjectionToken`
+ * that the factory function is for.
+ *
+ * @param {Function} factory - Factory Function that returns the value for the `InjectionToken`
+ * @param {CreateInjectionTokenOptions} options - object to control how the `InjectionToken` behaves
+ * @returns {CreateInjectionTokenReturn}
+ *
+ * @example
+ * ```ts
+ * const [injectCounter, provideCounter, COUNTER] = createInjectionToken(() => signal(0));
+ *
+ * export class Counter {
+ *  counter = injectCounter(); // WritableSignal<number>
+ * }
+ * ```
+ */
 export function createInjectionToken<
 	TFactory extends (...args: any[]) => any,
 	TFactoryDeps extends Parameters<TFactory> = Parameters<TFactory>,
