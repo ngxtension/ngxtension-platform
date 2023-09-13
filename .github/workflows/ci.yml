@@ -14,6 +14,7 @@ jobs:
       main-branch-name: main
       number-of-agents: 3
       init-commands: |
+        pnpm --filter docs install
         pnpm exec nx-cloud start-ci-run --stop-agents-after="build" --agent-count=3
       parallel-commands: |
         pnpm exec nx-cloud record -- pnpm exec nx format:check
@@ -21,7 +22,7 @@ jobs:
         pnpm exec nx affected --target=lint --parallel=3
         pnpm exec nx affected --target=test --parallel=3 --ci --code-coverage
         # pnpm exec nx affected --target=e2e --parallel=3 --ci
-        pnpm exec nx affected --target=build --parallel=3
+        pnpm exec nx affected --target=build --parallel=3 --exclude=docs
 
   agents:
     name: Nx Cloud - Agents
