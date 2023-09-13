@@ -12,5 +12,7 @@
 	"dependencies": {
 		"tslib": "^2.3.0"
 	},
-	"sideEffects": false
+	"sideEffects": false,
+	"generators": "./plugin/generators.json",
+	"schematics": "./plugin/generators.json"
 }

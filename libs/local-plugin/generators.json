@@ -1,0 +1,9 @@
+{
+	"generators": {
+		"convert-entry-point-to-project": {
+			"factory": "./src/generators/convert-entry-point-to-project/generator",
+			"schema": "./src/generators/convert-entry-point-to-project/schema.json",
+			"description": "convert-entry-point-to-project generator"
+		}
+	}
+}

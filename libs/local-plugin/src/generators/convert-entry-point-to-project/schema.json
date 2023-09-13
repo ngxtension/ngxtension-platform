@@ -1,0 +1,27 @@
+{
+	"$schema": "http://json-schema.org/schema",
+	"$id": "ConvertEntryPointToProject",
+	"title": "",
+	"type": "object",
+	"properties": {
+		"name": {
+			"type": "string",
+			"description": "The name of the entry point to convert",
+			"$default": {
+				"$source": "argv",
+				"index": 0
+			},
+			"x-prompt": "What entry point would you like to convert to a Project?"
+		},
+		"project": {
+			"type": "string",
+			"description": "The project that contains the entry point",
+			"$default": {
+				"$source": "projectName"
+			},
+			"x-priority": "important",
+			"x-prompt": "What is the project that contains the entry point?"
+		}
+	},
+	"required": ["name", "project"]
+}
