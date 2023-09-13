@@ -6,7 +6,7 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-A collection of utilities for [Angular](https://angular.io)
+A collection of utilities for [Angular](https://angular.io).
 
 ## Installation
 
