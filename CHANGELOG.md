@@ -1,5 +1,17 @@
 
 
+## [0.1.0-beta.3](https://github.com/nartc/ngxtension-platform/compare/0.1.0-beta.2...0.1.0-beta.3) (2023-09-13)
+
+
+### Features
+
+* **plugin:** add plugin for generators ([#26](https://github.com/nartc/ngxtension-platform/issues/26)) ([554a35c](https://github.com/nartc/ngxtension-platform/commit/554a35cb0bded12f6ede6a29ccb357a07918cecf)), closes [#4](https://github.com/nartc/ngxtension-platform/issues/4)
+
+
+### Documentations
+
+* **repo:** add CONTRIBUTING guide ([#28](https://github.com/nartc/ngxtension-platform/issues/28)) ([82f3cce](https://github.com/nartc/ngxtension-platform/commit/82f3cce47464efada686ae22207cddf45fd216d7)), closes [#8](https://github.com/nartc/ngxtension-platform/issues/8)
+
 ## [0.1.0-beta.2](https://github.com/nartc/ngxtension-platform/compare/0.1.0-beta.1...0.1.0-beta.2) (2023-09-13)
 
 
