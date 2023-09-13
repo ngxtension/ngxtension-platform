@@ -12,6 +12,10 @@ It is similar to `combineLatest`, but it also takes `Signals` into consideration
 import { computedFrom } from 'ngxtension/computed-from';
 ```
 
+:::tip[Inside story of the function]
+Read more here: [A sweet spot between signals and observables 🍬](https://itnext.io/a-sweet-spot-between-signals-and-observables-a3c9620768f1)
+:::
+
 ## Usage
 
 `computedFrom` accepts an array or object of `Observable`s or `Signal`s and returns a `Signal` that emits the combined value of the `Observable`s or `Signal`s.

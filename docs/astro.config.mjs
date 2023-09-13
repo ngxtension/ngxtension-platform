@@ -31,6 +31,14 @@ export default defineConfig({
 							label: 'computedFrom',
 							link: '/utilities/computed-from',
 						},
+						{
+							label: 'injectDestroy',
+							link: '/utilities/inject-destroy',
+						},
+						{
+							label: 'connect',
+							link: '/utilities/connect',
+						},
 						{ label: 'repeat', link: '/utilities/repeat' },
 						{ label: 'resize', link: '/utilities/resize' },
 					],
