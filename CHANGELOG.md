@@ -1,5 +1,26 @@
 
 
+## [0.1.0-beta.2](https://github.com/nartc/ngxtension-platform/compare/0.1.0-beta.1...0.1.0-beta.2) (2023-09-13)
+
+
+### Features
+
+* added connect util fn ([ea5f1da](https://github.com/nartc/ngxtension-platform/commit/ea5f1daff949ad730834957c7e243364bca486c0))
+* added inject-destroy ([1fdef68](https://github.com/nartc/ngxtension-platform/commit/1fdef68b902bc014d7dd02192b1faa9af31e12d0))
+* simplify test scenarios ([43db19c](https://github.com/nartc/ngxtension-platform/commit/43db19c81d5072b71f9fd6ec78c5b7fc5638327a))
+* simplify tests ([a175d3d](https://github.com/nartc/ngxtension-platform/commit/a175d3d6ccf0710af928fb036aa9242388216b6a))
+
+
+### Bug Fixes
+
+* comment out test case ([2c7147c](https://github.com/nartc/ngxtension-platform/commit/2c7147cba8d968404967ad1f2dd357ab4da157af))
+
+
+### Documentations
+
+* add jsdocs comments for all functions (except `computedFrom`) ([#24](https://github.com/nartc/ngxtension-platform/issues/24)) ([70ecb59](https://github.com/nartc/ngxtension-platform/commit/70ecb59f0c18a5f77e0956317ca909a6d58012c4)), closes [#18](https://github.com/nartc/ngxtension-platform/issues/18)
+* update README ([3f57a63](https://github.com/nartc/ngxtension-platform/commit/3f57a63c3bdea474522ab7ebcc828c4949a9e8b3)), closes [#9](https://github.com/nartc/ngxtension-platform/issues/9)
+
 ## [0.1.0-beta.1](https://github.com/nartc/ngxtension-platform/compare/0.1.0-beta.0...0.1.0-beta.1) (2023-09-11)
 
 
