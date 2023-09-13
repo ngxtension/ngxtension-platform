@@ -10,6 +10,7 @@ export default defineConfig({
 				src: './public/logo.svg',
 				alt: 'ngxtension logo',
 			},
+			favicon: './logo.svg',
 			social: {
 				github: 'https://github.com/nartc/ngxtension-platform',
 				twitter: 'https://twitter.com/Nartc1410',
