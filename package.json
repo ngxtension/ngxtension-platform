@@ -35,6 +35,7 @@
 		"@angular/language-service": "~16.2.0",
 		"@nx/angular": "^16.8.1",
 		"@nx/cypress": "16.8.1",
+		"@nx/devkit": "^16.8.1",
 		"@nx/eslint-plugin": "16.8.1",
 		"@nx/jest": "16.8.1",
 		"@nx/js": "16.8.1",
