@@ -36,7 +36,12 @@
 				"@nx/dependency-checks": [
 					"error",
 					{
-						"ignoredDependencies": ["tslib"]
+						"ignoredDependencies": [
+							"tslib",
+							"@angular/common",
+							"@angular/core",
+							"rxjs"
+						]
 					}
 				]
 			}

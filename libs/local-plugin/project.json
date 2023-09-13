@@ -1,0 +1,66 @@
+{
+	"name": "local-plugin",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/local-plugin/src",
+	"projectType": "library",
+	"targets": {
+		"build": {
+			"executor": "@nx/js:tsc",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"outputPath": "dist/libs/local-plugin",
+				"main": "libs/local-plugin/src/index.ts",
+				"tsConfig": "libs/local-plugin/tsconfig.lib.json",
+				"assets": [
+					"libs/local-plugin/*.md",
+					{
+						"input": "./libs/local-plugin/src",
+						"glob": "**/!(*.ts)",
+						"output": "./src"
+					},
+					{
+						"input": "./libs/local-plugin/src",
+						"glob": "**/*.d.ts",
+						"output": "./src"
+					},
+					{
+						"input": "./libs/local-plugin",
+						"glob": "generators.json",
+						"output": "."
+					},
+					{
+						"input": "./libs/local-plugin",
+						"glob": "executors.json",
+						"output": "."
+					}
+				]
+			}
+		},
+		"lint": {
+			"executor": "@nx/linter:eslint",
+			"outputs": ["{options.outputFile}"],
+			"options": {
+				"lintFilePatterns": [
+					"libs/local-plugin/**/*.ts",
+					"libs/local-plugin/package.json",
+					"libs/local-plugin/generators.json"
+				]
+			}
+		},
+		"test": {
+			"executor": "@nx/jest:jest",
+			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+			"options": {
+				"jestConfig": "libs/local-plugin/jest.config.ts",
+				"passWithNoTests": true
+			},
+			"configurations": {
+				"ci": {
+					"ci": true,
+					"codeCoverage": true
+				}
+			}
+		}
+	},
+	"tags": []
+}

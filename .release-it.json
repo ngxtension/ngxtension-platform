@@ -44,7 +44,7 @@
 		"releaseName": "Release ${version}"
 	},
 	"hooks": {
-		"before:bump": "pnpm exec nx build ngxtension",
+		"before:bump": "pnpm exec nx package ngxtension",
 		"after:bump": ["git checkout -- package.json"]
 	}
 }

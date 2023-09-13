@@ -15,6 +15,7 @@
 		"skipDefaultLibCheck": true,
 		"baseUrl": ".",
 		"paths": {
+			"local-plugin": ["libs/local-plugin/src/index.ts"],
 			"ngxtension": ["libs/ngxtension/src/index.ts"],
 			"ngxtension/assert-injector": [
 				"libs/ngxtension/assert-injector/src/index.ts"
@@ -30,7 +31,8 @@
 				"libs/ngxtension/inject-destroy/src/index.ts"
 			],
 			"ngxtension/repeat": ["libs/ngxtension/repeat/src/index.ts"],
-			"ngxtension/resize": ["libs/ngxtension/resize/src/index.ts"]
+			"ngxtension/resize": ["libs/ngxtension/resize/src/index.ts"],
+			"plugin": ["libs/plugin/src/index.ts"]
 		}
 	},
 	"exclude": ["node_modules", "tmp"]

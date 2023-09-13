@@ -6,6 +6,16 @@
 	"tags": [],
 	"projectType": "library",
 	"targets": {
+		"package": {
+			"executor": "nx:run-commands",
+			"options": {
+				"commands": [
+					"pnpm exec nx build ngxtension",
+					"pnpm exec nx build plugin"
+				],
+				"parallel": false
+			}
+		},
 		"build": {
 			"executor": "@nx/angular:package",
 			"outputs": ["{workspaceRoot}/dist/{projectRoot}"],
@@ -22,20 +32,6 @@
 			},
 			"defaultConfiguration": "production"
 		},
-		"test": {
-			"executor": "@nx/jest:jest",
-			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-			"options": {
-				"jestConfig": "libs/ngxtension/jest.config.ts",
-				"passWithNoTests": true
-			},
-			"configurations": {
-				"ci": {
-					"ci": true,
-					"codeCoverage": true
-				}
-			}
-		},
 		"lint": {
 			"executor": "@nx/linter:eslint",
 			"outputs": ["{options.outputFile}"],
@@ -43,21 +39,7 @@
 				"lintFilePatterns": [
 					"libs/ngxtension/**/*.ts",
 					"libs/ngxtension/**/*.html",
-					"libs/ngxtension/package.json",
-					"libs/ngxtension/resize/**/*.ts",
-					"libs/ngxtension/resize/**/*.html",
-					"libs/ngxtension/create-injection-token/**/*.ts",
-					"libs/ngxtension/create-injection-token/**/*.html",
-					"libs/ngxtension/assert-injector/**/*.ts",
-					"libs/ngxtension/assert-injector/**/*.html",
-					"libs/ngxtension/repeat/**/*.ts",
-					"libs/ngxtension/repeat/**/*.html",
-					"libs/ngxtension/computed-from/**/*.ts",
-					"libs/ngxtension/computed-from/**/*.html",
-					"libs/ngxtension/inject-destroy/**/*.ts",
-					"libs/ngxtension/inject-destroy/**/*.html",
-					"libs/ngxtension/connect/**/*.ts",
-					"libs/ngxtension/connect/**/*.html"
+					"libs/ngxtension/package.json"
 				]
 			}
 		},
