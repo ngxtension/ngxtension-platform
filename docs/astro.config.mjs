@@ -6,6 +6,10 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'ngxtension',
+			logo: {
+				src: './public/logo.svg',
+				alt: 'ngxtension logo',
+			},
 			social: {
 				github: 'https://github.com/nartc/ngxtension-platform',
 				twitter: 'https://twitter.com/Nartc1410',
@@ -28,6 +32,18 @@ export default defineConfig({
 						{
 							label: 'createInjectionToken',
 							link: '/utilities/create-injection-token',
+						},
+						{
+							label: 'computedFrom',
+							link: '/utilities/computed-from',
+						},
+						{
+							label: 'injectDestroy',
+							link: '/utilities/inject-destroy',
+						},
+						{
+							label: 'connect',
+							link: '/utilities/connect',
 						},
 						{ label: 'repeat', link: '/utilities/repeat' },
 						{ label: 'resize', link: '/utilities/resize' },
