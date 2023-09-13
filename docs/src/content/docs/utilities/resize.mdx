@@ -1,0 +1,84 @@
+---
+title: resize
+description: ngxtension/resize
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+`resize` entry point exposes 2 symbols:
+
+- `injectResize()`: a CIF that observes the resize event on the Host element of the component
+- `NgxResize`: a directive that can observe the resize event of any element that it is attached on
+
+Both emit resize result outside of [Angular Zone](https://angular.io/guide/zone) by default but both provide way to configure the behavior.
+
+```ts
+import { injectResize, NgxResize } from 'ngxtension/resize';
+```
+
+## Usage
+
+### `injectResize`
+
+`injectResize` returns an `Observable<ResizeResult>` (see [ResizeResult TBD]())
+
+```ts
+export class App {
+	resize$ = injectResize(); // Observable<ResizeResult>
+}
+```
+
+### `NgxResize`
+
+<Tabs>
+	<TabItem label="html">
+  ```html
+  <div (ngxResize)="onResize($event)">
+	  <!-- content -->
+  </div>
+  ```
+  </TabItem>
+	<TabItem label="ts">
+  ```ts
+  @Component({
+    imports: [NgxResize],
+    templateUrl: './app.html'
+  })
+  export class App {
+    onResize(event: ResizeResult) {
+      // runs outside of Angular Zone by default
+    }
+  }
+  ```
+  </TabItem>
+</Tabs>
+
+If you are not a fan of `inject()`, you can also use `NgxResize` on the Host element by leveraging `hostDirectives`
+
+```ts
+@Component({
+	hostDirectives: [{ directive: NgxResize, outputs: ['ngxResize'] }],
+})
+export class App {
+	@HostListener('ngxResize', ['$event'])
+	onResize(event: ResizeResult) {
+		// listen for resize event from NgxResize
+	}
+}
+```
+
+### `ResizeOptions`
+
+We can pass in specific `ResizeOptions` to each approach:
+
+```ts
+injectResize(someOptions);
+```
+
+```html
+<div (ngxResize)="onResize($event)" [ngxResizeOptions]="someOptions">
+	<div></div>
+</div>
+```
+
+To provide `ResizeOptions` globally to the application or to a sub component tree (via `Route#providers`), we can use `provideResizeOptions()`

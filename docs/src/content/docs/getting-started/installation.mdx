@@ -1,0 +1,43 @@
+---
+title: Installation
+description: How to add ngxtension to your project
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+### Automatic
+
+`ngxtension` comes with an initialize schematic/generator for both Angular CLI and [Nx](https://nx.dev)
+
+The schematic/generator adds `ngxtension` as a dependency to the project as well as turning on `skipLibCheck` to ensure
+typings from external libraries do not fail the project's strictness.
+
+#### Angular CLI
+
+```shell
+ng add ngxtension
+```
+
+#### Nx CLI
+
+<Tabs>
+	<TabItem label="npm">```shell npm install ngxtension ```</TabItem>
+	<TabItem label="yarn">```shell yarn add ngxtension ```</TabItem>
+	<TabItem label="pnpm">```shell pnpm install ngxtension ```</TabItem>
+</Tabs>
+
+Then invoke the `ngxtension:init` generator
+
+```shell
+nx g ngxtension:init
+```
+
+### Manual
+
+Install `ngxtension` using the above command then turn `skipLibCheck: true` on the project's root `tsconfig.json`
+
+> For Nx, it might be `tsconfig.base.json`
+
+## Compatibility Matrix
+
+WIP
