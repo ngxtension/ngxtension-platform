@@ -8,7 +8,9 @@ export default defineConfig({
 			title: 'ngxtension',
 			social: {
 				github: 'https://github.com/nartc/ngxtension-platform',
+				twitter: 'https://twitter.com/Nartc1410',
 			},
+			lastUpdated: true,
 			sidebar: [
 				{
 					label: 'Getting Started',
