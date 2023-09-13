@@ -16,12 +16,12 @@ jobs:
       init-commands: |
         pnpm exec nx-cloud start-ci-run --stop-agents-after="build" --agent-count=3
       parallel-commands: |
-        pnpm exec nx-cloud record -- pnpm exec nx format:check --base=446afc1e2ced9df66650ba6170dd5f84d3060f5e
+        pnpm exec nx-cloud record -- pnpm exec nx format:check
       parallel-commands-on-agents: |
-        pnpm exec nx affected --base=446afc1e2ced9df66650ba6170dd5f84d3060f5e --target=lint --parallel=3
-        pnpm exec nx affected --base=446afc1e2ced9df66650ba6170dd5f84d3060f5e --target=test --parallel=3 --ci --code-coverage
-        # pnpm exec nx affected --base=446afc1e2ced9df66650ba6170dd5f84d3060f5e --target=e2e --parallel=3 --ci
-        pnpm exec nx affected --base=446afc1e2ced9df66650ba6170dd5f84d3060f5e --target=build --parallel=3
+        pnpm exec nx affected --target=lint --parallel=3
+        pnpm exec nx affected --target=test --parallel=3 --ci --code-coverage
+        # pnpm exec nx affected --target=e2e --parallel=3 --ci
+        pnpm exec nx affected --target=build --parallel=3
 
   agents:
     name: Nx Cloud - Agents
