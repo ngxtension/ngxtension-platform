@@ -6,6 +6,10 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'ngxtension',
+			logo: {
+				src: './public/logo.svg',
+				alt: 'ngxtension logo',
+			},
 			social: {
 				github: 'https://github.com/nartc/ngxtension-platform',
 			},
