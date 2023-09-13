@@ -9,25 +9,19 @@ on:
 jobs:
   main:
     name: Nx Cloud - Main Job
-    runs-on: ubuntu-latest
-    steps:
-      - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        id: setSHAs
-        uses: nrwl/nx-set-shas@v3
-
-      - uses: nrwl/ci/.github/workflows/nx-cloud-main.yml@v0.13.0
-        with:
-          main-branch-name: main
-          number-of-agents: 3
-          init-commands: |
-            pnpm exec nx-cloud start-ci-run --stop-agents-after="build" --agent-count=3
-          parallel-commands: |
-            pnpm exec nx-cloud record -- pnpm exec nx format:check
-          parallel-commands-on-agents: |
-            pnpm exec nx affected --base=${{steps.setSHAs.outputs.base}} --head=${{steps.setSHAs.outputs.head}} --target=lint --parallel=3
-            pnpm exec nx affected --base=${{steps.setSHAs.outputs.base}} --head=${{steps.setSHAs.outputs.head}} --target=test --parallel=3 --ci --code-coverage
-            # pnpm exec nx affected --base=${{steps.setSHAs.outputs.base}} --head=${{steps.setSHAs.outputs.head}} --target=e2e --parallel=3 --ci
-            pnpm exec nx affected --base=${{steps.setSHAs.outputs.base}} --head=${{steps.setSHAs.outputs.head}} --target=build --parallel=3
+    uses: nrwl/ci/.github/workflows/nx-cloud-main.yml@v0.13.0
+    with:
+      main-branch-name: main
+      number-of-agents: 3
+      init-commands: |
+        pnpm exec nx-cloud start-ci-run --stop-agents-after="build" --agent-count=3
+      parallel-commands: |
+        pnpm exec nx-cloud record -- pnpm exec nx format:check
+      parallel-commands-on-agents: |
+        pnpm exec nx affected --target=lint --parallel=3
+        pnpm exec nx affected --target=test --parallel=3 --ci --code-coverage
+        # pnpm exec nx affected --target=e2e --parallel=3 --ci
+        pnpm exec nx affected --target=build --parallel=3
 
   agents:
     name: Nx Cloud - Agents
