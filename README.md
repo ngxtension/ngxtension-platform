@@ -48,6 +48,7 @@ nx generate ngxtension:init
 | `computed-from`          | [README](./libs/ngxtension/computed-from/README.md)          |
 | `inject-destroy`         | [README](./libs/ngxtension/inject-destroy/README.md)         |
 | `connect`                | [README](./libs/ngxtension/connect/README.md)                |
+| `createEffect`           | [README](./libs/ngxtension/create-effect/README.md)          |
 
 <!-- UTILITIES:END -->
 
