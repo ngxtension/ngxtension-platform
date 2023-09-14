@@ -62,6 +62,7 @@ export async function convertEntryPointToProjectGenerator(
 				outputs: ['{workspaceRoot}/coverage/{projectRoot}'],
 				options: {
 					jestConfig: `${projectConfiguration.root}/jest.config.ts`,
+					testPathPattern: [name],
 					passWithNoTests: true,
 				},
 				configurations: {
