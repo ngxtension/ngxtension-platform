@@ -11,8 +11,7 @@ import { ifValidator } from 'ngxtension/if-validation';
 
 ## Usage
 
-`ifValidator` accepts a callback condition and validatorFn or validatorFn[].
-
+`ifValidator` accepts a callback condition and `ValidatorFn` or `ValidatorFn[]`.
 ```ts
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ifValidator } from 'ngxtension/if-validation';
