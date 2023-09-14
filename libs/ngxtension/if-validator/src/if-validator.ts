@@ -25,9 +25,9 @@ export function ifValidator(
 			}
 
 			return null;
-		} else {
-			return validatorFn(control);
 		}
+
+		return validatorFn(control);
 	};
 }
 

@@ -12,9 +12,10 @@ import { ifValidator } from 'ngxtension/if-validation';
 ## Usage
 
 `ifValidator` accepts a callback condition and `ValidatorFn` or `ValidatorFn[]`.
+
 ```ts
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ifValidator } from 'ngxtension/if-validation';
+import { ifValidator } from 'ngxtension/if-validator';
 
 @Component({
 	selector: 'my-app',
@@ -23,7 +24,7 @@ import { ifValidator } from 'ngxtension/if-validation';
 	template: `
 		<input [formControl]="form" />
 
-		<div>Is Form Valid: {{ formControl.valid }}</div>
+		<div>Is Form Valid: {{ form.valid }}</div>
 
 		<button (click)="changeCondition()">Change Form Condition</button>
 	`,
