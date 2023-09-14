@@ -13,10 +13,6 @@ const entryPoint = 'entry-point';
 describe('convert-entry-point-to-project generator', () => {
 	let tree: Tree;
 
-	beforeEach(() => {
-		tree = createTreeWithEmptyWorkspace();
-	});
-
 	async function setup(isReady = false) {
 		tree = createTreeWithEmptyWorkspace();
 
