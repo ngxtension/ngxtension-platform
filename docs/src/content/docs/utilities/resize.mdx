@@ -32,24 +32,28 @@ export class App {
 
 <Tabs>
 	<TabItem label="html">
-  ```html
-  <div (ngxResize)="onResize($event)">
-	  <!-- content -->
-  </div>
-  ```
+
+```html
+<div (ngxResize)="onResize($event)">
+	<!-- content -->
+</div>
+```
+
   </TabItem>
 	<TabItem label="ts">
-  ```ts
-  @Component({
-    imports: [NgxResize],
-    templateUrl: './app.html'
-  })
-  export class App {
-    onResize(event: ResizeResult) {
-      // runs outside of Angular Zone by default
-    }
-  }
-  ```
+
+```ts
+@Component({
+	imports: [NgxResize],
+	templateUrl: './app.html',
+})
+export class App {
+	onResize(event: ResizeResult) {
+		// runs outside of Angular Zone by default
+	}
+}
+```
+
   </TabItem>
 </Tabs>
 
@@ -82,3 +86,20 @@ injectResize(someOptions);
 ```
 
 To provide `ResizeOptions` globally to the application or to a sub component tree (via `Route#providers`), we can use `provideResizeOptions()`
+
+```ts
+// Standalone
+bootstrapApplication(App, { providers: [provideResizeOptions(globalOptions)] });
+
+// AppModule
+@NgModule({
+	providers: [provideResizeOptions(globalOptions)],
+})
+export class AppModule {}
+
+// Route#provider (equivalent to Lazy-load modules)
+const route = {
+	path: 'some-path',
+	providers: [provideResizeOptions(subTreeGlobalOptions)],
+};
+```
