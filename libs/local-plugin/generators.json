@@ -4,6 +4,11 @@
 			"factory": "./src/generators/convert-entry-point-to-project/generator",
 			"schema": "./src/generators/convert-entry-point-to-project/schema.json",
 			"description": "convert-entry-point-to-project generator"
+		},
+		"entry-point": {
+			"factory": "./src/generators/entry-point/generator",
+			"schema": "./src/generators/entry-point/schema.json",
+			"description": "entry-point generator"
 		}
 	}
 }

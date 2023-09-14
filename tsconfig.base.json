@@ -24,6 +24,9 @@
 				"libs/ngxtension/computed-from/src/index.ts"
 			],
 			"ngxtension/connect": ["libs/ngxtension/connect/src/index.ts"],
+			"ngxtension/create-effect": [
+				"libs/ngxtension/create-effect/src/index.ts"
+			],
 			"ngxtension/create-injection-token": [
 				"libs/ngxtension/create-injection-token/src/index.ts"
 			],
