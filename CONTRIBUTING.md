@@ -50,6 +50,14 @@ To contribute code to ngxtension, follow these steps:
 
 We will review your PR as soon as possible, and your contribution will be greatly appreciated!
 
+#### Secondary Entry Point
+
+Most likely, you'll need to create new secondary entry point to put the new utility in. To create entry point, use the following command:
+
+```shell
+pnx nx g local-plugin:entry-point <name-of-your-utility> --library=ngxtension --skip-module
+```
+
 ## Development Setup
 
 If you want to work on ngxtension locally or run tests, follow these steps:
