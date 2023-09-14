@@ -49,6 +49,7 @@ export default defineConfig({
 						{ label: 'repeat', link: '/utilities/repeat' },
 						{ label: 'resize', link: '/utilities/resize' },
 						{ label: 'createEffect', link: '/utilities/create-effect' },
+						{ label: 'ifValidator', link: '/utilities/if-validator' },
 					],
 				},
 			],
