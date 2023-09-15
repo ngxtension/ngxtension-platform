@@ -1,0 +1,33 @@
+{
+	"name": "ngxtension/if-validator",
+	"$schema": "../../../node_modules/nx/schemas/project-schema.json",
+	"projectType": "library",
+	"sourceRoot": "libs/ngxtension/if-validator/src",
+	"targets": {
+		"test": {
+			"executor": "@nx/jest:jest",
+			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+			"options": {
+				"jestConfig": "libs/ngxtension/jest.config.ts",
+				"testPathPattern": ["if-validator"],
+				"passWithNoTests": true
+			},
+			"configurations": {
+				"ci": {
+					"ci": true,
+					"codeCoverage": true
+				}
+			}
+		},
+		"lint": {
+			"executor": "@nx/linter:eslint",
+			"outputs": ["{options.outputFile}"],
+			"options": {
+				"lintFilePatterns": [
+					"libs/ngxtension/if-validator/**/*.ts",
+					"libs/ngxtension/if-validator/**/*.html"
+				]
+			}
+		}
+	}
+}

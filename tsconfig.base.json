@@ -35,6 +35,7 @@
 			],
 			"ngxtension/repeat": ["libs/ngxtension/repeat/src/index.ts"],
 			"ngxtension/resize": ["libs/ngxtension/resize/src/index.ts"],
+			"ngxtension/if-validator": ["libs/ngxtension/if-validator/src/index.ts"],
 			"plugin": ["libs/plugin/src/index.ts"]
 		}
 	},

@@ -8,6 +8,10 @@ export const appConfig: ApplicationConfig = {
 				path: 'resize',
 				loadComponent: () => import('./resize/resize.component'),
 			},
+			{
+				path: 'if-validator',
+				loadComponent: () => import('./if-validator/if-validator.component'),
+			},
 		]),
 	],
 };

@@ -12,6 +12,10 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 			<li>
 				<a routerLink="/resize">Resize</a>
 			</li>
+
+			<li>
+				<a routerLink="/if-validator">If Validator</a>
+			</li>
 		</ul>
 
 		<hr />
