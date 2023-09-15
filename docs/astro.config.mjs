@@ -51,6 +51,7 @@ export default defineConfig({
 						{ label: 'createEffect', link: '/utilities/create-effect' },
 						{ label: 'ifValidator', link: '/utilities/if-validator' },
 						{ label: 'call apply Pipes', link: '/utilities/call-apply' },
+						{ label: 'navigationEnd', link: '/utilities/navigation-end' },
 					],
 				},
 			],
