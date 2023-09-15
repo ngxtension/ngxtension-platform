@@ -3,6 +3,8 @@ name: Astro Docs Site
 on:
   push:
     branches: [main]
+    paths:
+      - 'docs/**'
 
 jobs:
   build-docs:
