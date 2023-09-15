@@ -18,7 +18,7 @@ export function ifValidator(
 		if (!validatorFn || !condition(<FormControl>control)) {
 			return null;
 		}
-    const validatorFns = Array.isArray(validatorFn) ? (validatorFn as as ValidatorFn[]) : [validatorFn];
+    const validatorFns = Array.isArray(validatorFn) ? (validatorFn as ValidatorFn[]) : [validatorFn];
 		return Validators.compose(validatorFns)?.(control) ?? null;
 	};
 }
