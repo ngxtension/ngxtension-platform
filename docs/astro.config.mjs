@@ -50,6 +50,7 @@ export default defineConfig({
 						{ label: 'resize', link: '/utilities/resize' },
 						{ label: 'createEffect', link: '/utilities/create-effect' },
 						{ label: 'ifValidator', link: '/utilities/if-validator' },
+						{ label: 'call apply Pipes', link: '/utilities/call-apply' },
 					],
 				},
 			],
