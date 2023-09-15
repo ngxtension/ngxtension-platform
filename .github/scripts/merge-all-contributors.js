@@ -1,4 +1,10 @@
 module.exports = async ({ github, context }) => {
+	const creator = context.payload.sender.login;
+
+	if (creator.includes('allcontributors')) {
+		return;
+	}
+
 	const prNumber = context.payload.number;
 	const owner = context.payload.repository.owner.login;
 	const repo = context.payload.repository.name;

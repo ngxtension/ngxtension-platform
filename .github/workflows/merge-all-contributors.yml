@@ -14,5 +14,5 @@ jobs:
       - uses: actions/github-script@v6
         with:
           script: |
-            const script = require('../scripts/merge-all-contributors.js')
+            const script = require('./scripts/merge-all-contributors.js')
             await script({ github, context });
