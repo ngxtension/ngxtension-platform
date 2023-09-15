@@ -4,6 +4,7 @@ import { By } from '@angular/platform-browser';
 import { ApplyPipe, CallPipe } from './call-apply';
 
 describe(CallPipe.name, () => {
+	const NOW = new Date(42, 42, 42, 42, 42, 42, 42);
 	@Component({
 		standalone: true,
 		template: `
@@ -13,10 +14,7 @@ describe(CallPipe.name, () => {
 		imports: [CallPipe],
 	})
 	class Dummy {
-		now = new Date(42, 42, 42, 42, 42, 42, 42);
-		ISOFormat(d: Date) {
-			return d.toISOString();
-		}
+		now = NOW;
 		doSomething() {
 			return 42;
 		}
@@ -30,7 +28,7 @@ describe(CallPipe.name, () => {
 		imports: [CallPipe],
 	})
 	class FailDummy {
-		now = new Date(42, 42, 42, 42, 42, 42, 42);
+		now = NOW;
 		notPureFn() {
 			this.now = new Date();
 			return this.now.toISOString();
@@ -42,7 +40,7 @@ describe(CallPipe.name, () => {
 		fixture.detectChanges();
 
 		const elP = fixture.debugElement.query(By.css('p'));
-		expect(elP.nativeElement.textContent).toContain('1945-08-12T16:42:42.042Z');
+		expect(elP.nativeElement.textContent).toContain(NOW.toISOString());
 	});
 	it('can call PURE function without params', () => {
 		const fixture = TestBed.createComponent(Dummy);
@@ -62,6 +60,7 @@ describe(CallPipe.name, () => {
 });
 
 describe(ApplyPipe.name, () => {
+	const NOW = new Date(42, 42, 42, 42, 42, 42, 42);
 	@Component({
 		standalone: true,
 		template: `
@@ -73,7 +72,7 @@ describe(ApplyPipe.name, () => {
 		imports: [ApplyPipe],
 	})
 	class Dummy {
-		now = new Date(42, 42, 42, 42, 42, 42, 42);
+		now = NOW;
 		IamPure = () => 42;
 		ISOFormat(d: Date) {
 			return d.toISOString();
@@ -91,7 +90,7 @@ describe(ApplyPipe.name, () => {
 		imports: [ApplyPipe],
 	})
 	class FailDummy {
-		now = new Date(42, 42, 42, 42, 42, 42, 42);
+		now = NOW;
 		notPureFn() {
 			this.now = new Date();
 			return this.now.toISOString();
@@ -110,7 +109,7 @@ describe(ApplyPipe.name, () => {
 		fixture.detectChanges();
 
 		const elP = fixture.debugElement.query(By.css('p'));
-		expect(elP.nativeElement.textContent).toContain('1945-08-12T16:42:42.042Z');
+		expect(elP.nativeElement.textContent).toContain(NOW.toISOString());
 	});
 	it('can apply PURE function with lesser param', () => {
 		const fixture = TestBed.createComponent(Dummy);
