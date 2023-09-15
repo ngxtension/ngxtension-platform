@@ -39,16 +39,15 @@ nx generate ngxtension:init
 
 <!-- UTILITIES:START -->
 
-| name                     | link                                                         |
-| ------------------------ | ------------------------------------------------------------ |
-| `resize`                 | [README](./libs/ngxtension/resize/README.md)                 |
-| `create-injection-token` | [README](./libs/ngxtension/create-injection-token/README.md) |
-| `assert-injector`        | [README](./libs/ngxtension/assert-injector/README.md)        |
-| `repeat`                 | [README](./libs/ngxtension/repeat/README.md)                 |
-| `computed-from`          | [README](./libs/ngxtension/computed-from/README.md)          |
-| `inject-destroy`         | [README](./libs/ngxtension/inject-destroy/README.md)         |
-| `connect`                | [README](./libs/ngxtension/connect/README.md)                |
-| `createEffect`           | [README](./libs/ngxtension/create-effect/README.md)          |
+- [resize](https://ngxtension.netlify.app/utilities/resize)
+- [create-injection-token](https://ngxtension.netlify.app/utilities/create-injection-token)
+- [assert-injector](https://ngxtension.netlify.app/utilities/assert-injector)
+- [repeat](https://ngxtension.netlify.app/utilities/repeat)
+- [computed-from](https://ngxtension.netlify.app/utilities/computed-from)
+- [inject-destroy](https://ngxtension.netlify.app/utilities/inject-destroy)
+- [connect](https://ngxtension.netlify.app/utilities/connect)
+- [create-effect](https://ngxtension.netlify.app/utilities/create-effect)
+- [if-validator](https://ngxtension.netlify.app/utilities/if-validator)
 
 <!-- UTILITIES:END -->
 
