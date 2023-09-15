@@ -1,5 +1,30 @@
 
 
+## [0.2.0](https://github.com/nartc/ngxtension-platform/compare/0.1.0...0.2.0) (2023-09-15)
+
+
+### Features
+
+* add if-validator ([#40](https://github.com/nartc/ngxtension-platform/issues/40)) ([7e6cf2e](https://github.com/nartc/ngxtension-platform/commit/7e6cf2eb0679188283853d5d4569cd0cbaaae3d1))
+* **call-apply:** Implemented call apply Pipes ([#53](https://github.com/nartc/ngxtension-platform/issues/53)) ([a338920](https://github.com/nartc/ngxtension-platform/commit/a33892041524f50d47b4a0bb2ef60b1321a539ff)), closes [#35](https://github.com/nartc/ngxtension-platform/issues/35)
+* **create-effect:** add createEffect ([48c4b19](https://github.com/nartc/ngxtension-platform/commit/48c4b19f086d803c7aa37d985130b9ba603c5e2e)), closes [#27](https://github.com/nartc/ngxtension-platform/issues/27)
+
+
+### Bug Fixes
+
+* **if-validator:** update logic if-validator ([#47](https://github.com/nartc/ngxtension-platform/issues/47)) ([f02b1ad](https://github.com/nartc/ngxtension-platform/commit/f02b1ad62ae0a7047f2821535376609b13002f01))
+* **local-plugin:** add `testPathPattern` to convert entry point generator ([e198891](https://github.com/nartc/ngxtension-platform/commit/e1988919a758493034fb9236983efbaae6a3c2f9))
+
+
+### Documentations
+
+* add develite98 as a contributor for code ([#45](https://github.com/nartc/ngxtension-platform/issues/45)) ([8364fe5](https://github.com/nartc/ngxtension-platform/commit/8364fe5d054867ffcf97186b70bdb0b469ccbebd))
+* add dmorosinotto as a contributor for code ([#54](https://github.com/nartc/ngxtension-platform/issues/54)) ([d20bbbb](https://github.com/nartc/ngxtension-platform/commit/d20bbbbabc7c75d144333603afd013b7f1d1df75))
+* add tieppt as a contributor for code ([#48](https://github.com/nartc/ngxtension-platform/issues/48)) ([866714b](https://github.com/nartc/ngxtension-platform/commit/866714b0d1066da4ac34b13e6aa62a126f8a53af))
+* clean up docs ([539a76e](https://github.com/nartc/ngxtension-platform/commit/539a76eeb991a5940843f25054db5367e92d2455))
+* update CONTRIBUTING guide ([f9c384d](https://github.com/nartc/ngxtension-platform/commit/f9c384ddca6eeee883b9adc076b81b2585180d1e))
+* update readme about if validator ([0b75c66](https://github.com/nartc/ngxtension-platform/commit/0b75c66c12d17ca4fcf4b02eb7047022b24c21dd))
+
 ## [0.1.0](https://github.com/nartc/ngxtension-platform/compare/0.1.0-beta.3...0.1.0) (2023-09-13)
 
 
