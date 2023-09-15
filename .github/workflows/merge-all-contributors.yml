@@ -1,4 +1,4 @@
-name: CI
+name: Merge All Contributors PR
 
 on:
   pull_request:

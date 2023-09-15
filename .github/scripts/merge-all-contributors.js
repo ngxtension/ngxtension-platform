@@ -9,11 +9,16 @@ module.exports = async ({ github, context }) => {
 	const owner = context.payload.repository.owner.login;
 	const repo = context.payload.repository.name;
 
+	console.log(
+		`[merge contributors workflow] merging ${prNumber} on ${owner}/${repo}`
+	);
 	const comments = await github.rest.issues.listComments({
 		owner,
 		repo,
 		issue_number: prNumber,
 	});
+
+	console.log(`[merge contributors] found comments`, comments);
 
 	for (const comment of comments) {
 		if (comment.user.login.includes('allcontributors')) {
