@@ -18,9 +18,7 @@ module.exports = async ({ github, context }) => {
 		issue_number: prNumber,
 	});
 
-	console.log(`[merge contributors] found comments`, comments);
-
-	for (const comment of comments) {
+	for (const comment of comments?.data || []) {
 		if (comment.user.login.includes('allcontributors')) {
 			const allContributorsPr = comment.body.match(/\/pull\/(\d+)/)?.[1];
 			if (allContributorsPr) {
