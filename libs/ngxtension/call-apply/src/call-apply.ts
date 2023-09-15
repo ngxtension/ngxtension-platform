@@ -23,7 +23,7 @@ const NOTHIS = !('Proxy' in window)
 	standalone: true,
 })
 export class CallPipe implements PipeTransform {
-	transform<T = any, R = any>(value: T, args?: (param?: T) => R): R {
+	transform<T = any, R = any>(value: T, args?: (param: T) => R): R {
 		if (typeof args !== 'function')
 			throw new TypeError('You must pass a PURE funciton to | call');
 		return args?.call(NOTHIS, value);
