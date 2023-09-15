@@ -3,6 +3,7 @@ import {
 	AsyncValidatorFn,
 	FormControl,
 	ValidatorFn,
+	Validators,
 } from '@angular/forms';
 import { of } from 'rxjs';
 
@@ -17,17 +18,10 @@ export function ifValidator(
 		if (!validatorFn || !condition(<FormControl>control)) {
 			return null;
 		}
-
-		if (validatorFn instanceof Array) {
-			for (let i = 0; i < validatorFn.length; i++) {
-				const result = validatorFn[i](control);
-				if (result) return result;
-			}
-
-			return null;
-		}
-
-		return validatorFn(control);
+		const validatorFns = Array.isArray(validatorFn)
+			? (validatorFn as ValidatorFn[])
+			: [validatorFn];
+		return Validators.compose(validatorFns)?.(control) ?? null;
 	};
 }
 
