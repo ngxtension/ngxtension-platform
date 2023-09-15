@@ -55,7 +55,15 @@ We will review your PR as soon as possible, and your contribution will be greatl
 Most likely, you'll need to create new secondary entry point to put the new utility in. To create entry point, use the following command:
 
 ```shell
-pnx nx g local-plugin:entry-point <name-of-your-utility> --library=ngxtension --skip-module
+pnpm exec nx g local-plugin:entry-point <name-of-your-utility> --library=ngxtension --skip-module
+```
+
+#### Please write some Tests
+
+Try to cover your new contrib with some tests and make it pass running:
+
+```shell
+pnpm exec nx run ngxtension/<name-of-your-utility>:test
 ```
 
 ## Development Setup

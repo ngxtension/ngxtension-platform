@@ -20,6 +20,7 @@
 			"ngxtension/assert-injector": [
 				"libs/ngxtension/assert-injector/src/index.ts"
 			],
+			"ngxtension/call-apply": ["libs/ngxtension/call-apply/src/index.ts"],
 			"ngxtension/computed-from": [
 				"libs/ngxtension/computed-from/src/index.ts"
 			],
@@ -30,12 +31,12 @@
 			"ngxtension/create-injection-token": [
 				"libs/ngxtension/create-injection-token/src/index.ts"
 			],
+			"ngxtension/if-validator": ["libs/ngxtension/if-validator/src/index.ts"],
 			"ngxtension/inject-destroy": [
 				"libs/ngxtension/inject-destroy/src/index.ts"
 			],
 			"ngxtension/repeat": ["libs/ngxtension/repeat/src/index.ts"],
 			"ngxtension/resize": ["libs/ngxtension/resize/src/index.ts"],
-			"ngxtension/if-validator": ["libs/ngxtension/if-validator/src/index.ts"],
 			"plugin": ["libs/plugin/src/index.ts"]
 		}
 	},
