@@ -18,7 +18,7 @@ import { ifValidator } from 'ngxtension/if-validator';
 		<button (click)="changeCondition()">Change Form Condition</button>
 	`,
 })
-export default class App {
+export default class IfValidator {
 	public shouldValidate = false;
 	public form = new FormControl(
 		null,
