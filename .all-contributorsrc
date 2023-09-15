@@ -36,6 +36,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "tieppt",
+      "name": "Tiep Phan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7151365?v=4",
+      "profile": "https://www.tiepphan.com/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
