@@ -15,6 +15,9 @@ describe(CallPipe.name, () => {
 	})
 	class Dummy {
 		now = NOW;
+		ISOFormat(d: Date) {
+			return d.toISOString();
+		}
 		doSomething() {
 			return 42;
 		}
