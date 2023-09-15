@@ -69,8 +69,6 @@ describe(ApplyPipe.name, () => {
 			<p>{{ ISOFormat | apply : now }}</p>
 			<b>{{ doSomething | apply : 'Hello world' }}</b>
 			<a>{{ doSomething | apply : 'Prova' : 1 : 2 : 3 }}</a>
-			<!-- I KNOW NO STRICT TYPE CHECK :( ANY IDEA? -->
-			<u>{{ doSomething | apply : 42 : 1 : 2 : 3 }}</u>
 		`,
 		imports: [ApplyPipe],
 	})
@@ -127,13 +125,6 @@ describe(ApplyPipe.name, () => {
 
 		const elA = fixture.debugElement.query(By.css('a'));
 		expect(elA.nativeElement.textContent).toContain('Prova123');
-	});
-	it('can apply PURE function but it is NOT STRICT!', () => {
-		const fixture = TestBed.createComponent(Dummy);
-		fixture.detectChanges();
-
-		const elU = fixture.debugElement.query(By.css('u'));
-		expect(elU.nativeElement.textContent).toContain('48');
 	});
 	it('will fail if the function is NOT PURE (using this in the body)', () => {
 		expect(() => {

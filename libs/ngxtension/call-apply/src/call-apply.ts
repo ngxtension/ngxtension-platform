@@ -23,7 +23,7 @@ const NOTHIS = !('Proxy' in window)
 	standalone: true,
 })
 export class CallPipe implements PipeTransform {
-	transform(value: any, args?: Function): any {
+	transform<T = any, R = any>(value: T, args?: (param?: T) => R): R {
 		if (typeof args !== 'function')
 			throw new TypeError('You must pass a PURE funciton to | call');
 		return args?.call(NOTHIS, value);
@@ -36,7 +36,10 @@ export class CallPipe implements PipeTransform {
 	standalone: true,
 })
 export class ApplyPipe implements PipeTransform {
-	transform(fn: Function, ...args: any[]): any {
+	transform<TFunction extends (...args: any[]) => any>(
+		fn: TFunction,
+		...args: Parameters<TFunction>
+	): ReturnType<TFunction> {
 		if (typeof fn !== 'function')
 			throw new TypeError('You must use | apply on a PURE function');
 		return fn.apply(NOTHIS, args);
