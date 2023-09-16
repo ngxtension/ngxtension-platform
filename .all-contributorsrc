@@ -54,6 +54,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "va-stefanek",
+      "name": "Mateusz Stefańczyk",
+      "avatar_url": "https://avatars.githubusercontent.com/u/67691339?v=4",
+      "profile": "https://houseofangular.io/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
