@@ -6,7 +6,7 @@ description: ngxtension/call-apply
 `callPipe` and `applyPipe` are simple standalone pipes that simplify the calling of PURE functions passing params to it; they take advantage of the "memoization" offered by pure pipes in Angular, and ensure that you use them only with PURE functions (aka if you use this inside the body function they throw errors!)
 
 ```ts
-import { CallPipe, ApplyPipe } from 'ngxtension/if-validation';
+import { CallPipe, ApplyPipe } from 'ngxtension/call-apply';
 ```
 
 ## Usage
