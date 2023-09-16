@@ -52,6 +52,7 @@ export default defineConfig({
 						{ label: 'ifValidator', link: '/utilities/if-validator' },
 						{ label: 'call apply Pipes', link: '/utilities/call-apply' },
 						{ label: 'navigationEnd', link: '/utilities/navigation-end' },
+						{ label: 'trackByDirectives', link: '/utilities/trackby-id-prop' },
 					],
 				},
 			],
