@@ -35,6 +35,9 @@
 			"ngxtension/inject-destroy": [
 				"libs/ngxtension/inject-destroy/src/index.ts"
 			],
+			"ngxtension/navigation-end": [
+				"libs/ngxtension/navigation-end/src/index.ts"
+			],
 			"ngxtension/repeat": ["libs/ngxtension/repeat/src/index.ts"],
 			"ngxtension/resize": ["libs/ngxtension/resize/src/index.ts"],
 			"plugin": ["libs/plugin/src/index.ts"]

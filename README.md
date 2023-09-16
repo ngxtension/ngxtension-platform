@@ -46,6 +46,7 @@ nx generate ngxtension:init
 - [connect](https://ngxtension.netlify.app/utilities/connect)
 - [create-effect](https://ngxtension.netlify.app/utilities/create-effect)
 - [if-validator](https://ngxtension.netlify.app/utilities/if-validator)
+- [navigation-end](https://ngxtension.netlify.app/utilities/navigation-end)
 
 <!-- UTILITIES:END -->
 
