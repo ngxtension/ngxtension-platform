@@ -6,7 +6,7 @@ import { Directive, Input, inject, type NgIterable } from '@angular/core';
 	selector: '[ngForTrackById]',
 	standalone: true,
 })
-export class NgForTrackById<T extends { id: string | number }> {
+export class TrackById<T extends { id: string | number }> {
 	@Input() ngForOf!: NgIterable<T>;
 	private ngFor = inject(NgForOf<T>, { self: true });
 
@@ -19,7 +19,7 @@ export class NgForTrackById<T extends { id: string | number }> {
 	selector: '[ngForTrackByProp]',
 	standalone: true,
 })
-export class NgForTrackByProp<T> {
+export class TrackByProp<T> {
 	@Input() ngForOf!: NgIterable<T>;
 	private ngFor = inject(NgForOf<T>, { self: true });
 
@@ -30,4 +30,4 @@ export class NgForTrackByProp<T> {
 	}
 }
 
-export const TRACK_BY_DIRECTIVES = [NgForTrackById, NgForTrackByProp] as const;
+export const TRACK_BY_DIRECTIVES = [TrackById, TrackByProp] as const;

@@ -6,7 +6,7 @@ import {
 	ViewChild,
 	inject,
 } from '@angular/core';
-import { NgForTrackById, NgForTrackByProp } from 'ngxtension/trackby-id-prop';
+import { TrackById, TrackByProp } from 'ngxtension/trackby-id-prop';
 
 @Component({
 	standalone: true,
@@ -39,7 +39,7 @@ import { NgForTrackById, NgForTrackByProp } from 'ngxtension/trackby-id-prop';
 			With TrackBy prop mutations: {{ mutationsLength.withTrackByProp }}
 		</p>
 	`,
-	imports: [NgFor, NgForTrackById, NgForTrackByProp],
+	imports: [NgFor, TrackById, TrackByProp],
 })
 export default class TrackByTest {
 	people = [

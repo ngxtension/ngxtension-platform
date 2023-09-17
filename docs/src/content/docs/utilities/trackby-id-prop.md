@@ -8,7 +8,7 @@ description: ngxtension/trackby-id-prop
 ```ts
 import { TRACK_BY_DIRECTIVES } from 'ngxtension/trackby-id-prop';
 //OR SIMPLY IMPORT AND USE ONE OF THIS
-import { NgForTrackById, NgForTrackByProp } from 'ngxtension/trackby-id-prop';
+import { TrackById, TrackByProp } from 'ngxtension/trackby-id-prop';
 ```
 
 ```
