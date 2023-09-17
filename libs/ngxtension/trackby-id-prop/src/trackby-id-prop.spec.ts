@@ -2,7 +2,7 @@ import { NgFor } from '@angular/common';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { TrackByDirectives } from './trackby-id-prop';
+import { TRACK_BY_DIRECTIVES } from './trackby-id-prop';
 
 describe('TrackByDirectives', () => {
 	@Component({
@@ -11,7 +11,7 @@ describe('TrackByDirectives', () => {
 			<i *ngFor="let item of arr; trackById">{{ item.name }}</i>
 			<p *ngFor="let item of arr; trackByProp: 'name'">{{ item.id }}</p>
 		`,
-		imports: [NgFor, TrackByDirectives],
+		imports: [NgFor, TRACK_BY_DIRECTIVES],
 	})
 	class Dummy {
 		arr = [

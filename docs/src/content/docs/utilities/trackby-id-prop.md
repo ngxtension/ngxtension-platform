@@ -6,9 +6,9 @@ description: ngxtension/trackby-id-prop
 `trackById` and `trackByProp` are simple standalone directives that helps to implement the trackBy in \*ngFor without need to write a custom method inside your component.
 
 ```ts
-import { TrackByDirectives } from 'ngxtension/trackby-id-prop';
+import { TRACK_BY_DIRECTIVES } from 'ngxtension/trackby-id-prop';
 //OR SIMPLY IMPORT AND USE ONE OF THIS
-import { NgForTrackByIdDirective, NgForTrackByPropDirective } from 'ngxtension/trackby-id-prop';
+import { NgForTrackById, NgForTrackByProp } from 'ngxtension/trackby-id-prop';
 ```
 
 ```
@@ -22,12 +22,12 @@ If the items that you iterate with ngFor has an `id` prop (**case-sentitive**!) 
 ```ts
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TrackByDirectives } from 'ngxtension/trackby-id-prop';
+import { TRACK_BY_DIRECTIVES } from 'ngxtension/trackby-id-prop';
 
 @Component({
 	selector: 'my-app',
 	standalone: true,
-	imports: [TrackByDirectives, CommonModule],
+	imports: [TRACK_BY_DIRECTIVES, CommonModule],
 	template: `
 		<ul *ngFor="let item of arr; trackById">
 			// 👈

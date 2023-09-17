@@ -1,18 +1,12 @@
 //INSPIRED BY https://medium.com/ngconf/make-trackby-easy-to-use-a3dd5f1f733b
 import { NgForOf } from '@angular/common';
-import {
-	Directive,
-	Input,
-	Provider,
-	inject,
-	type NgIterable,
-} from '@angular/core';
+import { Directive, Input, inject, type NgIterable } from '@angular/core';
 
 @Directive({
 	selector: '[ngForTrackById]',
 	standalone: true,
 })
-export class NgForTrackByIdDirective<T extends { id: string | number }> {
+export class NgForTrackById<T extends { id: string | number }> {
 	@Input() ngForOf!: NgIterable<T>;
 	private ngFor = inject(NgForOf<T>, { self: true });
 
@@ -25,18 +19,15 @@ export class NgForTrackByIdDirective<T extends { id: string | number }> {
 	selector: '[ngForTrackByProp]',
 	standalone: true,
 })
-export class NgForTrackByPropDirective<T> {
+export class NgForTrackByProp<T> {
 	@Input() ngForOf!: NgIterable<T>;
 	private ngFor = inject(NgForOf<T>, { self: true });
 
-	@Input()
+	@Input({ required: true })
 	set ngForTrackByProp(trackByProp: keyof T) {
-		if (!trackByProp) return; //throw new Error("You must specify trackByProp:'VALID_PROP_NAME'");
+		if (!trackByProp) return;
 		this.ngFor.ngForTrackBy = (index: number, item: T) => item[trackByProp];
 	}
 }
 
-export const TrackByDirectives: Provider[] = [
-	NgForTrackByIdDirective,
-	NgForTrackByPropDirective,
-];
+export const TRACK_BY_DIRECTIVES = [NgForTrackById, NgForTrackByProp] as const;
