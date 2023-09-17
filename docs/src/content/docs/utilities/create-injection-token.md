@@ -78,4 +78,20 @@ Example TBD
 
 If we already have an `InjectionToken` that we want to turn into `injectFn` and `provideFn`, we can pass that token, via `token`, to `createInjectionToken`.
 
+One use-case is if our factory has a dependency on the same `InjectionToken` (i.e: a hierarchical tree-like structure where child `Service` might optionally have a parent `Service`)
+
+```ts
+export const SERVICE = new InjectionToken<TreeService>('TreeService');
+
+function serviceFactory(parent: TreeService | null) {
+	/* */
+}
+
+export const [injectService, provideService] = createInjectionToken(serviceFactory, {
+	isRoot: false,
+	deps: [[new Optional(), new SkipSelf(), SERVICE]],
+	token: SERVICE,
+});
+```
+
 Note that if `token` is passed in and `isRoot: true`, `createInjectionToken` will throw an error.
