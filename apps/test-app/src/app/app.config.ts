@@ -12,6 +12,10 @@ export const appConfig: ApplicationConfig = {
 				path: 'if-validator',
 				loadComponent: () => import('./if-validator/if-validator.component'),
 			},
+			{
+				path: 'track-by',
+				loadComponent: () => import('./track-by/track-by.component'),
+			},
 		]),
 	],
 };

@@ -47,6 +47,8 @@ nx generate ngxtension:init
 - [create-effect](https://ngxtension.netlify.app/utilities/create-effect)
 - [if-validator](https://ngxtension.netlify.app/utilities/if-validator)
 - [navigation-end](https://ngxtension.netlify.app/utilities/navigation-end)
+- [call-apply](https://ngxtension.netlify.app/utilities/call-apply)
+- [trackby-id-prop](https://ngxtension.netlify.app/utilities/trackby-id-prop)
 
 <!-- UTILITIES:END -->
 

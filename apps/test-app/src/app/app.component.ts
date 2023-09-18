@@ -16,6 +16,10 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 			<li>
 				<a routerLink="/if-validator">If Validator</a>
 			</li>
+
+			<li>
+				<a routerLink="/track-by">Track By</a>
+			</li>
 		</ul>
 
 		<hr />
