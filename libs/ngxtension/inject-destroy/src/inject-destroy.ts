@@ -1,8 +1,8 @@
 import {
 	DestroyRef,
 	inject,
-	Injector,
 	runInInjectionContext,
+	type Injector,
 } from '@angular/core';
 import { assertInjector } from 'ngxtension/assert-injector';
 import { ReplaySubject } from 'rxjs';
@@ -26,7 +26,9 @@ import { ReplaySubject } from 'rxjs';
  *   }
  * }
  */
-export const injectDestroy = (injector?: Injector) => {
+export const injectDestroy = (
+	injector?: Injector
+): ReplaySubject<void> & { onDestroy: DestroyRef['onDestroy'] } => {
 	injector = assertInjector(injectDestroy, injector);
 
 	return runInInjectionContext(injector, () => {
@@ -39,6 +41,12 @@ export const injectDestroy = (injector?: Injector) => {
 			subject$.complete();
 		});
 
-		return subject$;
+		Object.assign(subject$, {
+			onDestroy: destroyRef.onDestroy.bind(destroyRef),
+		});
+
+		return subject$ as ReplaySubject<void> & {
+			onDestroy: DestroyRef['onDestroy'];
+		};
 	});
 };

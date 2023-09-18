@@ -52,6 +52,29 @@ export class MyComponent {
 
 As you can see, we don't need to implement `OnDestroy` anymore and we don't need to manually emit from the `Subject` when the component is destroyed.
 
+### `onDestroy`
+
+The value returned by `injectDestroy()` also includes `onDestroy()` function to register arbitrary destroy logic callbacks.
+
+```ts
+
+@Component({})
+export class MyComponent {
+  private dataService = inject(DataService);
+  private destroy$ = injectDestroy();
+
+  ngOnInit() {
+    this.dataService.getData()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(...);
+
+    this.destroy$.onDestroy(() => {
+      /* other destroy logics, similar to DestroyRef#onDestroy */
+    });
+  }
+}
+```
+
 ## How it works
 
 The helper functions injects the `DestroyRef` class from Angular, and on the `onDestroy` lifecycle hook, it emits from the `Subject` and completes it.
