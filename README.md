@@ -1,7 +1,7 @@
 # NG Extension Platform
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A collection of utilities for [Angular](https://angular.io).
@@ -69,6 +69,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://twitter.com/dmorosinotto"><img src="https://avatars.githubusercontent.com/u/3982050?v=4?s=100" width="100px;" alt="Daniele Morosinotto"/><br /><sub><b>Daniele Morosinotto</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=dmorosinotto" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://houseofangular.io/"><img src="https://avatars.githubusercontent.com/u/67691339?v=4?s=100" width="100px;" alt="Mateusz Stefańczyk"/><br /><sub><b>Mateusz Stefańczyk</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=va-stefanek" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/tomer953"><img src="https://avatars.githubusercontent.com/u/1807493?v=4?s=100" width="100px;" alt="Tomer953"/><br /><sub><b>Tomer953</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=tomer953" title="Documentation">📖</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://thomaslaforge.dev/home"><img src="https://avatars.githubusercontent.com/u/30832608?v=4?s=100" width="100px;" alt="Laforge Thomas"/><br /><sub><b>Laforge Thomas</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=tomalaforge" title="Code">💻</a></td>
     </tr>
   </tbody>
   <tfoot>
