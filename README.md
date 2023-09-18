@@ -37,17 +37,17 @@ nx generate ngxtension:init
 
 <!-- UTILITIES:START -->
 
-- [resize](https://ngxtension.netlify.app/utilities/resize)
-- [create-injection-token](https://ngxtension.netlify.app/utilities/create-injection-token)
 - [assert-injector](https://ngxtension.netlify.app/utilities/assert-injector)
-- [repeat](https://ngxtension.netlify.app/utilities/repeat)
+- [call-apply](https://ngxtension.netlify.app/utilities/call-apply)
 - [computed-from](https://ngxtension.netlify.app/utilities/computed-from)
-- [inject-destroy](https://ngxtension.netlify.app/utilities/inject-destroy)
 - [connect](https://ngxtension.netlify.app/utilities/connect)
 - [create-effect](https://ngxtension.netlify.app/utilities/create-effect)
+- [create-injection-token](https://ngxtension.netlify.app/utilities/create-injection-token)
 - [if-validator](https://ngxtension.netlify.app/utilities/if-validator)
+- [inject-destroy](https://ngxtension.netlify.app/utilities/inject-destroy)
 - [navigation-end](https://ngxtension.netlify.app/utilities/navigation-end)
-- [call-apply](https://ngxtension.netlify.app/utilities/call-apply)
+- [repeat](https://ngxtension.netlify.app/utilities/repeat)
+- [resize](https://ngxtension.netlify.app/utilities/resize)
 - [trackby-id-prop](https://ngxtension.netlify.app/utilities/trackby-id-prop)
 
 <!-- UTILITIES:END -->
