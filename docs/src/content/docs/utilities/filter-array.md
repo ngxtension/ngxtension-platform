@@ -1,5 +1,5 @@
 ---
-title: filter array RxJs operator
+title: filterArray
 description: ngxtension/filter-array
 ---
 

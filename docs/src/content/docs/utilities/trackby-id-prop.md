@@ -1,5 +1,5 @@
 ---
-title: trackById trackByProp Directives
+title: TrackById / TrackByProp
 description: ngxtension/trackby-id-prop
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: map array RxJs operator
+title: mapArray
 description: ngxtension/map-array
 ---
 

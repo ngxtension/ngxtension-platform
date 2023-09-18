@@ -1,5 +1,5 @@
 ---
-title: ifValidator
+title: ifValidator / ifAsyncValidator
 description: ngxtension/if-validator
 ---
 

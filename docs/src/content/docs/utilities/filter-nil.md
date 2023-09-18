@@ -1,5 +1,5 @@
 ---
-title: filter nil RxJs operator
+title: filterNil
 description: ngxtension/filter-nil
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: call apply Pipes
+title: CallPipe / ApplyPipe
 description: ngxtension/call-apply
 ---
 
