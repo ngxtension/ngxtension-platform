@@ -9,7 +9,7 @@ import { interval, takeUntil } from 'rxjs';
 import { injectDestroy } from './inject-destroy';
 
 describe(injectDestroy.name, () => {
-	describe('emits when the component is destroyed', () => {
+	describe('emits when the component is destroyed using takeUntil', () => {
 		@Component({ standalone: true, template: '' })
 		class TestComponent implements OnInit {
 			destroy$ = injectDestroy();
@@ -19,6 +19,44 @@ describe(injectDestroy.name, () => {
 				interval(1000)
 					.pipe(takeUntil(this.destroy$))
 					.subscribe(() => this.count++);
+			}
+		}
+
+		let component: TestComponent;
+		let fixture: ComponentFixture<TestComponent>;
+
+		beforeEach(async () => {
+			fixture = TestBed.createComponent(TestComponent);
+			component = fixture.componentInstance;
+		});
+
+		it('should handle async stuff', fakeAsync(() => {
+			component.ngOnInit();
+
+			expect(component.count).toBe(0);
+			tick(1000);
+			expect(component.count).toBe(1);
+			tick(1000);
+			expect(component.count).toBe(2);
+
+			fixture.destroy(); // destroy the component here
+
+			tick(1000);
+			expect(component.count).toBe(2);
+		}));
+	});
+
+	describe('emits when the component is destroyed using onDestroy', () => {
+		@Component({ standalone: true, template: '' })
+		class TestComponent implements OnInit {
+			destroy$ = injectDestroy();
+			count = 0;
+
+			ngOnInit() {
+				const sub = interval(1000).subscribe(() => this.count++);
+				this.destroy$.onDestroy(() => {
+					sub.unsubscribe();
+				});
 			}
 		}
 
