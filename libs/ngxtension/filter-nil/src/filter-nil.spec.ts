@@ -1,5 +1,5 @@
 import { of } from 'rxjs';
-import { filterNil } from './map-array';
+import { filterNil } from './filter-nil';
 
 describe(filterNil.name, () => {
 	it('given an observable of undefined, null, 1, then only value 1 is expected', (done) => {
