@@ -30,7 +30,8 @@ module.exports = async ({ github, context }) => {
 				});
 
 				console.log(
-					`[merge contributors workflow] found all-contributors PR ${pr}`
+					`[merge contributors workflow] found all-contributors PR`,
+					pr
 				);
 
 				if (pr && pr.mergeable) {
