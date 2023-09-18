@@ -1,5 +1,19 @@
 
 
+## [0.3.1](https://github.com/nartc/ngxtension-platform/compare/0.3.0...0.3.1) (2023-09-18)
+
+
+### Bug Fixes
+
+* **inject-destroy:** add onDestroy to return value of injectDestroy ([#69](https://github.com/nartc/ngxtension-platform/issues/69)) ([7b13372](https://github.com/nartc/ngxtension-platform/commit/7b133723efefa99436dce696fed39099afb1cdb5))
+* **navigation:** use autogenerate fonction to create navigation sidebar ([#68](https://github.com/nartc/ngxtension-platform/issues/68)) ([88221e1](https://github.com/nartc/ngxtension-platform/commit/88221e1735a465f7d90ce8c5af2de03d9f53f614))
+
+
+### Documentations
+
+* clean up titles ([62bd564](https://github.com/nartc/ngxtension-platform/commit/62bd564fe2cdf57df49cebbd297e225acf2b3b9d))
+* improve rxjs helper docs ([#70](https://github.com/nartc/ngxtension-platform/issues/70)) ([8244855](https://github.com/nartc/ngxtension-platform/commit/8244855df7e4486e975868cebbf490a2468aa827))
+
 ## [0.3.0](https://github.com/nartc/ngxtension-platform/compare/0.2.0...0.3.0) (2023-09-18)
 
 
