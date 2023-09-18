@@ -12,7 +12,7 @@ const myObs = of([1, 2, 3]);
 const myResultObs = myObs.pipe(map((arr) => arr.map((e) => e + 1)));
 ```
 
-becomes
+can be simplified to:
 
 ```ts
 const myObs = of([1, 2, 3]);
