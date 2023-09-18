@@ -19,41 +19,11 @@ export default defineConfig({
 			sidebar: [
 				{
 					label: 'Getting Started',
-					items: [
-						// Each item here is one entry in the navigation menu.
-						{ label: 'Introduction', link: '/getting-started/introduction' },
-						{ label: 'Installation', link: '/getting-started/installation' },
-					],
+					autogenerate: { directory: 'getting-started' },
 				},
 				{
 					label: 'Utilities',
-					items: [
-						// Each item here is one entry in the navigation menu. sorted alphabetically.
-						{ label: 'assertInjector', link: '/utilities/assert-injector' },
-						{ label: 'call apply Pipes', link: '/utilities/call-apply' },
-						{
-							label: 'computedFrom',
-							link: '/utilities/computed-from',
-						},
-						{
-							label: 'connect',
-							link: '/utilities/connect',
-						},
-						{ label: 'createEffect', link: '/utilities/create-effect' },
-						{
-							label: 'createInjectionToken',
-							link: '/utilities/create-injection-token',
-						},
-						{ label: 'ifValidator', link: '/utilities/if-validator' },
-						{
-							label: 'injectDestroy',
-							link: '/utilities/inject-destroy',
-						},
-						{ label: 'navigationEnd', link: '/utilities/navigation-end' },
-						{ label: 'repeat', link: '/utilities/repeat' },
-						{ label: 'resize', link: '/utilities/resize' },
-						{ label: 'trackByDirectives', link: '/utilities/trackby-id-prop' },
-					],
+					autogenerate: { directory: 'utilities' },
 				},
 			],
 		}),
