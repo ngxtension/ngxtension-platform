@@ -3,18 +3,18 @@ title: filterArray
 description: ngxtension/filter-array
 ---
 
-`filterArray` is a RxJs Helper function used when you need to execute a filtering function on an array.
+`filterArray` is an RxJS helper function designed for applying a filtering function to an array.
 
 The following code:
 
 ```ts
-const myObs = of([1, 2, 3]);
-const myResultObs = myObs.pipe(map((arr) => arr.filter((e) => e <= 2)));
+const source$ = of([1, 2, 3]);
+const filtered$ = source$.pipe(map((arr) => arr.filter((element) => element <= 2)));
 ```
 
-becomes
+can be simplified to:
 
 ```ts
-const myObs = of([1, 2, 3]);
-const myResultObs = myObs.pipe(fitlerArray((e) => e <= 1));
+const source$ = of([1, 2, 3]);
+const filtered$ = source$.pipe(filterArray((element) => element <= 2));
 ```
