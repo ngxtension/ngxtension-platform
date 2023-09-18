@@ -31,10 +31,13 @@
 			"ngxtension/create-injection-token": [
 				"libs/ngxtension/create-injection-token/src/index.ts"
 			],
+			"ngxtension/filter-array": ["libs/ngxtension/filter-array/src/index.ts"],
+			"ngxtension/filter-nil": ["libs/ngxtension/filter-nil/src/index.ts"],
 			"ngxtension/if-validator": ["libs/ngxtension/if-validator/src/index.ts"],
 			"ngxtension/inject-destroy": [
 				"libs/ngxtension/inject-destroy/src/index.ts"
 			],
+			"ngxtension/map-array": ["libs/ngxtension/map-array/src/index.ts"],
 			"ngxtension/navigation-end": [
 				"libs/ngxtension/navigation-end/src/index.ts"
 			],
