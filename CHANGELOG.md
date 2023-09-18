@@ -1,5 +1,33 @@
 
 
+## [0.3.0](https://github.com/nartc/ngxtension-platform/compare/0.2.0...0.3.0) (2023-09-18)
+
+
+### Features
+
+* **navigation-end:** add navigationEnd util function ([#52](https://github.com/nartc/ngxtension-platform/issues/52)) ([424f530](https://github.com/nartc/ngxtension-platform/commit/424f53042a5ebe5b2909da615838eb13a2fb22a8))
+* **plugin:** expose init generator ([729f13b](https://github.com/nartc/ngxtension-platform/commit/729f13bb5dbb9653e5711f9ec8c7b72ded45b6b3))
+* **rxjs:** create a set of rxjs operators ([#66](https://github.com/nartc/ngxtension-platform/issues/66)) ([b503134](https://github.com/nartc/ngxtension-platform/commit/b50313466bd9ba1ef858f25adf56f6beffc45e03))
+* **track-id-prop:** add trackById and trackByProp directives [#33](https://github.com/nartc/ngxtension-platform/issues/33) ([#59](https://github.com/nartc/ngxtension-platform/issues/59)) ([fb11e15](https://github.com/nartc/ngxtension-platform/commit/fb11e159d742a82ef59887467c3be29193fdcc7f))
+
+
+### Bug Fixes
+
+* **filter-array:** add index to filterFn ([dcf7753](https://github.com/nartc/ngxtension-platform/commit/dcf77533bfbefdfa941707be7b67278e22cad7e2))
+* **filter-nil:** update copy-paste name and export filterNil ([8d48907](https://github.com/nartc/ngxtension-platform/commit/8d48907f7e100addd9c28b0327a1d9a3cfd7ea3a))
+* **map-array:** add index to mapFn ([325faef](https://github.com/nartc/ngxtension-platform/commit/325faef90c7701d03ca6be909eb9672e64b85621))
+
+
+### Documentations
+
+* add tomalaforge as a contributor for code ([#67](https://github.com/nartc/ngxtension-platform/issues/67)) ([63bf5ad](https://github.com/nartc/ngxtension-platform/commit/63bf5ad3890afcbc29ecb3af3229e83c892e553e))
+* add tomer953 as a contributor for doc ([#62](https://github.com/nartc/ngxtension-platform/issues/62)) ([255def1](https://github.com/nartc/ngxtension-platform/commit/255def1eae23c1119260c7037dd456b5491910b3))
+* add use-case for external `token` to `createInjectionToken` ([2d8798e](https://github.com/nartc/ngxtension-platform/commit/2d8798e283ad9ececc6b8983f00b358d17150235))
+* add va-stefanek as a contributor for code ([#55](https://github.com/nartc/ngxtension-platform/issues/55)) ([efe357f](https://github.com/nartc/ngxtension-platform/commit/efe357f8ae057184b6376f29e0cbe3c14126ac1e))
+* adjust track by doc ([450d82e](https://github.com/nartc/ngxtension-platform/commit/450d82e395f3b13a12c538fadc1c3084321fb5b5))
+* connect fn ([#58](https://github.com/nartc/ngxtension-platform/issues/58)) ([809b3c3](https://github.com/nartc/ngxtension-platform/commit/809b3c3d53517d79b94d455825a3fc54a0f0db7f))
+* inject-destroy ([#57](https://github.com/nartc/ngxtension-platform/issues/57)) ([cdbd2ad](https://github.com/nartc/ngxtension-platform/commit/cdbd2ad298852018e8e57b4e15b5592b51e658e2))
+
 ## [0.2.0](https://github.com/nartc/ngxtension-platform/compare/0.1.0...0.2.0) (2023-09-15)
 
 
