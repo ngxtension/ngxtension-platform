@@ -34,14 +34,14 @@ module.exports = async ({ github, context }) => {
 					pr
 				);
 
-				if (pr && pr.mergeable) {
+				if (pr.data && pr.data.mergeable) {
 					console.log(
 						`[merge contributors workflow] merging ${allContributorsPr} on ${owner}/${repo}`
 					);
 					await github.rest.pulls.merge({
 						owner,
 						repo,
-						pull_number: pr.number,
+						pull_number: pr.data.number,
 					});
 				}
 			}
