@@ -1,48 +1,84 @@
 ---
 title: CallPipe / ApplyPipe
-description: ngxtension/call-apply
+description: Standalone Angular pipes for invoking pure functions with arguments, leveraging Angular's pure pipe memoization.
 ---
 
-`callPipe` and `applyPipe` are simple standalone pipes that simplify the calling of PURE functions passing params to it; they take advantage of the "memoization" offered by pure pipes in Angular, and ensure that you use them only with PURE functions (aka if you use this inside the body function they throw errors!)
+## Import
 
-```ts
+```typescript
 import { CallPipe, ApplyPipe } from 'ngxtension/call-apply';
 ```
 
 ## Usage
 
-Both `CallPipe` and `ApplyPipe` need a PURE function or method to invoke (aka you can't use `this` in the function body), the difference between the two is only in that invocation order and that `|call` is suitable only for function with 1-param, instead `|apply` works for function with any number of params.
+Both `CallPipe` and `ApplyPipe` require a PURE function. They are designed to take advantage of Angular's pure pipe memoization. Using `this` inside the function body will throw an error.
 
-```ts
-import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { CallPipe, ApplyPipe } from 'ngxtension/call-apply';
+### CallPipe
 
+For functions with a single argument.
+
+```typescript
 @Component({
 	selector: 'my-app',
-	standalone: true,
-	imports: [CallPipe, ApplyPipe],
+	imports: [CallPipe],
 	template: `
-		<button (click)="updateClock()">UPDATE CLOCK</button>
-
 		<b>call UTC: {{ now | call : ISOFormat }}</b>
-		<i>with apply: {{ ISOFormat | apply : now }}</i>
-		<p>{{ join | apply : 'Hello' : 'world' : '!' }}</p>
-
-		<!-- IF YOU UNCOMMENT NEXT LINE IT WILL THROW ERROR 
-		<h1>THIS IS NOT PURE: {{ updateClock | apply }}</h1>
-		-->
 	`,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
-	public now = new Date(42, 42, 42, 42, 42, 42, 42); //"1945-08-12T16:42:42.042Z"
+	public now = new Date();
 	public ISOFormat = (date: Date) => date.toISOString();
-	public join(...rest: string[]) {
-		return rest.join(' ');
-	}
-	public updateClock() {
-		this.now = new Date();
-		return this.now;
-	}
 }
 ```
+
+### ApplyPipe
+
+For functions with multiple arguments.
+
+```typescript
+template: `<p>{{ join | apply : 'Hello' : 'world' : '!' }}</p>`;
+```
+
+```typescript
+public join(...rest: string[]) {
+  return rest.join(' ');
+}
+```
+
+### Error Handling
+
+Using non-pure functions will throw an error. For instance, using `updateClock`, which is not pure, would cause an error:
+
+```typescript
+public updateClock() {
+  this.now = new Date();
+  return this.now;
+}
+```
+
+```html
+<!-- Throws Error -->
+<!-- <h1>THIS IS NOT PURE: {{ updateClock | apply }}</h1> -->
+```
+
+The function `updateClock` modifies the state (`this.now`), making it a non-pure function. Using it with `ApplyPipe` or `CallPipe` will result in an error.
+
+## API
+
+### Inputs for CallPipe
+
+- `value: T`
+- `args: (param: T) => R`
+
+### Inputs for ApplyPipe
+
+- `fn: TFunction`
+- `...args: Parameters<TFunction>`
+
+### Validation
+
+- Throws an error if a non-pure function is used.
+- Throws an error if `this` is used inside the function body.
+
+Both pipes are designed to work with Angular's pure pipe memoization, providing an efficient way to pass arguments to pure functions.

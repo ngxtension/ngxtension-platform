@@ -1,9 +1,15 @@
 ---
 title: resize
-description: ngxtension/resize
+description: An Angular directive and function for listening to element resize events, allowing you to respond dynamically to changes in element size.
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Import
+
+```ts
+import { NgxResize, injectResize } from 'ngxtension/ngx-resize';
+```
 
 `resize` entry point exposes 2 symbols:
 
@@ -11,10 +17,6 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 - `NgxResize`: a directive that can observe the resize event of any element that it is attached on
 
 Both emit resize result outside of [Angular Zone](https://angular.io/guide/zone) by default but both provide way to configure the behavior.
-
-```ts
-import { injectResize, NgxResize } from 'ngxtension/resize';
-```
 
 ## Usage
 

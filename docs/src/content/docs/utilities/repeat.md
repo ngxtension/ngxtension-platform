@@ -1,9 +1,9 @@
 ---
 title: repeat
-description: ngxtension/repeat
+description: An Angular directive extending NgFor to allow iteration over a fixed number of iterations.
 ---
 
-`repeat` or `Repeat` is an extension of [`NgFor`](https://angular.io/api/core/ng-for) directive to allow consumers to iterate "x times" instead of iterate over a list of items
+## Import
 
 ```ts
 import { Repeat } from 'ngxtension/repeat';
@@ -11,19 +11,40 @@ import { Repeat } from 'ngxtension/repeat';
 
 ## Usage
 
-`Repeat` accepts a non-negative integer as an `Input`.
+### Basic
+
+Use the `Repeat` directive as an extension of Angular's `NgFor` to iterate over a fixed number of iterations.
 
 ```ts
+import { Component } from '@angular/core';
+import { Repeat } from 'ngxtension/repeat';
+
 @Component({
 	imports: [Repeat],
 	template: `
 		<ul>
 			<li *ngFor="let i; repeat: 3">{{ i }}</li>
-			<!-- <li>0</li> -->
-			<!-- <li>1</li> -->
-			<!-- <li>2</li> -->
 		</ul>
 	`,
 })
 export class App {}
 ```
+
+This will produce the following output:
+
+```html
+<!-- Output -->
+<!-- <li>0</li> -->
+<!-- <li>1</li> -->
+<!-- <li>2</li> -->
+```
+
+## API
+
+### Inputs
+
+- `n: number` - A non-negative integer, specifying the number of iterations.
+
+### Validation
+
+- An error is thrown if the input is either negative or not an integer.

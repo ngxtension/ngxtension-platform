@@ -1,9 +1,9 @@
 ---
 title: injectNavigationEnd
-description: ngxtension/navigation-end
+description: An Angular utility to create an Observable that emits NavigationEnd events from the Angular Router.
 ---
 
-The `injectNavigationEnd` function is a utility for creating an `Observable` that emits when a navigation ends. It might perform tasks after a route navigation has been completed.
+## Import
 
 ```ts
 import { injectNavigationEnd } from 'ngxtension/navigation-end';
@@ -11,7 +11,9 @@ import { injectNavigationEnd } from 'ngxtension/navigation-end';
 
 ## Usage
 
-`injectNavigationEnd` accepts optionally `Injector`.
+### Basic
+
+Create an Observable that emits when a navigation ends in Angular's Router.
 
 ```ts
 import { Component } from '@angular/core';
@@ -24,12 +26,36 @@ import { NavigationEnd } from '@angular/router';
 	template: '<p>Example Component</p>',
 })
 export class ExampleComponent {
-	navigationEnd$ = injectNavigationEnd();
+	source$ = injectNavigationEnd();
 	constructor() {
-		navigationEnd$.subscribe((event: NavigationEnd) => {
-			// This code will run when a navigation ends.
+		source$.subscribe((event: NavigationEnd) => {
 			console.log('Navigation ended:', event);
 		});
 	}
 }
 ```
+
+## Use Outside of an Injection Context
+
+The `injectNavigationEnd` function accepts an optional `Injector` parameter, enabling usage outside of an injection context.
+
+```ts
+@Component()
+export class ExampleComponent implements OnInit {
+	private readonly injector = inject(Injector);
+
+	ngOnInit() {
+		source$ = injectNavigationEnd(this.injector);
+	}
+}
+```
+
+## API
+
+### Inputs
+
+- `injector?: Injector` - Optional. Allows using the function outside of an Angular injection context.
+
+### Outputs
+
+- Emits an Observable of `NavigationEnd` events from Angular's Router.
