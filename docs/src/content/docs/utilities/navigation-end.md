@@ -41,10 +41,12 @@ The `injectNavigationEnd` function accepts an optional `Injector` parameter, ena
 
 ```ts
 @Component()
-export class ExampleComponent {
+export class ExampleComponent implements OnInit {
 	private readonly injector = inject(Injector);
-	source$ = injectNavigationEnd(this.injector);
-	// ... rest of the component
+
+	ngOnInit() {
+		source$ = injectNavigationEnd(this.injector);
+	}
 }
 ```
 
