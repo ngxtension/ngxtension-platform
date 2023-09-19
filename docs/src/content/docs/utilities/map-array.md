@@ -1,20 +1,40 @@
 ---
 title: mapArray
-description: ngxtension/map-array
+description: An RxJS operator designed to apply a map function to an array within an Observable stream, simplifying array transformations.
 ---
 
-`mapArray` is an RxJs Helper function designed for applying a transform/map function to an array.
-
-The following code:
+## Import
 
 ```ts
-const myObs = of([1, 2, 3]);
-const myResultObs = myObs.pipe(map((arr) => arr.map((e) => e + 1)));
+import { mapArray } from 'ngxtension/map-array';
 ```
 
-can be simplified to:
+## Usage
+
+### Basic
+
+Apply a map function to an array emitted by an Observable.
 
 ```ts
-const myObs = of([1, 2, 3]);
-const myResultObs = myObs.pipe(mapArray((e) => e + 1));
+import { of } from 'rxjs';
+import { mapArray } from 'ngxtension/map-array';
+
+const source$ = of([1, 2, 3]);
+const transformed$ = source$.pipe(mapArray((e) => e + 1));
 ```
+
+## Examples
+
+### Example 1: Double Array Elements
+
+```ts
+const source$ = of([1, 2, 3]);
+const transformed$ = source$.pipe(mapArray((e) => e * 2));
+// Output: [2, 4, 6]
+```
+
+## API
+
+### Inputs
+
+- `mapFn: (item: T, index: number) => R` - A function to transform each element of the array, similar to JavaScript's `.map()` method.

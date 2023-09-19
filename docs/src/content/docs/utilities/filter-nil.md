@@ -1,24 +1,40 @@
 ---
 title: filterNil
-description: ngxtension/filter-nil
+description: An RxJS operator designed to filter out `undefined` and `null` values from an Observable stream, returning a strongly-typed value.
 ---
 
-`filterNil` is an RxJS helper function designed to filter out `undefined` and `null` values from an observable. This operator returns a strongly-typed value, excluding `undefined` and `null`.
-
-The following code:
+## Import
 
 ```ts
-const source$ = of(undefined, null, 1, undefined);
-const filtered$ = source$.pipe(filter((e) => e !== undefined && e !== null));
-// Output: 1
-// Type: Observable<number | undefined | null>
+import { filterNil } from 'ngxtension/filter-nil';
 ```
 
-can be simplified to:
+## Usage
+
+### Basic
+
+Filter out `undefined` and `null` values from an Observable stream.
 
 ```ts
+import { of } from 'rxjs';
+import { filterNil } from 'ngxtension/filter-nil';
+
 const source$ = of(undefined, null, 1, undefined);
 const filtered$ = source$.pipe(filterNil());
-// Output: 1
-// Type: Observable<number>
 ```
+
+## Examples
+
+### Example 1: Removing Undefined and Null Values
+
+```ts
+const source$ = of(undefined, null, 1, 2, null);
+const filtered$ = source$.pipe(filterNil());
+// Output: 1, 2
+```
+
+## API
+
+### Inputs
+
+No inputs needed for this operator.

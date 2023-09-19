@@ -1,20 +1,39 @@
 ---
 title: filterArray
-description: ngxtension/filter-array
+description: An RxJS operator to simplify the process of filtering arrays within an Observable stream.
 ---
 
-`filterArray` is an RxJS helper function designed for applying a filtering function to an array.
-
-The following code:
+## Import
 
 ```ts
-const source$ = of([1, 2, 3]);
-const filtered$ = source$.pipe(map((arr) => arr.filter((element) => element <= 2)));
+import { filterArray } from 'ngxtension/filter-array';
 ```
 
-can be simplified to:
+## Usage
+
+### Basic
+
+Apply a filtering function to an array emitted by an Observable.
 
 ```ts
+import { of } from 'rxjs';
+import { filterArray } from 'your-library';
+
 const source$ = of([1, 2, 3]);
 const filtered$ = source$.pipe(filterArray((element) => element <= 2));
 ```
+
+## Examples
+
+### Example 1: Filter Even Numbers
+
+```ts
+const source$ = of([1, 2, 3, 4, 5]);
+const filtered$ = source$.pipe(filterArray((element) => element % 2 === 0));
+```
+
+## API
+
+### Inputs
+
+- `filterFn: (item: T, index: number) => boolean` - A function to filter the array, similar to JavaScript's `.filter()` method.
