@@ -10,7 +10,7 @@
 		"importHelpers": true,
 		"target": "es2015",
 		"module": "esnext",
-		"lib": ["es2020", "dom"],
+		"lib": ["es2020", "dom", "es2023"],
 		"skipLibCheck": true,
 		"skipDefaultLibCheck": true,
 		"baseUrl": ".",
@@ -37,6 +37,7 @@
 			"ngxtension/inject-destroy": [
 				"libs/ngxtension/inject-destroy/src/index.ts"
 			],
+			"ngxtension/intl": ["libs/ngxtension/intl/src/index.ts"],
 			"ngxtension/map-array": ["libs/ngxtension/map-array/src/index.ts"],
 			"ngxtension/navigation-end": [
 				"libs/ngxtension/navigation-end/src/index.ts"
