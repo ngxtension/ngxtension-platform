@@ -8,6 +8,7 @@ import { ListFormatPipe, provideListFormatOptions } from './list-format.pipe';
 	standalone: true,
 	template: `
 		<p>{{ ['a', 'b', 'c'] | listFormat }}</p>
+		<p>{{ ['a', 'b', 'c'] | listFormat : 'short' }}</p>
 	`,
 	imports: [ListFormatPipe],
 })
@@ -17,11 +18,10 @@ class TestComponent {}
 	standalone: true,
 	template: `
 		<p>{{ ['a', 'b', 'c'] | listFormat }}</p>
+		<p>{{ ['a', 'b', 'c'] | listFormat : 'long' }}</p>
 	`,
 	imports: [ListFormatPipe],
-	providers: [
-		provideListFormatOptions({ style: 'short', type: 'disjunction' }),
-	],
+	providers: [provideListFormatOptions({ style: 'short' })],
 })
 class TestComponentWithProvider {}
 
@@ -30,15 +30,17 @@ describe(ListFormatPipe.name, () => {
 		const fixture = TestBed.createComponent(TestComponent);
 		fixture.detectChanges();
 
-		const elP = fixture.debugElement.query(By.css('p'));
-		expect(elP.nativeElement.textContent).toContain('a, b, and c');
+		const elP = fixture.debugElement.queryAll(By.css('p'));
+		expect(elP[0].nativeElement.textContent).toContain('a, b, and c');
+		expect(elP[1].nativeElement.textContent).toContain('a, b, & c');
 	});
 
 	it('should display the list of values with the provided options', () => {
 		const fixture = TestBed.createComponent(TestComponentWithProvider);
 		fixture.detectChanges();
 
-		const elP = fixture.debugElement.query(By.css('p'));
-		expect(elP.nativeElement.textContent).toContain('a, b, or c');
+		const elP = fixture.debugElement.queryAll(By.css('p'));
+		expect(elP[0].nativeElement.textContent).toContain('a, b, & c');
+		expect(elP[1].nativeElement.textContent).toContain('a, b, and c');
 	});
 });

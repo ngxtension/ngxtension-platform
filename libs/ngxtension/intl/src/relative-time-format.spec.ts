@@ -11,6 +11,7 @@ import {
 	template: `
 		<p>{{ 1 | relativeTimeFormat : 'day' }}</p>
 		<p>{{ -1 | relativeTimeFormat : 'day' }}</p>
+		<p>{{ 2 | relativeTimeFormat : 'day' : 'short' }}</p>
 	`,
 	imports: [RelativeTimeFormatPipe],
 })
@@ -21,6 +22,7 @@ class TestComponent {}
 	template: `
 		<p>{{ 1 | relativeTimeFormat : 'day' }}</p>
 		<p>{{ -1 | relativeTimeFormat : 'day' }}</p>
+		<p>{{ 2 | relativeTimeFormat : 'day' : 'narrow' }}</p>
 	`,
 	imports: [RelativeTimeFormatPipe],
 	providers: [
@@ -38,6 +40,7 @@ describe(RelativeTimeFormatPipe.name, () => {
 		const elP = fixture.debugElement.queryAll(By.css('p'));
 		expect(elP[0].nativeElement.textContent).toContain('in 1 day');
 		expect(elP[1].nativeElement.textContent).toContain('1 day ago');
+		expect(elP[2].nativeElement.textContent).toContain('in 2 days');
 	});
 
 	it('should display the relative time format of the value with the provided options', () => {
@@ -47,5 +50,6 @@ describe(RelativeTimeFormatPipe.name, () => {
 		const elP = fixture.debugElement.queryAll(By.css('p'));
 		expect(elP[0].nativeElement.textContent).toContain('tomorrow');
 		expect(elP[1].nativeElement.textContent).toContain('yesterday');
+		expect(elP[2].nativeElement.textContent).toContain('in 2d');
 	});
 });

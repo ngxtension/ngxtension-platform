@@ -61,18 +61,21 @@ export class DisplayNamesPipe implements PipeTransform {
 	 *
 	 * @param code The code to transform.
 	 * @param type DisplayNamesType to use.
+	 * @param style Optional. The formatting style to use. Defaults to "short".
 	 * @param locale Optional. The locale to use for the transformation. Defaults to LOCALE_ID.
 	 * @returns The name of the given code in the given locale or the code itself if the name could not be found.
 	 */
 	transform(
 		code: string,
 		type: Intl.DisplayNamesType,
+		style?: Intl.DisplayNamesOptions['style'],
 		locale?: string | string[]
 	): ReturnType<Intl.DisplayNames['of']> {
 		try {
 			return new Intl.DisplayNames(locale || this.locale, {
 				...this.defaultOptions,
 				type,
+				...(style ? { style } : {}),
 			}).of(code);
 		} catch (e) {
 			return code;

@@ -60,19 +60,21 @@ export class RelativeTimeFormatPipe implements PipeTransform {
 	 *
 	 * @param value The value to format.
 	 * @param unit The unit of the value.
+	 * @param style Optional, the formatting style to use.
 	 * @param locale Optional, the locale to use for the formatting.
 	 * @returns The relative time format of the value or the value as it is in case of errors.
 	 */
 	transform(
 		value: number,
 		unit: Intl.RelativeTimeFormatUnit,
+		style?: Intl.RelativeTimeFormatOptions['style'],
 		locale?: string
 	): ReturnType<Intl.RelativeTimeFormat['format']> {
 		try {
-			return new Intl.RelativeTimeFormat(
-				locale || this.locale,
-				this.defaultOptions
-			).format(value, unit);
+			return new Intl.RelativeTimeFormat(locale || this.locale, {
+				...this.defaultOptions,
+				...(style ? { style } : {}),
+			}).format(value, unit);
 		} catch (e) {
 			return value.toString();
 		}

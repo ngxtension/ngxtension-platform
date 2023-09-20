@@ -57,15 +57,20 @@ export class ListFormatPipe implements PipeTransform {
 	 * Transforms the list of values into a formatted string.
 	 *
 	 * @param value The list of values to format.
-	 * @param locale Optional, the locale to use for the formatting.
+	 * @param style Optional. The formatting style to use. Defaults to "long".
+	 * @param locale Optional. The locale to use for the transformation. Defaults to LOCALE_ID.
 	 * @returns The formatted list of values or the list as string in case of errors.
 	 */
-	transform(value: Iterable<string>, locale?: string | string[]): string {
+	transform(
+		value: Iterable<string>,
+		style?: Intl.ListFormatOptions['style'],
+		locale?: string | string[]
+	): string {
 		try {
-			return new Intl.ListFormat(
-				locale || this.locale,
-				this.defaultOptions
-			).format(Array.from(value));
+			return new Intl.ListFormat(locale || this.locale, {
+				...this.defaultOptions,
+				...(style ? { style } : {}),
+			}).format(Array.from(value));
 		} catch (e) {
 			return Array.from(value).join(', ');
 		}

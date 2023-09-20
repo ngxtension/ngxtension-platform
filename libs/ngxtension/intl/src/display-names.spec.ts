@@ -12,6 +12,7 @@ import {
 	template: `
 		<p>{{ 'en-US' | displayNames : 'language' }}</p>
 		<p>{{ 'US' | displayNames : 'region' }}</p>
+		<p>{{ 'US' | displayNames : 'region' : 'long' }}</p>
 	`,
 	imports: [DisplayNamesPipe],
 })
@@ -22,6 +23,7 @@ class TestComponent {}
 	template: `
 		<p>{{ 'en-US' | displayNames : 'language' }}</p>
 		<p>{{ 'US' | displayNames : 'region' }}</p>
+		<p>{{ 'US' | displayNames : 'region' : 'short' }}</p>
 	`,
 	imports: [DisplayNamesPipe],
 	providers: [
@@ -39,6 +41,7 @@ describe(DisplayNamesPipe.name, () => {
 		const elP = fixture.debugElement.queryAll(By.css('p'));
 		expect(elP[0].nativeElement.textContent).toContain('US English');
 		expect(elP[1].nativeElement.textContent).toContain('US');
+		expect(elP[2].nativeElement.textContent).toContain('United States');
 	});
 
 	it('should display the display name of the code with the provided options', () => {
@@ -48,5 +51,6 @@ describe(DisplayNamesPipe.name, () => {
 		const elP = fixture.debugElement.queryAll(By.css('p'));
 		expect(elP[0].nativeElement.textContent).toContain('American English');
 		expect(elP[1].nativeElement.textContent).toContain('United States');
+		expect(elP[2].nativeElement.textContent).toContain('US');
 	});
 });
