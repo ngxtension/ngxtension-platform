@@ -20,6 +20,10 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 			<li>
 				<a routerLink="/track-by">Track By</a>
 			</li>
+
+			<li>
+				<a routerLink="/intl">Intl</a>
+			</li>
 		</ul>
 
 		<hr />

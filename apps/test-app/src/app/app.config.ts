@@ -16,6 +16,10 @@ export const appConfig: ApplicationConfig = {
 				path: 'track-by',
 				loadComponent: () => import('./track-by/track-by.component'),
 			},
+			{
+				path: 'intl',
+				loadComponent: () => import('./intl/intl.component'),
+			},
 		]),
 	],
 };
