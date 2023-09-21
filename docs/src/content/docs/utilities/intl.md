@@ -29,7 +29,7 @@ Import `DisplayNamesPipe` and add it to your component:
 
 ```ts
 import {Component} from "@angular/core";
-import {DisplayNamesPipe} from '@ngxtension/intl';
+import {DisplayNamesPipe} from 'ngxtension/intl';
 
 @Component({
   selector: 'app-root',
@@ -57,7 +57,7 @@ To explore additional configuration settings, you can customize the `DisplayName
 
 ```ts
 import {Component} from "@angular/core";
-import {DisplayNamesPipe, provideDisplayNamesOptions} from '@ngxtension/intl';
+import {DisplayNamesPipe, provideDisplayNamesOptions} from 'ngxtension/intl';
 
 @Component({
   selector: 'app-root',
@@ -105,7 +105,7 @@ Import `ListFormatPipe` and add it to your component:
 
 ```ts
 import {Component} from "@angular/core";
-import {ListFormatPipe} from '@ngxtension/intl';
+import {ListFormatPipe} from 'ngxtension/intl';
 
 @Component({
   selector: 'app-root',
@@ -133,7 +133,7 @@ To explore additional configuration settings, you can customize the `ListFormatP
 
 ```ts
 import {Component} from "@angular/core";
-import {ListFormatPipe, provideListFormatOptions} from '@ngxtension/intl';
+import {ListFormatPipe, provideListFormatOptions} from 'ngxtension/intl';
 
 @Component({
   selector: 'app-root',
@@ -180,7 +180,7 @@ Import `PluralRulesPipe` and add it to your component:
 
 ```ts
 import {Component} from "@angular/core";
-import {PluralRulesPipe} from '@ngxtension/intl';
+import {PluralRulesPipe} from 'ngxtension/intl';
 
 @Component({
   selector: 'app-root',
@@ -208,7 +208,7 @@ To explore additional configuration settings, you can customize the `PluralRules
 
 ```ts
 import {Component} from "@angular/core";
-import {PluralRulesPipe, providePluralRulesOptions} from '@ngxtension/intl';
+import {PluralRulesPipe, providePluralRulesOptions} from 'ngxtension/intl';
 
 @Component({
   selector: 'app-root',
@@ -254,7 +254,7 @@ Import `RelativeTimeFormatPipe` and add it to your component:
 
 ```ts
 import {Component} from "@angular/core";
-import {RelativeTimeFormatPipe} from '@ngxtension/intl';
+import {RelativeTimeFormatPipe} from 'ngxtension/intl';
 
 @Component({
   selector: 'app-root',
@@ -282,7 +282,7 @@ To explore additional configuration settings, you can customize the `RelativeTim
 
 ```ts
 import {Component} from "@angular/core";
-import {RelativeTimeFormatPipe, provideRelativeTimeFormatOptions} from '@ngxtension/intl';
+import {RelativeTimeFormatPipe, provideRelativeTimeFormatOptions} from 'ngxtension/intl';
 
 @Component({
   selector: 'app-root',
@@ -329,7 +329,7 @@ Import `SupportedValuesOf` and add it to your component:
 ```ts
 
 import {Component} from "@angular/core";
-import {SupportedValuesOf} from '@ngxtension/intl';
+import {SupportedValuesOf} from 'ngxtension/intl';
 
 @Component({
   selector: 'app-root',

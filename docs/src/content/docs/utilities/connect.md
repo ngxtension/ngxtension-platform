@@ -6,7 +6,7 @@ description: ngxtension/connect
 `connect` is a utility function that connects a signal to an observable and returns a subscription. The subscription is automatically unsubscribed when the component is destroyed. If it's not called in an injection context, it must be called with an injector or DestroyRef.
 
 ```ts
-import { connect } from '@ngxtension/connect';
+import { connect } from 'ngxtension/connect';
 ```
 
 ## Usage
