@@ -28,6 +28,7 @@ export class SupportedValuesOf implements PipeTransform {
 		try {
 			return Intl.supportedValuesOf(key);
 		} catch (e) {
+			console.error(e);
 			return [];
 		}
 	}

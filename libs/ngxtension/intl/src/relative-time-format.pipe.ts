@@ -1,11 +1,11 @@
 import {
 	inject,
-	InjectionToken,
 	LOCALE_ID,
 	Pipe,
 	PipeTransform,
 	Provider,
 } from '@angular/core';
+import { createInjectionToken } from 'ngxtension/create-injection-token';
 
 /**
  * @internal
@@ -19,13 +19,7 @@ const defaultOptions: Intl.RelativeTimeFormatOptions = {
 /**
  * @internal
  */
-const RELATIVE_TIME_FORMAT_INITIALS =
-	new InjectionToken<Intl.RelativeTimeFormatOptions>(
-		'RELATIVE_TIME_FORMAT_INITIALS',
-		{
-			factory: () => defaultOptions,
-		}
-	);
+const [injectFn, provideFn] = createInjectionToken(() => defaultOptions);
 
 /**
  * Provides a way to inject the options for the RelativeTimeFormatPipe.
@@ -34,12 +28,9 @@ const RELATIVE_TIME_FORMAT_INITIALS =
  * @returns The provider for the RelativeTimeFormatPipe.
  */
 export function provideRelativeTimeFormatOptions(
-	options: Intl.RelativeTimeFormatOptions
+	options: Partial<Intl.RelativeTimeFormatOptions>
 ): Provider {
-	return {
-		provide: RELATIVE_TIME_FORMAT_INITIALS,
-		useValue: { ...defaultOptions, ...options },
-	};
+	return provideFn({ ...defaultOptions, ...options });
 }
 
 /**
@@ -52,7 +43,7 @@ export function provideRelativeTimeFormatOptions(
 	standalone: true,
 })
 export class RelativeTimeFormatPipe implements PipeTransform {
-	readonly defaultOptions = inject(RELATIVE_TIME_FORMAT_INITIALS);
+	readonly defaultOptions = injectFn();
 	readonly locale = inject(LOCALE_ID);
 
 	/**
@@ -76,6 +67,7 @@ export class RelativeTimeFormatPipe implements PipeTransform {
 				...(style ? { style } : {}),
 			}).format(value, unit);
 		} catch (e) {
+			console.error(e);
 			return value.toString();
 		}
 	}

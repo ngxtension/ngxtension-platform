@@ -1,11 +1,11 @@
 import {
 	inject,
-	InjectionToken,
 	LOCALE_ID,
 	Pipe,
 	PipeTransform,
 	Provider,
 } from '@angular/core';
+import { createInjectionToken } from 'ngxtension/create-injection-token';
 
 type DisplayNamesOptions = Omit<Intl.DisplayNamesOptions, 'type'>;
 
@@ -21,12 +21,7 @@ const defaultOptions: DisplayNamesOptions = {
 /**
  * @internal
  */
-const DISPLAY_NAMES_INITIALS = new InjectionToken<DisplayNamesOptions>(
-	'DISPLAY_NAMES_INITIALS',
-	{
-		factory: () => defaultOptions,
-	}
-);
+const [injectFn, provideFn] = createInjectionToken(() => defaultOptions);
 
 /**
  * Provides a way to inject the options for the DisplayNamesPipe.
@@ -35,12 +30,9 @@ const DISPLAY_NAMES_INITIALS = new InjectionToken<DisplayNamesOptions>(
  * @returns The provider for the DisplayNamesPipe.
  */
 export function provideDisplayNamesOptions(
-	options: DisplayNamesOptions
+	options: Partial<DisplayNamesOptions>
 ): Provider {
-	return {
-		provide: DISPLAY_NAMES_INITIALS,
-		useValue: { ...defaultOptions, ...options },
-	};
+	return provideFn({ ...defaultOptions, ...options });
 }
 
 /**
@@ -53,7 +45,7 @@ export function provideDisplayNamesOptions(
 	standalone: true,
 })
 export class DisplayNamesPipe implements PipeTransform {
-	readonly defaultOptions = inject(DISPLAY_NAMES_INITIALS);
+	readonly defaultOptions = injectFn();
 	readonly locale = inject(LOCALE_ID);
 
 	/**
@@ -78,6 +70,7 @@ export class DisplayNamesPipe implements PipeTransform {
 				...(style ? { style } : {}),
 			}).of(code);
 		} catch (e) {
+			console.error(e);
 			return code;
 		}
 	}

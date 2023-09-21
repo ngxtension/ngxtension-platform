@@ -1,11 +1,11 @@
 import {
 	inject,
-	InjectionToken,
 	LOCALE_ID,
 	Pipe,
 	PipeTransform,
 	Provider,
 } from '@angular/core';
+import { createInjectionToken } from 'ngxtension/create-injection-token';
 
 /**
  * @internal
@@ -18,12 +18,7 @@ const defaultOptions: Intl.ListFormatOptions = {
 /**
  * @internal
  */
-const LIST_FORMAT_INITIALS = new InjectionToken<Intl.ListFormatOptions>(
-	'LIST_FORMAT_INITIALS',
-	{
-		factory: () => defaultOptions,
-	}
-);
+const [injectFn, provideFn] = createInjectionToken(() => defaultOptions);
 
 /**
  * Provides a way to inject the options for the ListFormatPipe.
@@ -32,12 +27,9 @@ const LIST_FORMAT_INITIALS = new InjectionToken<Intl.ListFormatOptions>(
  * @returns The provider for the ListFormatPipe.
  */
 export function provideListFormatOptions(
-	options: Intl.ListFormatOptions
+	options: Partial<Intl.ListFormatOptions>
 ): Provider {
-	return {
-		provide: LIST_FORMAT_INITIALS,
-		useValue: { ...defaultOptions, ...options },
-	};
+	return provideFn({ ...defaultOptions, ...options });
 }
 
 /**
@@ -50,7 +42,7 @@ export function provideListFormatOptions(
 	standalone: true,
 })
 export class ListFormatPipe implements PipeTransform {
-	readonly defaultOptions = inject(LIST_FORMAT_INITIALS);
+	readonly defaultOptions = injectFn();
 	readonly locale = inject(LOCALE_ID);
 
 	/**
@@ -72,6 +64,7 @@ export class ListFormatPipe implements PipeTransform {
 				...(style ? { style } : {}),
 			}).format(Array.from(value));
 		} catch (e) {
+			console.error(e);
 			return Array.from(value).join(', ');
 		}
 	}

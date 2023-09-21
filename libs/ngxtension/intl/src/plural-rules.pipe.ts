@@ -1,11 +1,11 @@
 import {
 	inject,
-	InjectionToken,
 	LOCALE_ID,
 	Pipe,
 	PipeTransform,
 	Provider,
 } from '@angular/core';
+import { createInjectionToken } from 'ngxtension/create-injection-token';
 
 /**
  * @internal
@@ -18,12 +18,7 @@ const defaultOptions: Intl.PluralRulesOptions = {
 /**
  * @internal
  */
-const PLURAL_RULES_INITIALS = new InjectionToken<Intl.PluralRulesOptions>(
-	'PLURAL_RULES_INITIALS',
-	{
-		factory: () => defaultOptions,
-	}
-);
+const [injectFn, provideFn] = createInjectionToken(() => defaultOptions);
 
 /**
  * Provides a way to inject the options for the PluralRules.
@@ -32,12 +27,9 @@ const PLURAL_RULES_INITIALS = new InjectionToken<Intl.PluralRulesOptions>(
  * @returns The provider for the PluralRules.
  */
 export function providePluralRulesOptions(
-	options: Intl.PluralRulesOptions
+	options: Partial<Intl.PluralRulesOptions>
 ): Provider {
-	return {
-		provide: PLURAL_RULES_INITIALS,
-		useValue: { ...defaultOptions, ...options },
-	};
+	return provideFn({ ...defaultOptions, ...options });
 }
 
 /**
@@ -51,7 +43,7 @@ export function providePluralRulesOptions(
 	standalone: true,
 })
 export class PluralRulesPipe implements PipeTransform {
-	readonly defaultOptions = inject(PLURAL_RULES_INITIALS);
+	readonly defaultOptions = injectFn();
 	readonly locale = inject(LOCALE_ID);
 
 	/**
@@ -71,6 +63,7 @@ export class PluralRulesPipe implements PipeTransform {
 				this.defaultOptions
 			).select(value);
 		} catch (e) {
+			console.error(e);
 			return String(value);
 		}
 	}
