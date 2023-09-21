@@ -2,24 +2,61 @@ import { of } from 'rxjs';
 import { reduceArray } from './reduce-array';
 
 describe(reduceArray.name, () => {
-	const dummyObs = of([1, 2, 3]);
+	const input$ = of([1, 2, 3]);
+	const emptyArray$ = of([]);
 
-	it('given an observable of [1,2,3] and a reducing function of summing elements, then result is an observable of 6', (done) => {
-		const result = dummyObs.pipe(reduceArray((acc, n) => acc + n, 0));
+	it('sums elements, result is 6', (done) => {
+		const result = input$.pipe(reduceArray((acc, n) => acc + n, 0));
 
-		result.subscribe((r) => {
-			expect(r).toEqual(6);
+		result.subscribe((x) => {
+			expect(x).toEqual(6);
 			done();
 		});
 	});
 
-	it('given an observable of [1,2,3] and a reducing function of summing elements with index, then result is an observable of 9', (done) => {
-		const resultWithIndex = dummyObs.pipe(
-			reduceArray((acc, n, i) => acc + n + i, 0)
+	it('sums elements with index, result is 9', (done) => {
+		const result = input$.pipe(reduceArray((acc, n, i) => acc + n + i, 0));
+
+		result.subscribe((x) => {
+			expect(x).toEqual(9);
+			done();
+		});
+	});
+
+	it('no initial value, sums elements, result is 6', (done) => {
+		const result = input$.pipe(reduceArray((acc, n) => acc + n));
+
+		result.subscribe((x) => {
+			expect(x).toEqual(6);
+			done();
+		});
+	});
+
+	it('no initial value, sums elements with index, result is 9', (done) => {
+		const result = input$.pipe(reduceArray((acc, n, i) => acc + n + i));
+
+		result.subscribe((x) => {
+			expect(x).toEqual(9);
+			done();
+		});
+	});
+
+	it('empty array observable, with initial value 0, result is 0', (done) => {
+		const result = emptyArray$.pipe(reduceArray((acc, n) => acc + n, 0));
+
+		result.subscribe((x) => {
+			expect(x).toEqual(0);
+			done();
+		});
+	});
+
+	it('empty array observable, no initial value, result is undefined', (done) => {
+		const result = emptyArray$.pipe(
+			reduceArray((acc, n: number) => (acc !== undefined ? acc + n : n))
 		);
 
-		resultWithIndex.subscribe((rI) => {
-			expect(rI).toEqual(9);
+		result.subscribe((r) => {
+			expect(r).toBeUndefined();
 			done();
 		});
 	});
