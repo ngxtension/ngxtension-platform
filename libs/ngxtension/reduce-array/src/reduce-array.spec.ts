@@ -51,12 +51,16 @@ describe(reduceArray.name, () => {
 	});
 
 	it('empty array observable, no initial value, result is undefined', (done) => {
+		let count = 0;
 		const result = emptyArray$.pipe(
-			reduceArray((acc, n: number) => (acc !== undefined ? acc + n : n))
+			reduceArray((_, n) => {
+				count += 1;
+				return n;
+			})
 		);
-
 		result.subscribe((r) => {
 			expect(r).toBeUndefined();
+			expect(count).toEqual(0);
 			done();
 		});
 	});
