@@ -1,5 +1,12 @@
 
 
+## [0.3.2](https://github.com/nartc/ngxtension-platform/compare/0.3.1...0.3.2) (2023-09-22)
+
+
+### Documentations
+
+* add [@wanoo21](https://github.com/wanoo21) as a contributor ([edbc505](https://github.com/nartc/ngxtension-platform/commit/edbc50592bc496819eb88d0cacdf518e70685e68))
+
 ## [0.3.1](https://github.com/nartc/ngxtension-platform/compare/0.3.0...0.3.1) (2023-09-18)
 
 
