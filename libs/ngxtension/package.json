@@ -1,9 +1,22 @@
 {
 	"name": "ngxtension",
+	"description": "Utilities library for Angular",
 	"version": "0.0.0",
 	"engines": {
 		"node": ">=16"
 	},
+	"repository": "nartc/ngxtension-platform",
+	"homepage": "https://ngxtension.netlify.app",
+	"license": "MIT",
+	"keywords": [
+		"ng2",
+		"ngx",
+		"ngxtension",
+		"angular",
+		"typescript",
+		"rxjs",
+		"signals"
+	],
 	"peerDependencies": {
 		"@angular/common": "^16.0.0",
 		"@angular/core": "^16.0.0",
