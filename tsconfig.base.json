@@ -42,6 +42,7 @@
 			"ngxtension/navigation-end": [
 				"libs/ngxtension/navigation-end/src/index.ts"
 			],
+			"ngxtension/lazy-service": ["libs/ngxtension/lazy-service/src/index.ts"],
 			"ngxtension/repeat": ["libs/ngxtension/repeat/src/index.ts"],
 			"ngxtension/resize": ["libs/ngxtension/resize/src/index.ts"],
 			"ngxtension/trackby-id-prop": [

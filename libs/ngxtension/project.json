@@ -39,7 +39,9 @@
 				"lintFilePatterns": [
 					"libs/ngxtension/**/*.ts",
 					"libs/ngxtension/**/*.html",
-					"libs/ngxtension/package.json"
+					"libs/ngxtension/package.json",
+					"libs/ngxtension/lazy-service/**/*.ts",
+					"libs/ngxtension/lazy-service/**/*.html"
 				]
 			}
 		},
