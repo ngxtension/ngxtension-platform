@@ -1,5 +1,12 @@
 
 
+## [0.3.3](https://github.com/nartc/ngxtension-platform/compare/0.3.2...0.3.3) (2023-09-23)
+
+
+### Bug Fixes
+
+* **create-injection-token:** add injector to create injection token ([#78](https://github.com/nartc/ngxtension-platform/issues/78)) ([b3ebe4b](https://github.com/nartc/ngxtension-platform/commit/b3ebe4b25afd248ed511dd8cf34f1ea337abf6cd))
+
 ## [0.3.2](https://github.com/nartc/ngxtension-platform/compare/0.3.1...0.3.2) (2023-09-22)
 
 
