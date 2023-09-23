@@ -1,16 +1,19 @@
 import {
 	Host,
 	InjectionToken,
+	Injector,
 	Optional,
 	Self,
 	SkipSelf,
 	inject,
+	runInInjectionContext,
 	type EnvironmentProviders,
 	type FactoryProvider,
 	type InjectOptions,
 	type Provider,
 	type Type,
 } from '@angular/core';
+import { assertInjector } from 'ngxtension/assert-injector';
 
 type CreateInjectionTokenDep<TTokenType> =
 	| Type<TTokenType>
@@ -53,8 +56,14 @@ type InjectFn<
 	TFactoryReturn extends ReturnType<TFactory> = ReturnType<TFactory>
 > = {
 	(): TFactoryReturn;
-	(injectOptions: InjectOptions & { optional?: false }): TFactoryReturn;
-	(injectOptions: InjectOptions): TFactoryReturn | null;
+	(
+		injectOptions: InjectOptions & { optional?: false } & {
+			injector?: Injector;
+		}
+	): TFactoryReturn;
+	(
+		injectOptions: InjectOptions & { injector?: Injector }
+	): TFactoryReturn | null;
 };
 
 export type CreateInjectionTokenReturn<
@@ -67,8 +76,15 @@ export type CreateInjectionTokenReturn<
 ];
 
 function createInjectFn<TValue>(token: InjectionToken<TValue>) {
-	return (injectOptions?: InjectOptions) =>
-		inject(token, injectOptions as InjectOptions);
+	return function (
+		this: Function,
+		{ injector, ...injectOptions }: InjectOptions & { injector?: Injector } = {}
+	) {
+		injector = assertInjector(this, injector);
+		return runInInjectionContext(injector, () =>
+			inject(token, injectOptions as InjectOptions)
+		);
+	};
 }
 
 function createProvideFn<
@@ -122,6 +138,7 @@ export function createInjectionToken<
 	factory: TFactory,
 	options?: CreateInjectionTokenOptions<TFactory, TFactoryDeps>
 ): CreateInjectionTokenReturn<TFactory, TFactoryReturn> {
+	const tokenName = factory.name || factory.toString();
 	const opts =
 		options ??
 		({ isRoot: true } as CreateInjectionTokenOptions<TFactory, TFactoryDeps>);
@@ -135,17 +152,14 @@ createInjectionToken is creating a root InjectionToken but an external token is 
 `);
 		}
 
-		const token = new InjectionToken<TFactoryReturn>(
-			`Token for ${factory.name}`,
-			{
-				factory: () => {
-					if (opts.deps && Array.isArray(opts.deps)) {
-						return factory(...opts.deps.map((dep) => inject(dep)));
-					}
-					return factory();
-				},
-			}
-		);
+		const token = new InjectionToken<TFactoryReturn>(`Token for ${tokenName}`, {
+			factory: () => {
+				if (opts.deps && Array.isArray(opts.deps)) {
+					return factory(...opts.deps.map((dep) => inject(dep)));
+				}
+				return factory();
+			},
+		});
 
 		return [
 			createInjectFn(token) as CreateInjectionTokenReturn<
@@ -158,8 +172,7 @@ createInjectionToken is creating a root InjectionToken but an external token is 
 	}
 
 	const token =
-		opts.token ||
-		new InjectionToken<TFactoryReturn>(`Token for ${factory.name}`);
+		opts.token || new InjectionToken<TFactoryReturn>(`Token for ${tokenName}`);
 	return [
 		createInjectFn(token) as CreateInjectionTokenReturn<
 			TFactory,
