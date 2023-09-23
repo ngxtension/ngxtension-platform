@@ -95,3 +95,25 @@ export const [injectService, provideService] = createInjectionToken(serviceFacto
 ```
 
 Note that if `token` is passed in and `isRoot: true`, `createInjectionToken` will throw an error.
+
+### Injector
+
+The `injectFn` returned by `createInjectionToken` also accepts a custom `Injector` to allow the consumers to call the `injectFn`
+outside of an Injection Context.
+
+```ts
+function countFactory() {
+	return signal(1);
+}
+
+export const [injectCount] = createInjectionToken(countFactory);
+
+@Component()
+export class Counter {
+	#injector = inject(Injector);
+
+	ngOnInit() {
+		const counter = injectCount({ injector: this.#injector });
+	}
+}
+```

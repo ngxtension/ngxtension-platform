@@ -1,4 +1,4 @@
-import { inject } from '@angular/core';
+import { Injector, inject } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { createInjectionToken } from './create-injection-token';
 
@@ -83,6 +83,22 @@ describe(createInjectionToken.name, () => {
 				const value = injectFn();
 				expect(value).toEqual(2);
 			});
+		});
+	});
+
+	describe('given injection token', () => {
+		const [injectFn, provideFn] = createInjectionToken(() => 1);
+		it(`then throw no provider when invoked with an injector without providing`, () => {
+			const injector = Injector.create({ providers: [] });
+			expect(injectFn.bind(injectFn, { injector })).toThrowError(
+				/no provider/i
+			);
+		});
+
+		it(`then return correct value when invoked with an injector`, () => {
+			const injector = Injector.create({ providers: [provideFn()] });
+			const value = injectFn({ injector });
+			expect(value).toEqual(1);
 		});
 	});
 });
