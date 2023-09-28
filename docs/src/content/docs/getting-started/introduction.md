@@ -1,6 +1,8 @@
 ---
 title: Introduction
 description: What is ngxtension?
+sidebar:
+  order: 1
 ---
 
 `ngxtension` is a utilities library for [Angular](https://angular.io). It consists of a variety of utilities that make Angular development easier and more consistent.
