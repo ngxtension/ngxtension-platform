@@ -1,79 +1,107 @@
 {
-	"projectName": "ngxtension-platform",
-	"projectOwner": "nartc",
-	"repoType": "github",
-	"repoHost": "https://github.com",
-	"files": ["README.md"],
-	"imageSize": 100,
-	"commit": true,
-	"commitConvention": "angular",
-	"contributors": [
-		{
-			"login": "nartc",
-			"name": "Chau Tran",
-			"avatar_url": "https://avatars.githubusercontent.com/u/25516557?v=4",
-			"profile": "https://nartc.me/",
-			"contributions": ["code"]
-		},
-		{
-			"login": "eneajaho",
-			"name": "Enea Jahollari",
-			"avatar_url": "https://avatars.githubusercontent.com/u/25394362?v=4",
-			"profile": "https://eneajaho.me",
-			"contributions": ["code"]
-		},
-		{
-			"login": "develite98",
-			"name": "Phong Cao",
-			"avatar_url": "https://avatars.githubusercontent.com/u/43846216?v=4",
-			"profile": "https://github.com/develite98",
-			"contributions": ["code"]
-		},
-		{
-			"login": "tieppt",
-			"name": "Tiep Phan",
-			"avatar_url": "https://avatars.githubusercontent.com/u/7151365?v=4",
-			"profile": "https://www.tiepphan.com/",
-			"contributions": ["code"]
-		},
-		{
-			"login": "dmorosinotto",
-			"name": "Daniele Morosinotto",
-			"avatar_url": "https://avatars.githubusercontent.com/u/3982050?v=4",
-			"profile": "https://twitter.com/dmorosinotto",
-			"contributions": ["code"]
-		},
-		{
-			"login": "va-stefanek",
-			"name": "Mateusz Stefańczyk",
-			"avatar_url": "https://avatars.githubusercontent.com/u/67691339?v=4",
-			"profile": "https://houseofangular.io/",
-			"contributions": ["code"]
-		},
-		{
-			"login": "tomer953",
-			"name": "Tomer953",
-			"avatar_url": "https://avatars.githubusercontent.com/u/1807493?v=4",
-			"profile": "https://github.com/tomer953",
-			"contributions": ["doc"]
-		},
-		{
-			"login": "tomalaforge",
-			"name": "Laforge Thomas",
-			"avatar_url": "https://avatars.githubusercontent.com/u/30832608?v=4",
-			"profile": "https://thomaslaforge.dev/home",
-			"contributions": ["code"]
-		},
-		{
-			"login": "wanoo21",
-			"name": "Ion Prodan",
-			"avatar_url": "https://avatars.githubusercontent.com/u/6537167?v=4",
-			"profile": "https://yon.fun/",
-			"contributions": ["code"]
-		}
-	],
-	"contributorsPerLine": 7,
-	"linkToUsage": true,
-	"commitType": "docs"
+  "projectName": "ngxtension-platform",
+  "projectOwner": "nartc",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "nartc",
+      "name": "Chau Tran",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25516557?v=4",
+      "profile": "https://nartc.me/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "eneajaho",
+      "name": "Enea Jahollari",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25394362?v=4",
+      "profile": "https://eneajaho.me",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "develite98",
+      "name": "Phong Cao",
+      "avatar_url": "https://avatars.githubusercontent.com/u/43846216?v=4",
+      "profile": "https://github.com/develite98",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "tieppt",
+      "name": "Tiep Phan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7151365?v=4",
+      "profile": "https://www.tiepphan.com/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "dmorosinotto",
+      "name": "Daniele Morosinotto",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3982050?v=4",
+      "profile": "https://twitter.com/dmorosinotto",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "va-stefanek",
+      "name": "Mateusz Stefańczyk",
+      "avatar_url": "https://avatars.githubusercontent.com/u/67691339?v=4",
+      "profile": "https://houseofangular.io/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "tomer953",
+      "name": "Tomer953",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1807493?v=4",
+      "profile": "https://github.com/tomer953",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "tomalaforge",
+      "name": "Laforge Thomas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/30832608?v=4",
+      "profile": "https://thomaslaforge.dev/home",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "wanoo21",
+      "name": "Ion Prodan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6537167?v=4",
+      "profile": "https://yon.fun/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "amirhosseinfaraji",
+      "name": "AmirHossein",
+      "avatar_url": "https://avatars.githubusercontent.com/u/15232909?v=4",
+      "profile": "https://github.com/amirhosseinfaraji",
+      "contributions": [
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "linkToUsage": true,
+  "commitType": "docs"
 }
-
