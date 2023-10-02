@@ -1,7 +1,7 @@
 # NG Extension Platform
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A collection of utilities for [Angular](https://angular.io).
@@ -62,6 +62,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://thomaslaforge.dev/home"><img src="https://avatars.githubusercontent.com/u/30832608?v=4?s=100" width="100px;" alt="Laforge Thomas"/><br /><sub><b>Laforge Thomas</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=tomalaforge" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://yon.fun/"><img src="https://avatars.githubusercontent.com/u/6537167?v=4?s=100" width="100px;" alt="Ion Prodan"/><br /><sub><b>Ion Prodan</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=wanoo21" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/amirhosseinfaraji"><img src="https://avatars.githubusercontent.com/u/15232909?v=4?s=100" width="100px;" alt="AmirHossein"/><br /><sub><b>AmirHossein</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=amirhosseinfaraji" title="Documentation">📖</a></td>
     </tr>
   </tbody>
   <tfoot>
