@@ -44,6 +44,7 @@
 			],
 			"ngxtension/repeat": ["libs/ngxtension/repeat/src/index.ts"],
 			"ngxtension/resize": ["libs/ngxtension/resize/src/index.ts"],
+			"ngxtension/signal-store": ["libs/ngxtension/signal-store/src/index.ts"],
 			"ngxtension/trackby-id-prop": [
 				"libs/ngxtension/trackby-id-prop/src/index.ts"
 			],
