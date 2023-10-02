@@ -17,7 +17,7 @@ Apply a filtering function to an array emitted by an Observable.
 
 ```ts
 import { of } from 'rxjs';
-import { filterArray } from 'your-library';
+import { filterArray } from 'ngxtension/filter-array';
 
 const source$ = of([1, 2, 3]);
 const filtered$ = source$.pipe(filterArray((element) => element <= 2));
