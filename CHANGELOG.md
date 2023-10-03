@@ -1,5 +1,18 @@
 
 
+## [0.4.0](https://github.com/nartc/ngxtension-platform/compare/0.3.3...0.4.0) (2023-10-03)
+
+
+### Features
+
+* **singleton-proxy:** add createSingletonProxy ([#89](https://github.com/nartc/ngxtension-platform/issues/89)) ([f11999e](https://github.com/nartc/ngxtension-platform/commit/f11999e86a70515f794604c9f9f79836eeb63f6e))
+
+
+### Documentations
+
+* update .all-contributorsrc ([c84d3f5](https://github.com/nartc/ngxtension-platform/commit/c84d3f57d87a166503165cde83c8feb31d0628b8))
+* update README.md ([83f0721](https://github.com/nartc/ngxtension-platform/commit/83f07217321ece0f061049f1446cb81c5df9b4f3))
+
 ## [0.3.3](https://github.com/nartc/ngxtension-platform/compare/0.3.2...0.3.3) (2023-09-23)
 
 
