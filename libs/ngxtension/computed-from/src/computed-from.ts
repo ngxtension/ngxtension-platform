@@ -1,4 +1,4 @@
-import { Injector, isSignal, Signal, untracked } from '@angular/core';
+import { Injector, isSignal, untracked, type Signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { assertInjector } from 'ngxtension/assert-injector';
 import {
@@ -6,10 +6,10 @@ import {
 	distinctUntilChanged,
 	from,
 	isObservable,
-	ObservableInput,
 	of,
-	OperatorFunction,
 	take,
+	type ObservableInput,
+	type OperatorFunction,
 } from 'rxjs';
 
 export type ObservableSignalInput<T> = ObservableInput<T> | Signal<T>;

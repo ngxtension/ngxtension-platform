@@ -2,8 +2,8 @@ import {
 	inject,
 	LOCALE_ID,
 	Pipe,
-	PipeTransform,
-	Provider,
+	type PipeTransform,
+	type Provider,
 } from '@angular/core';
 import { createInjectionToken } from 'ngxtension/create-injection-token';
 

@@ -1,7 +1,7 @@
-import { DestroyRef, Injector, WritableSignal } from '@angular/core';
+import { DestroyRef, Injector, type WritableSignal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { assertInjector } from 'ngxtension/assert-injector';
-import { Observable, Subscription } from 'rxjs';
+import type { Observable, Subscription } from 'rxjs';
 
 /**
  * Connects a signal to an observable and returns a subscription. The subscription is automatically

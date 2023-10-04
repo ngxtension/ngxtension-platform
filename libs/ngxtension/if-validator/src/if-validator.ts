@@ -1,9 +1,9 @@
 import {
 	AbstractControl,
-	AsyncValidatorFn,
 	FormControl,
-	ValidatorFn,
 	Validators,
+	type AsyncValidatorFn,
+	type ValidatorFn,
 } from '@angular/forms';
 import { of } from 'rxjs';
 
