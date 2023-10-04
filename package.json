@@ -22,6 +22,7 @@
 		"@angular/platform-browser-dynamic": "~16.2.7",
 		"@angular/router": "~16.2.7",
 		"@swc/helpers": "0.5.2",
+		"@use-gesture/vanilla": "^10.3.0",
 		"rxjs": "~7.8.1",
 		"tslib": "^2.6.2",
 		"zone.js": "~0.13.3"
