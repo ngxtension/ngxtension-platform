@@ -101,4 +101,19 @@ describe(createInjectionToken.name, () => {
 			expect(value).toEqual(1);
 		});
 	});
+
+	describe('given multi injection token', () => {
+		const [injectFn, provideFn] = createInjectionToken(() => 1, {
+			multi: true,
+		});
+		it('then return value as array', () => {
+			TestBed.configureTestingModule({
+				providers: [provideFn(), provideFn(2)],
+			}).runInInjectionContext(() => {
+				const values = injectFn();
+				expect(Array.isArray(values)).toEqual(true);
+				expect(values).toEqual([1, 2]);
+			});
+		});
+	});
 });
