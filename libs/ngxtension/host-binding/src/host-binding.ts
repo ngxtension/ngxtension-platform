@@ -8,8 +8,8 @@ import {
 	Renderer2,
 	RendererStyleFlags2,
 	runInInjectionContext,
-	Signal,
-	WritableSignal,
+	type Signal,
+	type WritableSignal,
 } from '@angular/core';
 import { assertInjector } from 'ngxtension/assert-injector';
 
