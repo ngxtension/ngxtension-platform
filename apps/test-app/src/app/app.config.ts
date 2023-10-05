@@ -20,6 +20,10 @@ export const appConfig: ApplicationConfig = {
 				path: 'intl',
 				loadComponent: () => import('./intl/intl.component'),
 			},
+			{
+				path: 'drag',
+				loadComponent: () => import('./drag/drag.component'),
+			},
 		]),
 	],
 };

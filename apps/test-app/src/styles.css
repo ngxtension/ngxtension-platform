@@ -5,3 +5,24 @@ body {
 	margin: 0;
 	box-sizing: border-box;
 }
+
+.draggable-box {
+	display: block;
+	position: relative;
+	width: 100px;
+	height: 100px;
+	border-radius: 0.25rem;
+	touch-action: none;
+}
+
+.pink-draggable-box {
+	background: hotpink;
+}
+
+.blue-draggable-box {
+	background: dodgerblue;
+}
+
+.green-draggable-box {
+	background: greenyellow;
+}

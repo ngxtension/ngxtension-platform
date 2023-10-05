@@ -24,6 +24,10 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 			<li>
 				<a routerLink="/intl">Intl</a>
 			</li>
+
+			<li>
+				<a routerLink="/drag">Drag Gesture</a>
+			</li>
 		</ul>
 
 		<hr />
