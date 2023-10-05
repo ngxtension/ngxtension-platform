@@ -39,22 +39,23 @@ export type CreateInjectionTokenOptions<
 > =
 	// this means TFunction has no arguments
 	(TFactoryDeps[0] extends undefined
-		? {
-				isRoot: boolean;
-				deps?: never;
-		  }
-		: {
-				isRoot?: boolean;
-				deps: CreateInjectionTokenDeps<TFactory, TFactoryDeps>;
-		  }) & {
+		? { deps?: never }
+		: { deps: CreateInjectionTokenDeps<TFactory, TFactoryDeps> }) & {
+		isRoot?: boolean;
+		multi?: boolean;
 		token?: InjectionToken<ReturnType<TFactory>>;
 		extraProviders?: Provider | EnvironmentProviders;
 	};
 
-type InjectFn<
+type CreateProvideFnOptions<
 	TFactory extends (...args: any[]) => any,
-	TFactoryReturn extends ReturnType<TFactory> = ReturnType<TFactory>
-> = {
+	TFactoryDeps extends Parameters<TFactory> = Parameters<TFactory>
+> = Pick<
+	CreateInjectionTokenOptions<TFactory, TFactoryDeps>,
+	'deps' | 'extraProviders' | 'multi'
+>;
+
+type InjectFn<TFactoryReturn> = {
 	(): TFactoryReturn;
 	(
 		injectOptions: InjectOptions & { optional?: false } & {
@@ -66,12 +67,13 @@ type InjectFn<
 	): TFactoryReturn | null;
 };
 
-export type CreateInjectionTokenReturn<
-	TFactory extends (...args: any[]) => any,
-	TFactoryReturn extends ReturnType<TFactory> = ReturnType<TFactory>
-> = [
-	InjectFn<TFactory, TFactoryReturn>,
-	(value?: TFactoryReturn) => Provider,
+export type CreateInjectionTokenReturn<TFactoryReturn> = [
+	InjectFn<TFactoryReturn>,
+	(
+		value?: TFactoryReturn extends Array<infer TReturn>
+			? TReturn
+			: TFactoryReturn
+	) => Provider,
 	InjectionToken<TFactoryReturn>
 ];
 
@@ -94,22 +96,23 @@ function createProvideFn<
 >(
 	token: InjectionToken<TValue>,
 	factory: (...args: any[]) => TValue,
-	deps?: CreateInjectionTokenDeps<TFactory, TFactoryDeps>,
-	extraProviders?: Provider | EnvironmentProviders
+	opts: CreateProvideFnOptions<TFactory, TFactoryDeps> = {}
 ) {
+	const { deps = [], multi = false, extraProviders = [] } = opts;
 	return (value?: TValue) => {
 		let provider: Provider;
 		if (value) {
-			provider = { provide: token, useValue: value };
+			provider = { provide: token, useValue: value, multi };
 		} else {
 			provider = {
 				provide: token,
 				useFactory: factory,
-				deps: (deps ?? []) as FactoryProvider['deps'],
+				deps: deps as FactoryProvider['deps'],
+				multi,
 			};
 		}
 
-		return extraProviders ? [extraProviders, provider] : provider;
+		return [extraProviders, provider];
 	};
 }
 
@@ -133,17 +136,29 @@ function createProvideFn<
 export function createInjectionToken<
 	TFactory extends (...args: any[]) => any,
 	TFactoryDeps extends Parameters<TFactory> = Parameters<TFactory>,
-	TFactoryReturn extends ReturnType<TFactory> = ReturnType<TFactory>
+	TOptions extends CreateInjectionTokenOptions<
+		TFactory,
+		TFactoryDeps
+	> = CreateInjectionTokenOptions<TFactory, TFactoryDeps>,
+	TFactoryReturn = TOptions['multi'] extends true
+		? Array<ReturnType<TFactory>>
+		: ReturnType<TFactory>
 >(
 	factory: TFactory,
-	options?: CreateInjectionTokenOptions<TFactory, TFactoryDeps>
-): CreateInjectionTokenReturn<TFactory, TFactoryReturn> {
+	options?: TOptions
+): CreateInjectionTokenReturn<TFactoryReturn> {
 	const tokenName = factory.name || factory.toString();
 	const opts =
 		options ??
 		({ isRoot: true } as CreateInjectionTokenOptions<TFactory, TFactoryDeps>);
 
 	opts.isRoot ??= true;
+
+	// NOTE: multi tokens cannot be a root token. It has to be provided (provideFn needs to be invoked)
+	// for the 'multi' flag to work properly
+	if (opts.multi) {
+		opts.isRoot = false;
+	}
 
 	if (opts.isRoot) {
 		if (opts.token) {
@@ -162,11 +177,12 @@ createInjectionToken is creating a root InjectionToken but an external token is 
 		});
 
 		return [
-			createInjectFn(token) as CreateInjectionTokenReturn<
-				TFactory,
-				TFactoryReturn
-			>[0],
-			createProvideFn(token, factory, opts.deps),
+			createInjectFn(token) as CreateInjectionTokenReturn<TFactoryReturn>[0],
+			createProvideFn(
+				token,
+				factory,
+				opts as CreateProvideFnOptions<TFactory, TFactoryDeps>
+			),
 			token,
 		];
 	}
@@ -174,11 +190,12 @@ createInjectionToken is creating a root InjectionToken but an external token is 
 	const token =
 		opts.token || new InjectionToken<TFactoryReturn>(`Token for ${tokenName}`);
 	return [
-		createInjectFn(token) as CreateInjectionTokenReturn<
-			TFactory,
-			TFactoryReturn
-		>[0],
-		createProvideFn(token, factory, opts.deps, opts.extraProviders),
+		createInjectFn(token) as CreateInjectionTokenReturn<TFactoryReturn>[0],
+		createProvideFn(
+			token,
+			factory,
+			opts as CreateProvideFnOptions<TFactory, TFactoryDeps>
+		),
 		token,
 	];
 }

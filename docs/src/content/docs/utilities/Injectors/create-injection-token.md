@@ -74,6 +74,26 @@ We can also pass in other providers, via `extraProviders`, to `createInjectionTo
 
 Example TBD
 
+#### `multi`
+
+As the name suggested, we can also create a multi `InjectionToken` via `createInjectionToken` by passing `multi: true` to the `CreateInjectionTokenOptions`.
+
+:::caution
+
+- When `multi: true`, the return type will be altered.
+- When `multi: true`, then `isRoot` option will be skipped entirely. The `InjectionToken` will be forced to be a non-root token.
+
+:::
+
+```ts
+const [injectFn, provideFn] = createInjectionToken(() => 1, { multi: true });
+
+const values = injectFn(); // number[] instead of number
+
+provideFn(value);
+//        👆 this STILL accepts a number
+```
+
 #### `token`
 
 If we already have an `InjectionToken` that we want to turn into `injectFn` and `provideFn`, we can pass that token, via `token`, to `createInjectionToken`.
