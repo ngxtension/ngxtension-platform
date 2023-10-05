@@ -18,24 +18,14 @@
 			"files": ["*.json"],
 			"parser": "jsonc-eslint-parser",
 			"rules": {
-				"@nx/nx-plugin-checks": [
-					"error",
-					{
-						"ignoredDependencies": ["@nx/angular"]
-					}
-				]
+				"@nx/nx-plugin-checks": ["error"]
 			}
 		},
 		{
 			"files": ["./package.json", "./generators.json"],
 			"parser": "jsonc-eslint-parser",
 			"rules": {
-				"@nx/nx-plugin-checks": [
-					"error",
-					{
-						"ignoredDependencies": ["@nx/angular"]
-					}
-				]
+				"@nx/nx-plugin-checks": ["error"]
 			}
 		}
 	]
