@@ -1,6 +1,9 @@
 import { Injector, inject } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { createInjectionToken } from './create-injection-token';
+import {
+	createInjectionToken,
+	createNoopInjectionToken,
+} from './create-injection-token';
 
 describe(createInjectionToken.name, () => {
 	describe('given root injection token', () => {
@@ -112,6 +115,66 @@ describe(createInjectionToken.name, () => {
 			}).runInInjectionContext(() => {
 				const values = injectFn();
 				expect(Array.isArray(values)).toEqual(true);
+				expect(values).toEqual([1, 2]);
+			});
+		});
+
+		it('when pass a factory to provide then return correct value with injected dep', () => {
+			const [injectDepFn, provideDepFn] = createInjectionToken(() => 5);
+			TestBed.configureTestingModule({
+				providers: [
+					provideDepFn(),
+					provideFn(),
+					provideFn(() => injectDepFn()),
+				],
+			}).runInInjectionContext(() => {
+				const values = injectFn();
+				expect(values).toEqual([1, 5]);
+			});
+		});
+	});
+
+	describe('given injection token with function as value', () => {
+		const [injectDepFn, provideDepFn] = createInjectionToken(() => 5);
+		const [injectFn, provideFn] = createInjectionToken(
+			() => () => 1 as number,
+			{ multi: true }
+		);
+
+		it('then provide correct value when pass in a fn', () => {
+			TestBed.configureTestingModule({
+				providers: [
+					provideDepFn(),
+					provideFn(),
+					// NOTE: this is providing the function value as-is
+					provideFn(() => 2, true),
+					// NOTE: this is providing the function as a factory
+					provideFn(() => () => injectDepFn(), false),
+				],
+			}).runInInjectionContext(() => {
+				const fns = injectFn();
+				const values = fns.map((fn) => fn());
+				expect(values).toEqual([
+					1, // initial fn returning 1
+					2, // the function value as-is returning 2
+					5, // the function via factory returning the dep value 5
+				]);
+			});
+		});
+	});
+});
+
+describe(createNoopInjectionToken.name, () => {
+	describe('given an injection token', () => {
+		const [injectFn, provideFn] = createNoopInjectionToken<number, true>(
+			'noop',
+			{ multi: true }
+		);
+		it('then work properly', () => {
+			TestBed.configureTestingModule({
+				providers: [provideFn(1), provideFn(() => 2)],
+			}).runInInjectionContext(() => {
+				const values = injectFn();
 				expect(values).toEqual([1, 2]);
 			});
 		});
