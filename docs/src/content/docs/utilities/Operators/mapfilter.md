@@ -1,6 +1,6 @@
 ---
 title: mapFilter
-description: An RxJS operator that allow to apply a trasform function to each value of the observable in (same as map), but with the ability to skip (filter out) some values if the function explict return undefined or simply doesn't return anything for same code-path (implict return undefined).
+sdescription: An RxJS operator that allows applying a transform function to each value of the observable in (same as map), but with the ability to skip (filter out) some values if the function explicit return undefined or simply doesn't return anything for same code-path (implicit return undefined).
 ---
 
 ## Import
@@ -11,7 +11,7 @@ import { mapFilter } from 'ngxtension/mapfilter';
 
 ## Usage
 
-You can use it as a normal map operator, but with the ability to skip some values: returning undefined (explict or implict).
+You can use it as a normal map operator, but with the ability to skip some values: returning undefined (explicit or implicit).
 
 ```typescript
 import { from } from 'rxjs';
