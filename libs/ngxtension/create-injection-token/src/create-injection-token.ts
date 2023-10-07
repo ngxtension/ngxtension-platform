@@ -1,16 +1,16 @@
 import {
-	Host,
 	InjectionToken,
-	Injector,
-	Optional,
-	Self,
-	SkipSelf,
 	inject,
 	runInInjectionContext,
 	type EnvironmentProviders,
 	type FactoryProvider,
+	type Host,
 	type InjectOptions,
+	type Injector,
+	type Optional,
 	type Provider,
+	type Self,
+	type SkipSelf,
 	type Type,
 } from '@angular/core';
 import { assertInjector } from 'ngxtension/assert-injector';
@@ -67,13 +67,23 @@ type InjectFn<TFactoryReturn> = {
 	): TFactoryReturn | null;
 };
 
-export type CreateInjectionTokenReturn<TFactoryReturn> = [
+type ProvideFn<
+	TNoop extends boolean,
+	TFactoryReturn,
+	TReturn = TFactoryReturn extends Array<infer Item> ? Item : TFactoryReturn
+> = (TNoop extends true
+	? (value: TReturn | (() => TReturn)) => Provider
+	: () => Provider) &
+	(TReturn extends Function
+		? (value: TReturn | (() => TReturn), isFunctionValue: boolean) => Provider
+		: (value: TReturn | (() => TReturn)) => Provider);
+
+export type CreateInjectionTokenReturn<
+	TFactoryReturn,
+	TNoop extends boolean = false
+> = [
 	InjectFn<TFactoryReturn>,
-	(
-		value?: TFactoryReturn extends Array<infer TReturn>
-			? TReturn
-			: TFactoryReturn
-	) => Provider,
+	ProvideFn<TNoop, TFactoryReturn>,
 	InjectionToken<TFactoryReturn>
 ];
 
@@ -99,10 +109,22 @@ function createProvideFn<
 	opts: CreateProvideFnOptions<TFactory, TFactoryDeps> = {}
 ) {
 	const { deps = [], multi = false, extraProviders = [] } = opts;
-	return (value?: TValue) => {
+	return (value?: TValue | (() => TValue), isFunctionValue = false) => {
 		let provider: Provider;
 		if (value) {
-			provider = { provide: token, useValue: value, multi };
+			// TODO: maybe this can be made better
+			const factory =
+				typeof value === 'function'
+					? isFunctionValue
+						? () => value
+						: value
+					: () => value;
+
+			provider = {
+				provide: token,
+				useFactory: factory,
+				multi,
+			};
 		} else {
 			provider = {
 				provide: token,
@@ -182,7 +204,7 @@ createInjectionToken is creating a root InjectionToken but an external token is 
 				token,
 				factory,
 				opts as CreateProvideFnOptions<TFactory, TFactoryDeps>
-			),
+			) as CreateInjectionTokenReturn<TFactoryReturn>[1],
 			token,
 		];
 	}
@@ -195,7 +217,32 @@ createInjectionToken is creating a root InjectionToken but an external token is 
 			token,
 			factory,
 			opts as CreateProvideFnOptions<TFactory, TFactoryDeps>
-		),
+		) as CreateInjectionTokenReturn<TFactoryReturn>[1],
 		token,
 	];
+}
+
+export function createNoopInjectionToken<
+	TValue,
+	TMulti extends boolean = false,
+	TOptions = Pick<
+		CreateInjectionTokenOptions<() => void, []>,
+		'extraProviders'
+	> &
+		(TMulti extends true ? { multi: true } : Record<string, never>)
+>(description: string, options?: TOptions) {
+	type TReturn = TMulti extends true ? Array<TValue> : TValue;
+
+	const token =
+		(options as CreateInjectionTokenOptions<() => void, []>)?.token ||
+		new InjectionToken<TReturn>(description);
+	return [
+		createInjectFn(token) as CreateInjectionTokenReturn<TReturn, true>[0],
+		createProvideFn(
+			token,
+			() => null!,
+			(options || {}) as CreateProvideFnOptions<() => void, []>
+		) as CreateInjectionTokenReturn<TReturn, true>[1],
+		token,
+	] as CreateInjectionTokenReturn<TReturn, true>;
 }
