@@ -42,6 +42,7 @@
 			],
 			"ngxtension/intl": ["libs/ngxtension/intl/src/index.ts"],
 			"ngxtension/map-array": ["libs/ngxtension/map-array/src/index.ts"],
+			"ngxtension/mapfilter": ["libs/ngxtension/mapfilter/src/index.ts"],
 			"ngxtension/navigation-end": [
 				"libs/ngxtension/navigation-end/src/index.ts"
 			],
