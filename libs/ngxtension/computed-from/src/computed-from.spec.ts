@@ -1,27 +1,27 @@
 import {
 	Component,
-	inject,
 	Injector,
 	Input,
 	OnInit,
 	Signal,
+	inject,
 	signal,
 } from '@angular/core';
 import {
 	ComponentFixture,
-	fakeAsync,
 	TestBed,
+	fakeAsync,
 	tick,
 } from '@angular/core/testing';
 import {
 	BehaviorSubject,
+	Subject,
 	delay,
 	filter,
 	map,
 	of,
 	pipe,
 	startWith,
-	Subject,
 	switchMap,
 } from 'rxjs';
 import { computedFrom } from './computed-from';
@@ -129,18 +129,21 @@ describe(computedFrom.name, () => {
 		});
 
 		describe('by using async operators', () => {
-			@Component({ standalone: true, template: '{{s()}}' })
+			@Component({ standalone: true, template: '{{c()}}' })
 			class TestComponent {
-				valueS = signal(1);
-				valueO = new BehaviorSubject(1);
+				a = signal(1);
+				b$ = new BehaviorSubject('2');
 
-				s = computedFrom(
-					[this.valueS, this.valueO],
+				c = computedFrom(
+					[this.a, this.b$],
 					pipe(
-						map(([s, o]) => [s + 1, o + 1]),
-						switchMap((v) => of(v).pipe(delay(1000)))
+						switchMap(
+							([a, b]) =>
+								// of(a+b) is supposed to be an asynchronous operation (e.g. http request)
+								of(a + b).pipe(delay(1000)) // delay the emission of the combined value by 1 second for demonstration purposes
+						)
 					)
-				);
+				); //INFER SIGNAL<string> BUT SPURIOUS FIRST SYNC EMISSIONS [number, string] <-- TYPESCIPT WILL NOT CATCH THIS!
 			}
 
 			let component: TestComponent;
@@ -151,20 +154,21 @@ describe(computedFrom.name, () => {
 				component = fixture.componentInstance;
 			});
 
-			it('should handle async stuff', fakeAsync(() => {
+			it('tricky spurious sync emission', fakeAsync(() => {
 				fixture.detectChanges(); // initial change detection to trigger effect scheduler
-				expect(component.s()).toEqual([1, 1]); // initial value is 1,1 because of delay in switchMap
-				expect(fixture.nativeElement.textContent).toEqual('1,1');
+				expect(component.c()).toEqual([1, '2']); // initial value is [1,'2'] because of delay in switchMap
+				//THIS IS A BIG PROBLEM FOR THE DEVS THAT BELIAVE c() IS A Signal<string> BUT GET A SPURIOUS TUPLE VALUE OF [number, string]
+				//WHAT HAPPENS IF THE console.warn(c().toUpperCase()); <-- THIS WILL EXPLODE AT RUNTIME - TS DON'T CATCH IT!!!
+				expect(fixture.nativeElement.textContent).toEqual('1,2'); //NOTICE ',' SEPARATOR THIS IS ARRAY.toString([1,2])
 
 				fixture.detectChanges(); // trigger effect scheduler (for the moment)
 				tick(1000); // wait 1s for switchMap delay
 
-				expect(component.s()).toEqual([2, 2]);
+				expect(component.c()).toEqual('12'); //THIS IS THE REAL EXPECTED VALUE OF THE swithMap RESULT 1+'2'='12' THANKS TO JS ^_^
 				fixture.detectChanges(); // trigger effect scheduler again
-				expect(fixture.nativeElement.textContent).toEqual('2,2');
+				expect(fixture.nativeElement.textContent).toEqual('12');
 
-				component.valueS.set(3);
-				component.valueO.next(3);
+				component.a.set(4);
 
 				// by running CD we are triggering the effect scheduler
 				// if we comment this line, the effect scheduler will not be triggered
@@ -172,17 +176,17 @@ describe(computedFrom.name, () => {
 				// PLAY WITH IT BY COMMENTING THIS LINE
 				fixture.detectChanges();
 
-				expect(component.s()).toEqual([2, 2]); // value is still 2,2 because of delay in switchMap
-				expect(fixture.nativeElement.textContent).toEqual('2,2');
+				expect(component.c()).toEqual('12'); // value is still '12' because of delay in switchMap
+				expect(fixture.nativeElement.textContent).toEqual('12');
 
 				tick(1000); // wait 1s for switchMap delay
 
-				expect(component.s()).toEqual([4, 4]); // value is now 4,4. But we need to run CD to update the view
+				expect(component.c()).toEqual('42'); // value is now '42'. But we need to run CD to update the view
 				// view is not updated because CD has not been run
-				expect(fixture.nativeElement.textContent).toEqual('2,2');
+				expect(fixture.nativeElement.textContent).toEqual('12');
 
 				fixture.detectChanges(); // trigger change detection to update the view
-				expect(fixture.nativeElement.textContent).toEqual('4,4');
+				expect(fixture.nativeElement.textContent).toEqual('42');
 			}));
 		});
 
@@ -219,5 +223,42 @@ describe(computedFrom.name, () => {
 				expect(component.data()).toBe(4);
 			});
 		});
+	});
+	describe('tricky parts', () => {
+		it('should emit null for ob$ without initial value', () => {
+			TestBed.runInInjectionContext(() => {
+				const page$ = new Subject<number>(); // Subject doesn't have an initial value
+				const filters$ = new BehaviorSubject({ name: 'John' });
+				const combined = computedFrom([page$, filters$]);
+				expect(combined()).toEqual([null, { name: 'John' }]);
+			});
+		});
+		it('but we can use startWith to fix Subject', () => {
+			TestBed.runInInjectionContext(() => {
+				const page$ = new Subject<number>(); // Subject doesn't have an initial value
+				const filters$ = new BehaviorSubject({ name: 'Doe' });
+				const combined = computedFrom([
+					page$.pipe(startWith(0)), // change the initial value to 0
+					filters$,
+				]);
+				expect(combined()).toEqual([0, { name: 'Doe' }]);
+			});
+		});
+		it('or we can use startWith operator to fix', fakeAsync(() => {
+			TestBed.runInInjectionContext(() => {
+				const page$ = of(1).pipe(delay(1000)); // late emit after 1s
+				const filters$ = new BehaviorSubject({ name: 'String' });
+				const combined = computedFrom(
+					{ page: page$, filter: filters$ },
+					pipe(
+						switchMap(({ page, filter }) => of(page + filter.name)),
+						startWith(42)
+					)
+				); //CORRECTLY INFERS Signal<string|number>
+				expect(combined()).toEqual(42);
+				tick(1000);
+				expect(combined()).toEqual('1String');
+			});
+		}));
 	});
 });
