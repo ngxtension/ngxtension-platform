@@ -1,5 +1,7 @@
 
 
+## [0.6.1](https://github.com/nartc/ngxtension-platform/compare/0.6.0...0.6.1) (2023-10-09)
+
 ## [0.6.0](https://github.com/nartc/ngxtension-platform/compare/0.4.0...0.6.0) (2023-10-09)
 
 
