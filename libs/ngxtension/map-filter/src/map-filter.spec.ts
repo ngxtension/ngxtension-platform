@@ -1,5 +1,5 @@
 import { from } from 'rxjs';
-import { mapFilter } from './mapfilter';
+import { mapFilter } from './map-filter';
 
 describe(mapFilter.name, () => {
 	it('given an observable >1-42-3| and a mapping function that double ONLY the odds value, then result is an observable of >"2"--"6"-| the intial even value (42) is not mapped and so filtered out', () => {

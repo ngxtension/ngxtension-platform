@@ -6,7 +6,7 @@ description: An RxJS operator that allows applying a transform function to each 
 ## Import
 
 ```typescript
-import { mapFilter } from 'ngxtension/mapfilter';
+import { mapFilter } from 'ngxtension/map-filter';
 ```
 
 ## Usage
@@ -15,7 +15,7 @@ You can use it as a normal map operator, but with the ability to skip some value
 
 ```typescript
 import { from } from 'rxjs';
-import { mapFilter } from 'ngxtension/mapfilter';
+import { mapFilter } from 'ngxtension/map-filter';
 
 const in$ = from([1, 42, 3]);
 const out$ = in$.pipe(
