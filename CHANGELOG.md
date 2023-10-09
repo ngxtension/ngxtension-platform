@@ -1,5 +1,35 @@
 
 
+## [0.6.0](https://github.com/nartc/ngxtension-platform/compare/0.4.0...0.6.0) (2023-10-09)
+
+
+### Features
+
+* **assert-injector:** add run mode for assertInjector ([#105](https://github.com/nartc/ngxtension-platform/issues/105)) ([837f4b4](https://github.com/nartc/ngxtension-platform/commit/837f4b45c3f66427c72bf34db4de9093a3b0befd))
+* **gestures:** port use-gesture ([0a2e437](https://github.com/nartc/ngxtension-platform/commit/0a2e43739c40fc456bf4343e46c559bd6be63e03)), closes [#91](https://github.com/nartc/ngxtension-platform/issues/91)
+* **host-binding:** add a hostBinding function, docs and tests ([#81](https://github.com/nartc/ngxtension-platform/issues/81)) ([ee5f8aa](https://github.com/nartc/ngxtension-platform/commit/ee5f8aa75bf0b0109a6992eedc6304f886bdc677))
+
+
+### Bug Fixes
+
+* **create-injection-token:** allow provideFn to accept factory ([#100](https://github.com/nartc/ngxtension-platform/issues/100)) ([55f31b3](https://github.com/nartc/ngxtension-platform/commit/55f31b3f9658fb54173d77db4f2e673159103a85))
+* **create-injection-token:** allows multi token to work correctly ([#98](https://github.com/nartc/ngxtension-platform/issues/98)) ([f190b30](https://github.com/nartc/ngxtension-platform/commit/f190b30cce54d55f73425eead0ae32d0625003b8))
+
+
+### Documentations
+
+* categories utilities ([881d5f3](https://github.com/nartc/ngxtension-platform/commit/881d5f3b5858472dadf6ca41e460351cb45c0896))
+* categories utilities ([791f4e7](https://github.com/nartc/ngxtension-platform/commit/791f4e76ab6a1d060eb1fada7628dfc39f5aa513))
+* edit index.mdx content ([fd2f002](https://github.com/nartc/ngxtension-platform/commit/fd2f0022361c5906293dbe1cc237cb0f89d2b1f8))
+* edit index.mdx content ([16b28bf](https://github.com/nartc/ngxtension-platform/commit/16b28bf1f7b2675d21ceccd63dd41d9f4e6139b6))
+* fix getting-started sidebar order ([995df09](https://github.com/nartc/ngxtension-platform/commit/995df09305c829fe68c0ba5debfa8c76a1c2868f))
+* fix getting-started sidebar order ([609ac8e](https://github.com/nartc/ngxtension-platform/commit/609ac8e8d7a2081f7dc818fb20ca8fbe0e0d238e))
+* move singleton-proxy into misc ([dc746f5](https://github.com/nartc/ngxtension-platform/commit/dc746f5294464902dffb4b2637d72a99093deb82))
+* update .all-contributorsrc ([8712c85](https://github.com/nartc/ngxtension-platform/commit/8712c85cf3da5f544d6456d17038819243ccf06a))
+* update .all-contributorsrc ([f7af320](https://github.com/nartc/ngxtension-platform/commit/f7af32046992caa8bef04ec927333b2dd3c37191))
+* update README.md ([f8031ae](https://github.com/nartc/ngxtension-platform/commit/f8031ae143e3d3660aaf335452b24d3a9ca81e99))
+* update README.md ([cf79407](https://github.com/nartc/ngxtension-platform/commit/cf79407270572f42fc412e265e0c5fc82ac5ca37))
+
 ## [0.5.0](https://github.com/nartc/ngxtension-platform/compare/0.4.0...0.5.0) (2023-10-05)
 
 
