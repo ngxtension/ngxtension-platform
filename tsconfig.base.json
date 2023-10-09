@@ -32,6 +32,7 @@
 			"ngxtension/create-injection-token": [
 				"libs/ngxtension/create-injection-token/src/index.ts"
 			],
+			"ngxtension/debug": ["libs/ngxtension/debug/src/index.ts"],
 			"ngxtension/filter-array": ["libs/ngxtension/filter-array/src/index.ts"],
 			"ngxtension/filter-nil": ["libs/ngxtension/filter-nil/src/index.ts"],
 			"ngxtension/gestures": ["libs/ngxtension/gestures/src/index.ts"],
