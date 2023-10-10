@@ -47,7 +47,7 @@ export interface CreateInjectionTokenOptions<T = unknown> {
 
 #### `isRoot`
 
-By default, `createInjectionToken` creates a `providedIn: 'root'` token so we do not have to _provide_ it anywhere in order to use it. To create a non-root token, pass in `isRoot: false`
+By default, `createInjectionToken` creates a `providedIn: 'root'` token so we do not have to _provide_ it anywhere to use it. To create a non-root token, pass in `isRoot: false`
 
 ```ts
 export const [injectCount, provideCount] = createInjectionToken(countFactory, {
@@ -128,9 +128,9 @@ export const [injectService, provideService] = createInjectionToken(serviceFacto
 
 Note that if `token` is passed in and `isRoot: true`, `createInjectionToken` will throw an error.
 
-### `createNooptInjectionToken`
+### `createNoopInjectionToken`
 
-As the name suggested, `createNooptInjectionToken` is the same as `createInjectionToken` but instead of factory function, it accepts description and options. This is useful when we want to create a `multi` token but we do not have a factory function.
+As the name suggested, `createNoopInjectionToken` is the same as `createInjectionToken` but instead of factory function, it accepts description and options. This is useful when we want to create a `multi` token but we do not have a factory function.
 
 It also **supports a generic type** for the `InjectionToken` that it creates:
 
@@ -163,8 +163,8 @@ In the case where the value of the token is a `Function` (i.e: `NG_VALIDATORS` i
 
 ```ts
 const [injectFn, provideFn] = createInjectionToken(() => {
-    // this token returns Function as value
-    return () => 1; 
+	// this token returns Function as value
+	return () => 1;
 });
 
 // NOTE: this is providing the function value as-is
