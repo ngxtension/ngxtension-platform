@@ -17,8 +17,7 @@ jobs:
       main-branch-name: main
       number-of-agents: 3
       init-commands: |
-        pnpm --filter docs install
-        pnpm exec nx-cloud start-ci-run --stop-agents-after="build" --agent-count=3
+        NX_VERBOSE_LOGGING=true pnpm exec nx-cloud start-ci-run --stop-agents-after="build" --agent-count=3
       parallel-commands: |
         pnpm exec nx-cloud record -- pnpm exec nx format:check
       parallel-commands-on-agents: |

@@ -1,6 +1,6 @@
 {
 	"name": "@ngxtension-platform/source",
-	"version": "0.0.0",
+	"version": "0.0.0-dummy",
 	"license": "MIT",
 	"scripts": {
 		"postinstall": "simple-git-hooks",
@@ -8,7 +8,7 @@
 	},
 	"private": true,
 	"engines": {
-		"node": ">=16",
+		"node": ">=18",
 		"pnpm": ">=8"
 	},
 	"dependencies": {
