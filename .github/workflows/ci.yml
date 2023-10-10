@@ -6,6 +6,9 @@ on:
       - main
   pull_request:
 
+env:
+  NX_VERBOSE_LOGGING: true
+
 jobs:
   main:
     name: Nx Cloud - Main Job
