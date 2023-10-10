@@ -128,7 +128,7 @@ export const [injectService, provideService] = createInjectionToken(serviceFacto
 
 Note that if `token` is passed in and `isRoot: true`, `createInjectionToken` will throw an error.
 
-### `CreateNooptInjectionToken`
+### `createNooptInjectionToken`
 
 As the name suggested, `createNooptInjectionToken` is the same as `createInjectionToken` but instead of factory function, it accepts description and options. This is useful when we want to create a `multi` token but we do not have a factory function.
 
@@ -143,7 +143,7 @@ provideFn(() => 1); // accepts a factory returning a number;
 ```
 
 :::tip[Note]
-Note **true** inside `createNoopInjectionToken<number, true>`, this means this is a `multi` token.
+Note **true** inside `createNoopInjectionToken<number, true>` and in `multi: true`. This is to help TypeScript to return the correct type for `injectFn` and `provideFn`
 :::
 
 Even though it's meant for `multi` token, it can be used for non-multi token as well:
@@ -157,10 +157,15 @@ provideFn(() => 1); // accepts a factory returning a number;
 
 ## `ProvideFn`
 
-`createInjectionToken` and `createNoopInjectionToken` returns a `provideFn` which is a function that accepts either a value or a **factory function** that returns the value. The second argument is a boolean that indicates whether the value is a factory function or not.
+`createInjectionToken` and `createNoopInjectionToken` returns a `provideFn` which is a function that accepts either a value or a **factory function** that returns the value.
+
+In the case where the value of the token is a `Function` (i.e: `NG_VALIDATORS` is a multi token whose values are functions), `provideFn` accepts a 2nd argument to distinguish between a **factory function** or a **function as value**
 
 ```ts
-const [injectFn, provideFn] = createInjectionToken(() => 1);
+const [injectFn, provideFn] = createInjectionToken(() => {
+    // this token returns Function as value
+    return () => 1; 
+});
 
 // NOTE: this is providing the function value as-is
 provideFn(() => 2, true);
