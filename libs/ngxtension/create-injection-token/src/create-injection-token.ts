@@ -37,7 +37,7 @@ export type CreateInjectionTokenOptions<
 	TFactory extends (...args: any[]) => any,
 	TFactoryDeps extends Parameters<TFactory> = Parameters<TFactory>
 > =
-	// this means TFunction has no arguments
+	// this means TFunction has no parameters
 	(TFactoryDeps[0] extends undefined
 		? { deps?: never }
 		: { deps: CreateInjectionTokenDeps<TFactory, TFactoryDeps> }) & {
@@ -112,7 +112,7 @@ function createProvideFn<
 	return (value?: TValue | (() => TValue), isFunctionValue = false) => {
 		let provider: Provider;
 		if (value) {
-			// TODO: maybe this can be made better
+			// TODO: (chau) maybe this can be made better
 			const factory =
 				typeof value === 'function'
 					? isFunctionValue
