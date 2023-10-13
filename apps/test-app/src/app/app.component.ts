@@ -28,6 +28,9 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 			<li>
 				<a routerLink="/drag">Drag Gesture</a>
 			</li>
+			<li>
+				<a routerLink="/active-element">Active Element</a>
+			</li>
 		</ul>
 
 		<hr />
