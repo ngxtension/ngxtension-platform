@@ -9,7 +9,7 @@
 	},
 	"exclude": [
 		"**/*.spec.ts",
-		"src/test-setup.ts",
+		"test-setup.ts",
 		"jest.config.ts",
 		"**/*.test.ts"
 	],
