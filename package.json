@@ -47,7 +47,6 @@
 		"@nx/plugin": "16.10.0",
 		"@nx/web": "16.10.0",
 		"@nx/workspace": "16.10.0",
-		"@hirez_io/observer-spy": "^2.2.0",
 		"@release-it/bumper": "^5.1.0",
 		"@release-it/conventional-changelog": "^7.0.2",
 		"@schematics/angular": "~16.2.5",

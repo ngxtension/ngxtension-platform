@@ -76,9 +76,6 @@ devDependencies:
   '@angular/language-service':
     specifier: ~16.2.8
     version: 16.2.8
-  '@hirez_io/observer-spy':
-    specifier: ^2.2.0
-    version: 2.2.0(rxjs@7.8.1)(typescript@5.1.6)
   '@nx/angular':
     specifier: 16.10.0
     version: 16.10.0(@angular-devkit/build-angular@16.2.5)(@angular-devkit/core@16.2.5)(@angular-devkit/schematics@16.2.5)(@schematics/angular@16.2.5)(@swc-node/register@1.6.8)(@swc/core@1.3.92)(@types/node@20.8.2)(cypress@13.3.0)(eslint@8.50.0)(nx@16.10.0)(rxjs@7.8.1)(ts-node@10.9.1)(typescript@5.1.6)
@@ -3857,16 +3854,6 @@ packages:
   /@eslint/js@8.50.0:
     resolution: {integrity: sha512-NCC3zz2+nvYd+Ckfh87rA47zfu2QsQpvc6k1yzTk+b9KzRj0wkGa8LSoGOXN6Zv4lRf/EIoZ80biDh9HOI+RNQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-    dev: true
-
-  /@hirez_io/observer-spy@2.2.0(rxjs@7.8.1)(typescript@5.1.6):
-    resolution: {integrity: sha512-G9nv87vjRILgB/X1AtKBv1DZX7yXSYAOCXon/f+QULKoXVhVehYUF5Lv0SQ97ebf1sA48Z2CyQ9h2v4Pz6DgaQ==}
-    peerDependencies:
-      rxjs: '>=6.0.0'
-      typescript: '>=2.8.1'
-    dependencies:
-      rxjs: 7.8.1
-      typescript: 5.1.6
     dev: true
 
   /@humanwhocodes/config-array@0.11.11:

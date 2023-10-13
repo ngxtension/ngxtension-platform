@@ -6,4 +6,3 @@ globalThis.ngJest = {
 	},
 };
 import 'jest-preset-angular/setup-jest';
-import 'node_modules/@hirez_io/observer-spy/dist/setup-auto-unsubscribe.js';
