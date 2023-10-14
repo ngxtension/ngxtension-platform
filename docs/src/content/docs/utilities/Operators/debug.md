@@ -27,7 +27,7 @@ const out$ = in$.pipe(
 	debug('after')
 );
 
-out$.subscribe(() => {});
+out$.subscribe();
 // LOGS:
 //<timestampUTC> [before: Next] 1
 //<timestampUTC> [after: Next] 2
@@ -40,4 +40,25 @@ out$.subscribe(() => {});
 //<timestampUTC> [after: Next] 6
 //<timestampUTC> [before: Complete]
 //<timestampUTC> [after: Complete]
+```
+
+In addition to `tag` you can also provide extra notifications like `subscribe`, `unsubscribe` and `finalize` by passing an optional object of type
+
+```ts
+type ExtraNotifications = {
+	subscribe?: boolean;
+	unsubscribe?: boolean;
+	finalize?: boolean;
+};
+```
+
+```ts
+const in$ = of('hello world');
+const out$ = in$.pipe(debug('test', { subscribe: true }));
+
+out$.subscribe();
+// LOGS:
+//<timestampUTC> [test: Subscribed]
+//<timestampUTC> [test: Next] hello world
+//<timestampUTC> [test: Completed]
 ```
