@@ -47,6 +47,7 @@
 			"ngxtension/inject-is-intersecting": [
 				"libs/ngxtension/inject-is-intersecting/src/index.ts"
 			],
+			"ngxtension/inject-lazy": ["libs/ngxtension/inject-lazy/src/index.ts"],
 			"ngxtension/intl": ["libs/ngxtension/intl/src/index.ts"],
 			"ngxtension/map-array": ["libs/ngxtension/map-array/src/index.ts"],
 			"ngxtension/map-skip-undefined": [

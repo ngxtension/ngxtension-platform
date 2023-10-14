@@ -1,0 +1,33 @@
+{
+	"name": "ngxtension/inject-lazy",
+	"$schema": "../../../node_modules/nx/schemas/project-schema.json",
+	"projectType": "library",
+	"sourceRoot": "libs/ngxtension/inject-lazy/src",
+	"targets": {
+		"test": {
+			"executor": "@nx/jest:jest",
+			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+			"options": {
+				"jestConfig": "libs/ngxtension/jest.config.ts",
+				"testPathPattern": ["inject-lazy"],
+				"passWithNoTests": true
+			},
+			"configurations": {
+				"ci": {
+					"ci": true,
+					"codeCoverage": true
+				}
+			}
+		},
+		"lint": {
+			"executor": "@nx/linter:eslint",
+			"outputs": ["{options.outputFile}"],
+			"options": {
+				"lintFilePatterns": [
+					"libs/ngxtension/inject-lazy/**/*.ts",
+					"libs/ngxtension/inject-lazy/**/*.html"
+				]
+			}
+		}
+	}
+}
