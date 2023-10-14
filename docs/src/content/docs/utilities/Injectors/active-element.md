@@ -44,7 +44,7 @@ export class ExampleComponent implements OnInit {
 	private readonly injector = inject(Injector);
 
 	ngOnInit() {
-		activeElement$ = injectActiveElement(this.injector);
+		const activeElement$ = injectActiveElement(this.injector);
 	}
 }
 ```
