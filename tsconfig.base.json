@@ -46,6 +46,9 @@
 			],
 			"ngxtension/intl": ["libs/ngxtension/intl/src/index.ts"],
 			"ngxtension/map-array": ["libs/ngxtension/map-array/src/index.ts"],
+			"ngxtension/map-skip-undefined": [
+				"libs/ngxtension/map-skip-undefined/src/index.ts"
+			],
 			"ngxtension/navigation-end": [
 				"libs/ngxtension/navigation-end/src/index.ts"
 			],
