@@ -5,6 +5,7 @@
 		"verbatimModuleSyntax": false,
 		"module": "commonjs",
 		"target": "es2016",
+		"noImplicitReturns": false,
 		"types": ["jest", "node"]
 	},
 	"files": ["src/test-setup.ts"],
