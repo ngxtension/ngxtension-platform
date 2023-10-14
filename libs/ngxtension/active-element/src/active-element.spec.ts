@@ -62,9 +62,10 @@ describe('injectActiveElement', () => {
 		expect(actual).toBe(expected);
 	});
 
-	xit('work with given injector', () => {
+	it('work with given injector', () => {
 		@Component({
 			standalone: true,
+			imports: [AsyncPipe],
 			template: `
 				<button>btn1</button>
 				<button>btn2</button>
@@ -89,8 +90,9 @@ describe('injectActiveElement', () => {
 		const buttonToFocus = buttons.at(2);
 
 		buttonToFocus?.nativeElement.focus();
+		fixture.detectChanges();
 
-		const actual = span.nativeElement.innerText;
+		const actual = span.nativeElement.innerHTML;
 		const expected = buttonToFocus?.nativeElement.innerHTML;
 
 		expect(actual).toBe(expected);

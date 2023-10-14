@@ -1,1 +1,1 @@
-export * from './lib/active-element';
+export * from './active-element';
