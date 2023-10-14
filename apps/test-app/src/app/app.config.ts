@@ -24,6 +24,11 @@ export const appConfig: ApplicationConfig = {
 				path: 'drag',
 				loadComponent: () => import('./drag/drag.component'),
 			},
+			{
+				path: 'active-element',
+				loadComponent: () =>
+					import('./active-element/active-element.component'),
+			},
 		]),
 	],
 };
