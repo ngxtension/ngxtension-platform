@@ -5,8 +5,7 @@ import { fromEvent, map, merge, shareReplay } from 'rxjs';
 
 export function injectActiveElement(injector?: Injector) {
 	return assertInjector(injectActiveElement, injector, () => {
-		const assertedInjector = inject(Injector);
-		const doc = assertedInjector.get(DOCUMENT);
+		const doc = inject(DOCUMENT);
 		return merge(
 			fromEvent(doc, 'focus', { capture: true, passive: true }).pipe(
 				map(() => true)
