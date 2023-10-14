@@ -42,7 +42,7 @@ export interface InjectIsIntersectingOptions {
  *   }
  * }
  */
-export const injectIsIntersecting = (options?: InjectIsIntersectingOptions) => {
+export const injectIsIntersecting = ({ element, injector }: InjectIsIntersectingOptions = {}) => {
 	const injector = assertInjector(injectDestroy, options?.injector);
 
 	return runInInjectionContext(injector, () => {
