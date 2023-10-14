@@ -1,5 +1,23 @@
 
 
+## [0.7.0](https://github.com/nartc/ngxtension-platform/compare/0.6.1...0.7.0) (2023-10-14)
+
+
+### Features
+
+* **activeElement:** introduce injectActiveElement ([#110](https://github.com/nartc/ngxtension-platform/issues/110)) ([48fdf25](https://github.com/nartc/ngxtension-platform/commit/48fdf253e7949e8b13f89747c79b1db6f54127bd))
+* added inject-is-intersecting ([af94c79](https://github.com/nartc/ngxtension-platform/commit/af94c791d2651866658a373c2f620fc5f3bf9b39))
+* added inject-lazy ([b81fad2](https://github.com/nartc/ngxtension-platform/commit/b81fad2c8c9100e5e0a99ec56be87f76f46a5061))
+* **debug:** add extra subscribe, unsubscribe and finalize extra notifs ([#107](https://github.com/nartc/ngxtension-platform/issues/107)) ([#114](https://github.com/nartc/ngxtension-platform/issues/114)) ([8dc8330](https://github.com/nartc/ngxtension-platform/commit/8dc8330431f6058aea8eb7d7b1b3171f718e3c8b))
+* **map-skip-undefined:** add mapSkipUndefined + filterUndefined operator ([#113](https://github.com/nartc/ngxtension-platform/issues/113)) ([1755b74](https://github.com/nartc/ngxtension-platform/commit/1755b74ea6b698ae0a4d0a9dac0277f18c70cd94))
+* **test:** add observer-spy ([#106](https://github.com/nartc/ngxtension-platform/issues/106)) ([c119b6e](https://github.com/nartc/ngxtension-platform/commit/c119b6e0eaeb3d0a2184c01ccbfc03ad5448a089))
+
+
+### Documentations
+
+* add nevzatopcu as a contributor for code ([#111](https://github.com/nartc/ngxtension-platform/issues/111)) ([c1f5486](https://github.com/nartc/ngxtension-platform/commit/c1f548644a2ddf70a39f93d519923084b0330233))
+* update create injection token ([#104](https://github.com/nartc/ngxtension-platform/issues/104)) ([bbf78ee](https://github.com/nartc/ngxtension-platform/commit/bbf78ee003fdc9858c9a125d349c1f4fed9f1650))
+
 ## [0.6.1](https://github.com/nartc/ngxtension-platform/compare/0.6.0...0.6.1) (2023-10-09)
 
 ## [0.6.0](https://github.com/nartc/ngxtension-platform/compare/0.4.0...0.6.0) (2023-10-09)
