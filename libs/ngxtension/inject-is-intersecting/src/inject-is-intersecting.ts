@@ -1,10 +1,4 @@
-import {
-	DestroyRef,
-	ElementRef,
-	inject,
-	Injector,
-	runInInjectionContext,
-} from '@angular/core';
+import { DestroyRef, ElementRef, inject, Injector } from '@angular/core';
 import { assertInjector } from 'ngxtension/assert-injector';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { IsInViewportService } from './is-in-viewport.service';
@@ -42,13 +36,12 @@ export interface InjectIsIntersectingOptions {
  *   }
  * }
  */
-export const injectIsIntersecting = (
-	options: InjectIsIntersectingOptions = {}
-) => {
-	const injector = assertInjector(injectDestroy, options?.injector);
-
-	return runInInjectionContext(injector, () => {
-		const el = options?.element ?? inject(ElementRef).nativeElement;
+export const injectIsIntersecting = ({
+	injector,
+	element,
+}: InjectIsIntersectingOptions = {}) => {
+	return assertInjector(injectDestroy, injector, () => {
+		const el = element ?? inject(ElementRef).nativeElement;
 		const inInViewportService = inject(IsInViewportService);
 		const destroyRef = inject(DestroyRef);
 
