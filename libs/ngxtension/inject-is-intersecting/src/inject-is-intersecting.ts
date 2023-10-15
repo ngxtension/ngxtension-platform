@@ -25,7 +25,7 @@ export interface InjectIsIntersectingOptions {
  *
  *   isIntersecting$ = injectIsIntersecting();
  *   isInViewport$ = this.isIntersecting$.pipe(
- *     filter(x.intersectionRatio > 0),
+ *     filter(x => x.intersectionRatio > 0),
  *     take(1),
  *   );
  *
