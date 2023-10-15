@@ -22,7 +22,10 @@ export class MyComponent {
 
 	isIntersecting$ = injectIsIntersecting();
 
-	isInViewport$ = this.isIntersecting$.pipe(filter(x.intersectionRatio > 0), take(1));
+	isInViewport$ = this.isIntersecting$.pipe(
+		filter((x) => x.intersectionRatio > 0),
+		take(1)
+	);
 
 	ngOnInit() {
 		this.getData().subscribe();
@@ -55,7 +58,7 @@ export class MyComponent implements OnInit {
 		const divInViewport$ = injectIsIntersecting({
 			element: this.myDivEl,
 			injector: this.injector,
-		}).pipe(filter(x.intersectionRatio > 0));
+		}).pipe(filter((x) => x.intersectionRatio > 0));
 
 		// Only fetch data when the element is in the viewport
 		divInViewport$

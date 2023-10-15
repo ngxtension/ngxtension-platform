@@ -49,7 +49,11 @@ export class IsInViewportService implements IsInViewportServiceInterface {
 	}
 
 	intersect(element: Element, entry: IntersectionObserverEntry) {
-		this.#observerListeners.get(element)?.next(entry);
+		const subject = this.#observerListeners.get(element);
+		// only emit if the subject is subscribed to
+		if (subject?.observed) {
+			this.ngZone.run(() => subject.next(entry));
+		}
 	}
 
 	#disconnect() {
