@@ -1,5 +1,12 @@
 
 
+## [0.7.1](https://github.com/nartc/ngxtension-platform/compare/0.7.0...0.7.1) (2023-10-15)
+
+
+### Bug Fixes
+
+* ngzone issue in inject-is-intersecting and docs fixes ([7a903b2](https://github.com/nartc/ngxtension-platform/commit/7a903b2dcdc91cc9e84fab782f45a8661f8bdd00))
+
 ## [0.7.0](https://github.com/nartc/ngxtension-platform/compare/0.6.1...0.7.0) (2023-10-14)
 
 
