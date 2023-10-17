@@ -3,5 +3,6 @@
 	"dest": "../../dist/libs/ngxtension",
 	"lib": {
 		"entryFile": "src/index.ts"
-	}
+	},
+	"allowedNonPeerDependencies": ["@nx/devkit", "nx"]
 }

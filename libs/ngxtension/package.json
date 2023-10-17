@@ -24,6 +24,8 @@
 		"rxjs": "^6.0.0 || ^7.0.0"
 	},
 	"dependencies": {
+		"@nx/devkit": "^16.0.0",
+		"nx": "^16.0.0",
 		"tslib": "^2.3.0"
 	},
 	"sideEffects": false,
