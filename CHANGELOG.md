@@ -1,5 +1,12 @@
 
 
+## [0.7.2](https://github.com/nartc/ngxtension-platform/compare/0.7.1...0.7.2) (2023-10-17)
+
+
+### Bug Fixes
+
+* add devkit and nx to deps ([f86da1b](https://github.com/nartc/ngxtension-platform/commit/f86da1b07e4657b9e959aa9a4addf6ce7b7a2efa))
+
 ## [0.7.1](https://github.com/nartc/ngxtension-platform/compare/0.7.0...0.7.1) (2023-10-15)
 
 
