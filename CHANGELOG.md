@@ -1,5 +1,17 @@
 
 
+## [0.8.0](https://github.com/nartc/ngxtension-platform/compare/0.7.2...0.8.0) (2023-10-20)
+
+
+### Features
+
+* **create-injection-token:** expose initializer provider function for root tokens ([b8e9ccf](https://github.com/nartc/ngxtension-platform/commit/b8e9ccfda2e716a867a6d432f57b9cca323f33bf))
+
+
+### Documentations
+
+* add Pascalmh as a contributor for doc ([#119](https://github.com/nartc/ngxtension-platform/issues/119)) ([0e9e3fa](https://github.com/nartc/ngxtension-platform/commit/0e9e3fa1079790bcdaafbd24489fdccf4bb1fd3e))
+
 ## [0.7.2](https://github.com/nartc/ngxtension-platform/compare/0.7.1...0.7.2) (2023-10-17)
 
 
