@@ -1,5 +1,12 @@
 
 
+## [0.9.3](https://github.com/nartc/ngxtension-platform/compare/0.9.2...0.9.3) (2023-10-20)
+
+
+### Bug Fixes
+
+* **create-injection-token:** fix return type for initializer provider ([7387575](https://github.com/nartc/ngxtension-platform/commit/7387575ad708d7932b1b3d728effd4b788c6ae60))
+
 ## [0.9.2](https://github.com/nartc/ngxtension-platform/compare/0.9.1...0.9.2) (2023-10-20)
 
 ## [0.9.1](https://github.com/nartc/ngxtension-platform/compare/0.9.0...0.9.1) (2023-10-20)
