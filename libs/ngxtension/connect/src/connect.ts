@@ -98,30 +98,3 @@ function parseArgs(
 
 	return [null, null];
 }
-
-// export function connectSlice<T extends object, K extends string>(
-// 	signal: WritableSignal<T>,
-// 	slice: F.AutoPath<T, K>,
-// 	observable: Observable<O.Path<T, S.Split<K, '.'>>>,
-// 	injectorOrDestroyRef?: Injector | DestroyRef
-// ) {
-// 	let destroyRef = null;
-//
-// 	if (injectorOrDestroyRef instanceof DestroyRef) {
-// 		destroyRef = injectorOrDestroyRef; // if it's a DestroyRef, use it
-// 	} else {
-// 		const injector = assertInjector(connect, injectorOrDestroyRef);
-// 		destroyRef = injector.get(DestroyRef);
-// 	}
-//
-// 	const updater = (sliceValue: O.Path<T, S.Split<K, '.'>>) => {
-//     return (signalValue: T) => {
-//
-//     }
-//   }
-//
-//
-// 	return observable.pipe(takeUntilDestroyed(destroyRef)).subscribe((value) => {
-// 		signal.update();
-// 	});
-// }
