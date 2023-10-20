@@ -37,7 +37,7 @@ nx generate ngxtension:init
 
 <!-- UTILITIES:START -->
 
-Check [the documentation](https://ngxtension.netlify.app/utilities/assert-injector/).
+Check [the documentation](https://ngxtension.netlify.app/).
 
 <!-- UTILITIES:END -->
 
