@@ -196,3 +196,19 @@ export class Counter {
 	}
 }
 ```
+
+## Environment Initializer
+
+Sometimes, it is required for **root** tokens to be initialized in `ENVIRONMENT_INITIALIZER`. Instead of providing `ENVIRONMENT_INITIALIZER` manually, we can retrieve the initializer provider function from `createInjectionToken` to do so.
+
+:::caution
+The **initializer provider** function is a **noop** for non-root tokens.
+:::
+
+```ts
+const [injectOne /* skip provider fn */ /* skip the token */, , , provideOneInitializer] = createInjectionToken(() => 1);
+
+bootstrapApplication(App, {
+	providers: [provideOneInitializer()],
+});
+```

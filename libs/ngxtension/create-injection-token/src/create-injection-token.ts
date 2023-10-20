@@ -1,4 +1,5 @@
 import {
+	ENVIRONMENT_INITIALIZER,
 	InjectionToken,
 	inject,
 	runInInjectionContext,
@@ -84,7 +85,8 @@ export type CreateInjectionTokenReturn<
 > = [
 	InjectFn<TFactoryReturn>,
 	ProvideFn<TNoop, TFactoryReturn>,
-	InjectionToken<TFactoryReturn>
+	InjectionToken<TFactoryReturn>,
+	() => Provider | void
 ];
 
 function createInjectFn<TValue>(token: InjectionToken<TValue>) {
@@ -198,14 +200,23 @@ createInjectionToken is creating a root InjectionToken but an external token is 
 			},
 		});
 
+		const injectFn = createInjectFn(
+			token
+		) as CreateInjectionTokenReturn<TFactoryReturn>[0];
+
 		return [
-			createInjectFn(token) as CreateInjectionTokenReturn<TFactoryReturn>[0],
+			injectFn,
 			createProvideFn(
 				token,
 				factory,
 				opts as CreateProvideFnOptions<TFactory, TFactoryDeps>
 			) as CreateInjectionTokenReturn<TFactoryReturn>[1],
 			token,
+			() => ({
+				provide: ENVIRONMENT_INITIALIZER,
+				useValue: () => injectFn(),
+				multi: true,
+			}),
 		];
 	}
 
@@ -219,6 +230,7 @@ createInjectionToken is creating a root InjectionToken but an external token is 
 			opts as CreateProvideFnOptions<TFactory, TFactoryDeps>
 		) as CreateInjectionTokenReturn<TFactoryReturn>[1],
 		token,
+		() => {},
 	];
 }
 
@@ -244,5 +256,6 @@ export function createNoopInjectionToken<
 			(options || {}) as CreateProvideFnOptions<() => void, []>
 		) as CreateInjectionTokenReturn<TReturn, true>[1],
 		token,
+		() => {},
 	] as CreateInjectionTokenReturn<TReturn, true>;
 }
