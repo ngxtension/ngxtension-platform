@@ -1,5 +1,12 @@
 
 
+## [0.9.0](https://github.com/nartc/ngxtension-platform/compare/0.8.0...0.9.0) (2023-10-20)
+
+
+### Features
+
+* **connect:** allow connect to a slice of an object signal ([bd59c51](https://github.com/nartc/ngxtension-platform/commit/bd59c515dc0c07ff9fb0f2148b6840b70b92db8b))
+
 ## [0.8.0](https://github.com/nartc/ngxtension-platform/compare/0.7.2...0.8.0) (2023-10-20)
 
 
