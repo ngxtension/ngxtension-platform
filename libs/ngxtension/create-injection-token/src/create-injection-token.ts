@@ -86,7 +86,7 @@ export type CreateInjectionTokenReturn<
 	InjectFn<TFactoryReturn>,
 	ProvideFn<TNoop, TFactoryReturn>,
 	InjectionToken<TFactoryReturn>,
-	() => Provider | void
+	() => Provider
 ];
 
 function createInjectFn<TValue>(token: InjectionToken<TValue>) {
@@ -230,7 +230,7 @@ createInjectionToken is creating a root InjectionToken but an external token is 
 			opts as CreateProvideFnOptions<TFactory, TFactoryDeps>
 		) as CreateInjectionTokenReturn<TFactoryReturn>[1],
 		token,
-		() => {},
+		() => [],
 	];
 }
 
