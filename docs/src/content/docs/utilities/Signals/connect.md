@@ -50,3 +50,41 @@ export class AppComponent implements OnDestroy {
 	}
 }
 ```
+
+## Object Signal
+
+There are cases where we construct a single `Signal` to store a state object. `connect` can also work with object signals
+
+```ts
+@Component()
+export class MyComponent {
+	state = signal({
+		user: {
+			firstName: 'chau',
+			lastName: 'tran',
+		},
+	});
+
+	firstName = computed(() => this.state().user.firstName);
+	lastName = computed(() => this.state().user.lastName);
+
+	lastName$ = new Subject<string>();
+
+	constructor() {
+		effect(() => {
+			console.log('first name changed', this.firstName());
+		});
+
+		// we want to connect `lastName$` stream to `state`
+		// and when `lastName$` emits, update the state with the `reducer` fn
+		connect(this.state, this.lastName$, (prev, lastName) => ({ user: { ...prev.user, lastName } }));
+
+		// logs: first name changed, chau
+
+		// sometimes later
+		this.lastName$.next('Tran');
+
+		// `firstName()` effect won't be triggered because we only update `lastName`
+	}
+}
+```
