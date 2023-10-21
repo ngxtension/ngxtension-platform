@@ -1,31 +1,32 @@
+import { DOCUMENT } from '@angular/common';
 import {
 	Directive,
 	ElementRef,
 	EventEmitter,
 	inject,
-	Injectable,
 	NgZone,
 	Output,
 } from '@angular/core';
 
 import type { OnInit } from '@angular/core';
+import { createInjectionToken } from 'ngxtension/create-injection-token';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import { fromEvent, Subject, takeUntil } from 'rxjs';
+import { filter, fromEvent, Subject, takeUntil } from 'rxjs';
 
 /*
- * This service is used to detect clicks in the document.
+ * This function is used to detect clicks in the document.
  * It is used by the clickOutside directive.
  */
-@Injectable({ providedIn: 'root' })
-export class DocumentClickService {
-	click$ = new Subject<Event>();
+const [injectDocumentClick] = createInjectionToken(() => {
+	const click$ = new Subject<Event>();
+	const [ngZone, document] = [inject(NgZone), inject(DOCUMENT)];
 
-	constructor(ngZone: NgZone) {
-		ngZone.runOutsideAngular(() => {
-			fromEvent(document, 'click').subscribe(this.click$);
-		});
-	}
-}
+	ngZone.runOutsideAngular(() => {
+		fromEvent(document, 'click').subscribe(click$);
+	});
+
+	return click$;
+});
 
 /*
  * This directive is used to detect clicks outside the element.
@@ -35,10 +36,10 @@ export class DocumentClickService {
  *
  */
 @Directive({ selector: '[clickOutside]', standalone: true })
-export class ClickOutsideDirective implements OnInit {
+export class ClickOutside implements OnInit {
 	private ngZone = inject(NgZone);
 	private elementRef = inject(ElementRef);
-	private documentClick = inject(DocumentClickService);
+	private documentClick$ = injectDocumentClick();
 
 	private destroy$ = injectDestroy();
 
@@ -48,15 +49,17 @@ export class ClickOutsideDirective implements OnInit {
 	@Output() clickOutside = new EventEmitter<Event>();
 
 	ngOnInit() {
-		this.documentClick.click$
-			.pipe(takeUntil(this.destroy$))
-			.subscribe((event: Event) => {
-				const isClickedInside = this.elementRef.nativeElement.contains(
-					event.target
-				);
+		this.documentClick$
+			.pipe(
+				takeUntil(this.destroy$),
+				filter(
+					(event: Event) =>
+						!this.elementRef.nativeElement.contains(event.target)
+				)
+			)
 
-				if (!isClickedInside)
-					this.ngZone.run(() => this.clickOutside.emit(event));
+			.subscribe((event: Event) => {
+				this.ngZone.run(() => this.clickOutside.emit(event));
 			});
 	}
 }

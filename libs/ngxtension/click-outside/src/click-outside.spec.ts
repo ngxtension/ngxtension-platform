@@ -1,34 +1,32 @@
 import { Component, DebugElement, ElementRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { ClickOutsideDirective } from './click-outside';
+import { ClickOutside } from './click-outside';
 
 @Component({
 	standalone: true,
 	template: `
 		<div clickOutside></div>
 	`,
-	imports: [ClickOutsideDirective],
+	imports: [ClickOutside],
 })
 class TestComponent {
 	constructor(public elementRef: ElementRef) {}
 }
 
-describe('ClickOutsideDirective', () => {
+describe('ClickOutside', () => {
 	let fixture: ComponentFixture<TestComponent>;
-	let directive: ClickOutsideDirective;
+	let directive: ClickOutside;
 	let debugElement: DebugElement;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [ClickOutsideDirective, TestComponent],
+			imports: [ClickOutside, TestComponent],
 		});
 
 		fixture = TestBed.createComponent(TestComponent);
-		debugElement = fixture.debugElement.query(
-			By.directive(ClickOutsideDirective)
-		);
-		directive = debugElement.injector.get(ClickOutsideDirective);
+		debugElement = fixture.debugElement.query(By.directive(ClickOutside));
+		directive = debugElement.injector.get(ClickOutside);
 
 		fixture.detectChanges();
 	});

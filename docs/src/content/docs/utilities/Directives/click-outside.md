@@ -6,7 +6,7 @@ description: An Angular directive that is used to detect clicks outside the elem
 ## Import
 
 ```ts
-import { ClickOutsideDirective } from 'ngxtension/click-outside';
+import { ClickOutside } from 'ngxtension/click-outside';
 ```
 
 ## Usage
@@ -21,7 +21,7 @@ Add `clickOutside` directive directly to the Angular element.
 	template: `
 		<div (clickOutside)="close()"></div>
 	`,
-	imports: [ClickOutsideDirective],
+	imports: [ClickOutside],
 })
 class TestComponent {
 	close() {
