@@ -1,7 +1,7 @@
 # NG Extension Platform
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-14-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A collection of utilities for [Angular](https://angular.io).
@@ -66,6 +66,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/LcsGa"><img src="https://avatars.githubusercontent.com/u/58547290?v=4?s=100" width="100px;" alt="Lucas Garcia"/><br /><sub><b>Lucas Garcia</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=LcsGa" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://nevzatopcu.medium.com"><img src="https://avatars.githubusercontent.com/u/33401667?v=4?s=100" width="100px;" alt="Nevzat Topçu"/><br /><sub><b>Nevzat Topçu</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=nevzatopcu" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://ksgn.dev"><img src="https://avatars.githubusercontent.com/u/498197?v=4?s=100" width="100px;" alt="Pascal Küsgen"/><br /><sub><b>Pascal Küsgen</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=Pascalmh" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://dalenguyen.me"><img src="https://avatars.githubusercontent.com/u/14116156?v=4?s=100" width="100px;" alt="Dale Nguyen"/><br /><sub><b>Dale Nguyen</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=dalenguyen" title="Code">💻</a></td>
     </tr>
   </tbody>
   <tfoot>
