@@ -42,7 +42,9 @@
 							"@angular/common",
 							"@angular/core",
 							"@use-gesture/vanilla",
-							"rxjs"
+							"rxjs",
+							"@nx/devkit",
+							"nx"
 						]
 					}
 				]
