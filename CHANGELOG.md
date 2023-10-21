@@ -1,5 +1,35 @@
 
 
+## [0.9.3](https://github.com/nartc/ngxtension-platform/compare/0.9.2...0.9.3) (2023-10-20)
+
+
+### Bug Fixes
+
+* **create-injection-token:** fix return type for initializer provider ([7387575](https://github.com/nartc/ngxtension-platform/commit/7387575ad708d7932b1b3d728effd4b788c6ae60))
+
+## [0.9.2](https://github.com/nartc/ngxtension-platform/compare/0.9.1...0.9.2) (2023-10-20)
+
+## [0.9.1](https://github.com/nartc/ngxtension-platform/compare/0.9.0...0.9.1) (2023-10-20)
+
+## [0.9.0](https://github.com/nartc/ngxtension-platform/compare/0.8.0...0.9.0) (2023-10-20)
+
+
+### Features
+
+* **connect:** allow connect to a slice of an object signal ([bd59c51](https://github.com/nartc/ngxtension-platform/commit/bd59c515dc0c07ff9fb0f2148b6840b70b92db8b))
+
+## [0.8.0](https://github.com/nartc/ngxtension-platform/compare/0.7.2...0.8.0) (2023-10-20)
+
+
+### Features
+
+* **create-injection-token:** expose initializer provider function for root tokens ([b8e9ccf](https://github.com/nartc/ngxtension-platform/commit/b8e9ccfda2e716a867a6d432f57b9cca323f33bf))
+
+
+### Documentations
+
+* add Pascalmh as a contributor for doc ([#119](https://github.com/nartc/ngxtension-platform/issues/119)) ([0e9e3fa](https://github.com/nartc/ngxtension-platform/commit/0e9e3fa1079790bcdaafbd24489fdccf4bb1fd3e))
+
 ## [0.7.2](https://github.com/nartc/ngxtension-platform/compare/0.7.1...0.7.2) (2023-10-17)
 
 

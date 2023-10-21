@@ -2,19 +2,33 @@
 	"migrations": [
 		{
 			"cli": "nx",
-			"version": "16.9.0-beta.1",
-			"description": "Replace imports of Module Federation utils frm @nx/devkit to @nx/webpack",
-			"implementation": "./src/migrations/update-16-9-0/migrate-mf-util-usage",
-			"package": "@nx/devkit",
-			"name": "update-16-9-0-migrate-mf-usage-to-webpack"
+			"version": "17.0.0-beta.1",
+			"description": "Updates the default cache directory to .nx/cache",
+			"implementation": "./src/migrations/update-17-0-0/move-cache-directory",
+			"package": "nx",
+			"name": "17.0.0-move-cache-directory"
 		},
 		{
 			"cli": "nx",
-			"version": "16.8.2-beta.0",
-			"description": "Remove invalid options (strict, noInterop) for ES6 type modules.",
-			"factory": "./src/migrations/update-16-8-2/update-swcrc",
-			"package": "@nx/js",
-			"name": "16-8-2-update-swcrc"
+			"version": "17.0.0-beta.3",
+			"description": "Use minimal config for tasksRunnerOptions",
+			"implementation": "./src/migrations/update-17-0-0/use-minimal-config-for-tasks-runner-options",
+			"package": "nx",
+			"name": "17.0.0-use-minimal-config-for-tasks-runner-options"
+		},
+		{
+			"version": "17.0.0-rc.1",
+			"description": "Migration for v17.0.0-rc.1",
+			"implementation": "./src/migrations/update-17-0-0/rm-default-collection-npm-scope",
+			"package": "nx",
+			"name": "rm-default-collection-npm-scope"
+		},
+		{
+			"version": "17.0.0-beta.7",
+			"description": "update-17-0-0-rename-to-eslint",
+			"implementation": "./src/migrations/update-17-0-0-rename-to-eslint/update-17-0-0-rename-to-eslint",
+			"package": "@nx/eslint",
+			"name": "update-17-0-0-rename-to-eslint"
 		}
 	]
 }
