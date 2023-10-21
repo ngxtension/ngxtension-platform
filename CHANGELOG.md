@@ -1,5 +1,17 @@
 
 
+## [0.10.0](https://github.com/nartc/ngxtension-platform/compare/0.9.3...0.10.0) (2023-10-21)
+
+
+### Features
+
+* add click outside directive ([#117](https://github.com/nartc/ngxtension-platform/issues/117)) ([f187eed](https://github.com/nartc/ngxtension-platform/commit/f187eed5bf688efd1f88604b7723609c1bac576a))
+
+
+### Documentations
+
+* add dalenguyen as a contributor for code ([#120](https://github.com/nartc/ngxtension-platform/issues/120)) ([ee8b1c1](https://github.com/nartc/ngxtension-platform/commit/ee8b1c1f608599d45017b2f07fec2e73dd4b6349))
+
 ## [0.9.3](https://github.com/nartc/ngxtension-platform/compare/0.9.2...0.9.3) (2023-10-20)
 
 
