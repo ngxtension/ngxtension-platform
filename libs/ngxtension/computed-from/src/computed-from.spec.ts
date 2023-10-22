@@ -59,12 +59,25 @@ describe(computedFrom.name, () => {
 				expect(s()).toEqual([1]);
 			});
 		});
-		it(`MD for Observables that don't emit synchronously, computedFrom will give us null as the initial value, than real values`, fakeAsync(() => {
+		it(`MD FIX for Observables that don't emit synchronously, computedFrom will THROW ERROR`, () => {
 			TestBed.runInInjectionContext(() => {
 				const late = of(1).pipe(delay(1000)); // late emit after 1s
-				const s = computedFrom([late]);
-				expect(s()).toEqual([null]); //INITIAL SET SINGAL TO null
-				expect(() => s()[0].toFixed(2)).toThrowError(/null/i); //NOTICE THAT THIS WILL EXPLODE AT RUNTIME - TS DON'T CATCH IT!!!
+				expect(() => {
+					const s = computedFrom([late]);
+				}).toThrowError(/requireSync/i); //THROW ERROR NG0601 DUE TO toSignal + requireSync: true
+				//THIS WILL PREVENT OLD "SPURIOUS SYNC EMIT" OF null OR Input ([], {}) THAT CAN CAUSE TS RUNTIME ERRORS
+				// expect(() => s()[0].toFixed(2)).toThrowError(/null/i); //NOTICE THAT THIS WILL EXPLODE AT RUNTIME - TS DON'T CATCH IT!!!
+				// tick(1000); //WAIT 1s FOR LATE EMIT
+				// expect(s()).toEqual([1]); //NOW WE HAVE THE REAL VALUE
+				// expect(s()[0].toFixed(2)).toEqual('1.00'); //HERE WE CAN CALL s()[0].toFixed(2) <-- THIS WILL WORK
+			});
+		});
+		it(`MD FIX for Observables that don't emit synchronously, you can pass options.initialValue TO PREVENT ERROR`, fakeAsync(() => {
+			TestBed.runInInjectionContext(() => {
+				const late = of(1).pipe(delay(1000)); // late emit after 1s
+				const s = computedFrom([late], { initialValue: [42] });
+				expect(s()).toEqual([42]); //SET INITIAL SIGNAL WITH PASSED initialValue MUST BE COERENT WITH THE OUTPUT TYPE
+				expect(() => s()[0].toFixed(2)).not.toThrow(); //.toEqual('42.00'); //NO MORE TS RUNTIME ERROR!!!
 				tick(1000); //WAIT 1s FOR LATE EMIT
 				expect(s()).toEqual([1]); //NOW WE HAVE THE REAL VALUE
 				expect(s()[0].toFixed(2)).toEqual('1.00'); //HERE WE CAN CALL s()[0].toFixed(2) <-- THIS WILL WORK
@@ -85,26 +98,31 @@ describe(computedFrom.name, () => {
 			});
 		});
 	});
-	describe('MD works with promise/array/primitive (converted to ob$ by from)', () => {
-		it('MD with initial value (probably not so common case)', fakeAsync(() => {
+	describe('MD FIX works with promise/array/primitive (converted to ob$ by from)', () => {
+		it('MD FIX with Promise.resolve value (probably not so common case) will THROW ERROR', fakeAsync(() => {
 			TestBed.runInInjectionContext(() => {
 				const value = Promise.resolve(1);
-				const s = computedFrom([value]);
-				expect(s()).toEqual([null]); //THIS IS SO TRICKY THE PROMISE IS CONVERTED WITH from AND WILL EMIT 1 AFTER MICROTASK - SO SIGNAL INITIAL SET TO null
-				expect(() => s()[0].toFixed(2)).toThrowError(/null/i); //NOTICE THAT THIS WILL EXPLODE AT RUNTIME - TS DON'T CATCH IT!!!
-				tick(1); //JUST WAIT A BIT "Promise Microtask" JUST TO GET from(Promise) TO EMIT ITS INITAL VALUE
-				expect(s()).toEqual([1]);
-				expect(s()[0].toFixed(2)).toEqual('1.00'); //HERE WE CAN CALL s()[0].toFixed(2) <-- THIS WILL WORK
+				expect(() => {
+					const s = computedFrom([value]);
+				}).toThrowError(/requireSync/i); //THIS IS SO TRICKY THE PROMISE IS CONVERTED WITH from AND WILL EMIT 1 AFTER MICROTASK - SO SIGNAL DON'T GET SYNC INITIAL VALUE AND THROW ERROR
+				// expect(s()).toEqual([null]); //THIS IS SO TRICKY THE PROMISE IS CONVERTED WITH from AND WILL EMIT 1 AFTER MICROTASK - SO SIGNAL INITIAL SET TO null
+				// expect(() => s()[0].toFixed(2)).toThrowError(/null/i); //NOTICE THAT THIS WILL EXPLODE AT RUNTIME - TS DON'T CATCH IT!!!
+				// tick(1); //JUST WAIT A BIT "Promise Microtask" JUST TO GET from(Promise) TO EMIT ITS INITAL VALUE
+				// expect(s()).toEqual([1]);
+				// expect(s()[0].toFixed(2)).toEqual('1.00'); //HERE WE CAN CALL s()[0].toFixed(2) <-- THIS WILL WORK
 			});
 		}));
-		it('MD with real async value, will set Signal to null initially, then real value', fakeAsync(() => {
+		it('MD FIX with real async value, you can pass options.initialValue TO PREVENT ERROR, then real value', fakeAsync(() => {
 			TestBed.runInInjectionContext(() => {
 				const value = new Promise<string>((resolve) =>
 					setTimeout(resolve, 1000, 'a')
 				); //Promise that emit 'a' after 1s
-				const s = computedFrom({ value });
-				expect(s()).toEqual({ value: null }); //INITIAL SET SINGAL TO null
-				expect(() => s().value.toUpperCase()).toThrowError(/null/i); //NOTICE THAT THIS WILL EXPLODE AT RUNTIME - TS DON'T CATCH IT!!!
+				const s = computedFrom(
+					{ value },
+					{ initialValue: { value: 'initial' } }
+				);
+				expect(s()).toEqual({ value: 'initial' }); //SET INITIAL SIGNAL WITH PASSED initialValue MUST BE COERENT WITH THE OUTPUT TYPE
+				expect(() => s().value.toUpperCase()).not.toThrow(); //.toEqual('INITIAL');  //NO MORE TS RUNTIME ERROR!!!
 				tick(1000); //WAIT 1s FOR LATE EMIT OF Promise
 				expect(s()).toEqual({ value: 'a' }); //AFTER 1s WE HAVE THE REAL VALUE
 				expect(s().value.toUpperCase()).toEqual('A'); //HERE WE CAN CALL s().value.toUpperCase() <-- THIS WILL WORK
@@ -196,7 +214,8 @@ describe(computedFrom.name, () => {
 								// of(a+b) is supposed to be an asynchronous operation (e.g. http request)
 								of(a + b).pipe(delay(1000)) // delay the emission of the combined value by 1 second for demonstration purposes
 						)
-					)
+					),
+					{ initialValue: 'initial' }
 				); //INFER SIGNAL<string> BUT SPURIOUS FIRST SYNC EMISSIONS [number, string] <-- TYPESCIPT WILL NOT CATCH THIS!
 			}
 
@@ -210,10 +229,10 @@ describe(computedFrom.name, () => {
 
 			it('MD tricky spurious sync emission', fakeAsync(() => {
 				fixture.detectChanges(); // initial change detection to trigger effect scheduler
-				expect(component.c()).toEqual([1, '2']); // initial value is [1,'2'] because of delay in switchMap
+				expect(component.c()).toEqual('initial'); // initial value PASSED WITH OPTIONS because of delay in switchMap
 				//THIS IS A BIG PROBLEM FOR THE DEVS THAT BELIAVE c() IS A Signal<string> BUT GET A SPURIOUS TUPLE VALUE OF [number, string]
 				//WHAT HAPPENS IF THE console.warn(c().toUpperCase()); <-- THIS WILL EXPLODE AT RUNTIME - TS DON'T CATCH IT!!!
-				expect(fixture.nativeElement.textContent).toEqual('1,2'); //NOTICE ',' SEPARATOR THIS IS ARRAY.toString([1,'2'])
+				expect(fixture.nativeElement.textContent).toEqual('initial'); //NOTICE ',' SEPARATOR THIS IS ARRAY.toString([1,'2'])
 
 				fixture.detectChanges(); // trigger effect scheduler (for the moment)
 				tick(1000); // wait 1s for switchMap delay
@@ -256,7 +275,7 @@ describe(computedFrom.name, () => {
 					this.data = computedFrom(
 						[this.valueS],
 						map(([s]) => s + this.inputValue),
-						this.injector
+						{ injector: this.injector }
 					);
 				}
 			}
@@ -278,13 +297,25 @@ describe(computedFrom.name, () => {
 			});
 		});
 	});
-	describe('MD tricky parts', () => {
-		it('MD should emit null for ob$ without initial value', () => {
+	describe('MD FIX tricky parts', () => {
+		it('MD FIX should THROW ERROR for ob$ without initial value', () => {
 			TestBed.runInInjectionContext(() => {
 				const page$ = new Subject<number>(); // Subject doesn't have an initial value
 				const filters$ = new BehaviorSubject({ name: 'John' });
-				const combined = computedFrom([page$, filters$]);
-				expect(combined()).toEqual([null, { name: 'John' }]);
+				expect(() => {
+					const combined = computedFrom([page$, filters$]);
+				}).toThrowError(/requireSync/i); //NOW THROW ERROR NO MORE OLD SPURIOUS null .toEqual([null, { name: 'John' }]);
+			});
+		});
+		it('MD FIX but we can use options.initialValue TO PREVENT ERROR', () => {
+			TestBed.runInInjectionContext(() => {
+				const page$ = new Subject<number>(); // Subject doesn't have an initial value
+				const filters$ = new BehaviorSubject({ name: 'John' });
+				const combined = computedFrom([page$, filters$], {
+					initialValue: [42, { name: 'John' }],
+				});
+				expect(() => combined()).not.toThrow();
+				expect(combined()).toEqual([42, { name: 'John' }]);
 			});
 		});
 		it('MD but we can use startWith to fix late Observable', () => {
