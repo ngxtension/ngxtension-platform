@@ -25,6 +25,7 @@ import {
 	switchMap,
 } from 'rxjs';
 import { computedFrom } from './computed-from';
+import exp = require('constants');
 
 describe(computedFrom.name, () => {
 	describe('works with signals', () => {
@@ -58,6 +59,17 @@ describe(computedFrom.name, () => {
 				expect(s()).toEqual([1]);
 			});
 		});
+		it(`MD for Observables that don't emit synchronously, computedFrom will give us null as the initial value, than real values`, fakeAsync(() => {
+			TestBed.runInInjectionContext(() => {
+				const late = of(1).pipe(delay(1000)); // late emit after 1s
+				const s = computedFrom([late]);
+				expect(s()).toEqual([null]); //INITIAL SET SINGAL TO null
+				expect(() => s()[0].toFixed(2)).toThrowError(/null/i); //NOTICE THAT THIS WILL EXPLODE AT RUNTIME - TS DON'T CATCH IT!!!
+				tick(1000); //WAIT 1s FOR LATE EMIT
+				expect(s()).toEqual([1]); //NOW WE HAVE THE REAL VALUE
+				expect(s()[0].toFixed(2)).toEqual('1.00'); //HERE WE CAN CALL s()[0].toFixed(2) <-- THIS WILL WORK
+			});
+		}));
 		it('value inside array', () => {
 			TestBed.runInInjectionContext(() => {
 				const value = new BehaviorSubject(1);
@@ -70,6 +82,48 @@ describe(computedFrom.name, () => {
 				const value = new BehaviorSubject(1);
 				const s = computedFrom({ value });
 				expect(s()).toEqual({ value: 1 });
+			});
+		});
+	});
+	describe('MD works with promise/array/primitive (converted to ob$ by from)', () => {
+		it('MD with initial value (probably not so common case)', fakeAsync(() => {
+			TestBed.runInInjectionContext(() => {
+				const value = Promise.resolve(1);
+				const s = computedFrom([value]);
+				expect(s()).toEqual([null]); //THIS IS SO TRICKY THE PROMISE IS CONVERTED WITH from AND WILL EMIT 1 AFTER MICROTASK - SO SIGNAL INITIAL SET TO null
+				expect(() => s()[0].toFixed(2)).toThrowError(/null/i); //NOTICE THAT THIS WILL EXPLODE AT RUNTIME - TS DON'T CATCH IT!!!
+				tick(1); //JUST WAIT A BIT "Promise Microtask" JUST TO GET from(Promise) TO EMIT ITS INITAL VALUE
+				expect(s()).toEqual([1]);
+				expect(s()[0].toFixed(2)).toEqual('1.00'); //HERE WE CAN CALL s()[0].toFixed(2) <-- THIS WILL WORK
+			});
+		}));
+		it('MD with real async value, will set Signal to null initially, then real value', fakeAsync(() => {
+			TestBed.runInInjectionContext(() => {
+				const value = new Promise<string>((resolve) =>
+					setTimeout(resolve, 1000, 'a')
+				); //Promise that emit 'a' after 1s
+				const s = computedFrom({ value });
+				expect(s()).toEqual({ value: null }); //INITIAL SET SINGAL TO null
+				expect(() => s().value.toUpperCase()).toThrowError(/null/i); //NOTICE THAT THIS WILL EXPLODE AT RUNTIME - TS DON'T CATCH IT!!!
+				tick(1000); //WAIT 1s FOR LATE EMIT OF Promise
+				expect(s()).toEqual({ value: 'a' }); //AFTER 1s WE HAVE THE REAL VALUE
+				expect(s().value.toUpperCase()).toEqual('A'); //HERE WE CAN CALL s().value.toUpperCase() <-- THIS WILL WORK
+			});
+		}));
+		it('MD with a primitive string (that is Iterable), interally converted with from(iter) will emit single value LAST CHAR (maybe not expected!? -> I suggest using of() for primitives/array)', () => {
+			TestBed.runInInjectionContext(() => {
+				const iter = 'abcd';
+				const s = computedFrom([iter]); //CORRECTLY INFER Signal<{value: string}> BUT IT'S CHARS!!!
+				expect(s()).toEqual(['d']); //HERE IS THE TRICKY PART - WE GET THE LAST CHAR OF THE STRING THAT IS AN ITERABLE!!!
+				expect(s()).not.toEqual([iter]); //NOT THE ORIGINAL STRING 'abcd' THIS IS BECOUSE from('abcd') -> of('a','b','c','d')
+			});
+		});
+		it('MD with an array (that is Iterable), internally converted with from(arr) will emit sync single value LAST ITEM (maybe not expected!? -> I suggest using of() for primitives/array)', () => {
+			TestBed.runInInjectionContext(() => {
+				const arr = [1, 2, 3, 42];
+				const s = computedFrom({ value: arr }); //CORRECTLY INFER Signal<{value: number}> NOT ARRAY!!!
+				expect(s()).toEqual({ value: 42 }); //HERE IS THE TRICKY PART - WE GET THE LAST VALUE OF THE ARRAY THAT IS AN ITERABLE!!!
+				expect(s().value).not.toEqual(arr); //NOT ORIGINAL ARRAY [1,2,3,42] THIS IS BECOUSE from([1,2,3,42]) -> of(1,2,3,42)
 			});
 		});
 	});
@@ -114,7 +168,7 @@ describe(computedFrom.name, () => {
 					[valueS, valueO],
 					pipe(
 						map(([s, o]) => [s + 1, o + 1]),
-						filter(([s, o]) => s === 2 && o === 2)
+						filter(([s, o]) => s >= 2 && o >= 2)
 					)
 				);
 
@@ -154,12 +208,12 @@ describe(computedFrom.name, () => {
 				component = fixture.componentInstance;
 			});
 
-			it('tricky spurious sync emission', fakeAsync(() => {
+			it('MD tricky spurious sync emission', fakeAsync(() => {
 				fixture.detectChanges(); // initial change detection to trigger effect scheduler
 				expect(component.c()).toEqual([1, '2']); // initial value is [1,'2'] because of delay in switchMap
 				//THIS IS A BIG PROBLEM FOR THE DEVS THAT BELIAVE c() IS A Signal<string> BUT GET A SPURIOUS TUPLE VALUE OF [number, string]
 				//WHAT HAPPENS IF THE console.warn(c().toUpperCase()); <-- THIS WILL EXPLODE AT RUNTIME - TS DON'T CATCH IT!!!
-				expect(fixture.nativeElement.textContent).toEqual('1,2'); //NOTICE ',' SEPARATOR THIS IS ARRAY.toString([1,2])
+				expect(fixture.nativeElement.textContent).toEqual('1,2'); //NOTICE ',' SEPARATOR THIS IS ARRAY.toString([1,'2'])
 
 				fixture.detectChanges(); // trigger effect scheduler (for the moment)
 				tick(1000); // wait 1s for switchMap delay
@@ -224,8 +278,8 @@ describe(computedFrom.name, () => {
 			});
 		});
 	});
-	describe('tricky parts', () => {
-		it('should emit null for ob$ without initial value', () => {
+	describe('MD tricky parts', () => {
+		it('MD should emit null for ob$ without initial value', () => {
 			TestBed.runInInjectionContext(() => {
 				const page$ = new Subject<number>(); // Subject doesn't have an initial value
 				const filters$ = new BehaviorSubject({ name: 'John' });
@@ -233,7 +287,7 @@ describe(computedFrom.name, () => {
 				expect(combined()).toEqual([null, { name: 'John' }]);
 			});
 		});
-		it('but we can use startWith to fix Subject', () => {
+		it('MD but we can use startWith to fix late Observable', () => {
 			TestBed.runInInjectionContext(() => {
 				const page$ = new Subject<number>(); // Subject doesn't have an initial value
 				const filters$ = new BehaviorSubject({ name: 'Doe' });
@@ -244,7 +298,7 @@ describe(computedFrom.name, () => {
 				expect(combined()).toEqual([0, { name: 'Doe' }]);
 			});
 		});
-		it('or we can use startWith operator to fix', fakeAsync(() => {
+		it('MD or we can use startWith to fix pipe chain', fakeAsync(() => {
 			TestBed.runInInjectionContext(() => {
 				const page$ = of(1).pipe(delay(1000)); // late emit after 1s
 				const filters$ = new BehaviorSubject({ name: 'String' });
@@ -252,7 +306,7 @@ describe(computedFrom.name, () => {
 					{ page: page$, filter: filters$ },
 					pipe(
 						switchMap(({ page, filter }) => of(page + filter.name)),
-						startWith(42)
+						startWith(42) // force initial sync emit 42
 					)
 				); //CORRECTLY INFERS Signal<string|number>
 				expect(combined()).toEqual(42);
