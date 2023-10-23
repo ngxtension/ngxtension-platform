@@ -136,6 +136,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "vneogi199",
+      "name": "Vinit Neogi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20491952?v=4",
+      "profile": "https://github.com/vneogi199",
+      "contributions": [
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
