@@ -13,7 +13,7 @@ import { Repeat } from 'ngxtension/repeat';
 
 ### Basic
 
-Use the `Repeat` directive as an extension of Angular's `NgFor` to iterate over a fixed number of iterations.
+Use the `Repeat` directive as an extension of Angular's `NgFor` to iterate over a fixed number of iterations. The [`TrackByFunction`](https://angular.io/api/core/TrackByFunction) is automatically set to efficiently iterate.
 
 ```ts
 import { Component } from '@angular/core';
