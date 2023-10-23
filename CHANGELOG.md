@@ -1,5 +1,18 @@
 
 
+## [0.11.0](https://github.com/nartc/ngxtension-platform/compare/0.10.0...0.11.0) (2023-10-23)
+
+
+### Features
+
+* **gestures:** finish all gestures ([263ed60](https://github.com/nartc/ngxtension-platform/commit/263ed60cc8e1b4e514704c1608450b44087b0cae))
+
+
+### Documentations
+
+* add trackBy hint to repeat util ([#123](https://github.com/nartc/ngxtension-platform/issues/123)) ([e12bdad](https://github.com/nartc/ngxtension-platform/commit/e12bdad43dbadc2ee6435a5449f9acd086c05db9))
+* add vneogi199 as a contributor for test ([#124](https://github.com/nartc/ngxtension-platform/issues/124)) ([57f68b8](https://github.com/nartc/ngxtension-platform/commit/57f68b814069b83f3dc3e9f8d20a816a31a33ebc))
+
 ## [0.10.0](https://github.com/nartc/ngxtension-platform/compare/0.9.3...0.10.0) (2023-10-21)
 
 
