@@ -1,4 +1,4 @@
-import { Component, DebugElement, ElementRef } from '@angular/core';
+import { Component, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ClickOutside } from './click-outside';
@@ -6,13 +6,14 @@ import { ClickOutside } from './click-outside';
 @Component({
 	standalone: true,
 	template: `
-		<div clickOutside></div>
+		<div clickOutside>
+			<div id="inner-div"></div>
+		</div>
+		<div id="sibling-div"></div>
 	`,
 	imports: [ClickOutside],
 })
-class TestComponent {
-	constructor(public elementRef: ElementRef) {}
-}
+class TestComponent {}
 
 describe('ClickOutside', () => {
 	let fixture: ComponentFixture<TestComponent>;
@@ -40,5 +41,27 @@ describe('ClickOutside', () => {
 		const fakeEvent = new MouseEvent('click');
 		document.body.click();
 		expect(directive.clickOutside.emit).toHaveBeenCalledWith(fakeEvent);
+	});
+
+	it('should emit clickOutside event when a click occurs on sibling element', () => {
+		jest.spyOn(directive.clickOutside, 'emit');
+		const siblingDiv = fixture.debugElement.query(By.css('#sibling-div'));
+		const fakeEvent = new MouseEvent('click');
+		siblingDiv.nativeElement.click();
+		expect(directive.clickOutside.emit).toHaveBeenCalledWith(fakeEvent);
+	});
+
+	it('should not emit clickOutside event when a click occurs inside the element', () => {
+		jest.spyOn(directive.clickOutside, 'emit');
+		const innerDiv = fixture.debugElement.query(By.css('#inner-div'));
+		innerDiv.nativeElement.click();
+		expect(directive.clickOutside.emit).not.toHaveBeenCalled();
+	});
+
+	it('should not emit clickOutside event when a click occurs on the element', () => {
+		jest.spyOn(directive.clickOutside, 'emit');
+		const clickOutsideDirectiveElement = debugElement.nativeElement;
+		clickOutsideDirectiveElement.click();
+		expect(directive.clickOutside.emit).not.toHaveBeenCalled();
 	});
 });
