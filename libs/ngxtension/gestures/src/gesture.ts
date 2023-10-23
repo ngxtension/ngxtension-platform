@@ -43,6 +43,7 @@ export type GestureInfer<TInjectGesture extends (...args: any[]) => void> =
 	>
 		? {
 				key: _GestureKey;
+				handler: _GestureHandler;
 				handlerParameters: Parameters<TInjectGesture>[0];
 				state: Parameters<Parameters<TInjectGesture>[0]>[0];
 				config: GestureConfig;
@@ -52,7 +53,7 @@ export type GestureInfer<TInjectGesture extends (...args: any[]) => void> =
 export function createGesture<
 	TGestureKey extends GestureKey,
 	TRecognizer extends Recognizer<TGestureKey>
->(key: TGestureKey, gesture: Type<TRecognizer>) {
+>(_key: TGestureKey, gesture: Type<TRecognizer>) {
 	type GestureHandler = Handler<TGestureKey, EventTypes[TGestureKey]>;
 	type GestureConfig = UserGestureConfig[TGestureKey];
 
@@ -81,11 +82,11 @@ export function createGesture<
 			effect(() => {
 				if (zoneless) {
 					zone.runOutsideAngular(() => {
-						// @ts-expect-error
+						// @ts-expect-error typescript knows what the config is but gestureInstance can also set config for multiple gestures
 						gestureInstance.setConfig(config());
 					});
 				} else {
-					// @ts-expect-error
+					// @ts-expect-error typescript knows what the config is but gestureInstance can also set config for multiple gestures
 					gestureInstance.setConfig(config());
 				}
 			});
