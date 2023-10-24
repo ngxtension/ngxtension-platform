@@ -134,11 +134,11 @@ add), e.g:
 connect(this.state, this.someStream$);
 
 connect(this.state, this.add$, (state, checklist) => ({
-  checklists: [...state.checklists, checklist],
+	checklists: [...state.checklists, checklist],
 }));
 
 connect(this.state, this.remove$, (state, id) => ({
-  checklists: state.checklists.filter((checklist) => checklist.id !== id),
+	checklists: state.checklists.filter((checklist) => checklist.id !== id),
 }));
 ```
 
@@ -147,11 +147,10 @@ a single connect call:
 
 ```ts
 connect(this.state)
-  .with(this.someStream$)
+	.with(this.someStream$)
 	.with(this.lastName$, (prev, lastName) => ({ user: { ...prev.user, lastName } }))
 	.with(this.firstName$, (prev, firstName) => ({ user: { ...prev.user, firstName } }));
 ```
 
 This allows for any combination of streams without reducers and streams with
 different types of reducers.
-
