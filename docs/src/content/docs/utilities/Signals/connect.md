@@ -88,3 +88,20 @@ export class MyComponent {
 	}
 }
 ```
+
+## ConnectedSignal
+
+```ts
+const connectedSignal = connect(this.state)
+	.with(this.lastName$, (prev, lastName) => ({ user: { ...prev.user, lastName } }))
+	.with(this.firstName$, (prev, firstName) => ({ user: { ...prev.user, firstName } }));
+
+/* can connect later as well */
+connectedSignal.with(/* ... */);
+
+/* can destroy */
+connectedSignal.subscription.unsubscribe();
+
+/* after the subscription is closed, connectedSignal doesn't so anything */
+connectedSignal.with(/* ...*/)); // won't connect
+```

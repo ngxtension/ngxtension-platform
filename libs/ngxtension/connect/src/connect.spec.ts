@@ -13,6 +13,49 @@ import { map, of, Subject, take } from 'rxjs';
 import { connect } from './connect';
 
 describe(connect.name, () => {
+	describe('ConnectedSignal', () => {
+		it('should connect with a stream returning partial state', () => {
+			const state = signal({
+				user: {
+					firstName: 'chau',
+					lastName: 'tran',
+				},
+				age: 30,
+				likes: ['angular', 'typescript'],
+			});
+
+			TestBed.runInInjectionContext(() => {
+				const connectedSignal = connect(state).with(
+					of({ user: { firstName: 'Chau', lastName: 'Tran' } })
+				);
+
+				expect(state().user).toEqual({ firstName: 'Chau', lastName: 'Tran' });
+
+				connectedSignal.with(of(32).pipe(map((age) => ({ age }))));
+				expect(state().age).toEqual(32);
+
+				connectedSignal.with(of('ngxtension'), (prev, newLike) => ({
+					likes: [...prev.likes, newLike],
+				}));
+				expect(state().likes).toEqual(['angular', 'typescript', 'ngxtension']);
+
+				connectedSignal.with(
+					of({ firstName: 'Enea', newLike: 'rx-angular', age: 99 /* lol */ }),
+					(prev, { firstName, newLike, age }) => ({
+						user: { ...prev.user, firstName },
+						age,
+						likes: [...prev.likes, newLike],
+					})
+				);
+				expect(state()).toEqual({
+					user: { firstName: 'Enea', lastName: 'Tran' },
+					age: 99,
+					likes: ['angular', 'typescript', 'ngxtension', 'rx-angular'],
+				});
+			});
+		});
+	});
+
 	describe('connects an observable to a signal in injection context', () => {
 		@Component({ standalone: true, template: '' })
 		class TestComponent {
