@@ -1,5 +1,12 @@
 
 
+## [0.12.0](https://github.com/nartc/ngxtension-platform/compare/0.11.1...0.12.0) (2023-10-24)
+
+
+### Features
+
+* **connect:** add ConnectedSignal usage ([4b25c55](https://github.com/nartc/ngxtension-platform/commit/4b25c557263f5332c22662cf8a304ee069806c30))
+
 ## [0.11.1](https://github.com/nartc/ngxtension-platform/compare/0.11.0...0.11.1) (2023-10-23)
 
 ## [0.11.0](https://github.com/nartc/ngxtension-platform/compare/0.10.0...0.11.0) (2023-10-23)
