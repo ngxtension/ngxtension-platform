@@ -146,7 +146,7 @@ With a `ConnectedSignal` you can use the `with` syntax to chain these into
 a single connect call:
 
 ```ts
-const connectedSignal = connect(this.state)
+connect(this.state)
   .with(this.someStream$)
 	.with(this.lastName$, (prev, lastName) => ({ user: { ...prev.user, lastName } }))
 	.with(this.firstName$, (prev, firstName) => ({ user: { ...prev.user, firstName } }));
