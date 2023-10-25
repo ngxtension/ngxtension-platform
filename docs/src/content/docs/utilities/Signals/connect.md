@@ -91,6 +91,9 @@ export class MyComponent {
 
 ## ConnectedSignal
 
+A `ConnectedSignal` allows you to connect any number of streams to a signal
+during or after the initial connect call.
+
 ```ts
 const connectedSignal = connect(this.state)
 	.with(this.lastName$, (prev, lastName) => ({ user: { ...prev.user, lastName } }))
@@ -105,3 +108,49 @@ connectedSignal.subscription.unsubscribe();
 /* after the subscription is closed, connectedSignal doesn't so anything */
 connectedSignal.with(/* ...*/)); // won't connect
 ```
+
+A benefit of this approach is that it allows you to connect multiple streams to
+a signal whilst utilising different syntax for the `connect` call.
+
+For example, if your streams directly emit the values you want to set into the
+signal, you can use this syntax:
+
+```ts
+connect(this.pageNumber, this.dataService.pageNumber$);
+```
+
+Or, if you need to use a reducer to access the previous signal value, you can
+use this syntax:
+
+```ts
+connect(this.state, this.lastName$, (prev, lastName) => ({ user: { ...prev.user, lastName } }));
+```
+
+However, if you want to use multiple different streams with different reducers,
+you would need to use multiple connect calls (one for each reducer you want to
+add), e.g:
+
+```ts
+connect(this.state, this.someStream$);
+
+connect(this.state, this.add$, (state, checklist) => ({
+	checklists: [...state.checklists, checklist],
+}));
+
+connect(this.state, this.remove$, (state, id) => ({
+	checklists: state.checklists.filter((checklist) => checklist.id !== id),
+}));
+```
+
+With a `ConnectedSignal` you can use the `with` syntax to chain these into
+a single connect call:
+
+```ts
+connect(this.state)
+	.with(this.someStream$)
+	.with(this.lastName$, (prev, lastName) => ({ user: { ...prev.user, lastName } }))
+	.with(this.firstName$, (prev, firstName) => ({ user: { ...prev.user, firstName } }));
+```
+
+This allows for any combination of streams without reducers and streams with
+different types of reducers.
