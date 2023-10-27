@@ -41,9 +41,10 @@ export function hostBinding<T, S extends Signal<T> | WritableSignal<T>>(
 
 	runInInjectionContext(injector, () => {
 		const renderer = inject(Renderer2);
-		const element = inject(ElementRef).nativeElement;
+		const element: HTMLElement = inject(ElementRef).nativeElement;
 
 		effect(() => {
+			let prevClasses: string[] = [];
 			const value = signal();
 			const [binding, property, unit] = hostPropertyName.split('.');
 
@@ -60,10 +61,19 @@ export function hostBinding<T, S extends Signal<T> | WritableSignal<T>>(
 					renderer.setAttribute(element, property, String(value));
 					break;
 				case 'class':
-					if (value) {
-						renderer.addClass(element, property);
+					if (!property) {
+						if (prevClasses.length) {
+							prevClasses.forEach((k) => renderer.removeClass(element, k));
+						}
+						prevClasses =
+							typeof value === 'string' ? value.split(' ').filter(Boolean) : [];
+						prevClasses.forEach((k) => renderer.addClass(element, k));
 					} else {
-						renderer.removeClass(element, property);
+						if (value) {
+							renderer.addClass(element, property);
+						} else {
+							renderer.removeClass(element, property);
+						}
 					}
 					break;
 				default:
