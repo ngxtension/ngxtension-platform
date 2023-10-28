@@ -1,5 +1,18 @@
 
 
+## [0.13.0](https://github.com/nartc/ngxtension-platform/compare/0.12.0...0.13.0) (2023-10-28)
+
+
+### Features
+
+* **auto-effect:** add `injectAutoEffect` ([765400a](https://github.com/nartc/ngxtension-platform/commit/765400a600502b270c329362070d3a363bd489cd))
+
+
+### Documentations
+
+* add explanation for ConnectedSignal usage ([#128](https://github.com/nartc/ngxtension-platform/issues/128)) ([0fd95e7](https://github.com/nartc/ngxtension-platform/commit/0fd95e73a6253b328c2a63031849863a2c20f5ee))
+* add joshuamorony as a contributor for doc ([#129](https://github.com/nartc/ngxtension-platform/issues/129)) ([1e8fa4f](https://github.com/nartc/ngxtension-platform/commit/1e8fa4f4532c69d49855f870aa2e3999be1730f5))
+
 ## [0.12.0](https://github.com/nartc/ngxtension-platform/compare/0.11.1...0.12.0) (2023-10-24)
 
 

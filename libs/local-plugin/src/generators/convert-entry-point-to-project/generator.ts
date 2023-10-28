@@ -73,7 +73,7 @@ export async function convertEntryPointToProjectGenerator(
 				},
 			},
 			lint: {
-				executor: '@nx/eslint:eslint',
+				executor: '@nx/eslint:lint',
 				outputs: ['{options.outputFile}'],
 				options: {
 					lintFilePatterns: [
