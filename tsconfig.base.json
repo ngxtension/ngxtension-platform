@@ -24,6 +24,7 @@
 			"ngxtension/assert-injector": [
 				"libs/ngxtension/assert-injector/src/index.ts"
 			],
+			"ngxtension/auto-effect": ["libs/ngxtension/auto-effect/src/index.ts"],
 			"ngxtension/call-apply": ["libs/ngxtension/call-apply/src/index.ts"],
 			"ngxtension/click-outside": [
 				"libs/ngxtension/click-outside/src/index.ts"
