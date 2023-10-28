@@ -10,6 +10,7 @@ import { TestBed } from '@angular/core/testing';
 import { hostBinding } from './host-binding';
 
 type FakeControl = {
+	klass?: string | null;
 	valid: boolean;
 	value: number[];
 };
@@ -20,6 +21,7 @@ type FakeControl = {
 })
 class TestHost {
 	fakeControl = signal<FakeControl>({
+		klass: 'hidden something',
 		valid: true,
 		value: [],
 	});
@@ -33,6 +35,11 @@ class TestHost {
 	invalid = hostBinding(
 		'class.invalid',
 		computed(() => !this.valid())
+	);
+
+	klass = hostBinding(
+		'class',
+		computed(() => this.fakeControl().klass)
 	);
 
 	// style binding
@@ -57,16 +64,14 @@ class TestHost {
 describe(hostBinding.name, () => {
 	const setup = (updatedFakeControl?: Partial<FakeControl>) => {
 		const fixture = TestBed.createComponent(TestHost);
-		fixture.detectChanges();
 
 		if (updatedFakeControl) {
 			fixture.componentInstance.fakeControl.update((ctrl) => ({
 				...ctrl,
 				...updatedFakeControl,
 			}));
-
-			fixture.detectChanges();
 		}
+		fixture.detectChanges();
 
 		return { fixture };
 	};
@@ -84,6 +89,27 @@ describe(hostBinding.name, () => {
 
 			expect(fixture.nativeElement.classList).toContain('invalid');
 			expect(fixture.nativeElement.classList).not.toContain('valid');
+		});
+
+		it('should bind the "hidden" and "something classes', () => {
+			const { fixture } = setup();
+
+			expect(fixture.nativeElement.classList).toContain('hidden');
+			expect(fixture.nativeElement.classList).toContain('something');
+		});
+
+		it('should not bind both the "hidden" and "somehting" classes', () => {
+			const { fixture } = setup({ klass: null });
+
+			expect(fixture.nativeElement.classList).not.toContain('hidden');
+			expect(fixture.nativeElement.classList).not.toContain('something');
+		});
+
+		it('should not bind the "hidden" class', () => {
+			const { fixture } = setup({ klass: 'something' });
+
+			expect(fixture.nativeElement.classList).not.toContain('hidden');
+			expect(fixture.nativeElement.classList).toContain('something');
 		});
 	});
 
