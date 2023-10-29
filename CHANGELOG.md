@@ -1,5 +1,12 @@
 
 
+## [0.14.1](https://github.com/nartc/ngxtension-platform/compare/0.14.0...0.14.1) (2023-10-29)
+
+
+### Bug Fixes
+
+* **computed:** use raw value instead of signal to track current value ([03aa1a6](https://github.com/nartc/ngxtension-platform/commit/03aa1a65c11cab5f28c3afc52169b194fbeb18ab))
+
 ## [0.14.0](https://github.com/nartc/ngxtension-platform/compare/0.12.0...0.14.0) (2023-10-29)
 
 
