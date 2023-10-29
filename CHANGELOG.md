@@ -1,5 +1,20 @@
 
 
+## [0.14.0](https://github.com/nartc/ngxtension-platform/compare/0.12.0...0.14.0) (2023-10-29)
+
+
+### Features
+
+* **auto-effect:** add `injectAutoEffect` ([765400a](https://github.com/nartc/ngxtension-platform/commit/765400a600502b270c329362070d3a363bd489cd))
+* **computed:** add computed/extendedComputed with access to previous computed value ([7260727](https://github.com/nartc/ngxtension-platform/commit/72607272199e1063a51261f84beed1bb69e8f932))
+
+
+### Documentations
+
+* add explanation for ConnectedSignal usage ([#128](https://github.com/nartc/ngxtension-platform/issues/128)) ([0fd95e7](https://github.com/nartc/ngxtension-platform/commit/0fd95e73a6253b328c2a63031849863a2c20f5ee))
+* add joshuamorony as a contributor for doc ([#129](https://github.com/nartc/ngxtension-platform/issues/129)) ([1e8fa4f](https://github.com/nartc/ngxtension-platform/commit/1e8fa4f4532c69d49855f870aa2e3999be1730f5))
+* fix documentation link in README ([#132](https://github.com/nartc/ngxtension-platform/issues/132)) ([00fb9c7](https://github.com/nartc/ngxtension-platform/commit/00fb9c7ab36e4b0030b5665d84e150eea0edab9b))
+
 ## [0.13.0](https://github.com/nartc/ngxtension-platform/compare/0.12.0...0.13.0) (2023-10-28)
 
 
