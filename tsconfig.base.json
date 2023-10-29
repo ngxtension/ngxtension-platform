@@ -29,6 +29,7 @@
 			"ngxtension/click-outside": [
 				"libs/ngxtension/click-outside/src/index.ts"
 			],
+			"ngxtension/computed": ["libs/ngxtension/computed/src/index.ts"],
 			"ngxtension/computed-from": [
 				"libs/ngxtension/computed-from/src/index.ts"
 			],
