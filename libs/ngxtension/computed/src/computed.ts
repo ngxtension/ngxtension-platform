@@ -1,5 +1,5 @@
 import type { CreateComputedOptions } from '@angular/core';
-import { computed as ngComputed, signal, untracked } from '@angular/core';
+import { computed as ngComputed } from '@angular/core';
 
 export function computed<TValue>(
 	computedCallback: (currentValue: TValue) => TValue,
@@ -9,13 +9,9 @@ export function computed<TValue>(
 		options = { equal: Object.is };
 	}
 
-	const currentValue = signal<TValue>(undefined!, { equal: Object.is });
+	let currentValue: TValue = undefined!;
 	return ngComputed(() => {
-		const computedValue = computedCallback(untracked(currentValue));
-		untracked(() => {
-			currentValue.set(computedValue);
-		});
-		return computedValue;
+		return (currentValue = computedCallback(currentValue));
 	}, options);
 }
 
