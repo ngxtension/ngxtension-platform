@@ -20,7 +20,7 @@ const count = signal(1);
 
 const result = extendedComputed<number>((previousValue) => {
 	// only compute when multiplier is even
-	if (multiplier() & (2 === 0)) {
+	if (multiplier() % 2 === 0) {
 		return count() * multiplier();
 	}
 	return previousValue;
