@@ -40,7 +40,7 @@ It can be used in multiple ways:
 1. Combine multiple `Signal`s
 2. Combine multiple `Observable`s
 3. Combine multiple `Signal`s and `Observable`s
-4. Use of options initialValue
+4. Using initialValue param
 5. Use it outside of an injection context
 
 ### 1. Combine multiple `Signal`s
@@ -95,7 +95,7 @@ The console log will be:
 	5; // combined value after 3 seconds
 ```
 
-As we can see, we passed an `initialValue` as third argument, to prevent _throwing error_ in case of observable that will **not has sync value** becouse they emit later their values.
+As we can see, we passed an `initialValue` as the third argument, to prevent _throwing an error_ in case of an observable that will **not have a sync value** because they emit later their values.
 Otherwise we can use the `startWith` to force the observable to have a starting value like below.
 
 ```ts
@@ -154,13 +154,13 @@ console.log(combinedObject()); // { page: 1, filters: { name: 'John' } }
 ```
 
 :::note[Tricky part]
-For `Observable`s that don't emit synchronously `computedFrom` will **throw and error** forcing you to fix this situation either passing an `initialValue` in third argument, or using `startWith` operetor to force observable to have a sync starting value.
+For `Observable`s that don't emit synchronously `computedFrom` will **throw an error** forcing you to fix this situation either by passing an `initialValue` in the third argument, or using `startWith` operator to force observable to have a sync starting value.
 :::
 
 ```ts
 const page$ = new Subject<number>(); // Subject doesn't have an initial value
 const filters$ = new BehaviorSubject({ name: 'John' });
-const combined = computedFrom([page$, filters$]); // 👈 WILL THROW AN ERROR!!!
+const combined = computedFrom([page$, filters$]); // 👈 will throw an error!! 💥
 ```
 
 But, we can always use the `startWith` operator to change the initial value.
@@ -174,7 +174,7 @@ const combined = computedFrom([
 console.log(combined()); // [0, { name: 'John' }]
 ```
 
-### 4. Use of options initialValue
+### 4. Using initialValue param
 
 Or you can pass `initialValue` to `computedFrom` in the third argument `options` object, to define the starting value of the resulting Signal and **prevent throwing error** in case of observables that emit later.
 
