@@ -139,10 +139,12 @@ function _normalizeArgs<Input, Output>(
 } {
 	if (!args || !args.length || typeof args[0] !== 'object')
 		//valid even for Array
-		throw new TypeError('computedFrom need sources');
+		throw new TypeError('computedFrom needs sources');
 	const hasOperator = typeof args[1] === 'function';
 	if (args.length == 3 && !hasOperator)
-		throw new TypeError('computedFrom need pipebale operator as second arg');
+		throw new TypeError(
+			'computedFrom needs pipeable operator as a second argument'
+		);
 	if (!hasOperator) args.splice(1, 0, identity);
 	const [sources, operator, options] = args;
 	const hasInitValue = options?.initialValue !== undefined;
