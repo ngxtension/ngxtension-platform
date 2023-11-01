@@ -96,24 +96,24 @@ export function computedFrom<Input = any, Output = Input>(
 
 	let injector = options?.injector;
 	injector = assertInjector(computedFrom, injector);
-	/* try { //CUSTOM ERROR HANDLING FOR computedFrom */
-	//IF YOU PASS options.initialValue RETURN Signal<Output> WITHOUT ANY PROBLEM EVEN IF sources Observable ARE ASYNC (LATE EMIT) -> OUTPUT SIGNAL START EMITING SYNC initialValue!
-	//IF YOU DON'T PASS THE initialValue ENFORCE THAT Observable SYNC EMIT USING THE NATIVE toSignal requireSync:true OPTION -> SO IF ANYONE FORGET TO USE startWith IT WILL ERROR!
+	/* try { // Custom error handling for computedFrom */
+	// if you pass options.initialValue return Signal<Output> without any problem even if sources Observable are async (late emit) -> output signal start with passed initialValue!
+	// if you don't pass then initialValue enforce that Observable sync emit using the native toSignal requireSync:true option -> so if anyone forget to use startWith it will error!
 	const ret: Signal<Output> = hasInitValue
 		? toSignal(combineLatest(normalizedSources).pipe(operator), {
-				initialValue: options?.initialValue!, //I'M SURE initialValue EXIST BECAUSE hasInitValue IS TRUE
-				injector: options?.injector, //EVENTUALLY PASSING toSignal THE injector TO USE THE CORRECT INJECTION CONTEXT
+				initialValue: options?.initialValue!, // I'm sure initialValue exist because hasInitValue is true
+				injector: options?.injector, // eventually passing the injector toSignal to use correct Injection context
 		  })
 		: toSignal(combineLatest(normalizedSources).pipe(operator), {
-				injector: options?.injector, //EVENTUALLY PASSING toSignal THE injector TO USE THE CORRECT INJECTION CONTEXT
-				requireSync: true, //THIS WILL USE NATIVE toSignal BEHAVIOR THAT CHECK IF ALL OBSERVABLE EMIT SYNC OTHERWISE THROW ERROR
-				// -> SO IF ANYONE FORGET TO USE startWith IT WILL ERROR! THIS IS PREFERRED TO OLD "SPURIOUS SYNC EMIT" OF null OR Input ([], {})
-				//THAT CAN CAUSE RUNTIMES ERRORS THAT TS CAN'T CATCH BECOUSE THE OLD SIGNATURE Signal<Output> IS NOT "STRICTIER" FOR THOSE CASES!
+				injector: options?.injector, // eventually passing the injector toSignal to use the correct Injection context
+				requireSync: true, // thiw will use native toSignal behaviour that check if all Observables emit sync otherwise throw error
+				// -> So if anyone forget to use startWith it will error! This is preferred to old "spurious" sync emit of null or Input ([], {})
+				// that can cause runtime errors that TS can't catch because the old signature Signal<Output> is not "stricter" for those cases!
 		  });
 	return ret;
-	/* //WE CAN DECIDE TO CUSTOMIZE THE ERROR TO BE MORE SPECIFIC FOR computedFrom
+	/* // We can decide to customize the error to be more specific for computedFrom
 	} catch (e: any) {
-		if ( //EURISTIC TO CHECK IF THE ERROR IS CAUSED BY requireSync
+		if ( // euristic to check if error is caused by requireSync
 			e.message.includes('requireSync') ||
 			e.message.includes('NG601') ||
 			e.code == 601
@@ -138,7 +138,7 @@ function _normalizeArgs<Input, Output>(
 	options: ComputedFromOptions<Output> | undefined;
 } {
 	if (!args || !args.length || typeof args[0] !== 'object')
-		//VALID EVEN FOR ARRAY
+		//valid even for Array
 		throw new TypeError('computedFrom need sources');
 	const hasOperator = typeof args[1] === 'function';
 	if (args.length == 3 && !hasOperator)
@@ -152,7 +152,7 @@ function _normalizeArgs<Input, Output>(
 				acc[keyOrIndex] = toObservable(source, {
 					injector: options?.injector,
 				}).pipe(
-					startWith(untracked(source)) //THIS IS DONE BECAUSE toObservable DOESN'T IMMEDIATLY EMIT initialValue OF THE THE SIGNAL
+					startWith(untracked(source)) // this is done because toObservable doesn't immediatly emit initialValue of the signal
 				);
 			} else if (isObservable(source)) {
 				acc[keyOrIndex] = source.pipe(distinctUntilChanged());
