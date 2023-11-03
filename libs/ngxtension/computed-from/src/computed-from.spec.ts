@@ -62,7 +62,7 @@ describe(computedFrom.name, () => {
 			TestBed.runInInjectionContext(() => {
 				const late = of(1).pipe(delay(1000)); // late emit after 1s
 				expect(() => {
-					const s = computedFrom([late]);
+					computedFrom([late]);
 				}).toThrowError(/requireSync/i); // Throw error NG0601 due to `toSignal` + `requireSync: true`
 				// This will prevent old "spurious sync emit" of `null` or Input ([], {}) that can cause TS runtime errors
 				// expect(() => s()[0].toFixed(2)).toThrowError(/null/i); // Notice that this previously exploded at runtime, - TS don't catch it!!!
@@ -102,7 +102,7 @@ describe(computedFrom.name, () => {
 			TestBed.runInInjectionContext(() => {
 				const value = Promise.resolve(1);
 				expect(() => {
-					const s = computedFrom([value]);
+					computedFrom([value]);
 				}).toThrowError(/requireSync/i); // This is so tricky the Promise is converted with `from` and will emit 1 after Microtask - so Signal don't get sync initial value and throw error
 				// expect(s()).toEqual([null]); // This is so tricky the Promise is converted with `from` and will emit 1 after Microtask - so Signal initial set to `null`
 				// expect(() => s()[0].toFixed(2)).toThrowError(/null/i); // Notice that this previously exploded at runtime - TS don't catch it!!!
@@ -300,7 +300,7 @@ describe(computedFrom.name, () => {
 				const page$ = new Subject<number>(); // Subject doesn't have an initial value
 				const filters$ = new BehaviorSubject({ name: 'John' });
 				expect(() => {
-					const combined = computedFrom([page$, filters$]);
+					computedFrom([page$, filters$]);
 				}).toThrowError(/requireSync/i); // now throw error! No more old spurious `null` .toEqual([null, { name: 'John' }]);
 			});
 		});
