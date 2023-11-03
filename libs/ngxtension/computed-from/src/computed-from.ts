@@ -100,7 +100,7 @@ export function computedFrom<Input = any, Output = Input>(
 	// if you don't pass then initialValue enforce that Observable sync emit using the native toSignal requireSync:true option -> so if anyone forget to use startWith it will error!
 	const ret: Signal<Output> = hasInitValue
 		? toSignal(combineLatest(normalizedSources).pipe(operator), {
-				initialValue: options?.initialValue!, // I'm sure initialValue exist because hasInitValue is true
+				initialValue: options!.initialValue!, // I'm sure initialValue exist because hasInitValue is true
 				injector, // eventually passing the injector toSignal to use correct Injection context
 		  })
 		: toSignal(combineLatest(normalizedSources).pipe(operator), {
