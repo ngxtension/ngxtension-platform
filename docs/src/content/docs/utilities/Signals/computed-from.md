@@ -86,7 +86,7 @@ setTimeout(() => {
 // You can copy the above example inside an Angular constructor and see the result in the console.
 ```
 
-This will _throw an error_ because the operation pipeline used will produce an observable that will **not have a sync value** because they emit later their values, so the resultig `c` signal doesn't have an initial value, and this caused the error.
+This will _throw an error_ because the operation pipeline will produce an observable that will **not have a sync value** because they emit their values later on, so the resulting `c` signal doesn't have an initial value, and this causes the error.
 
 You can solve this by using the `initialValue` param in the third argument `options` object, to define the starting value of the resulting Signal and _prevent throwing an error_ in case of _real async_ observable.
 
@@ -102,7 +102,7 @@ let c = computedFrom(
 );
 ```
 
-This will works, and you can copy the above example inside an Angular constructor and see the result in the console:
+This works, and you can copy the above example inside a component constructor and see the result in the console:
 
 ```ts
 42 - // initial value passed as third argument
@@ -110,14 +110,14 @@ This will works, and you can copy the above example inside an Angular constructo
 	5; // combined value after 3 seconds
 ```
 
-Another way to solve the same problem, is using the `startWith` operator in the pipe to force the observable to have a starting value like below.
+Another way to solve this problem is using the `startWith` rxjs operator in the pipe to force the observable to have a starting value like below.
 
 ```ts
 let c = computedFrom(
 	[a, b],
 	pipe(
 		switchMap(([a, b]) => of(a + b).pipe(delay(1000))),
-		startWith(0) // 👈 change the starting value (sync emit)
+		startWith(0) // 👈 change the starting value (emits synchronously)
 	)
 );
 ```
