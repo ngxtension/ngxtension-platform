@@ -84,7 +84,31 @@ export const [injectCount, provideCount] = createInjectionToken(countFactory, {
 
 We can also pass in other providers, via `extraProviders`, to `createInjectionToken` so when we call `provideFn()`, we provide those providers as well.
 
-Example TBD
+```ts
+import { bookReducer } from './book.reducer';
+import * as bookEffects from './book.effects';
+
+export const [injectBookService, provideBookService] = createInjectionToken(
+	() => {
+		const store = inject(Store);
+		/* ... */
+	},
+	{
+		isRoot: false,
+		extraProviders: [provideState('book', bookReducer), provideEffects(bookEffects)],
+	}
+);
+
+// routes.ts
+export const routes = [
+	{
+		path: 'book/:id',
+		//          👇 will also provideState() and provideEffects
+		providers: [provideBookService()],
+		loadComponent: () => import('./book/book.component'),
+	},
+];
+```
 
 #### `multi`
 
