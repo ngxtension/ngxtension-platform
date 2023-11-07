@@ -46,11 +46,11 @@ One way to update state is through the use of `sources`. These are intended to b
 You can supply a source like this:
 
 ```ts
-this.checklistsLoaded$.pipe(map((checklists) => ({ checklists, loaded: true })));
+loadChecklists$ = this.checklistsLoaded$.pipe(map((checklists) => ({ checklists, loaded: true })));
 
 state = signalSlice({
 	initialState: this.initialState,
-	sources: [this.checklistsLoaded$],
+	sources: [this.loadChecklists$],
 });
 ```
 
@@ -80,6 +80,25 @@ You can supply a reducer function that has access to the previous state, and wha
 
 ```ts
 this.state.add(checklist);
+```
+
+It is also possible to have a reducer/action without any payload:
+
+```ts
+state = signalSlice({
+	initialState: this.initialState,
+	reducers: {
+		toggleActive: (state) => ({
+			active: !state.active,
+		}),
+	},
+});
+```
+
+The associated action can then be triggered with:
+
+```ts
+this.state.toggleActive();
 ```
 
 ## Action Streams
