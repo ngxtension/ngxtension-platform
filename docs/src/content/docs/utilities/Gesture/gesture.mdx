@@ -1,5 +1,5 @@
 ---
-title: Drag Gesture
+title: Gesture
 description: ngxtension/gestures
 ---
 
@@ -7,12 +7,14 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Usage
 
-There are various ways we can utilize Drag Gesture from `ngxtension/gestures`
+There are various ways we can utilize the Gesture from `ngxtension/gestures`
 
-### `NgxDrag`
+The examples show using `NgxDrag`, for `DragGesture`, but they can apply to other gestures as well.
+
+### Directive
 
 ```ts
-import { NgxDrag, type NgxDragState } from 'ngxtension/gestures';
+import { NgxDrag, type NgxInjectDrag } from 'ngxtension/gestures';
 ```
 
 `NgxDrag` is a directive that we can use to attach on any element to capture that element's drag events.
@@ -35,7 +37,7 @@ import { NgxDrag, type NgxDragState } from 'ngxtension/gestures';
 	templateUrl: './app.html',
 })
 export class App {
-	onDrag(state: NgxDragState) {
+	onDrag(state: NgxInjectDrag['state']) {
 		// fire every time a drag event happens
 	}
 }
@@ -57,7 +59,7 @@ We can also use `NgxDrag` on a Host element by leveraging `hostDirectives`
 })
 export class DraggableBox {
 	@HostListener('ngxDrag', ['$event'])
-	onDrag(state: NgxDragState) {
+	onDrag(state: NgxInjectDrag['state']) {
 		// fire every time a drag event happens
 	}
 }

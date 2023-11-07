@@ -8,11 +8,11 @@ sidebar:
 `ngxtension/gestures` is a collection of Gestures that let you bind mouse and touch events.
 
 - [x] Drag
-- [ ] Move
-- [ ] Hover
-- [ ] Scroll
-- [ ] Wheel
-- [ ] Pinch
+- [x] Move
+- [x] Hover
+- [x] Scroll
+- [x] Wheel
+- [x] Pinch
 - [ ] Multiple gestures
 
 ### Comparison to Angular CDK

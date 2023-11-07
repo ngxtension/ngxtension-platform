@@ -10,11 +10,16 @@ import {
 	injectDrag,
 	NgxDrag,
 	provideZonelessGesture,
-	type NgxDragState,
+	type NgxInjectDrag,
 } from 'ngxtension/gestures';
 
 const dragHandler = (from: WritableSignal<Vector2>) => {
-	return ({ target, active, offset: [ox, oy], cdr }: NgxDragState) => {
+	return ({
+		target,
+		active,
+		offset: [ox, oy],
+		cdr,
+	}: NgxInjectDrag['state']) => {
 		const el = target as HTMLElement;
 		from.set([ox, oy]);
 		el.style.transform = `translate(${ox}px, ${oy}px)`;

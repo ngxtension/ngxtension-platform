@@ -136,6 +136,34 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "vneogi199",
+      "name": "Vinit Neogi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20491952?v=4",
+      "profile": "https://github.com/vneogi199",
+      "contributions": [
+        "test"
+      ]
+    },
+    {
+      "login": "joshuamorony",
+      "name": "Josh Morony",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2578009?v=4",
+      "profile": "https://www.joshmorony.com",
+      "contributions": [
+        "doc",
+        "code"
+      ]
+    },
+    {
+      "login": "cskiwi",
+      "name": "Glenn Latomme",
+      "avatar_url": "https://avatars.githubusercontent.com/u/847540?v=4",
+      "profile": "https://github.com/cskiwi",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
