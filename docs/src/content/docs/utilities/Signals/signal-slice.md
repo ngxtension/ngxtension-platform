@@ -60,7 +60,7 @@ The `source` should be mapped to a partial of the `initialState`. In the example
 
 Another way to update the state is through `reducers` and `actions`. This is good for situations where you need to manually/imperatively trigger some action, and then use the current state in some way in order to calculate the new state.
 
-When you supply a `reducer` it will automatically create an `action` that you can call. Reducers can be created like this:
+When you supply a `reducer`, it will automatically create an `action` that you can call. Reducers can be created like this:
 
 ```ts
 state = signalSlice({
