@@ -19,7 +19,8 @@ Read more here: [A sweet spot between signals and observables 🍬](https://itne
 ## Usage
 
 `computedFrom` accepts an array or object of `Observable`s or `Signal`s and returns a `Signal` that emits the combined value of the `Observable`s or `Signal`s.
-By default, it needs to be called in an injection context, but it can also be called outside of it by passing the `Injector` as the third argument.
+By default, it needs to be called in an injection context, but it can also be called outside of it by passing the `Injector` in the third argument `options` object.
+If your Observable doesn't emit synchronously, you can use the `startWith` operator to change the starting value, or pass an `initialValue` in the third argument `options` object.
 
 ```ts
 const a = signal(1);
@@ -39,7 +40,8 @@ It can be used in multiple ways:
 1. Combine multiple `Signal`s
 2. Combine multiple `Observable`s
 3. Combine multiple `Signal`s and `Observable`s
-4. Use it outside of an injection context
+4. Using initialValue param
+5. Use it outside of an injection context
 
 ### 1. Combine multiple `Signal`s
 
@@ -75,7 +77,7 @@ let c = computedFrom(
 	)
 );
 
-effect(() => console.log(c()));
+effect(() => console.log(c())); // 👈 will throw an error!! 💥
 
 setTimeout(() => {
 	a.set(3);
@@ -84,23 +86,38 @@ setTimeout(() => {
 // You can copy the above example inside an Angular constructor and see the result in the console.
 ```
 
-The console log will be:
+This will _throw an error_ because the operation pipeline will produce an observable that will **not have a sync value** because they emit their values later on, so the resulting `c` signal doesn't have an initial value, and this causes the error.
+
+You can solve this by using the `initialValue` param in the third argument `options` object, to define the starting value of the resulting Signal and _prevent throwing an error_ in case of _real async_ observable.
 
 ```ts
--[1, 2] - // initial value
+let c = computedFrom(
+	[a, b],
+	pipe(
+		switchMap(
+			([a, b]) => of(a + b).pipe(delay(1000)) // later async emit value
+		),
+		{ initialValue: 42 } // 👈 pass the initial value of the resulting signal
+	)
+);
+```
+
+This works, and you can copy the above example inside a component constructor and see the result in the console:
+
+```ts
+42 - // initial value passed as third argument
 	3 - // combined value after 1 second
 	5; // combined value after 3 seconds
 ```
 
-As we can see, the first value will not be affected by the rxjs operators, because they are asynchronous and the first value is emitted synchronously.
-In order to change the first value, we can use startWith operator.
+Another way to solve this problem is using the `startWith` rxjs operator in the pipe to force the observable to have a starting value like below.
 
 ```ts
 let c = computedFrom(
 	[a, b],
 	pipe(
 		switchMap(([a, b]) => of(a + b).pipe(delay(1000))),
-		startWith(0) // change the first value
+		startWith(0) // 👈 change the starting value (emits synchronously)
 	)
 );
 ```
@@ -108,7 +125,7 @@ let c = computedFrom(
 The console log will be:
 
 ```ts
--0 - // initial value
+0 - // starting value (initial sync emit)
 	3 - // combined value after 1 second
 	5; // combined value after 3 seconds
 ```
@@ -151,15 +168,13 @@ console.log(combinedObject()); // { page: 1, filters: { name: 'John' } }
 ```
 
 :::note[Tricky part]
-For `Observable`s that don't emit synchronously, `computedFrom` will give us null as the initial value for the `Observable`s.
+For `Observable`s that don't emit synchronously `computedFrom` will **throw an error** forcing you to fix this situation either by passing an `initialValue` in the third argument, or using `startWith` operator to force observable to have a sync starting value.
 :::
 
 ```ts
 const page$ = new Subject<number>(); // Subject doesn't have an initial value
 const filters$ = new BehaviorSubject({ name: 'John' });
-const combined = computedFrom([page$, filters$]);
-
-console.log(combined()); // [null, { name: 'John' }]
+const combined = computedFrom([page$, filters$]); // 👈 will throw an error!! 💥
 ```
 
 But, we can always use the `startWith` operator to change the initial value.
@@ -173,9 +188,21 @@ const combined = computedFrom([
 console.log(combined()); // [0, { name: 'John' }]
 ```
 
-### 4. Use it outside of an injection context
+### 4. Using initialValue param
 
-By default, `computedFrom` needs to be called in an injection context, but it can also be called outside of it by passing the `Injector` as the third argument.
+Or you can pass `initialValue` to `computedFrom` in the third argument `options` object, to define the starting value of the resulting Signal and **prevent throwing error** in case of observables that emit later.
+
+```ts
+const combined = computedFrom(
+	[page$, filters$],
+	swithMap(([page, filters]) => this.dataService.getArrInfo$(page, filters)),
+	{ initialValue: [] as Info[] } // define the initial value of resulting signal
+); // inferred ad Signal<Info[]>
+```
+
+### 5. Use it outside of an injection context
+
+By default, `computedFrom` needs to be called in an injection context, but it can also be called outside of it by passing the `Injector` in the third argument `options` object.
 
 ```ts
 @Component()
