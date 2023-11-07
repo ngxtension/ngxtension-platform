@@ -3,8 +3,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { assertInjector } from 'ngxtension/assert-injector';
 import { Subscription, isObservable, type Observable } from 'rxjs';
 
-type PartialOrValue<TValue> = TValue extends object ? Partial<TValue> : TValue;
-type Reducer<TValue, TNext> = (
+export type PartialOrValue<TValue> = TValue extends object
+	? Partial<TValue>
+	: TValue;
+export type Reducer<TValue, TNext> = (
 	previous: TValue,
 	next: TNext
 ) => PartialOrValue<TValue>;
