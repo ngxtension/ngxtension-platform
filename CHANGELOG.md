@@ -1,5 +1,27 @@
 
 
+## [0.15.0](https://github.com/nartc/ngxtension-platform/compare/0.14.1...0.15.0) (2023-11-08)
+
+
+### Features
+
+* **signal-slice:** add signalSlice ([#135](https://github.com/nartc/ngxtension-platform/issues/135)) ([76fcfad](https://github.com/nartc/ngxtension-platform/commit/76fcfad5b971aa076b3ab2480c751c5e69fddbc9))
+
+
+### Bug Fixes
+
+* **computedFrom:** add initialValue + throw Error in case of not sync emit ([#122](https://github.com/nartc/ngxtension-platform/issues/122)) ([285aa59](https://github.com/nartc/ngxtension-platform/commit/285aa598b99598eb07d7b237f39711c89f969b12))
+
+
+### Documentations
+
+* add joshuamorony as a contributor for code ([#136](https://github.com/nartc/ngxtension-platform/issues/136)) ([c89fe85](https://github.com/nartc/ngxtension-platform/commit/c89fe859e63c0b3cab3de6e8e900067deeb071b7))
+* **computed:** fix typo in docs ([3cc8aa6](https://github.com/nartc/ngxtension-platform/commit/3cc8aa6f887109288266c39cf64a34e18071e347))
+* **create-injection-token:** add extraProviders use-case with ngrx ([b17ae1d](https://github.com/nartc/ngxtension-platform/commit/b17ae1d805b8febe03778d6fa2c3c588ea6e093c))
+* fix link ([8f5294f](https://github.com/nartc/ngxtension-platform/commit/8f5294fe2b34bc3b78de9c2f15d7f88ab3c97e87))
+* update .all-contributorsrc ([5c8c9a0](https://github.com/nartc/ngxtension-platform/commit/5c8c9a0970341d8dda87a1a51965baf860116ee0))
+* update README.md ([552d3df](https://github.com/nartc/ngxtension-platform/commit/552d3df9f6ed9cb9952a278d9bb3175886d22749))
+
 ## [0.14.1](https://github.com/nartc/ngxtension-platform/compare/0.14.0...0.14.1) (2023-10-29)
 
 
