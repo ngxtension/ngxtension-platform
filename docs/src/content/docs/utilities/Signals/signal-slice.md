@@ -134,3 +134,60 @@ This will also make these additional computed values available on the state obje
 ```ts
 this.state.loadedAndError();
 ```
+
+## Effects
+
+It is possible to define signal effects within `signalSlice` itself. This just
+uses a standard `effect` behind the scenes, but it provides the benefit of
+allowing you to define your effects alongside all your other state concerns
+rather than having to have them separately in a `constructor` or field
+initialiser:
+
+```ts
+state = signalSlice({
+	initialState: this.initialState,
+	sources: [this.sources$],
+	reducers: {
+		add: (state, checklist: AddChecklist) => ({
+			checklists: [...state.checklists, this.addIdToChecklist(checklist)],
+		}),
+	},
+	effects: (state) => ({
+		init: () => {
+			console.log('hello');
+		},
+		saveChecklists: () => {
+			// side effect to save checklists
+			console.log(state.checklists());
+		},
+		withCleanup: () => {
+			// side effect to save checklists
+			console.log(state.checklists());
+			return () => {
+				console.log('clean up');
+			};
+		},
+	}),
+});
+```
+
+Make sure that you access the state in effects using your `selectors`:
+
+```ts
+state.checklists();
+```
+
+**NOT** directly using the state signal:
+
+```ts
+state().checklists;
+```
+
+If you do, all of your effects will be triggered whenever _anything_ in the state signal updates.
+
+The `effects` are available on the `SignalSlice` as `EffectRef` so you can terminate the effects preemptively if you choose to do so
+
+```ts
+state.saveChecklists.destroy();
+//      👆 EffectRef
+```

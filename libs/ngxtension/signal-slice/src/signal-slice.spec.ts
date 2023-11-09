@@ -13,7 +13,7 @@ describe(signalSlice.name, () => {
 	};
 
 	describe('initialState', () => {
-		let state: SignalSlice<typeof initialState, any, any>;
+		let state: SignalSlice<typeof initialState, any, any, any>;
 
 		beforeEach(() => {
 			TestBed.runInInjectionContext(() => {
@@ -36,7 +36,7 @@ describe(signalSlice.name, () => {
 		const testSource$ = new Subject<Partial<typeof initialState>>();
 		const testSource2$ = new Subject<Partial<typeof initialState>>();
 
-		let state: SignalSlice<typeof initialState, any, any>;
+		let state: SignalSlice<typeof initialState, any, any, any>;
 
 		beforeEach(() => {
 			TestBed.runInInjectionContext(() => {
@@ -119,6 +119,60 @@ describe(signalSlice.name, () => {
 				});
 
 				expect(state.doubleAge()).toEqual(state().age * 2);
+			});
+		});
+	});
+
+	describe('effects', () => {
+		xit('should create effects for named effects', () => {
+			// TODO: enable this test when flushEffects is available
+			TestBed.runInInjectionContext(() => {
+				const testFn = jest.fn();
+
+				const state = signalSlice({
+					initialState,
+					reducers: {
+						increaseAge: (state) => ({ age: state.age + 1 }),
+					},
+					effects: (state) => ({
+						doSomething: () => {
+							testFn(state.age());
+						},
+					}),
+				});
+
+				state.increaseAge();
+
+				expect(testFn).toHaveBeenCalledWith(initialState.age);
+				expect(testFn).toHaveBeenCalledWith(initialState.age + 1);
+			});
+		});
+
+		xit('should only run effect with updated signal', () => {
+			// TODO: enable this test when flushEffects is available
+			TestBed.runInInjectionContext(() => {
+				const initFn = jest.fn();
+				const testFn = jest.fn();
+
+				const state = signalSlice({
+					initialState,
+					reducers: {
+						increaseAge: (state) => ({ age: state.age + 1 }),
+					},
+					effects: (state) => ({
+						init: () => {
+							initFn();
+						},
+						doSomething: () => {
+							testFn(state.age());
+						},
+					}),
+				});
+
+				state.increaseAge();
+
+				expect(initFn).toHaveBeenCalledTimes(1);
+				expect(testFn).toHaveBeenCalledTimes(2);
 			});
 		});
 	});
