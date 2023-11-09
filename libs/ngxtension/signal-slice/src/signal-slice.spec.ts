@@ -136,7 +136,7 @@ describe(signalSlice.name, () => {
 					},
 					effects: (state) => ({
 						doSomething: () => {
-							testFn(state().age);
+							testFn(state.age());
 						},
 					}),
 				});
