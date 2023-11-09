@@ -4,6 +4,7 @@ import {
 	effect,
 	inject,
 	signal,
+	type EffectRef,
 	type Signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -19,7 +20,7 @@ type NamedSelectors = {
 };
 
 type NamedEffects = {
-	[selectorName: string]: () => void;
+	[selectorName: string]: () => void | (() => void);
 };
 
 type Selectors<TSignalValue> = {
@@ -31,7 +32,7 @@ type ExtraSelectors<TSelectors extends NamedSelectors> = {
 };
 
 type Effects<TEffects extends NamedEffects> = {
-	[K in keyof TEffects]: () => void;
+	[K in keyof TEffects]: EffectRef;
 };
 
 type ActionMethods<
@@ -86,12 +87,19 @@ export function signalSlice<
 	) => TEffects;
 }): SignalSlice<TSignalValue, TReducers, TSelectors, TEffects> {
 	const destroyRef = inject(DestroyRef);
+
 	const {
 		initialState,
 		sources = [],
 		reducers = {},
-		selectors,
-		effects,
+		selectors = (() => ({})) as unknown as Exclude<
+			(typeof config)['selectors'],
+			undefined
+		>,
+		effects = (() => ({})) as unknown as Exclude<
+			(typeof config)['effects'],
+			undefined
+		>,
 	} = config;
 
 	const state = signal(initialState);
@@ -124,39 +132,38 @@ export function signalSlice<
 	}
 
 	for (const key in initialState) {
-		Object.defineProperties(readonlyState, {
-			[key]: { value: computed(() => readonlyState()[key]) },
+		Object.defineProperty(readonlyState, key, {
+			value: computed(() => readonlyState()[key]),
 		});
 	}
 
-	if (selectors) {
-		for (const [key, selector] of Object.entries(
-			selectors(readonlyState) as TSelectors
-		)) {
-			Object.defineProperties(readonlyState, {
-				[key]: { value: computed(() => selector()) },
-			});
-		}
+	for (const [key, selector] of Object.entries(selectors(readonlyState))) {
+		Object.defineProperty(readonlyState, key, {
+			value: computed(selector),
+		});
 	}
 
-	if (effects) {
-		for (const namedEffect of Object.values(
-			effects(
-				readonlyState as SignalSlice<TSignalValue, TReducers, TSelectors, any>
-			) as TEffects
-		)) {
-			effect(namedEffect);
-		}
+	const slice = readonlyState as SignalSlice<
+		TSignalValue,
+		TReducers,
+		TSelectors,
+		TEffects
+	>;
+
+	for (const [key, namedEffect] of Object.entries(effects(slice))) {
+		Object.defineProperty(slice, key, {
+			value: effect((onCleanup) => {
+				const maybeCleanup = namedEffect();
+				if (maybeCleanup) {
+					onCleanup(() => maybeCleanup());
+				}
+			}),
+		});
 	}
 
 	destroyRef.onDestroy(() => {
 		subs.forEach((sub) => sub.complete());
 	});
 
-	return readonlyState as SignalSlice<
-		TSignalValue,
-		TReducers,
-		TSelectors,
-		TEffects
-	>;
+	return slice;
 }
