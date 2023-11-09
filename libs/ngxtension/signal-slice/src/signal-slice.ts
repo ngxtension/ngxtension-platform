@@ -81,7 +81,9 @@ export function signalSlice<
 	sources?: Array<Observable<PartialOrValue<TSignalValue>>>;
 	reducers?: TReducers;
 	selectors?: (state: Signal<TSignalValue>) => TSelectors;
-	effects?: (state: Signal<TSignalValue>) => TEffects;
+	effects?: (
+		state: SignalSlice<TSignalValue, TReducers, TSelectors, any>
+	) => TEffects;
 }): SignalSlice<TSignalValue, TReducers, TSelectors, TEffects> {
 	const destroyRef = inject(DestroyRef);
 	const {
@@ -139,7 +141,9 @@ export function signalSlice<
 
 	if (effects) {
 		for (const namedEffect of Object.values(
-			effects(readonlyState) as TEffects
+			effects(
+				readonlyState as SignalSlice<TSignalValue, TReducers, TSelectors, any>
+			) as TEffects
 		)) {
 			effect(namedEffect);
 		}
