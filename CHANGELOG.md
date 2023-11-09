@@ -1,5 +1,18 @@
 
 
+## [0.16.0](https://github.com/nartc/ngxtension-platform/compare/0.15.1...0.16.0) (2023-11-09)
+
+
+### Features
+
+* **signal-slice:** add effects config ([#141](https://github.com/nartc/ngxtension-platform/issues/141)) ([5b01712](https://github.com/nartc/ngxtension-platform/commit/5b01712ed173f1ce4a778877ea10fe9e9aad5943))
+
+
+### Documentations
+
+* add JeevanMahesha as a contributor for doc ([#142](https://github.com/nartc/ngxtension-platform/issues/142)) ([1cefa50](https://github.com/nartc/ngxtension-platform/commit/1cefa50b799a4b7d2e1b1246bf3fbe8a2dc1e931))
+* added the logo ([#140](https://github.com/nartc/ngxtension-platform/issues/140)) ([dbd94d7](https://github.com/nartc/ngxtension-platform/commit/dbd94d716cc9952ec5bb22a3ed301fb776b185ed))
+
 ## [0.15.1](https://github.com/nartc/ngxtension-platform/compare/0.15.0...0.15.1) (2023-11-08)
 
 ## [0.15.0](https://github.com/nartc/ngxtension-platform/compare/0.14.1...0.15.0) (2023-11-08)
