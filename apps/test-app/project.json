@@ -7,12 +7,12 @@
 	"tags": [],
 	"targets": {
 		"build": {
-			"executor": "@angular-devkit/build-angular:browser",
+			"executor": "@angular-devkit/build-angular:application",
 			"outputs": ["{options.outputPath}"],
 			"options": {
 				"outputPath": "dist/apps/test-app",
 				"index": "apps/test-app/src/index.html",
-				"main": "apps/test-app/src/main.ts",
+				"browser": "apps/test-app/src/main.ts",
 				"polyfills": ["zone.js"],
 				"tsConfig": "apps/test-app/tsconfig.app.json",
 				"assets": ["apps/test-app/src/favicon.ico", "apps/test-app/src/assets"],
@@ -32,13 +32,10 @@
 							"maximumWarning": "2kb",
 							"maximumError": "4kb"
 						}
-					],
-					"outputHashing": "all"
+					]
 				},
 				"development": {
-					"buildOptimizer": false,
 					"optimization": false,
-					"vendorChunk": true,
 					"extractLicenses": false,
 					"sourceMap": true,
 					"namedChunks": true
