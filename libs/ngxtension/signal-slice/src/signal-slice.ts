@@ -1,6 +1,7 @@
 import {
 	DestroyRef,
 	computed,
+	effect,
 	inject,
 	signal,
 	type Signal,
@@ -17,12 +18,20 @@ type NamedSelectors = {
 	[selectorName: string]: () => any;
 };
 
+type NamedEffects = {
+	[selectorName: string]: () => void;
+};
+
 type Selectors<TSignalValue> = {
 	[K in keyof TSignalValue]: Signal<TSignalValue[K]>;
 };
 
 type ExtraSelectors<TSelectors extends NamedSelectors> = {
 	[K in keyof TSelectors]: () => any;
+};
+
+type Effects<TEffects extends NamedEffects> = {
+	[K in keyof TEffects]: () => void;
 };
 
 type ActionMethods<
@@ -53,25 +62,35 @@ type ActionStreams<
 export type SignalSlice<
 	TSignalValue,
 	TReducers extends NamedReducers<TSignalValue>,
-	TSelectors extends NamedSelectors
+	TSelectors extends NamedSelectors,
+	TEffects extends NamedEffects
 > = Signal<TSignalValue> &
 	Selectors<TSignalValue> &
 	ExtraSelectors<TSelectors> &
+	Effects<TEffects> &
 	ActionMethods<TSignalValue, TReducers> &
 	ActionStreams<TSignalValue, TReducers>;
 
 export function signalSlice<
 	TSignalValue,
 	TReducers extends NamedReducers<TSignalValue>,
-	TSelectors extends NamedSelectors
+	TSelectors extends NamedSelectors,
+	TEffects extends NamedEffects
 >(config: {
 	initialState: TSignalValue;
 	sources?: Array<Observable<PartialOrValue<TSignalValue>>>;
 	reducers?: TReducers;
 	selectors?: (state: Signal<TSignalValue>) => TSelectors;
-}): SignalSlice<TSignalValue, TReducers, TSelectors> {
+	effects?: (state: Signal<TSignalValue>) => TEffects;
+}): SignalSlice<TSignalValue, TReducers, TSelectors, TEffects> {
 	const destroyRef = inject(DestroyRef);
-	const { initialState, sources = [], reducers = {}, selectors } = config;
+	const {
+		initialState,
+		sources = [],
+		reducers = {},
+		selectors,
+		effects,
+	} = config;
 
 	const state = signal(initialState);
 
@@ -118,9 +137,22 @@ export function signalSlice<
 		}
 	}
 
+	if (effects) {
+		for (const namedEffect of Object.values(
+			effects(readonlyState) as TEffects
+		)) {
+			effect(namedEffect);
+		}
+	}
+
 	destroyRef.onDestroy(() => {
 		subs.forEach((sub) => sub.complete());
 	});
 
-	return readonlyState as SignalSlice<TSignalValue, TReducers, TSelectors>;
+	return readonlyState as SignalSlice<
+		TSignalValue,
+		TReducers,
+		TSelectors,
+		TEffects
+	>;
 }
