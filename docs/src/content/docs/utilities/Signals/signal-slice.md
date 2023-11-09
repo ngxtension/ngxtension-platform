@@ -160,6 +160,13 @@ state = signalSlice({
 			// side effect to save checklists
 			console.log(state.checklists());
 		},
+		withCleanup: () => {
+			// side effect to save checklists
+			console.log(state.checklists());
+			return () => {
+				console.log('clean up');
+			};
+		},
 	}),
 });
 ```
@@ -177,3 +184,10 @@ state().checklists;
 ```
 
 If you do, all of your effects will be triggered whenever _anything_ in the state signal updates.
+
+The `effects` are available on the `SignalSlice` as `EffectRef` so you can terminate the effects preemptively if you choose to do so
+
+```ts
+state.saveChecklists.destroy();
+//      👆 EffectRef
+```
