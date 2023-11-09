@@ -3,7 +3,7 @@
 	"description": "Utilities library for Angular",
 	"version": "0.0.0",
 	"engines": {
-		"node": ">=16"
+		"node": ">=18"
 	},
 	"repository": "nartc/ngxtension-platform",
 	"homepage": "https://ngxtension.netlify.app",
