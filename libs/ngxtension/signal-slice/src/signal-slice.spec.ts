@@ -147,5 +147,33 @@ describe(signalSlice.name, () => {
 				expect(testFn).toHaveBeenCalledWith(initialState.age + 1);
 			});
 		});
+
+		xit('should only run effect with updated signal', () => {
+			// TODO: enable this test when flushEffects is available
+			TestBed.runInInjectionContext(() => {
+				const initFn = jest.fn();
+				const testFn = jest.fn();
+
+				const state = signalSlice({
+					initialState,
+					reducers: {
+						increaseAge: (state) => ({ age: state.age + 1 }),
+					},
+					effects: (state) => ({
+						init: () => {
+							initFn();
+						},
+						doSomething: () => {
+							testFn(state.age());
+						},
+					}),
+				});
+
+				state.increaseAge();
+
+				expect(initFn).toHaveBeenCalledTimes(1);
+				expect(testFn).toHaveBeenCalledTimes(2);
+			});
+		});
 	});
 });
