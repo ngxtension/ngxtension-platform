@@ -16,17 +16,15 @@ jobs:
     with:
       main-branch-name: main
       number-of-agents: 3
-      environment-variables: |
-        NX_VERBOSE_LOGGING=true
       init-commands: |
-        NX_VERBOSE_LOGGING=true pnpm exec nx-cloud start-ci-run --stop-agents-after="build" --agent-count=3
+        pnpm exec nx-cloud start-ci-run --stop-agents-after="build" --agent-count=3
       parallel-commands: |
         NX_VERBOSE_LOGGING=true pnpm exec nx-cloud record -- pnpm exec nx format:check
       parallel-commands-on-agents: |
-        NX_VERBOSE_LOGGING=true pnpm exec nx affected --target=lint --parallel=3
-        NX_VERBOSE_LOGGING=true pnpm exec nx affected --target=test --parallel=3 --ci --code-coverage
+        pnpm exec nx affected --target=lint --parallel=3
+        pnpm exec nx affected --target=test --parallel=3 --ci --code-coverage
         # pnpm exec nx affected --target=e2e --parallel=3 --ci
-        NX_VERBOSE_LOGGING=true pnpm exec nx affected --target=build --parallel=3 --exclude=docs
+        pnpm exec nx affected --target=build --parallel=3 --exclude=docs
 
   agents:
     name: Nx Cloud - Agents
