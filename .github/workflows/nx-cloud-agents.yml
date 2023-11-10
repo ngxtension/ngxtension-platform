@@ -105,7 +105,7 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: ${{ inputs.pnpm-version }}
-          package_json_file: '${{ github.workspace }}/package.json'
+          package_json_file: '${{ inputs.working-directory || github.workspace }}/package.json'
 
       - name: Print node/npm/yarn versions
         id: versions
