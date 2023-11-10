@@ -7,12 +7,12 @@
 	"tags": [],
 	"targets": {
 		"build": {
-			"executor": "@angular-devkit/build-angular:browser",
+			"executor": "@angular-devkit/build-angular:application",
 			"outputs": ["{options.outputPath}"],
 			"options": {
 				"outputPath": "dist/apps/test-app",
 				"index": "apps/test-app/src/index.html",
-				"main": "apps/test-app/src/main.ts",
+				"browser": "apps/test-app/src/main.ts",
 				"polyfills": ["zone.js"],
 				"tsConfig": "apps/test-app/tsconfig.app.json",
 				"assets": ["apps/test-app/src/favicon.ico", "apps/test-app/src/assets"],
@@ -32,13 +32,10 @@
 							"maximumWarning": "2kb",
 							"maximumError": "4kb"
 						}
-					],
-					"outputHashing": "all"
+					]
 				},
 				"development": {
-					"buildOptimizer": false,
 					"optimization": false,
-					"vendorChunk": true,
 					"extractLicenses": false,
 					"sourceMap": true,
 					"namedChunks": true
@@ -50,10 +47,10 @@
 			"executor": "@angular-devkit/build-angular:dev-server",
 			"configurations": {
 				"production": {
-					"browserTarget": "test-app:build:production"
+					"buildTarget": "test-app:build:production"
 				},
 				"development": {
-					"browserTarget": "test-app:build:development"
+					"buildTarget": "test-app:build:development"
 				}
 			},
 			"defaultConfiguration": "development"
@@ -61,7 +58,7 @@
 		"extract-i18n": {
 			"executor": "@angular-devkit/build-angular:extract-i18n",
 			"options": {
-				"browserTarget": "test-app:build"
+				"buildTarget": "test-app:build"
 			}
 		},
 		"lint": {

@@ -17,9 +17,9 @@ jobs:
       main-branch-name: main
       number-of-agents: 3
       init-commands: |
-        NX_VERBOSE_LOGGING=true pnpm exec nx-cloud start-ci-run --stop-agents-after="build" --agent-count=3
+        pnpm exec nx-cloud start-ci-run --stop-agents-after="build" --agent-count=3
       parallel-commands: |
-        pnpm exec nx-cloud record -- pnpm exec nx format:check
+        NX_VERBOSE_LOGGING=true pnpm exec nx-cloud record -- pnpm exec nx format:check
       parallel-commands-on-agents: |
         pnpm exec nx affected --target=lint --parallel=3
         pnpm exec nx affected --target=test --parallel=3 --ci --code-coverage
@@ -28,6 +28,7 @@ jobs:
 
   agents:
     name: Nx Cloud - Agents
-    uses: nrwl/ci/.github/workflows/nx-cloud-agents.yml@v0.13.0
+    uses: ./.github/workflows/nx-cloud-agents.yml
     with:
       number-of-agents: 3
+      pnpm-version: 8

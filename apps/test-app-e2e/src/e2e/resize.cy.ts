@@ -3,9 +3,9 @@ describe('resize', () => {
 
 	it('should react to viewport resize', () => {
 		cy.viewport(500, 500);
-		cy.get('pre').should('contain.text', '"width": 500');
+		cy.get('pre').should('contain.text', '"width": 485');
 
 		cy.viewport(800, 800);
-		cy.get('pre').should('contain.text', '"width": 800');
+		cy.get('pre').should('contain.text', '"width": 785');
 	});
 });

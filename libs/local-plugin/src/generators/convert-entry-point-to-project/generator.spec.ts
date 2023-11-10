@@ -36,7 +36,6 @@ describe('convert-entry-point-to-project generator', () => {
 		}
 	}
 
-	//
 	it('should run successfully', async () => {
 		expect(true).toBeTruthy();
 	});

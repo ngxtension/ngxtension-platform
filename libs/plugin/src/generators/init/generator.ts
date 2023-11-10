@@ -32,6 +32,12 @@ export async function initGenerator(tree: Tree) {
 		) {
 			json.compilerOptions.skipLibCheck = true;
 		}
+
+		if (!json.compilerOptions['strict']) {
+			logger.warn(`[ngxtension] Initialization script detects that "strict" mode is off in the root TSConfig.
+Some utilities will not work properly without strict mode.`);
+		}
+
 		return json;
 	});
 

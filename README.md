@@ -4,7 +4,7 @@
 </p>
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-17-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-18-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A collection of utilities for [Angular](https://angular.io).
@@ -75,6 +75,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/vneogi199"><img src="https://avatars.githubusercontent.com/u/20491952?v=4?s=100" width="100px;" alt="Vinit Neogi"/><br /><sub><b>Vinit Neogi</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=vneogi199" title="Tests">⚠️</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://www.joshmorony.com"><img src="https://avatars.githubusercontent.com/u/2578009?v=4?s=100" width="100px;" alt="Josh Morony"/><br /><sub><b>Josh Morony</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=joshuamorony" title="Documentation">📖</a> <a href="https://github.com/nartc/ngxtension-platform/commits?author=joshuamorony" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/cskiwi"><img src="https://avatars.githubusercontent.com/u/847540?v=4?s=100" width="100px;" alt="Glenn Latomme"/><br /><sub><b>Glenn Latomme</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=cskiwi" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://jeevanmahesha.github.io"><img src="https://avatars.githubusercontent.com/u/34814862?v=4?s=100" width="100px;" alt="Jeevan "/><br /><sub><b>Jeevan </b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=JeevanMahesha" title="Documentation">📖</a></td>
     </tr>
   </tbody>
   <tfoot>

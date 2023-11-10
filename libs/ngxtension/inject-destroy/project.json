@@ -9,14 +9,7 @@
 			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
 			"options": {
 				"jestConfig": "libs/ngxtension/jest.config.ts",
-				"testPathPattern": ["inject-destroy"],
-				"passWithNoTests": true
-			},
-			"configurations": {
-				"ci": {
-					"ci": true,
-					"codeCoverage": true
-				}
+				"testPathPattern": ["inject-destroy"]
 			}
 		},
 		"lint": {
