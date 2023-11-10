@@ -1,5 +1,12 @@
 
 
+## [1.0.1](https://github.com/nartc/ngxtension-platform/compare/0.16.0...1.0.1) (2023-11-10)
+
+
+### Bug Fixes
+
+* bump peer deps ([2179b8e](https://github.com/nartc/ngxtension-platform/commit/2179b8e60b98d4116e6788174a3409dc43f67485))
+
 ## [1.0.0](https://github.com/nartc/ngxtension-platform/compare/0.16.0...1.0.0) (2023-11-09)
 
 ## [0.16.0](https://github.com/nartc/ngxtension-platform/compare/0.15.1...0.16.0) (2023-11-09)
