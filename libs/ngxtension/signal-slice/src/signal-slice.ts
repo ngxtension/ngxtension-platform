@@ -123,19 +123,19 @@ export function signalSlice<
 	for (const [key, reducer] of Object.entries(reducers as TReducers)) {
 		const subject = new Subject();
 
-		if (reducer.length === 2) {
-			const standardReducer = reducer as Reducer<
-				(typeof config)['initialState'],
-				any
-			>;
-			connect(state, subject, standardReducer);
-		} else {
+		try {
 			const sourceReducer = reducer as SourceReducer<
 				(typeof config)['initialState'],
 				any
 			>;
 
 			connect(state, sourceReducer(subject));
+		} catch (err) {
+			const standardReducer = reducer as Reducer<
+				(typeof config)['initialState'],
+				any
+			>;
+			connect(state, subject, standardReducer);
 		}
 
 		Object.defineProperties(readonlyState, {
