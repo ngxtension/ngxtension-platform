@@ -11,8 +11,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { connect, type PartialOrValue, type Reducer } from 'ngxtension/connect';
 import { Observable, Subject, isObservable } from 'rxjs';
 
+type Source<TSignalValue> = Observable<PartialOrValue<TSignalValue>>;
+type SourceReducer<TValue, TNext> = (obs$: Observable<TNext>) => Source<TValue>;
+
 type NamedReducers<TSignalValue> = {
-	[actionName: string]: Reducer<TSignalValue, any>;
+	[actionName: string]:
+		| Reducer<TSignalValue, any>
+		| SourceReducer<TSignalValue, any>;
 };
 
 type NamedSelectors = {
@@ -43,6 +48,8 @@ type ActionMethods<
 		? () => void
 		: TReducers[K] extends Reducer<TSignalValue, infer TValue>
 		? (value: TValue | Observable<TValue>) => void
+		: TReducers[K] extends SourceReducer<TSignalValue, infer TValue>
+		? (value: TValue | Observable<TValue>) => void
 		: never;
 };
 
@@ -56,6 +63,8 @@ type ActionStreams<
 	>
 		? Observable<void>
 		: TReducers[K] extends Reducer<TSignalValue, infer TValue>
+		? Observable<TValue>
+		: TReducers[K] extends SourceReducer<TSignalValue, infer TValue>
 		? Observable<TValue>
 		: never;
 };
@@ -79,7 +88,7 @@ export function signalSlice<
 	TEffects extends NamedEffects
 >(config: {
 	initialState: TSignalValue;
-	sources?: Array<Observable<PartialOrValue<TSignalValue>>>;
+	sources?: Array<Source<TSignalValue>>;
 	reducers?: TReducers;
 	selectors?: (state: Signal<TSignalValue>) => TSelectors;
 	effects?: (
@@ -113,7 +122,22 @@ export function signalSlice<
 
 	for (const [key, reducer] of Object.entries(reducers as TReducers)) {
 		const subject = new Subject();
-		connect(state, subject, reducer);
+
+		if (reducer.length === 2) {
+			const standardReducer = reducer as Reducer<
+				(typeof config)['initialState'],
+				any
+			>;
+			connect(state, subject, standardReducer);
+		} else {
+			const sourceReducer = reducer as SourceReducer<
+				(typeof config)['initialState'],
+				any
+			>;
+
+			connect(state, sourceReducer(subject));
+		}
+
 		Object.defineProperties(readonlyState, {
 			[key]: {
 				value: (nextValue: unknown) => {
