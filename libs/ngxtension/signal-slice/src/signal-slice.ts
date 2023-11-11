@@ -60,6 +60,10 @@ type ActionStreams<
 		: never;
 };
 
+type SourcesArray<TSignalValue> = Array<
+	Observable<PartialOrValue<TSignalValue>>
+>;
+
 export type SignalSlice<
 	TSignalValue,
 	TReducers extends NamedReducers<TSignalValue>,
@@ -79,18 +83,25 @@ export function signalSlice<
 	TEffects extends NamedEffects
 >(config: {
 	initialState: TSignalValue;
-	sources?: Array<Observable<PartialOrValue<TSignalValue>>>;
 	reducers?: TReducers;
 	selectors?: (state: Signal<TSignalValue>) => TSelectors;
 	effects?: (
 		state: SignalSlice<TSignalValue, TReducers, TSelectors, any>
 	) => TEffects;
+	sources?:
+		| SourcesArray<TSignalValue>
+		| ((
+				state: SignalSlice<TSignalValue, any, TSelectors, TEffects>
+		  ) => SourcesArray<TSignalValue>);
 }): SignalSlice<TSignalValue, TReducers, TSelectors, TEffects> {
 	const destroyRef = inject(DestroyRef);
 
 	const {
 		initialState,
-		sources = [],
+		sources = (() => ({})) as unknown as Exclude<
+			(typeof config)['sources'],
+			undefined
+		>,
 		reducers = {},
 		selectors = (() => ({})) as unknown as Exclude<
 			(typeof config)['selectors'],
@@ -103,10 +114,6 @@ export function signalSlice<
 	} = config;
 
 	const state = signal(initialState);
-
-	for (const source of sources) {
-		connect(state, source);
-	}
 
 	const readonlyState = state.asReadonly();
 	const subs: Subject<unknown>[] = [];
@@ -159,6 +166,16 @@ export function signalSlice<
 				}
 			}),
 		});
+	}
+
+	if (Array.isArray(sources)) {
+		for (const source of sources) {
+			connect(state, source);
+		}
+	} else {
+		for (const source of sources(slice)) {
+			connect(state, source);
+		}
 	}
 
 	destroyRef.onDestroy(() => {
