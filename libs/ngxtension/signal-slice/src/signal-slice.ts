@@ -169,11 +169,7 @@ export function signalSlice<
 	for (const [key, reducer] of Object.entries(reducers as TReducers)) {
 		const subject = new Subject();
 
-		connect(
-			state,
-			subject,
-			reducer(readonlyState(), subject) as Reducer<TSignalValue, any>
-		);
+		connect(state, subject, reducer);
 
 		Object.defineProperties(readonlyState, {
 			[key]: {
