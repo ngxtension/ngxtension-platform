@@ -170,22 +170,7 @@ export function signalSlice<
 		const subject = new Subject();
 
 		connect(state, subject, reducer);
-
-		Object.defineProperties(readonlyState, {
-			[key]: {
-				value: (nextValue: unknown) => {
-					if (isObservable(nextValue)) {
-						nextValue.pipe(takeUntilDestroyed(destroyRef)).subscribe(subject);
-					} else {
-						subject.next(nextValue);
-					}
-				},
-			},
-			[`${key}$`]: {
-				value: subject.asObservable(),
-			},
-		});
-		subs.push(subject);
+		addReducerProperties(readonlyState, key, destroyRef, subject, subs);
 	}
 
 	for (const [key, asyncReducer] of Object.entries(
@@ -194,22 +179,7 @@ export function signalSlice<
 		const subject = new Subject();
 		const observable = asyncReducer(readonlyState, subject);
 		connect(state, observable);
-
-		Object.defineProperties(readonlyState, {
-			[key]: {
-				value: (nextValue: unknown) => {
-					if (isObservable(nextValue)) {
-						nextValue.pipe(takeUntilDestroyed(destroyRef)).subscribe(subject);
-					} else {
-						subject.next(nextValue);
-					}
-				},
-			},
-			[`${key}$`]: {
-				value: subject.asObservable(),
-			},
-		});
-		subs.push(subject);
+		addReducerProperties(readonlyState, key, destroyRef, subject, subs);
 	}
 
 	for (const key in initialState) {
@@ -248,4 +218,28 @@ export function signalSlice<
 	});
 
 	return slice;
+}
+
+function addReducerProperties(
+	readonlyState: Signal<unknown>,
+	key: string,
+	destroyRef: DestroyRef,
+	subject: Subject<unknown>,
+	subs: Subject<unknown>[]
+) {
+	Object.defineProperties(readonlyState, {
+		[key]: {
+			value: (nextValue: unknown) => {
+				if (isObservable(nextValue)) {
+					nextValue.pipe(takeUntilDestroyed(destroyRef)).subscribe(subject);
+				} else {
+					subject.next(nextValue);
+				}
+			},
+		},
+		[`${key}$`]: {
+			value: subject.asObservable(),
+		},
+	});
+	subs.push(subject);
 }
