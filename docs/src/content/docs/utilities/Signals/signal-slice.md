@@ -56,6 +56,25 @@ state = signalSlice({
 
 The `source` should be mapped to a partial of the `initialState`. In the example above, when the source emits it will update both the `checklists` and the `loaded` properties in the state signal.
 
+If you need to utilise the current state in a source, instead of supplying the
+observable directly as a source you can supply a function that accepts the state
+signal and returns the source:
+
+```ts
+state = signalSlice({
+	initialState: this.initialState,
+	sources: [
+		this.loadChecklists$,
+		(state) =>
+			this.newMessage$.pipe(
+				map((newMessage) => ({
+					messages: [...state().messages, newMessage],
+				}))
+			),
+	],
+});
+```
+
 ## Reducers and Actions
 
 Another way to update the state is through `reducers` and `actions`. This is good for situations where you need to manually/imperatively trigger some action, and then use the current state in some way in order to calculate the new state.
