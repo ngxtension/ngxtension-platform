@@ -1,5 +1,12 @@
 
 
+## [1.2.0](https://github.com/nartc/ngxtension-platform/compare/1.1.1...1.2.0) (2023-11-13)
+
+
+### Features
+
+* **signal-slice:** allow supplying source as a function that accepts state signal ([#146](https://github.com/nartc/ngxtension-platform/issues/146)) ([051443b](https://github.com/nartc/ngxtension-platform/commit/051443b8155137b7101fe138efa185a200ea4538))
+
 ## [1.1.1](https://github.com/nartc/ngxtension-platform/compare/1.1.0...1.1.1) (2023-11-13)
 
 
