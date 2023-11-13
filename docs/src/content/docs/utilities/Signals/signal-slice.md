@@ -101,6 +101,30 @@ The associated action can then be triggered with:
 this.state.toggleActive();
 ```
 
+## Async Reducers
+
+A standard reducer accepts a function that updates the state synchronously. It
+is also possible to specify `asyncReducers` that return an observable to update
+the state asynchronously.
+
+For example:
+
+```ts
+  state = signalSlice({
+    initialState: this.initialState,
+    asyncReducers: {
+      load: (_state, $: Observable<void>) => $.pipe(
+        switchMap(() => this.someService.load()),
+        map(data => ({ someProperty: data })
+      )
+    }
+  })
+```
+
+In this particular case, a `load` action will be created that can be called with `this.state.load()`. When this action is called the internal `Subject` will be nexted, and it is this subject that is being supplied as the `$` parameter above. You can then `pipe` onto that `$` to perform whatever asynchronous operations you need, and then at the end you should `map` the result to whatever parts of the state signal you want to update (just like with standard `reducers`).
+
+**NOTE:** This example covers the use case where data _needs_ to be manually triggered with a `load()` action. It is also possible to just have your data load automatically — in this case the observable that loads the data can just be supplied directly through `sources` and it will be loaded automatically without needing to trigger the `load()` action.
+
 ## Action Streams
 
 The source/stream for each action is also exposed on the state object. That means that you can access:

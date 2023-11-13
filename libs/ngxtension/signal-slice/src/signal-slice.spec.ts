@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { Subject } from 'rxjs';
+import { Observable, Subject, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { SignalSlice, signalSlice } from './signal-slice';
 
 describe(signalSlice.name, () => {
@@ -13,7 +14,7 @@ describe(signalSlice.name, () => {
 	};
 
 	describe('initialState', () => {
-		let state: SignalSlice<typeof initialState, any, any, any>;
+		let state: SignalSlice<typeof initialState, any, any, any, any>;
 
 		beforeEach(() => {
 			TestBed.runInInjectionContext(() => {
@@ -36,7 +37,7 @@ describe(signalSlice.name, () => {
 		const testSource$ = new Subject<Partial<typeof initialState>>();
 		const testSource2$ = new Subject<Partial<typeof initialState>>();
 
-		let state: SignalSlice<typeof initialState, any, any, any>;
+		let state: SignalSlice<typeof initialState, any, any, any, any>;
 
 		beforeEach(() => {
 			TestBed.runInInjectionContext(() => {
@@ -104,6 +105,45 @@ describe(signalSlice.name, () => {
 					},
 				});
 				expect(state.increaseAge$).toBeDefined();
+			});
+		});
+	});
+
+	describe('asyncReducers', () => {
+		it('should create action that updates signal asynchronously', () => {
+			TestBed.runInInjectionContext(() => {
+				const testAge = 35;
+
+				const state = signalSlice({
+					initialState,
+					asyncReducers: {
+						load: (state, $: Observable<void>) =>
+							$.pipe(
+								switchMap(() => of(testAge)),
+								map((age) => ({ age }))
+							),
+					},
+				});
+
+				state.load();
+				expect(state().age).toEqual(testAge);
+			});
+		});
+
+		it('should create action stream for reducer', () => {
+			TestBed.runInInjectionContext(() => {
+				const state = signalSlice({
+					initialState,
+					asyncReducers: {
+						load: (state, $: Observable<void>) =>
+							$.pipe(
+								switchMap(() => of(35)),
+								map((age) => ({ age }))
+							),
+					},
+				});
+
+				expect(state.load$).toBeDefined();
 			});
 		});
 	});
