@@ -113,7 +113,7 @@ For example:
   state = signalSlice({
     initialState: this.initialState,
     asyncReducers: {
-      load: ($: Observable<void>) => $.pipe(
+      load: (_state, $: Observable<void>) => $.pipe(
         switchMap(() => this.someService.load()),
         map(data => ({ someProperty: data })
       )
