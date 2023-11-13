@@ -1,5 +1,17 @@
 
 
+## [1.1.0](https://github.com/nartc/ngxtension-platform/compare/0.16.0...1.1.0) (2023-11-13)
+
+
+### Features
+
+* **signal-slice:** add asyncReducers ([#144](https://github.com/nartc/ngxtension-platform/issues/144)) ([3057f8b](https://github.com/nartc/ngxtension-platform/commit/3057f8b29ead06b2fc123bef1666b7f31d927116))
+
+
+### Bug Fixes
+
+* bump peer deps ([2179b8e](https://github.com/nartc/ngxtension-platform/commit/2179b8e60b98d4116e6788174a3409dc43f67485))
+
 ## [1.0.1](https://github.com/nartc/ngxtension-platform/compare/0.16.0...1.0.1) (2023-11-10)
 
 
