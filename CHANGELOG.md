@@ -1,5 +1,12 @@
 
 
+## [1.1.1](https://github.com/nartc/ngxtension-platform/compare/1.1.0...1.1.1) (2023-11-13)
+
+
+### Bug Fixes
+
+* peer dep range ([961de58](https://github.com/nartc/ngxtension-platform/commit/961de58a239bf666fbb3fc0be0becc8a79c1a5c5))
+
 ## [1.1.0](https://github.com/nartc/ngxtension-platform/compare/0.16.0...1.1.0) (2023-11-13)
 
 
