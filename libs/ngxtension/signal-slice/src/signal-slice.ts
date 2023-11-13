@@ -111,6 +111,8 @@ type ActionStreams<
 		: never;
 };
 
+export type Source<TSignalValue> = Observable<PartialOrValue<TSignalValue>>;
+
 export type SignalSlice<
 	TSignalValue,
 	TReducers extends NamedReducers<TSignalValue>,
@@ -132,7 +134,10 @@ export function signalSlice<
 	TEffects extends NamedEffects
 >(config: {
 	initialState: TSignalValue;
-	sources?: Array<Observable<PartialOrValue<TSignalValue>>>;
+	sources?: Array<
+		| Source<TSignalValue>
+		| ((state: Signal<TSignalValue>) => Source<TSignalValue>)
+	>;
 	reducers?: TReducers;
 	asyncReducers?: TAsyncReducers;
 	selectors?: (state: Signal<TSignalValue>) => TSelectors;
@@ -159,12 +164,16 @@ export function signalSlice<
 
 	const state = signal(initialState);
 
-	for (const source of sources) {
-		connect(state, source);
-	}
-
 	const readonlyState = state.asReadonly();
 	const subs: Subject<unknown>[] = [];
+
+	for (const source of sources) {
+		if (isObservable(source)) {
+			connect(state, source);
+		} else {
+			connect(state, source(readonlyState));
+		}
+	}
 
 	for (const [key, reducer] of Object.entries(reducers as TReducers)) {
 		const subject = new Subject();

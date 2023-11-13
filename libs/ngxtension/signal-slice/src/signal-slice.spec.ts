@@ -74,6 +74,28 @@ describe(signalSlice.name, () => {
 			expect(state().user.firstName).toEqual(testUpdate.user.firstName);
 			expect(state().age).toEqual(testUpdate2.age);
 		});
+
+		it('should allow supplying function that takes state signal', () => {
+			const ageSource$ = new Subject<number>();
+
+			TestBed.runInInjectionContext(() => {
+				state = signalSlice({
+					initialState,
+					sources: [
+						testSource$,
+						(state) =>
+							ageSource$.pipe(
+								map((incrementAge) => ({ age: state().age + incrementAge }))
+							),
+					],
+				});
+			});
+
+			const incrementAge = 5;
+			ageSource$.next(incrementAge);
+
+			expect(state().age).toEqual(initialState.age + incrementAge);
+		});
 	});
 
 	describe('reducers', () => {
