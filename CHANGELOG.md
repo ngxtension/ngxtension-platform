@@ -1,5 +1,12 @@
 
 
+## [1.2.1](https://github.com/nartc/ngxtension-platform/compare/1.2.0...1.2.1) (2023-11-14)
+
+
+### Bug Fixes
+
+* **signal-slice:** extra selectors type ([bdfe10b](https://github.com/nartc/ngxtension-platform/commit/bdfe10bfda1f740558b684088a5b3e57124e6334))
+
 ## [1.2.0](https://github.com/nartc/ngxtension-platform/compare/1.1.1...1.2.0) (2023-11-13)
 
 
