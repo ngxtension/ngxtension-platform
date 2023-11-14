@@ -1,5 +1,5 @@
-import { TestBed } from '@angular/core/testing';
-import { Observable, Subject, of } from 'rxjs';
+import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
+import { Observable, Subject, of, timer } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { SignalSlice, signalSlice } from './signal-slice';
 
@@ -129,6 +129,26 @@ describe(signalSlice.name, () => {
 				expect(state.increaseAge$).toBeDefined();
 			});
 		});
+
+		it('should resolve the updated state as a promise after reducer is invoked', (done) => {
+			TestBed.runInInjectionContext(() => {
+				const state = signalSlice({
+					initialState,
+					reducers: {
+						increaseAge: (state, amount: number) => ({
+							age: state.age + amount,
+						}),
+					},
+				});
+
+				state.increaseAge(1).then((updated) => {
+					expect(updated.age).toEqual(initialState.age + 1);
+					done();
+				});
+
+				TestBed.flushEffects();
+			});
+		});
 	});
 
 	describe('asyncReducers', () => {
@@ -168,6 +188,69 @@ describe(signalSlice.name, () => {
 				expect(state.load$).toBeDefined();
 			});
 		});
+
+		it('should resolve to the updated state when async reducer is invoked with a raw value', (done) => {
+			TestBed.runInInjectionContext(() => {
+				const state = signalSlice({
+					initialState,
+					asyncReducers: {
+						load: (_state, $: Observable<void>) =>
+							$.pipe(
+								switchMap(() => of(35)),
+								map((age) => ({ age }))
+							),
+					},
+				});
+
+				state.load().then((val) => {
+					expect(val.age).toEqual(35);
+					done();
+				});
+				TestBed.flushEffects();
+			});
+		});
+
+		it.only('should resolve to the updated state when async reducer is invoked with a stream and that stream is completed', fakeAsync(() => {
+			TestBed.runInInjectionContext(() => {
+				const age$ = new Subject<number>();
+
+				const state = signalSlice({
+					initialState,
+					asyncReducers: {
+						load: (_state, $: Observable<number>) =>
+							$.pipe(
+								switchMap((age) =>
+									timer(500).pipe(map(() => ({ age: 35 + age })))
+								)
+							),
+					},
+				});
+
+				state.load(age$).then((val) => {
+					expect(val.age).toEqual(40);
+					flush();
+				});
+
+				age$.next(1);
+				tick(500);
+
+				age$.next(2);
+				tick(500);
+
+				age$.next(3);
+				tick(500);
+
+				age$.next(4);
+				tick(500);
+
+				age$.next(5);
+				tick(500);
+
+				// NOTE: promise won't resolve until the stream is completed
+				age$.complete();
+				TestBed.flushEffects();
+			});
+		}));
 	});
 
 	describe('selectors', () => {

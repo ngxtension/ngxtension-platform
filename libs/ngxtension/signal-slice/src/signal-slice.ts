@@ -7,9 +7,9 @@ import {
 	type EffectRef,
 	type Signal,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { connect, type PartialOrValue, type Reducer } from 'ngxtension/connect';
-import { Subject, isObservable, type Observable } from 'rxjs';
+import { Subject, isObservable, take, type Observable } from 'rxjs';
 
 type NamedReducers<TSignalValue> = {
 	[actionName: string]: (
@@ -45,19 +45,19 @@ type Effects<TEffects extends NamedEffects> = {
 	[K in keyof TEffects]: EffectRef;
 };
 
-type Action<TValue> = TValue extends void
-	? () => void
+type Action<TSignalValue, TValue> = TValue extends void
+	? () => Promise<TSignalValue>
 	: unknown extends TValue
-	? () => void
-	: (value: TValue | Observable<TValue>) => void;
+	? () => Promise<TSignalValue>
+	: (value: TValue | Observable<TValue>) => Promise<TSignalValue>;
 
 type ActionMethod<
 	TSignalValue,
 	TReducer extends NamedReducers<TSignalValue>[string]
 > = TReducer extends (state: TSignalValue, value: infer TValue) => any
 	? TValue extends Observable<infer TObservableValue>
-		? Action<TObservableValue>
-		: Action<TValue>
+		? Action<TSignalValue, TObservableValue>
+		: Action<TSignalValue, TValue>
 	: never;
 
 type AsyncActionMethod<
@@ -68,8 +68,8 @@ type AsyncActionMethod<
 	value: infer TValue
 ) => any
 	? TValue extends Observable<infer TObservableValue>
-		? Action<TObservableValue>
-		: Action<TValue>
+		? Action<TSignalValue, TObservableValue>
+		: Action<TSignalValue, TValue>
 	: never;
 
 type ActionMethods<
@@ -163,8 +163,9 @@ export function signalSlice<
 	} = config;
 
 	const state = signal(initialState);
-
 	const readonlyState = state.asReadonly();
+	const state$ = toObservable(state);
+
 	const subs: Subject<unknown>[] = [];
 
 	for (const source of sources) {
@@ -179,7 +180,7 @@ export function signalSlice<
 		const subject = new Subject();
 
 		connect(state, subject, reducer);
-		addReducerProperties(readonlyState, key, destroyRef, subject, subs);
+		addReducerProperties(readonlyState, state$, key, destroyRef, subject, subs);
 	}
 
 	for (const [key, asyncReducer] of Object.entries(
@@ -188,7 +189,7 @@ export function signalSlice<
 		const subject = new Subject();
 		const observable = asyncReducer(readonlyState, subject);
 		connect(state, observable);
-		addReducerProperties(readonlyState, key, destroyRef, subject, subs);
+		addReducerProperties(readonlyState, state$, key, destroyRef, subject, subs);
 	}
 
 	for (const key in initialState) {
@@ -231,6 +232,7 @@ export function signalSlice<
 
 function addReducerProperties(
 	readonlyState: Signal<unknown>,
+	state$: Observable<unknown>,
 	key: string,
 	destroyRef: DestroyRef,
 	subject: Subject<unknown>,
@@ -240,10 +242,27 @@ function addReducerProperties(
 		[key]: {
 			value: (nextValue: unknown) => {
 				if (isObservable(nextValue)) {
-					nextValue.pipe(takeUntilDestroyed(destroyRef)).subscribe(subject);
-				} else {
-					subject.next(nextValue);
+					return new Promise((res, rej) => {
+						nextValue.pipe(takeUntilDestroyed(destroyRef)).subscribe({
+							next: subject.next.bind(subject),
+							error: (err) => {
+								subject.error(err);
+								rej(err);
+							},
+							complete: () => {
+								subject.complete();
+								res(readonlyState());
+							},
+						});
+					});
 				}
+
+				return new Promise((res) => {
+					state$.pipe(take(1)).subscribe((val) => {
+						res(val);
+					});
+					subject.next(nextValue);
+				});
 			},
 		},
 		[`${key}$`]: {
