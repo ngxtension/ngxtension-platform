@@ -1,7 +1,7 @@
 import { inject, type Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, type Params } from '@angular/router';
-import { map, startWith } from 'rxjs';
+import { map } from 'rxjs';
 
 /**
  * Injects the params from the current route.
@@ -34,29 +34,23 @@ export function injectParams<T>(transform: (params: Params) => T): Signal<T>;
  * @param keyOrTransform OPTIONAL The key of the param to return, or a transform function to apply to the params object
  */
 export function injectParams<T>(
-	keyOrTransform?: any
+	keyOrTransform?: string | ((params: Params) => T)
 ): Signal<T | Params | string | null> {
 	const route = inject(ActivatedRoute);
 	const params = route.snapshot.params || {};
 
 	if (typeof keyOrTransform === 'function') {
-		return toSignal(
-			route.params.pipe(startWith(keyOrTransform(params)), map(keyOrTransform)),
-			{ requireSync: true }
-		);
+		return toSignal(route.params.pipe(map(keyOrTransform)), {
+			initialValue: keyOrTransform(params),
+		});
 	}
 
-	const key = keyOrTransform as string;
-
 	const getParam = (params: Params) =>
-		key && params && Object.keys(params).length > 0
-			? params[key] ?? null
+		keyOrTransform && params && Object.keys(params).length > 0
+			? params[keyOrTransform] ?? null
 			: params;
 
-	return toSignal(
-		route.params.pipe(startWith(getParam(params)), map(getParam)),
-		{
-			requireSync: true,
-		}
-	);
+	return toSignal(route.params.pipe(map(getParam)), {
+		initialValue: getParam(params),
+	});
 }
