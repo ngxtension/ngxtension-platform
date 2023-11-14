@@ -38,7 +38,7 @@ type Selectors<TSignalValue> = {
 };
 
 type ExtraSelectors<TSelectors extends NamedSelectors> = {
-	[K in keyof TSelectors]: () => any;
+	[K in keyof TSelectors]: Signal<ReturnType<TSelectors[K]>>;
 };
 
 type Effects<TEffects extends NamedEffects> = {
