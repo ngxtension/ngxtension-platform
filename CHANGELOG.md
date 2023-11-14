@@ -1,5 +1,12 @@
 
 
+## [1.2.2](https://github.com/nartc/ngxtension-platform/compare/1.2.1...1.2.2) (2023-11-14)
+
+
+### Bug Fixes
+
+* **signal-slice:** add undocumented (intentional) way to wait for state update from invoking reducers ([5370778](https://github.com/nartc/ngxtension-platform/commit/53707784558e0889eaec02fef590505083fbfe6a))
+
 ## [1.2.1](https://github.com/nartc/ngxtension-platform/compare/1.2.0...1.2.1) (2023-11-14)
 
 
