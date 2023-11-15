@@ -1,4 +1,4 @@
-import { inject, type Signal } from '@angular/core';
+import { assertInInjectionContext, inject, type Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, type Params } from '@angular/router';
 import { map } from 'rxjs';
@@ -38,6 +38,7 @@ export function injectQueryParams<T>(
 export function injectQueryParams<T>(
 	keyOrTransform?: string | ((params: Params) => T)
 ): Signal<T | Params | string | null> {
+	assertInInjectionContext(injectQueryParams);
 	const route = inject(ActivatedRoute);
 	const queryParams = route.snapshot.queryParams || {};
 
