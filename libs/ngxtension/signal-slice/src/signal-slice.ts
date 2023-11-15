@@ -12,10 +12,9 @@ import { connect, type PartialOrValue, type Reducer } from 'ngxtension/connect';
 import { Subject, isObservable, take, type Observable } from 'rxjs';
 
 type NamedReducers<TSignalValue> = {
-	[actionName: string]: (
-		state: TSignalValue,
-		value: any
-	) => PartialOrValue<TSignalValue>;
+	[actionName: string]:
+		| Subject<any>
+		| ((state: TSignalValue, value: any) => PartialOrValue<TSignalValue>);
 };
 
 type NamedAsyncReducers<TSignalValue> = {
@@ -54,7 +53,9 @@ type Action<TSignalValue, TValue> = TValue extends void
 type ActionMethod<
 	TSignalValue,
 	TReducer extends NamedReducers<TSignalValue>[string]
-> = TReducer extends (state: TSignalValue, value: infer TValue) => any
+> = TReducer extends
+	| ((state: TSignalValue, value: infer TValue) => any)
+	| Subject<infer TValue>
 	? TValue extends Observable<infer TObservableValue>
 		? Action<TSignalValue, TObservableValue>
 		: Action<TSignalValue, TValue>
@@ -177,10 +178,27 @@ export function signalSlice<
 	}
 
 	for (const [key, reducer] of Object.entries(reducers as TReducers)) {
-		const subject = new Subject();
-
-		connect(state, subject, reducer);
-		addReducerProperties(readonlyState, state$, key, destroyRef, subject, subs);
+		if (isObservable(reducer)) {
+			addReducerProperties(
+				readonlyState,
+				state$,
+				key,
+				destroyRef,
+				reducer,
+				subs
+			);
+		} else {
+			const subject = new Subject();
+			connect(state, subject, reducer);
+			addReducerProperties(
+				readonlyState,
+				state$,
+				key,
+				destroyRef,
+				subject,
+				subs
+			);
+		}
 	}
 
 	for (const [key, asyncReducer] of Object.entries(
