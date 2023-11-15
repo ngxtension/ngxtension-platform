@@ -48,9 +48,7 @@ export function injectQueryParams<T>(
 	}
 
 	const getParam = (params: Params) =>
-		keyOrTransform && params && Object.keys(params).length > 0
-			? params[keyOrTransform] ?? null
-			: params;
+		keyOrTransform ? params?.[keyOrTransform] ?? null : params;
 
 	return toSignal(route.queryParams.pipe(map(getParam)), {
 		initialValue: getParam(queryParams),
