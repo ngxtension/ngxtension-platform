@@ -120,6 +120,27 @@ The associated action can then be triggered with:
 this.state.toggleActive();
 ```
 
+If it also possible to supply an external subject as a reducer like this:
+
+```ts
+someAction$ = new Subject<void>();
+
+state = signalSlice({
+	initialState: this.initialState,
+	reducers: {
+		someAction: someAction$,
+	},
+});
+```
+
+This is useful for circumstances where you need any of your `sources` to react
+to `someAction$` being triggered. A source can not react to internally created
+reducers/actions, but it can react to the externally created subject. Supplying
+this subject as a reducer allows you to still trigger it through
+`state.someAction()`. This makes using actions more consistent, as everything
+can be accessed on the state object, even if you need to create an external
+subject.
+
 ## Async Reducers
 
 A standard reducer accepts a function that updates the state synchronously. It
