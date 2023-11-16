@@ -169,6 +169,10 @@ export function signalSlice<
 			(typeof config)['effects'],
 			undefined
 		>,
+		actionEffects = (() => ({})) as unknown as Exclude<
+			(typeof config)['actionEffects'],
+			undefined
+		>,
 	} = config;
 
 	const state = signal(initialState);
@@ -241,6 +245,20 @@ export function signalSlice<
 				}
 			}),
 		});
+	}
+
+	for (const [key, namedActionEffect] of Object.entries(actionEffects(slice))) {
+		const actionStream$ = slice[key];
+
+		if (isObservable(actionStream$)) {
+			console.log('setting up', key);
+			console.log(actionStream$);
+			actionStream$.subscribe((val) => {
+				console.log(val);
+				console.log('yo');
+			});
+			actionStream$.subscribe(namedActionEffect);
+		}
 	}
 
 	destroyRef.onDestroy(() => {
