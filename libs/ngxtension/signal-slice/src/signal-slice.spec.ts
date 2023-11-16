@@ -149,6 +149,25 @@ describe(signalSlice.name, () => {
 				TestBed.flushEffects();
 			});
 		});
+
+		it('should accept an external subject as a reducer', () => {
+			TestBed.runInInjectionContext(() => {
+				const testAge = 50;
+
+				const trigger$ = new Subject<void>();
+				const state = signalSlice({
+					initialState,
+					sources: [trigger$.pipe(map(() => ({ age: testAge })))],
+					reducers: {
+						trigger: trigger$,
+					},
+				});
+
+				state.trigger();
+
+				expect(state().age).toEqual(testAge);
+			});
+		});
 	});
 
 	describe('asyncReducers', () => {
@@ -210,7 +229,7 @@ describe(signalSlice.name, () => {
 			});
 		});
 
-		it.only('should resolve to the updated state when async reducer is invoked with a stream and that stream is completed', fakeAsync(() => {
+		it('should resolve to the updated state when async reducer is invoked with a stream and that stream is completed', fakeAsync(() => {
 			TestBed.runInInjectionContext(() => {
 				const age$ = new Subject<number>();
 
