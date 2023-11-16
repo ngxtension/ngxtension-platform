@@ -251,12 +251,6 @@ export function signalSlice<
 		const actionStream$ = slice[key];
 
 		if (isObservable(actionStream$)) {
-			console.log('setting up', key);
-			console.log(actionStream$);
-			actionStream$.subscribe((val) => {
-				console.log(val);
-				console.log('yo');
-			});
 			actionStream$.subscribe(namedActionEffect);
 		}
 	}
