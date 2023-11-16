@@ -28,10 +28,6 @@ type NamedEffects = {
 	[selectorName: string]: () => void | (() => void);
 };
 
-type NamedActionEffects<TSyncAndAsyncReducers> = {
-	[K in keyof TSyncAndAsyncReducers & string as `${K}$`]: () => void;
-};
-
 type Selectors<TSignalValue> = {
 	[K in keyof TSignalValue]: Signal<TSignalValue[K]>;
 };
@@ -46,7 +42,10 @@ type Effects<TEffects extends NamedEffects> = {
 
 type ActionEffects<
 	TSignalValue,
-	TActionEffects extends NamedActionEffects<NamedActionSources<TSignalValue>>
+	TActionEffects extends NamedActionEffects<
+		TSignalValue,
+		NamedActionSources<TSignalValue>
+	>
 > = {
 	[K in keyof TActionEffects]: void;
 };
@@ -94,6 +93,13 @@ type ActionStreams<
 		: never;
 };
 
+type NamedActionEffects<
+	TSignalValue,
+	TActionSources extends NamedActionSources<TSignalValue>
+> = {
+	[K in keyof ActionStreams<TSignalValue, TActionSources>]: (val: any) => void;
+};
+
 export type Source<TSignalValue> = Observable<PartialOrValue<TSignalValue>>;
 
 export type SignalSlice<
@@ -101,7 +107,7 @@ export type SignalSlice<
 	TActionSources extends NamedActionSources<TSignalValue>,
 	TSelectors extends NamedSelectors,
 	TEffects extends NamedEffects,
-	TActionEffects extends NamedActionEffects<TSignalValue>
+	TActionEffects extends NamedActionEffects<TSignalValue, TActionSources>
 > = Signal<TSignalValue> &
 	Selectors<TSignalValue> &
 	ExtraSelectors<TSelectors> &
@@ -115,7 +121,7 @@ export function signalSlice<
 	TActionSources extends NamedActionSources<TSignalValue>,
 	TSelectors extends NamedSelectors,
 	TEffects extends NamedEffects,
-	TActionEffects extends NamedActionEffects<TSignalValue>
+	TActionEffects extends NamedActionEffects<TSignalValue, TActionSources>
 >(config: {
 	initialState: TSignalValue;
 	sources?: Array<
@@ -133,6 +139,15 @@ export function signalSlice<
 			TActionEffects
 		>
 	) => TEffects;
+	actionEffects?: (
+		state: SignalSlice<
+			TSignalValue,
+			TActionSources,
+			TSelectors,
+			any,
+			TActionEffects
+		>
+	) => TActionEffects;
 }): SignalSlice<
 	TSignalValue,
 	TActionSources,
