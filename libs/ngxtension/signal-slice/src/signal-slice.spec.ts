@@ -15,7 +15,7 @@ describe(signalSlice.name, () => {
 	};
 
 	describe('initialState', () => {
-		let state: SignalSlice<typeof initialState, any, any, any>;
+		let state: SignalSlice<typeof initialState, any, any, any, any>;
 
 		beforeEach(() => {
 			TestBed.runInInjectionContext(() => {
@@ -38,7 +38,7 @@ describe(signalSlice.name, () => {
 		const testSource$ = new Subject<Partial<typeof initialState>>();
 		const testSource2$ = new Subject<Partial<typeof initialState>>();
 
-		let state: SignalSlice<typeof initialState, any, any, any>;
+		let state: SignalSlice<typeof initialState, any, any, any, any>;
 
 		beforeEach(() => {
 			TestBed.runInInjectionContext(() => {
@@ -306,25 +306,29 @@ describe(signalSlice.name, () => {
 	});
 
 	describe('actionEffects', () => {
-		it('should create effects for named actionEeffects', () => {
+		it('should create effects for named actionEffects', () => {
 			TestBed.runInInjectionContext(() => {
 				const testFn = jest.fn();
+				const increaseAmount = 5;
 
 				const state = signalSlice({
 					initialState,
-					reducers: {
-						increaseAge: (state) => ({ age: state.age + 1 }),
+					actionSources: {
+						increaseAge: (state, $: Observable<number>) =>
+							$.pipe(map((amount) => ({ age: state().age + amount }))),
 					},
 					actionEffects: (state) => ({
 						increaseAge$: (val) => {
-							testFn(val.age);
+							testFn(state().age);
+							testFn(val);
 						},
 					}),
 				});
 
-				state.increaseAge();
+				state.increaseAge(increaseAmount);
 
-				expect(testFn).toHaveBeenCalledWith(initialState.age + 1);
+				expect(testFn).toHaveBeenCalledWith(initialState.age + increaseAmount);
+				expect(testFn).toHaveBeenCalledWith(increaseAmount);
 			});
 		});
 	});
