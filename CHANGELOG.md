@@ -1,5 +1,21 @@
 
 
+## [1.3.0](https://github.com/nartc/ngxtension-platform/compare/1.2.2...1.3.0) (2023-11-15)
+
+
+### Features
+
+* add 404 page ([#147](https://github.com/nartc/ngxtension-platform/issues/147)) ([64be3c1](https://github.com/nartc/ngxtension-platform/commit/64be3c1958106580d3a900529afa47e8f80f98b6))
+* added inject params and inject query params ([16ef4e1](https://github.com/nartc/ngxtension-platform/commit/16ef4e117d8e7f69ae0bcb8f443b206574f78769))
+
+
+### Bug Fixes
+
+* add assertInInjectionContext ([a3d1a60](https://github.com/nartc/ngxtension-platform/commit/a3d1a60b49b228479899b8ccc9c1464926a9e9ac))
+* better code health ([9f03d06](https://github.com/nartc/ngxtension-platform/commit/9f03d06a637e6f17ff6d96a3d71b9007f7e2f884))
+* export utils ([11453a5](https://github.com/nartc/ngxtension-platform/commit/11453a55391b3ea8c954e6a2c116521b10bc184e))
+* replace startWith with initial value ([99fad4f](https://github.com/nartc/ngxtension-platform/commit/99fad4f56ba3dc8701d192f719b5894b0b829c69))
+
 ## [1.2.2](https://github.com/nartc/ngxtension-platform/compare/1.2.1...1.2.2) (2023-11-14)
 
 
