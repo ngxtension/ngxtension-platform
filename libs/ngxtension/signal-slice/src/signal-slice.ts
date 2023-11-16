@@ -28,6 +28,10 @@ type NamedEffects = {
 	[selectorName: string]: () => void | (() => void);
 };
 
+type NamedActionEffects<TSyncAndAsyncReducers> = {
+	[K in keyof TSyncAndAsyncReducers & string as `${K}$`]: () => void;
+};
+
 type Selectors<TSignalValue> = {
 	[K in keyof TSignalValue]: Signal<TSignalValue[K]>;
 };
@@ -38,6 +42,13 @@ type ExtraSelectors<TSelectors extends NamedSelectors> = {
 
 type Effects<TEffects extends NamedEffects> = {
 	[K in keyof TEffects]: EffectRef;
+};
+
+type ActionEffects<
+	TSignalValue,
+	TActionEffects extends NamedActionEffects<NamedActionSources<TSignalValue>>
+> = {
+	[K in keyof TActionEffects]: void;
 };
 
 type Action<TSignalValue, TValue> = TValue extends [void]
@@ -89,11 +100,13 @@ export type SignalSlice<
 	TSignalValue,
 	TActionSources extends NamedActionSources<TSignalValue>,
 	TSelectors extends NamedSelectors,
-	TEffects extends NamedEffects
+	TEffects extends NamedEffects,
+	TActionEffects extends NamedActionEffects<TSignalValue>
 > = Signal<TSignalValue> &
 	Selectors<TSignalValue> &
 	ExtraSelectors<TSelectors> &
 	Effects<TEffects> &
+	ActionEffects<TSignalValue, TActionEffects> &
 	ActionMethods<TSignalValue, TActionSources> &
 	ActionStreams<TSignalValue, TActionSources>;
 
@@ -101,7 +114,8 @@ export function signalSlice<
 	TSignalValue,
 	TActionSources extends NamedActionSources<TSignalValue>,
 	TSelectors extends NamedSelectors,
-	TEffects extends NamedEffects
+	TEffects extends NamedEffects,
+	TActionEffects extends NamedActionEffects<TSignalValue>
 >(config: {
 	initialState: TSignalValue;
 	sources?: Array<
@@ -111,9 +125,21 @@ export function signalSlice<
 	actionSources?: TActionSources;
 	selectors?: (state: Signal<TSignalValue>) => TSelectors;
 	effects?: (
-		state: SignalSlice<TSignalValue, TActionSources, TSelectors, any>
+		state: SignalSlice<
+			TSignalValue,
+			TActionSources,
+			TSelectors,
+			any,
+			TActionEffects
+		>
 	) => TEffects;
-}): SignalSlice<TSignalValue, TActionSources, TSelectors, TEffects> {
+}): SignalSlice<
+	TSignalValue,
+	TActionSources,
+	TSelectors,
+	TEffects,
+	TActionEffects
+> {
 	const destroyRef = inject(DestroyRef);
 
 	const {
@@ -187,7 +213,8 @@ export function signalSlice<
 		TSignalValue,
 		TActionSources,
 		TSelectors,
-		TEffects
+		TEffects,
+		TActionEffects
 	>;
 
 	for (const [key, namedEffect] of Object.entries(effects(slice))) {
