@@ -305,6 +305,30 @@ describe(signalSlice.name, () => {
 		});
 	});
 
+	describe('actionEffects', () => {
+		it('should create effects for named actionEeffects', () => {
+			TestBed.runInInjectionContext(() => {
+				const testFn = jest.fn();
+
+				const state = signalSlice({
+					initialState,
+					reducers: {
+						increaseAge: (state) => ({ age: state.age + 1 }),
+					},
+					actionEffects: (state) => ({
+						increaseAge$: (val) => {
+							testFn(val.age);
+						},
+					}),
+				});
+
+				state.increaseAge();
+
+				expect(testFn).toHaveBeenCalledWith(initialState.age + 1);
+			});
+		});
+	});
+
 	describe('effects', () => {
 		it('should create effects for named effects', () => {
 			TestBed.runInInjectionContext(() => {
