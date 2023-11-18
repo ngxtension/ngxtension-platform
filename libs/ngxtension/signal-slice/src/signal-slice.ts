@@ -11,17 +11,13 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { connect, type PartialOrValue, type Reducer } from 'ngxtension/connect';
 import { Subject, isObservable, take, type Observable } from 'rxjs';
 
-type NamedReducers<TSignalValue> = {
+type NamedActionSources<TSignalValue> = {
 	[actionName: string]:
 		| Subject<any>
-		| ((state: TSignalValue, value: any) => PartialOrValue<TSignalValue>);
-};
-
-type NamedAsyncReducers<TSignalValue> = {
-	[actionName: string]: (
-		state: Signal<TSignalValue>,
-		value: any
-	) => Observable<PartialOrValue<TSignalValue>>;
+		| ((
+				state: Signal<TSignalValue>,
+				value: any
+		  ) => Observable<PartialOrValue<TSignalValue>>);
 };
 
 type NamedSelectors = {
@@ -52,22 +48,10 @@ type Action<TSignalValue, TValue> = TValue extends void
 
 type ActionMethod<
 	TSignalValue,
-	TReducer extends NamedReducers<TSignalValue>[string]
-> = TReducer extends
-	| ((state: TSignalValue, value: infer TValue) => any)
+	TActionSource extends NamedActionSources<TSignalValue>[string]
+> = TActionSource extends
+	| ((state: Signal<TSignalValue>, value: infer TValue) => any)
 	| Subject<infer TValue>
-	? TValue extends Observable<infer TObservableValue>
-		? Action<TSignalValue, TObservableValue>
-		: Action<TSignalValue, TValue>
-	: never;
-
-type AsyncActionMethod<
-	TSignalValue,
-	TAsyncReducer extends NamedAsyncReducers<TSignalValue>[string]
-> = TAsyncReducer extends (
-	state: Signal<TSignalValue>,
-	value: infer TValue
-) => any
 	? TValue extends Observable<infer TObservableValue>
 		? Action<TSignalValue, TObservableValue>
 		: Action<TSignalValue, TValue>
@@ -75,37 +59,19 @@ type AsyncActionMethod<
 
 type ActionMethods<
 	TSignalValue,
-	TReducers extends NamedReducers<TSignalValue>,
-	TAsyncReducers extends NamedAsyncReducers<TSignalValue>
+	TActionSources extends NamedActionSources<TSignalValue>
 > = {
-	[K in keyof TReducers]: ActionMethod<TSignalValue, TReducers[K]>;
-} & {
-	[K in keyof TAsyncReducers]: AsyncActionMethod<
-		TSignalValue,
-		TAsyncReducers[K]
-	>;
+	[K in keyof TActionSources]: ActionMethod<TSignalValue, TActionSources[K]>;
 };
 
 type ActionStreams<
 	TSignalValue,
-	TReducers extends NamedReducers<TSignalValue>,
-	TAsyncReducers extends NamedAsyncReducers<TSignalValue>
+	TActionSources extends NamedActionSources<TSignalValue>
 > = {
-	[K in keyof TReducers & string as `${K}$`]: TReducers[K] extends Reducer<
-		TSignalValue,
-		unknown
-	>
+	[K in keyof TActionSources &
+		string as `${K}$`]: TActionSources[K] extends Reducer<TSignalValue, unknown>
 		? Observable<void>
-		: TReducers[K] extends Reducer<TSignalValue, infer TValue>
-		? TValue extends Observable<any>
-			? TValue
-			: Observable<TValue>
-		: never;
-} & {
-	[K in keyof TAsyncReducers &
-		string as `${K}$`]: TAsyncReducers[K] extends Reducer<TSignalValue, unknown>
-		? Observable<void>
-		: TReducers[K] extends Reducer<TSignalValue, infer TValue>
+		: TActionSources[K] extends Reducer<TSignalValue, infer TValue>
 		? TValue extends Observable<any>
 			? TValue
 			: Observable<TValue>
@@ -116,21 +82,19 @@ export type Source<TSignalValue> = Observable<PartialOrValue<TSignalValue>>;
 
 export type SignalSlice<
 	TSignalValue,
-	TReducers extends NamedReducers<TSignalValue>,
-	TAsyncReducers extends NamedAsyncReducers<TSignalValue>,
+	TActionSources extends NamedActionSources<TSignalValue>,
 	TSelectors extends NamedSelectors,
 	TEffects extends NamedEffects
 > = Signal<TSignalValue> &
 	Selectors<TSignalValue> &
 	ExtraSelectors<TSelectors> &
 	Effects<TEffects> &
-	ActionMethods<TSignalValue, TReducers, TAsyncReducers> &
-	ActionStreams<TSignalValue, TReducers, TAsyncReducers>;
+	ActionMethods<TSignalValue, TActionSources> &
+	ActionStreams<TSignalValue, TActionSources>;
 
 export function signalSlice<
 	TSignalValue,
-	TReducers extends NamedReducers<TSignalValue>,
-	TAsyncReducers extends NamedAsyncReducers<TSignalValue>,
+	TActionSources extends NamedActionSources<TSignalValue>,
 	TSelectors extends NamedSelectors,
 	TEffects extends NamedEffects
 >(config: {
@@ -139,20 +103,18 @@ export function signalSlice<
 		| Source<TSignalValue>
 		| ((state: Signal<TSignalValue>) => Source<TSignalValue>)
 	>;
-	reducers?: TReducers;
-	asyncReducers?: TAsyncReducers;
+	actionSources?: TActionSources;
 	selectors?: (state: Signal<TSignalValue>) => TSelectors;
 	effects?: (
-		state: SignalSlice<TSignalValue, TReducers, TAsyncReducers, TSelectors, any>
+		state: SignalSlice<TSignalValue, TActionSources, TSelectors, any>
 	) => TEffects;
-}): SignalSlice<TSignalValue, TReducers, TAsyncReducers, TSelectors, TEffects> {
+}): SignalSlice<TSignalValue, TActionSources, TSelectors, TEffects> {
 	const destroyRef = inject(DestroyRef);
 
 	const {
 		initialState,
 		sources = [],
-		reducers = {},
-		asyncReducers = {},
+		actionSources = {},
 		selectors = (() => ({})) as unknown as Exclude<
 			(typeof config)['selectors'],
 			undefined
@@ -177,19 +139,22 @@ export function signalSlice<
 		}
 	}
 
-	for (const [key, reducer] of Object.entries(reducers as TReducers)) {
-		if (isObservable(reducer)) {
+	for (const [key, actionSource] of Object.entries(
+		actionSources as TActionSources
+	)) {
+		if (isObservable(actionSource)) {
 			addReducerProperties(
 				readonlyState,
 				state$,
 				key,
 				destroyRef,
-				reducer,
+				actionSource,
 				subs
 			);
 		} else {
 			const subject = new Subject();
-			connect(state, subject, reducer);
+			const observable = actionSource(readonlyState, subject);
+			connect(state, observable);
 			addReducerProperties(
 				readonlyState,
 				state$,
@@ -199,15 +164,6 @@ export function signalSlice<
 				subs
 			);
 		}
-	}
-
-	for (const [key, asyncReducer] of Object.entries(
-		asyncReducers as TAsyncReducers
-	)) {
-		const subject = new Subject();
-		const observable = asyncReducer(readonlyState, subject);
-		connect(state, observable);
-		addReducerProperties(readonlyState, state$, key, destroyRef, subject, subs);
 	}
 
 	for (const key in initialState) {
@@ -224,8 +180,7 @@ export function signalSlice<
 
 	const slice = readonlyState as SignalSlice<
 		TSignalValue,
-		TReducers,
-		TAsyncReducers,
+		TActionSources,
 		TSelectors,
 		TEffects
 	>;
