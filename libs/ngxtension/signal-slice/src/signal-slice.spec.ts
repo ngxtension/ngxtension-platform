@@ -14,7 +14,7 @@ describe(signalSlice.name, () => {
 	};
 
 	describe('initialState', () => {
-		let state: SignalSlice<typeof initialState, any, any, any, any>;
+		let state: SignalSlice<typeof initialState, any, any, any>;
 
 		beforeEach(() => {
 			TestBed.runInInjectionContext(() => {
@@ -37,7 +37,7 @@ describe(signalSlice.name, () => {
 		const testSource$ = new Subject<Partial<typeof initialState>>();
 		const testSource2$ = new Subject<Partial<typeof initialState>>();
 
-		let state: SignalSlice<typeof initialState, any, any, any, any>;
+		let state: SignalSlice<typeof initialState, any, any, any>;
 
 		beforeEach(() => {
 			TestBed.runInInjectionContext(() => {
@@ -98,15 +98,14 @@ describe(signalSlice.name, () => {
 		});
 	});
 
-	describe('reducers', () => {
+	describe('actionSources', () => {
 		it('should create action that updates signal', () => {
 			TestBed.runInInjectionContext(() => {
 				const state = signalSlice({
 					initialState,
-					reducers: {
-						increaseAge: (state, amount: number) => ({
-							age: state.age + amount,
-						}),
+					actionSources: {
+						increaseAge: (state, $: Observable<number>) =>
+							$.pipe(map((amount) => ({ age: state().age + amount }))),
 					},
 				});
 
@@ -120,12 +119,12 @@ describe(signalSlice.name, () => {
 			TestBed.runInInjectionContext(() => {
 				const state = signalSlice({
 					initialState,
-					reducers: {
-						increaseAge: (state, amount: number) => ({
-							age: state.age + amount,
-						}),
+					actionSources: {
+						increaseAge: (state, $: Observable<number>) =>
+							$.pipe(map((amount) => ({ age: state().age + amount }))),
 					},
 				});
+
 				expect(state.increaseAge$).toBeDefined();
 			});
 		});
@@ -134,10 +133,9 @@ describe(signalSlice.name, () => {
 			TestBed.runInInjectionContext(() => {
 				const state = signalSlice({
 					initialState,
-					reducers: {
-						increaseAge: (state, amount: number) => ({
-							age: state.age + amount,
-						}),
+					actionSources: {
+						increaseAge: (state, $: Observable<number>) =>
+							$.pipe(map((amount) => ({ age: state().age + amount }))),
 					},
 				});
 
@@ -158,7 +156,7 @@ describe(signalSlice.name, () => {
 				const state = signalSlice({
 					initialState,
 					sources: [trigger$.pipe(map(() => ({ age: testAge })))],
-					reducers: {
+					actionSources: {
 						trigger: trigger$,
 					},
 				});
@@ -168,16 +166,14 @@ describe(signalSlice.name, () => {
 				expect(state().age).toEqual(testAge);
 			});
 		});
-	});
 
-	describe('asyncReducers', () => {
 		it('should create action that updates signal asynchronously', () => {
 			TestBed.runInInjectionContext(() => {
 				const testAge = 35;
 
 				const state = signalSlice({
 					initialState,
-					asyncReducers: {
+					actionSources: {
 						load: (state, $: Observable<void>) =>
 							$.pipe(
 								switchMap(() => of(testAge)),
@@ -195,7 +191,7 @@ describe(signalSlice.name, () => {
 			TestBed.runInInjectionContext(() => {
 				const state = signalSlice({
 					initialState,
-					asyncReducers: {
+					actionSources: {
 						load: (state, $: Observable<void>) =>
 							$.pipe(
 								switchMap(() => of(35)),
@@ -212,7 +208,7 @@ describe(signalSlice.name, () => {
 			TestBed.runInInjectionContext(() => {
 				const state = signalSlice({
 					initialState,
-					asyncReducers: {
+					actionSources: {
 						load: (_state, $: Observable<void>) =>
 							$.pipe(
 								switchMap(() => of(35)),
@@ -235,7 +231,7 @@ describe(signalSlice.name, () => {
 
 				const state = signalSlice({
 					initialState,
-					asyncReducers: {
+					actionSources: {
 						load: (_state, $: Observable<number>) =>
 							$.pipe(
 								switchMap((age) =>
@@ -288,15 +284,15 @@ describe(signalSlice.name, () => {
 	});
 
 	describe('effects', () => {
-		xit('should create effects for named effects', () => {
-			// TODO: enable this test when flushEffects is available
+		it('should create effects for named effects', () => {
 			TestBed.runInInjectionContext(() => {
 				const testFn = jest.fn();
 
 				const state = signalSlice({
 					initialState,
-					reducers: {
-						increaseAge: (state) => ({ age: state.age + 1 }),
+					actionSources: {
+						increaseAge: (state, $: Observable<void>) =>
+							$.pipe(map(() => ({ age: state().age + 1 }))),
 					},
 					effects: (state) => ({
 						doSomething: () => {
@@ -305,23 +301,26 @@ describe(signalSlice.name, () => {
 					}),
 				});
 
-				state.increaseAge();
-
+				TestBed.flushEffects();
 				expect(testFn).toHaveBeenCalledWith(initialState.age);
+
+				state.increaseAge();
+				TestBed.flushEffects();
+
 				expect(testFn).toHaveBeenCalledWith(initialState.age + 1);
 			});
 		});
 
-		xit('should only run effect with updated signal', () => {
-			// TODO: enable this test when flushEffects is available
+		it('should only run effect with updated signal', () => {
 			TestBed.runInInjectionContext(() => {
 				const initFn = jest.fn();
 				const testFn = jest.fn();
 
 				const state = signalSlice({
 					initialState,
-					reducers: {
-						increaseAge: (state) => ({ age: state.age + 1 }),
+					actionSources: {
+						increaseAge: (state, $: Observable<void>) =>
+							$.pipe(map(() => ({ age: state().age + 1 }))),
 					},
 					effects: (state) => ({
 						init: () => {
@@ -333,7 +332,12 @@ describe(signalSlice.name, () => {
 					}),
 				});
 
+				TestBed.flushEffects();
+				expect(initFn).toHaveBeenCalledTimes(1);
+				expect(testFn).toHaveBeenCalledTimes(1);
+
 				state.increaseAge();
+				TestBed.flushEffects();
 
 				expect(initFn).toHaveBeenCalledTimes(1);
 				expect(testFn).toHaveBeenCalledTimes(2);
