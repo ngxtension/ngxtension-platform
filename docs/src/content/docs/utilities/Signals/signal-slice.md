@@ -83,7 +83,7 @@ Another way to update the state is through `actionSources`. An action source cre
 
 This is good for situations where you need to manually/imperatively trigger some action, and then use the current state in some way in order to calculate the new state.
 
-When you supply an `actionSource`, it will automatically create an `action` that you can call. Reducers can be created like this:
+When you supply an `actionSource`, it will automatically create an `action` that you can call. Action Sources can be created like this:
 
 ```ts
 state = signalSlice({
@@ -166,7 +166,7 @@ The source/stream for each action is also exposed on the state object. That mean
 this.state.add$;
 ```
 
-Which will allow you to react to the `add` action/reducer being called.
+Which will allow you to react to the `add` action being called.
 
 ## Selectors
 
