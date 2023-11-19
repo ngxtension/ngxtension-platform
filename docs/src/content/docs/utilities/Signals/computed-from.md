@@ -226,7 +226,7 @@ export class MyComponent {
 				switchMap(([page, filters]) => this.dataService.getUserData(this.userId, page, filters)),
 				startWith([] as string[]) // change the initial value
 			),
-			this.injector // 👈 pass the injector as the third argument
+			{ injector: this.injector } // 👈 pass the injector in the options object
 		);
 	}
 }

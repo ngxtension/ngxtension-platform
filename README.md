@@ -77,6 +77,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/cskiwi"><img src="https://avatars.githubusercontent.com/u/847540?v=4?s=100" width="100px;" alt="Glenn Latomme"/><br /><sub><b>Glenn Latomme</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=cskiwi" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://jeevanmahesha.github.io"><img src="https://avatars.githubusercontent.com/u/34814862?v=4?s=100" width="100px;" alt="Jeevan "/><br /><sub><b>Jeevan </b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=JeevanMahesha" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/gianmarcogiummarra"><img src="https://avatars.githubusercontent.com/u/9169021?v=4?s=100" width="100px;" alt="Gianmarco Giummarra"/><br /><sub><b>Gianmarco Giummarra</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=gianmarcogiummarra" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/diegovilar"><img src="https://avatars.githubusercontent.com/u/759416?v=4?s=100" width="100px;" alt="Diego Vilar"/><br /><sub><b>Diego Vilar</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=diegovilar" title="Code">💻</a></td>
     </tr>
   </tbody>
   <tfoot>
