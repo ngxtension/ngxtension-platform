@@ -74,6 +74,9 @@
 			"ngxtension/singleton-proxy": [
 				"libs/ngxtension/singleton-proxy/src/index.ts"
 			],
+			"ngxtension/to-lazy-signal": [
+				"libs/ngxtension/to-lazy-signal/src/index.ts"
+			],
 			"ngxtension/trackby-id-prop": [
 				"libs/ngxtension/trackby-id-prop/src/index.ts"
 			],
