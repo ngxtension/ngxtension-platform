@@ -5,7 +5,9 @@ description: ngxtension/signalSlice
 
 `signalSlice` is loosely inspired by the `createSlice` API from Redux Toolkit. The general idea is that it allows you to declaratively create a "slice" of state. This state will be available as a **readonly** signal.
 
-The key motivation, and what makes this declarative, is that all the ways for updating this signal are declared upfront with `sources` and `reducers`. It is not possible to imperatively update the state.
+The key motivation, and what makes this declarative, is that all the ways for
+updating this signal are declared upfront with `sources` and `actionSources`.
+It is not possible to imperatively update the state.
 
 ## Basic Usage
 
@@ -41,7 +43,7 @@ this.state.loaded();
 
 ## Sources
 
-One way to update state is through the use of `sources`. These are intended to be used for "auto sources" — as in, observable streams that will emit automatically like an `http.get()`. Although it will work with a `Subject` that you `next` as well, it is recommended that you use a **reducer** for these imperative style state updates.
+One way to update state is through the use of `sources`. These are intended to be used for "auto sources" — as in, observable streams that will emit automatically like an `http.get()`. Although it will work with a `Subject` that you `next` as well, it is recommended that you use an **actionSource** for these imperative style state updates.
 
 You can supply a source like this:
 
@@ -75,84 +77,48 @@ state = signalSlice({
 });
 ```
 
-## Reducers and Actions
+## Action Sources
 
-Another way to update the state is through `reducers` and `actions`. This is good for situations where you need to manually/imperatively trigger some action, and then use the current state in some way in order to calculate the new state.
+Another way to update the state is through `actionSources`. An action source creates an **action** that you can call, and it returns a **source** that is used to update the state.
 
-When you supply a `reducer`, it will automatically create an `action` that you can call. Reducers can be created like this:
+This is good for situations where you need to manually/imperatively trigger some action, and then use the current state in some way in order to calculate the new state.
+
+When you supply an `actionSource`, it will automatically create an `action` that you can call. Action Sources can be created like this:
 
 ```ts
 state = signalSlice({
 	initialState: this.initialState,
-	reducers: {
-		add: (state, checklist: AddChecklist) => ({
-			checklists: [...state.checklists, checklist],
-		}),
-		remove: (state, id: RemoveChecklist) => ({
-			checklists: state.checklists.filter((checklist) => checklist.id !== id),
-		}),
+	actionSources: {
+		add: (state, action$: Observable<AddChecklist>) =>
+			action$.pipe(
+				map((checklist) => ({
+					checklists: [...state().checklists, checklist],
+				}))
+			),
+		remove: (state, action$: Observable<RemoveChecklist>) =>
+			action$.pipe(
+				map((id) => ({
+					checklists: state().checklists.filter((checklist) => checklist.id !== id),
+				}))
+			),
 	},
 });
 ```
 
-You can supply a reducer function that has access to the previous state, and whatever payload the action was just called with. Actions are created automatically and can be called like this:
+Actions are created automatically using whatever name you provide for the
+`actionSource` and can be called like this:
 
 ```ts
 this.state.add(checklist);
 ```
 
-It is also possible to have a reducer/action without any payload:
-
-```ts
-state = signalSlice({
-	initialState: this.initialState,
-	reducers: {
-		toggleActive: (state) => ({
-			active: !state.active,
-		}),
-	},
-});
-```
-
-The associated action can then be triggered with:
-
-```ts
-this.state.toggleActive();
-```
-
-If it also possible to supply an external subject as a reducer like this:
-
-```ts
-someAction$ = new Subject<void>();
-
-state = signalSlice({
-	initialState: this.initialState,
-	reducers: {
-		someAction: someAction$,
-	},
-});
-```
-
-This is useful for circumstances where you need any of your `sources` to react
-to `someAction$` being triggered. A source can not react to internally created
-reducers/actions, but it can react to the externally created subject. Supplying
-this subject as a reducer allows you to still trigger it through
-`state.someAction()`. This makes using actions more consistent, as everything
-can be accessed on the state object, even if you need to create an external
-subject.
-
-## Async Reducers
-
-A standard reducer accepts a function that updates the state synchronously. It
-is also possible to specify `asyncReducers` that return an observable to update
-the state asynchronously.
-
-For example:
+It is also possible to have an `actionSource` without any payload. For example
+sometimes people might want to manually trigger a load:
 
 ```ts
   state = signalSlice({
     initialState: this.initialState,
-    asyncReducers: {
+    actionSources: {
       load: (_state, $: Observable<void>) => $.pipe(
         switchMap(() => this.someService.load()),
         map(data => ({ someProperty: data })
@@ -161,9 +127,36 @@ For example:
   })
 ```
 
-In this particular case, a `load` action will be created that can be called with `this.state.load()`. When this action is called the internal `Subject` will be nexted, and it is this subject that is being supplied as the `$` parameter above. You can then `pipe` onto that `$` to perform whatever asynchronous operations you need, and then at the end you should `map` the result to whatever parts of the state signal you want to update (just like with standard `reducers`).
+In this particular case, a `load` action will be created that can be called with
+`this.state.load()`.
 
-**NOTE:** This example covers the use case where data _needs_ to be manually triggered with a `load()` action. It is also possible to just have your data load automatically — in this case the observable that loads the data can just be supplied directly through `sources` and it will be loaded automatically without needing to trigger the `load()` action.
+**NOTE:** This example covers the use case where data _needs_ to be manually
+triggered with a `load()` action. It is also possible to just have your data
+load automatically — in this case the observable that loads the data can just be
+supplied directly through `sources` rather than `actionSources` and it will be
+loaded automatically without needing to trigger the `load()` action.
+
+It is also possible to supply an external subject as an `actionSource` like
+this:
+
+```ts
+someAction$ = new Subject<void>();
+
+state = signalSlice({
+	initialState: this.initialState,
+	actionSources: {
+		someAction: someAction$,
+	},
+});
+```
+
+This is useful for circumstances where you need any of your `sources` to react
+to `someAction$` being triggered. A source can not react to internally created
+`actionSources`, but it can react to the externally created subject. Supplying
+this subject as an `actionSource` allows you to still trigger it through
+`state.someAction()`. This makes using actions more consistent, as everything
+can be accessed on the state object, even if you need to create an external
+subject.
 
 ## Action Streams
 
@@ -173,7 +166,7 @@ The source/stream for each action is also exposed on the state object. That mean
 this.state.add$;
 ```
 
-Which will allow you to react to the `add` action/reducer being called.
+Which will allow you to react to the `add` action being called.
 
 ## Selectors
 
@@ -211,10 +204,13 @@ initialiser:
 state = signalSlice({
 	initialState: this.initialState,
 	sources: [this.sources$],
-	reducers: {
-		add: (state, checklist: AddChecklist) => ({
-			checklists: [...state.checklists, this.addIdToChecklist(checklist)],
-		}),
+	actionSources: {
+		add: (state, action$: Observable<AddChecklist>) =>
+			action$.pipe(
+				map((checklist) => ({
+					checklists: [...state().checklists, checklist],
+				}))
+			),
 	},
 	effects: (state) => ({
 		init: () => {
