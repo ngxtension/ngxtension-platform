@@ -40,21 +40,26 @@ type Effects<TEffects extends NamedEffects> = {
 	[K in keyof TEffects]: EffectRef;
 };
 
-type Action<TSignalValue, TValue> = TValue extends void
+type Action<TSignalValue, TValue> = TValue extends [void]
 	? () => Promise<TSignalValue>
-	: unknown extends TValue
+	: [unknown] extends TValue
 	? () => Promise<TSignalValue>
-	: (value: TValue | Observable<TValue>) => Promise<TSignalValue>;
+	: (
+			value: TValue extends [infer TInferred]
+				? TInferred | Observable<TInferred>
+				: TValue | Observable<TValue>
+	  ) => Promise<TSignalValue>;
 
 type ActionMethod<
 	TSignalValue,
 	TActionSource extends NamedActionSources<TSignalValue>[string]
-> = TActionSource extends
-	| ((state: Signal<TSignalValue>, value: infer TValue) => any)
-	| Subject<infer TValue>
-	? TValue extends Observable<infer TObservableValue>
-		? Action<TSignalValue, TObservableValue>
-		: Action<TSignalValue, TValue>
+> = TActionSource extends (
+	state: Signal<TSignalValue>,
+	value: Observable<infer TObservableValue>
+) => any
+	? Action<TSignalValue, [TObservableValue]>
+	: TActionSource extends Subject<infer TSubjectValue>
+	? Action<TSignalValue, [TSubjectValue]>
 	: never;
 
 type ActionMethods<

@@ -10,6 +10,7 @@ describe(signalSlice.name, () => {
 			lastName: 'morony',
 		},
 		age: 30,
+		powerLevel: 50 as number | null,
 		likes: ['angular', 'typescript'],
 	};
 
@@ -162,6 +163,27 @@ describe(signalSlice.name, () => {
 				});
 
 				state.trigger();
+
+				expect(state().age).toEqual(testAge);
+			});
+		});
+
+		it('should accept an external subject with arguments as an action', () => {
+			TestBed.runInInjectionContext(() => {
+				const testAge = 50;
+
+				const triggerWithAmount$ = new Subject<number>();
+				const state = signalSlice({
+					initialState,
+					sources: [
+						triggerWithAmount$.pipe(map((amount) => ({ age: amount }))),
+					],
+					actionSources: {
+						triggerWithAmount: triggerWithAmount$,
+					},
+				});
+
+				state.triggerWithAmount(testAge);
 
 				expect(state().age).toEqual(testAge);
 			});
