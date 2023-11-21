@@ -1,5 +1,33 @@
 
 
+## [1.4.0](https://github.com/nartc/ngxtension-platform/compare/1.3.0...1.4.0) (2023-11-21)
+
+
+### Features
+
+* add toLazySignal() ([#166](https://github.com/nartc/ngxtension-platform/issues/166)) ([3659fbe](https://github.com/nartc/ngxtension-platform/commit/3659fbe66965503e41655083281d6995461c13da))
+* **signal-slice:** allow supplying external subjects as reducers ([#152](https://github.com/nartc/ngxtension-platform/issues/152)) ([7df93d3](https://github.com/nartc/ngxtension-platform/commit/7df93d303cb24022dfb25602163ec46d9a4a2972))
+
+
+### Bug Fixes
+
+* **create-injection-token:** better decide when to use factory or provided value ([#161](https://github.com/nartc/ngxtension-platform/issues/161)) ([#162](https://github.com/nartc/ngxtension-platform/issues/162)) ([61d496d](https://github.com/nartc/ngxtension-platform/commit/61d496d06bae3ed678591f8013a828b5404d02ff))
+
+
+### Documentations
+
+* add diegovilar as a contributor for code ([#164](https://github.com/nartc/ngxtension-platform/issues/164)) ([c81fc22](https://github.com/nartc/ngxtension-platform/commit/c81fc221a031a7bb03a66da05f8a1deef0eb99aa))
+* add e-oz as a contributor for code ([#167](https://github.com/nartc/ngxtension-platform/issues/167)) ([21e2cd2](https://github.com/nartc/ngxtension-platform/commit/21e2cd2b6707cfc216d3d94a102e7816bcbaed7d))
+* add gianmarcogiummarra as a contributor for doc ([#165](https://github.com/nartc/ngxtension-platform/issues/165)) ([87d6ea4](https://github.com/nartc/ngxtension-platform/commit/87d6ea44122552d9855c77530f7e5139fad6fc54))
+* fix allcontributors file ([9cae021](https://github.com/nartc/ngxtension-platform/commit/9cae021c609604f255eec23c1ec888599df08914))
+* fix computedFrom example with injector ([#160](https://github.com/nartc/ngxtension-platform/issues/160)) ([2b6b5b9](https://github.com/nartc/ngxtension-platform/commit/2b6b5b9c93c98b45c1ae51bfaf9efe499f16ceb9))
+* update starlight ([2b8405b](https://github.com/nartc/ngxtension-platform/commit/2b8405bb3b0512eb718ffbe2450f582b4e568937))
+
+
+### Refactor
+
+* **signal-slice:** remove reducers, rename asyncReducers to actionSources ([#158](https://github.com/nartc/ngxtension-platform/issues/158)) ([6a883c1](https://github.com/nartc/ngxtension-platform/commit/6a883c12d61eb9fabcb87bfa9743768249d8e879))
+
 ## [1.3.0](https://github.com/nartc/ngxtension-platform/compare/1.2.2...1.3.0) (2023-11-15)
 
 
