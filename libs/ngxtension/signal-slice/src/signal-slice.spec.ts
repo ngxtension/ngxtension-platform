@@ -330,6 +330,34 @@ describe(signalSlice.name, () => {
 				TestBed.flushEffects();
 			});
 		});
+
+		it('should not run until source emits', () => {
+			TestBed.runInInjectionContext(() => {
+				const testFn = jest.fn();
+				const block$ = new Subject<void>();
+
+				const state = signalSlice({
+					initialState,
+					actionSources: {
+						load: (_state, $: Observable<void>) =>
+							$.pipe(
+								switchMap(() => block$),
+								map(() => ({}))
+							),
+					},
+					actionEffects: () => ({
+						load: () => {
+							testFn();
+						},
+					}),
+				});
+
+				state.load();
+				expect(testFn).not.toHaveBeenCalled();
+				block$.next();
+				expect(testFn).toHaveBeenCalled();
+			});
+		});
 	});
 
 	describe('effects', () => {
