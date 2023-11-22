@@ -97,7 +97,7 @@ type NamedActionEffects<
 	TSignalValue,
 	TActionSources extends NamedActionSources<TSignalValue>
 > = {
-	[K in keyof TActionSources]: (val: any) => void;
+	[K in keyof TActionSources]: () => void;
 };
 
 export type Source<TSignalValue> = Observable<PartialOrValue<TSignalValue>>;
@@ -179,7 +179,7 @@ export function signalSlice<
 	const readonlyState = state.asReadonly();
 	const state$ = toObservable(state);
 
-	const subs: Subject<unknown>[] = [];
+	const subs: Subject<any>[] = [];
 
 	const slice = readonlyState as SignalSlice<
 		TSignalValue,
@@ -200,7 +200,7 @@ export function signalSlice<
 	for (const [key, actionSource] of Object.entries(
 		actionSources as TActionSources
 	)) {
-		const effectTrigger = new Subject<unknown>();
+		const effectTrigger = new Subject<void>();
 		subs.push(effectTrigger);
 
 		if (isObservable(actionSource)) {
@@ -271,7 +271,7 @@ function addReducerProperties(
 	destroyRef: DestroyRef,
 	subject: Subject<unknown>,
 	subs: Subject<unknown>[],
-	effectTrigger: Subject<unknown>
+	effectTrigger: Subject<void>
 ) {
 	Object.defineProperties(readonlyState, {
 		[key]: {
@@ -286,7 +286,7 @@ function addReducerProperties(
 							},
 							complete: () => {
 								subject.complete();
-								effectTrigger.next(readonlyState());
+								effectTrigger.next();
 								res(readonlyState());
 							},
 						});
@@ -295,7 +295,7 @@ function addReducerProperties(
 
 				return new Promise((res) => {
 					state$.pipe(take(1)).subscribe((val) => {
-						effectTrigger.next(readonlyState());
+						effectTrigger.next();
 						res(val);
 					});
 					subject.next(nextValue);

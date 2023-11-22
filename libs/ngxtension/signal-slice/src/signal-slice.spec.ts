@@ -317,9 +317,9 @@ describe(signalSlice.name, () => {
 								map((age) => ({ age }))
 							),
 					},
-					actionEffects: () => ({
-						load: (state) => {
-							expect(state.age).toEqual(35);
+					actionEffects: (state) => ({
+						load: () => {
+							expect(state().age).toEqual(35);
 							done();
 						},
 					}),
