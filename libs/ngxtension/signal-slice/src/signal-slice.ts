@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { connect, type PartialOrValue, type Reducer } from 'ngxtension/connect';
-import { Subject, isObservable, take, type Observable } from 'rxjs';
+import { Subject, isObservable, share, take, type Observable } from 'rxjs';
 
 type NamedActionSources<TSignalValue> = {
 	[actionName: string]:
@@ -218,7 +218,8 @@ export function signalSlice<
 		} else {
 			const subject = new Subject();
 			const observable = actionSource(readonlyState, subject);
-			connect(state, observable);
+			const sharedObservable = observable.pipe(share());
+			connect(state, sharedObservable);
 			addReducerProperties(
 				readonlyState,
 				state$,
@@ -227,7 +228,7 @@ export function signalSlice<
 				subject,
 				subs,
 				effectTrigger,
-				observable
+				sharedObservable
 			);
 		}
 
