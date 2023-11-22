@@ -26,6 +26,10 @@ export default defineConfig({
 					autogenerate: { directory: 'utilities' },
 				},
 			],
+			components: {
+				PageTitle: './src/components/PageTitle.astro',
+				MarkdownContent: './src/components/Content.astro',
+			},
 		}),
 	],
 });
