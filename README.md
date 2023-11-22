@@ -4,7 +4,7 @@
 </p>
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-21-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-22-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A collection of utilities for [Angular](https://angular.io).
@@ -79,6 +79,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/diegovilar"><img src="https://avatars.githubusercontent.com/u/759416?v=4?s=100" width="100px;" alt="Diego Vilar"/><br /><sub><b>Diego Vilar</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=diegovilar" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/gianmarcogiummarra"><img src="https://avatars.githubusercontent.com/u/9169021?v=4?s=100" width="100px;" alt="Gianmarco Giummarra"/><br /><sub><b>Gianmarco Giummarra</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=gianmarcogiummarra" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://jamm.dev"><img src="https://avatars.githubusercontent.com/u/526352?v=4?s=100" width="100px;" alt="Evgeniy OZ"/><br /><sub><b>Evgeniy OZ</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=e-oz" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://beta.ajitpanigrahi.com"><img src="https://avatars.githubusercontent.com/u/19947758?v=4?s=100" width="100px;" alt="Ajit Panigrahi"/><br /><sub><b>Ajit Panigrahi</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=ajitzero" title="Documentation">📖</a></td>
     </tr>
   </tbody>
   <tfoot>
