@@ -97,7 +97,7 @@ type NamedActionEffects<
 	TSignalValue,
 	TActionSources extends NamedActionSources<TSignalValue>
 > = {
-	[K in keyof ActionStreams<TSignalValue, TActionSources>]: (val: any) => void;
+	[K in keyof TActionSources]: (val: any) => void;
 };
 
 export type Source<TSignalValue> = Observable<PartialOrValue<TSignalValue>>;
@@ -181,6 +181,14 @@ export function signalSlice<
 
 	const subs: Subject<unknown>[] = [];
 
+	const slice = readonlyState as SignalSlice<
+		TSignalValue,
+		TActionSources,
+		TSelectors,
+		TEffects,
+		TActionEffects
+	>;
+
 	for (const source of sources) {
 		if (isObservable(source)) {
 			connect(state, source);
@@ -192,6 +200,8 @@ export function signalSlice<
 	for (const [key, actionSource] of Object.entries(
 		actionSources as TActionSources
 	)) {
+		let effectTrigger$: Subject<unknown>;
+
 		if (isObservable(actionSource)) {
 			addReducerProperties(
 				readonlyState,
@@ -201,6 +211,8 @@ export function signalSlice<
 				actionSource,
 				subs
 			);
+
+			effectTrigger$ = actionSource;
 		} else {
 			const subject = new Subject();
 			const observable = actionSource(readonlyState, subject);
@@ -213,6 +225,13 @@ export function signalSlice<
 				subject,
 				subs
 			);
+
+			effectTrigger$ = subject;
+		}
+
+		if (key in actionEffects(slice)) {
+			const effectFn = actionEffects(slice)[key];
+			effectTrigger$.subscribe(effectFn);
 		}
 	}
 
@@ -228,14 +247,6 @@ export function signalSlice<
 		});
 	}
 
-	const slice = readonlyState as SignalSlice<
-		TSignalValue,
-		TActionSources,
-		TSelectors,
-		TEffects,
-		TActionEffects
-	>;
-
 	for (const [key, namedEffect] of Object.entries(effects(slice))) {
 		Object.defineProperty(slice, key, {
 			value: effect((onCleanup) => {
@@ -245,14 +256,6 @@ export function signalSlice<
 				}
 			}),
 		});
-	}
-
-	for (const [key, namedActionEffect] of Object.entries(actionEffects(slice))) {
-		const actionStream$ = slice[key];
-
-		if (isObservable(actionStream$)) {
-			actionStream$.subscribe(namedActionEffect);
-		}
 	}
 
 	destroyRef.onDestroy(() => {

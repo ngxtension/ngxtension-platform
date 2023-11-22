@@ -318,7 +318,7 @@ describe(signalSlice.name, () => {
 							$.pipe(map((amount) => ({ age: state().age + amount }))),
 					},
 					actionEffects: (state) => ({
-						increaseAge$: (val) => {
+						increaseAge: (val) => {
 							testFn(state().age);
 							testFn(val);
 						},
