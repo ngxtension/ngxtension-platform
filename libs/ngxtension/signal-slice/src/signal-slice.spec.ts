@@ -306,7 +306,7 @@ describe(signalSlice.name, () => {
 	});
 
 	describe('actionEffects', () => {
-		it.only('should create effects for named actionEffects', (done) => {
+		it('should create effects for named actionEffects', (done) => {
 			TestBed.runInInjectionContext(() => {
 				const state = signalSlice({
 					initialState,
