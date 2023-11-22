@@ -1,0 +1,19 @@
+---
+import Default from '@astrojs/starlight/components/MarkdownContent.astro';
+import type { Props } from '@astrojs/starlight/props';
+
+const {contributor} = Astro.props.entry.data;
+
+---
+
+{ contributor && <p class="contributor">Created by {contributor}</p> }
+
+<Default {...Astro.props}><slot /></Default>
+
+<style>
+    .contributor {
+        margin-top: -1rem;
+        font-size: var(--sl-text-xs);
+        color: var(--sl-color-gray-3);
+    }
+</style>
