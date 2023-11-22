@@ -311,6 +311,7 @@ describe(signalSlice.name, () => {
 				const state = signalSlice({
 					initialState,
 					actionSources: {
+						test: (_state, $: Observable<void>) => $.pipe(map(() => ({}))),
 						load: (_state, $: Observable<void>) =>
 							$.pipe(
 								switchMap(() => of(35)),

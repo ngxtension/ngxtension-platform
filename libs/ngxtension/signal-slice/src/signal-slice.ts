@@ -46,9 +46,9 @@ type ActionEffects<
 		TSignalValue,
 		NamedActionSources<TSignalValue>
 	>
-> = {
+> = Partial<{
 	[K in keyof TActionEffects]: void;
-};
+}>;
 
 type Action<TSignalValue, TValue> = TValue extends [void]
 	? () => Promise<TSignalValue>
@@ -96,9 +96,9 @@ type ActionStreams<
 type NamedActionEffects<
 	TSignalValue,
 	TActionSources extends NamedActionSources<TSignalValue>
-> = {
+> = Partial<{
 	[K in keyof TActionSources]: () => void;
-};
+}>;
 
 export type Source<TSignalValue> = Observable<PartialOrValue<TSignalValue>>;
 
