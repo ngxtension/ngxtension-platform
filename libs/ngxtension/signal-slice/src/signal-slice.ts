@@ -200,7 +200,8 @@ export function signalSlice<
 	for (const [key, actionSource] of Object.entries(
 		actionSources as TActionSources
 	)) {
-		let effectTrigger$: Subject<unknown>;
+		const effectTrigger = new Subject<unknown>();
+		subs.push(effectTrigger);
 
 		if (isObservable(actionSource)) {
 			addReducerProperties(
@@ -209,10 +210,9 @@ export function signalSlice<
 				key,
 				destroyRef,
 				actionSource,
-				subs
+				subs,
+				effectTrigger
 			);
-
-			effectTrigger$ = actionSource;
 		} else {
 			const subject = new Subject();
 			const observable = actionSource(readonlyState, subject);
@@ -223,15 +223,14 @@ export function signalSlice<
 				key,
 				destroyRef,
 				subject,
-				subs
+				subs,
+				effectTrigger
 			);
-
-			effectTrigger$ = subject;
 		}
 
 		if (key in actionEffects(slice)) {
 			const effectFn = actionEffects(slice)[key];
-			effectTrigger$.subscribe(effectFn);
+			effectTrigger.subscribe(effectFn);
 		}
 	}
 
@@ -271,7 +270,8 @@ function addReducerProperties(
 	key: string,
 	destroyRef: DestroyRef,
 	subject: Subject<unknown>,
-	subs: Subject<unknown>[]
+	subs: Subject<unknown>[],
+	effectTrigger: Subject<unknown>
 ) {
 	Object.defineProperties(readonlyState, {
 		[key]: {
@@ -286,6 +286,7 @@ function addReducerProperties(
 							},
 							complete: () => {
 								subject.complete();
+								effectTrigger.next(readonlyState());
 								res(readonlyState());
 							},
 						});
@@ -294,6 +295,7 @@ function addReducerProperties(
 
 				return new Promise((res) => {
 					state$.pipe(take(1)).subscribe((val) => {
+						effectTrigger.next(readonlyState());
 						res(val);
 					});
 					subject.next(nextValue);

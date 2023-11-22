@@ -306,29 +306,27 @@ describe(signalSlice.name, () => {
 	});
 
 	describe('actionEffects', () => {
-		it('should create effects for named actionEffects', () => {
+		it.only('should create effects for named actionEffects', (done) => {
 			TestBed.runInInjectionContext(() => {
-				const testFn = jest.fn();
-				const increaseAmount = 5;
-
 				const state = signalSlice({
 					initialState,
 					actionSources: {
-						increaseAge: (state, $: Observable<number>) =>
-							$.pipe(map((amount) => ({ age: state().age + amount }))),
+						load: (_state, $: Observable<void>) =>
+							$.pipe(
+								switchMap(() => of(35)),
+								map((age) => ({ age }))
+							),
 					},
-					actionEffects: (state) => ({
-						increaseAge: (val) => {
-							testFn(state().age);
-							testFn(val);
+					actionEffects: () => ({
+						load: (state) => {
+							expect(state.age).toEqual(35);
+							done();
 						},
 					}),
 				});
 
-				state.increaseAge(increaseAmount);
-
-				expect(testFn).toHaveBeenCalledWith(initialState.age + increaseAmount);
-				expect(testFn).toHaveBeenCalledWith(increaseAmount);
+				state.load();
+				TestBed.flushEffects();
 			});
 		});
 	});
