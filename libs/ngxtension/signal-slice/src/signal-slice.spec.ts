@@ -358,6 +358,84 @@ describe(signalSlice.name, () => {
 				expect(testFn).toHaveBeenCalled();
 			});
 		});
+
+		it('should supply appropriate values on action', () => {
+			TestBed.runInInjectionContext(() => {
+				const testFn = jest.fn();
+				const testPayload = 'a';
+				const age = 20;
+
+				const state = signalSlice({
+					initialState,
+					actionSources: {
+						test: (state, $: Observable<string>) =>
+							$.pipe(
+								map(() => ({
+									age,
+								}))
+							),
+					},
+					actionEffects: () => ({
+						test: (action) => {
+							testFn({
+								name: action.name,
+								payload: action.payload,
+								value: action.value,
+								err: action.err,
+							});
+						},
+					}),
+				});
+
+				state.test(testPayload);
+
+				expect(testFn).toHaveBeenCalledWith({
+					name: 'test',
+					payload: testPayload,
+					value: { age },
+					err: undefined,
+				});
+			});
+		});
+
+		it('should supply appropriate values to action on error', () => {
+			TestBed.runInInjectionContext(() => {
+				const testFn = jest.fn();
+				const testPayload = 'a';
+				const error = new Error('oops');
+
+				const state = signalSlice({
+					initialState,
+					actionSources: {
+						test: (state, $: Observable<string>) =>
+							$.pipe(
+								map(() => {
+									throw error;
+								})
+							),
+					},
+					actionEffects: () => ({
+						test: (action) => {
+							testFn({
+								name: action.name,
+								payload: action.payload,
+								value: action.value,
+								err: action.err,
+							});
+						},
+					}),
+				});
+
+				state.test(testPayload);
+
+				expect(testFn).toHaveBeenCalledWith({
+					name: 'test',
+					payload: testPayload,
+					value: undefined,
+					err: error,
+				});
+			});
+		});
 	});
 
 	describe('effects', () => {
