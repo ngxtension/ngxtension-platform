@@ -24,12 +24,6 @@ type NamedSelectors = {
 	[selectorName: string]: () => any;
 };
 
-type NamedEffects = {
-	[selectorName: string]: () => void | (() => void);
-};
-
-type ActionEffectTrigger = { name: string; payload: any; value: any; err: any };
-
 type Selectors<TSignalValue> = {
 	[K in keyof TSignalValue]: Signal<TSignalValue[K]>;
 };
@@ -38,19 +32,31 @@ type ExtraSelectors<TSelectors extends NamedSelectors> = {
 	[K in keyof TSelectors]: Signal<ReturnType<TSelectors[K]>>;
 };
 
+type NamedEffects = {
+	[selectorName: string]: () => void | (() => void);
+};
+
 type Effects<TEffects extends NamedEffects> = {
 	[K in keyof TEffects]: EffectRef;
 };
 
-type ActionEffects<
-	TSignalValue,
-	TActionEffects extends NamedActionEffects<
-		TSignalValue,
-		NamedActionSources<TSignalValue>
-	>
-> = Partial<{
-	[K in keyof TActionEffects]: void;
+type ActionSourceReturnType<TActionSource> = TActionSource extends (
+	state: any,
+	value: any
+) => Observable<infer TValue>
+	? TValue
+	: never;
+
+type NamedActionEffects<TActionSources> = Partial<{
+	[K in keyof TActionSources]: (action: {
+		name: K;
+		payload: any;
+		value: ActionSourceReturnType<TActionSources[K]>;
+		err: any;
+	}) => void;
 }>;
+
+type ActionEffects<TActionSources> = NamedActionEffects<TActionSources>;
 
 type Action<TSignalValue, TValue> = TValue extends [void]
 	? () => Promise<TSignalValue>
@@ -95,13 +101,6 @@ type ActionStreams<
 		: never;
 };
 
-type NamedActionEffects<
-	TSignalValue,
-	TActionSources extends NamedActionSources<TSignalValue>
-> = Partial<{
-	[K in keyof TActionSources]: (action: ActionEffectTrigger) => void;
-}>;
-
 export type Source<TSignalValue> = Observable<PartialOrValue<TSignalValue>>;
 
 export type SignalSlice<
@@ -109,12 +108,12 @@ export type SignalSlice<
 	TActionSources extends NamedActionSources<TSignalValue>,
 	TSelectors extends NamedSelectors,
 	TEffects extends NamedEffects,
-	TActionEffects extends NamedActionEffects<TSignalValue, TActionSources>
+	TActionEffects extends NamedActionEffects<TActionSources>
 > = Signal<TSignalValue> &
 	Selectors<TSignalValue> &
 	ExtraSelectors<TSelectors> &
 	Effects<TEffects> &
-	ActionEffects<TSignalValue, TActionEffects> &
+	ActionEffects<TActionEffects> &
 	ActionMethods<TSignalValue, TActionSources> &
 	ActionStreams<TSignalValue, TActionSources>;
 
@@ -123,7 +122,7 @@ export function signalSlice<
 	TActionSources extends NamedActionSources<TSignalValue>,
 	TSelectors extends NamedSelectors,
 	TEffects extends NamedEffects,
-	TActionEffects extends NamedActionEffects<TSignalValue, TActionSources>
+	TActionEffects extends NamedActionEffects<TActionSources>
 >(config: {
 	initialState: TSignalValue;
 	sources?: Array<
@@ -202,7 +201,7 @@ export function signalSlice<
 	for (const [key, actionSource] of Object.entries(
 		actionSources as TActionSources
 	)) {
-		const effectTrigger = new Subject<ActionEffectTrigger>();
+		const effectTrigger = new Subject<any>();
 		subs.push(effectTrigger);
 
 		if (isObservable(actionSource)) {
@@ -279,7 +278,7 @@ function addReducerProperties(
 	destroyRef: DestroyRef,
 	subject: Subject<unknown>,
 	subs: Subject<unknown>[],
-	effectTrigger: Subject<ActionEffectTrigger>,
+	effectTrigger: Subject<any>,
 	observableFromActionSource?: Observable<any>
 ) {
 	Object.defineProperties(readonlyState, {
