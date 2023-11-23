@@ -11,13 +11,13 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { connect, type PartialOrValue, type Reducer } from 'ngxtension/connect';
 import { Subject, isObservable, share, take, type Observable } from 'rxjs';
 
+type ActionSourceFn<TSignalValue, TPayload> = (
+	state: Signal<TSignalValue>,
+	value: TPayload
+) => Observable<PartialOrValue<TSignalValue>>;
+
 type NamedActionSources<TSignalValue> = {
-	[actionName: string]:
-		| Subject<any>
-		| ((
-				state: Signal<TSignalValue>,
-				value: any
-		  ) => Observable<PartialOrValue<TSignalValue>>);
+	[actionName: string]: Subject<any> | ActionSourceFn<TSignalValue, any>;
 };
 
 type NamedSelectors = {
@@ -40,6 +40,12 @@ type Effects<TEffects extends NamedEffects> = {
 	[K in keyof TEffects]: EffectRef;
 };
 
+type InferPayload<T> = T extends ActionSourceFn<any, infer TPayload>
+	? TPayload
+	: never;
+
+type ActionSourcePayloadType<TActionSource> = InferPayload<TActionSource>;
+
 type ActionSourceReturnType<TActionSource> = TActionSource extends (
 	state: any,
 	value: any
@@ -50,7 +56,7 @@ type ActionSourceReturnType<TActionSource> = TActionSource extends (
 type NamedActionEffects<TActionSources> = Partial<{
 	[K in keyof TActionSources]: (action: {
 		name: K;
-		payload: any;
+		payload: ActionSourcePayloadType<TActionSources[K]>;
 		value: ActionSourceReturnType<TActionSources[K]>;
 		err: any;
 	}) => void;
