@@ -1,6 +1,8 @@
 ---
 title: createSingletonProxy
 description: ngxtension/singleton-proxy
+badge: stable
+contributor: Chau Tran
 ---
 
 `createSingletonProxy` creates a singleton instance of a given class when a property within it is accessed, not before.

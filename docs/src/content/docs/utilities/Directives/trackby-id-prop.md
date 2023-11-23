@@ -1,6 +1,8 @@
 ---
 title: TrackById / TrackByProp
 description: Angular directives that simplify using trackBy in *ngFor, eliminating the need for custom component methods.
+badge: stable
+contributor: Daniele Morosinotto
 ---
 
 ## Import

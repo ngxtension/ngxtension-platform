@@ -1,6 +1,8 @@
 ---
 title: injectParams
 description: ngxtension/inject-params
+badge: stable
+contributor: Enea Jahollari
 ---
 
 `injectParams` is a helper function that allows us to inject params from the current route as a signal.
