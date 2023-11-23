@@ -173,6 +173,42 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "diegovilar",
+      "name": "Diego Vilar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/759416?v=4",
+      "profile": "https://github.com/diegovilar",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "gianmarcogiummarra",
+      "name": "Gianmarco Giummarra",
+      "avatar_url": "https://avatars.githubusercontent.com/u/9169021?v=4",
+      "profile": "https://github.com/gianmarcogiummarra",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "e-oz",
+      "name": "Evgeniy OZ",
+      "avatar_url": "https://avatars.githubusercontent.com/u/526352?v=4",
+      "profile": "https://jamm.dev",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ajitzero",
+      "name": "Ajit Panigrahi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/19947758?v=4",
+      "profile": "https://beta.ajitpanigrahi.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

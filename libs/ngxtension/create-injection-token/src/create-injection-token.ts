@@ -113,7 +113,7 @@ function createProvideFn<
 	const { deps = [], multi = false, extraProviders = [] } = opts;
 	return (value?: TValue | (() => TValue), isFunctionValue = false) => {
 		let provider: Provider;
-		if (value) {
+		if (typeof value !== 'undefined') {
 			// TODO: (chau) maybe this can be made better
 			const factory =
 				typeof value === 'function'

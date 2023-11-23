@@ -1,6 +1,8 @@
 ---
 title: filterArray
 description: An RxJS operator to simplify the process of filtering arrays within an Observable stream.
+badge: stable
+contributor: Thomas Laforge
 ---
 
 ## Import

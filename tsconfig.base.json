@@ -53,6 +53,12 @@
 				"libs/ngxtension/inject-is-intersecting/src/index.ts"
 			],
 			"ngxtension/inject-lazy": ["libs/ngxtension/inject-lazy/src/index.ts"],
+			"ngxtension/inject-params": [
+				"libs/ngxtension/inject-params/src/index.ts"
+			],
+			"ngxtension/inject-query-params": [
+				"libs/ngxtension/inject-query-params/src/index.ts"
+			],
 			"ngxtension/intl": ["libs/ngxtension/intl/src/index.ts"],
 			"ngxtension/map-array": ["libs/ngxtension/map-array/src/index.ts"],
 			"ngxtension/map-skip-undefined": [
@@ -63,9 +69,13 @@
 			],
 			"ngxtension/repeat": ["libs/ngxtension/repeat/src/index.ts"],
 			"ngxtension/resize": ["libs/ngxtension/resize/src/index.ts"],
+			"ngxtension/rx-effect": ["libs/ngxtension/rx-effect/src/index.ts"],
 			"ngxtension/signal-slice": ["libs/ngxtension/signal-slice/src/index.ts"],
 			"ngxtension/singleton-proxy": [
 				"libs/ngxtension/singleton-proxy/src/index.ts"
+			],
+			"ngxtension/to-lazy-signal": [
+				"libs/ngxtension/to-lazy-signal/src/index.ts"
 			],
 			"ngxtension/trackby-id-prop": [
 				"libs/ngxtension/trackby-id-prop/src/index.ts"

@@ -1,5 +1,89 @@
 
 
+## [1.4.0](https://github.com/nartc/ngxtension-platform/compare/1.3.0...1.4.0) (2023-11-21)
+
+
+### Features
+
+* add toLazySignal() ([#166](https://github.com/nartc/ngxtension-platform/issues/166)) ([3659fbe](https://github.com/nartc/ngxtension-platform/commit/3659fbe66965503e41655083281d6995461c13da))
+* **signal-slice:** allow supplying external subjects as reducers ([#152](https://github.com/nartc/ngxtension-platform/issues/152)) ([7df93d3](https://github.com/nartc/ngxtension-platform/commit/7df93d303cb24022dfb25602163ec46d9a4a2972))
+
+
+### Bug Fixes
+
+* **create-injection-token:** better decide when to use factory or provided value ([#161](https://github.com/nartc/ngxtension-platform/issues/161)) ([#162](https://github.com/nartc/ngxtension-platform/issues/162)) ([61d496d](https://github.com/nartc/ngxtension-platform/commit/61d496d06bae3ed678591f8013a828b5404d02ff))
+
+
+### Documentations
+
+* add diegovilar as a contributor for code ([#164](https://github.com/nartc/ngxtension-platform/issues/164)) ([c81fc22](https://github.com/nartc/ngxtension-platform/commit/c81fc221a031a7bb03a66da05f8a1deef0eb99aa))
+* add e-oz as a contributor for code ([#167](https://github.com/nartc/ngxtension-platform/issues/167)) ([21e2cd2](https://github.com/nartc/ngxtension-platform/commit/21e2cd2b6707cfc216d3d94a102e7816bcbaed7d))
+* add gianmarcogiummarra as a contributor for doc ([#165](https://github.com/nartc/ngxtension-platform/issues/165)) ([87d6ea4](https://github.com/nartc/ngxtension-platform/commit/87d6ea44122552d9855c77530f7e5139fad6fc54))
+* fix allcontributors file ([9cae021](https://github.com/nartc/ngxtension-platform/commit/9cae021c609604f255eec23c1ec888599df08914))
+* fix computedFrom example with injector ([#160](https://github.com/nartc/ngxtension-platform/issues/160)) ([2b6b5b9](https://github.com/nartc/ngxtension-platform/commit/2b6b5b9c93c98b45c1ae51bfaf9efe499f16ceb9))
+* update starlight ([2b8405b](https://github.com/nartc/ngxtension-platform/commit/2b8405bb3b0512eb718ffbe2450f582b4e568937))
+
+
+### Refactor
+
+* **signal-slice:** remove reducers, rename asyncReducers to actionSources ([#158](https://github.com/nartc/ngxtension-platform/issues/158)) ([6a883c1](https://github.com/nartc/ngxtension-platform/commit/6a883c12d61eb9fabcb87bfa9743768249d8e879))
+
+## [1.3.0](https://github.com/nartc/ngxtension-platform/compare/1.2.2...1.3.0) (2023-11-15)
+
+
+### Features
+
+* add 404 page ([#147](https://github.com/nartc/ngxtension-platform/issues/147)) ([64be3c1](https://github.com/nartc/ngxtension-platform/commit/64be3c1958106580d3a900529afa47e8f80f98b6))
+* added inject params and inject query params ([16ef4e1](https://github.com/nartc/ngxtension-platform/commit/16ef4e117d8e7f69ae0bcb8f443b206574f78769))
+
+
+### Bug Fixes
+
+* add assertInInjectionContext ([a3d1a60](https://github.com/nartc/ngxtension-platform/commit/a3d1a60b49b228479899b8ccc9c1464926a9e9ac))
+* better code health ([9f03d06](https://github.com/nartc/ngxtension-platform/commit/9f03d06a637e6f17ff6d96a3d71b9007f7e2f884))
+* export utils ([11453a5](https://github.com/nartc/ngxtension-platform/commit/11453a55391b3ea8c954e6a2c116521b10bc184e))
+* replace startWith with initial value ([99fad4f](https://github.com/nartc/ngxtension-platform/commit/99fad4f56ba3dc8701d192f719b5894b0b829c69))
+
+## [1.2.2](https://github.com/nartc/ngxtension-platform/compare/1.2.1...1.2.2) (2023-11-14)
+
+
+### Bug Fixes
+
+* **signal-slice:** add undocumented (intentional) way to wait for state update from invoking reducers ([5370778](https://github.com/nartc/ngxtension-platform/commit/53707784558e0889eaec02fef590505083fbfe6a))
+
+## [1.2.1](https://github.com/nartc/ngxtension-platform/compare/1.2.0...1.2.1) (2023-11-14)
+
+
+### Bug Fixes
+
+* **signal-slice:** extra selectors type ([bdfe10b](https://github.com/nartc/ngxtension-platform/commit/bdfe10bfda1f740558b684088a5b3e57124e6334))
+
+## [1.2.0](https://github.com/nartc/ngxtension-platform/compare/1.1.1...1.2.0) (2023-11-13)
+
+
+### Features
+
+* **signal-slice:** allow supplying source as a function that accepts state signal ([#146](https://github.com/nartc/ngxtension-platform/issues/146)) ([051443b](https://github.com/nartc/ngxtension-platform/commit/051443b8155137b7101fe138efa185a200ea4538))
+
+## [1.1.1](https://github.com/nartc/ngxtension-platform/compare/1.1.0...1.1.1) (2023-11-13)
+
+
+### Bug Fixes
+
+* peer dep range ([961de58](https://github.com/nartc/ngxtension-platform/commit/961de58a239bf666fbb3fc0be0becc8a79c1a5c5))
+
+## [1.1.0](https://github.com/nartc/ngxtension-platform/compare/0.16.0...1.1.0) (2023-11-13)
+
+
+### Features
+
+* **signal-slice:** add asyncReducers ([#144](https://github.com/nartc/ngxtension-platform/issues/144)) ([3057f8b](https://github.com/nartc/ngxtension-platform/commit/3057f8b29ead06b2fc123bef1666b7f31d927116))
+
+
+### Bug Fixes
+
+* bump peer deps ([2179b8e](https://github.com/nartc/ngxtension-platform/commit/2179b8e60b98d4116e6788174a3409dc43f67485))
+
 ## [1.0.1](https://github.com/nartc/ngxtension-platform/compare/0.16.0...1.0.1) (2023-11-10)
 
 

@@ -1,6 +1,6 @@
 {
-  "singleQuote": true,
-  "useTabs": true,
-  "htmlWhitespaceSensitivity": "ignore",
-  "plugins": ["prettier-plugin-organize-imports"]
+	"singleQuote": true,
+	"useTabs": true,
+	"htmlWhitespaceSensitivity": "ignore",
+	"plugins": ["prettier-plugin-organize-imports"]
 }

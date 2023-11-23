@@ -1,6 +1,8 @@
 ---
 title: mapArray
 description: An RxJS operator designed to apply a map function to an array within an Observable stream, simplifying array transformations.
+badge: stable
+contributor: Thomas Laforge
 ---
 
 ## Import
