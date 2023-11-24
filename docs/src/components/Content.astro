@@ -1,12 +1,14 @@
 ---
 import Default from '@astrojs/starlight/components/MarkdownContent.astro';
 import type { Props } from '@astrojs/starlight/props';
+import { getEntry } from 'astro:content';
+import Contributor from './Contributor.astro';
 
-const {contributor} = Astro.props.entry.data;
+const contributor = Astro.props.entry.data.contributor ? await getEntry(Astro.props.entry.data.contributor) : null;
 
 ---
 
-{ contributor && <p class="contributor">Created by {contributor}</p> }
+{ contributor && <Contributor {...contributor.data}/> }
 
 <Default {...Astro.props}><slot /></Default>
 

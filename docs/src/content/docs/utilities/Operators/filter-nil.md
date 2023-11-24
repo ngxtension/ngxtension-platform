@@ -2,7 +2,7 @@
 title: filterNil
 description: An RxJS operator designed to filter out `undefined` and `null` values from an Observable stream, returning a strongly-typed value.
 badge: stable
-contributor: Thomas Laforge
+contributor: thomas-laforge
 ---
 
 ## Import
