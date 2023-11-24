@@ -32,6 +32,13 @@ describe(signalSlice.name, () => {
 		it('should create default selectors', () => {
 			expect(state.age()).toEqual(initialState.age);
 		});
+
+		it('optional properties are not allowed in initial state', () => {
+			// @ts-expect-error
+			signalSlice<{ optional?: string }, any, any, any>({
+				initialState: { optional: 'test' },
+			});
+		});
 	});
 
 	describe('sources', () => {
