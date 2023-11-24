@@ -1,6 +1,8 @@
 ---
 title: CallPipe / ApplyPipe
 description: Standalone Angular pipes for invoking pure functions with arguments, leveraging Angular's pure pipe memoization.
+badge: stable
+contributor: Daniele Morosinotto
 ---
 
 ## Import

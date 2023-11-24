@@ -1,6 +1,8 @@
 ---
 title: assertInjector
 description: ngxtension/assert-injector
+badge: stable
+contributor: Chau Tran
 ---
 
 `assertInjector` is an extension of [`assertInInjectionContext`](https://angular.io/api/core/assertInInjectionContext) that accepts a `Function` and an optional custom `Injector`

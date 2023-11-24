@@ -1,6 +1,8 @@
 ---
 title: injectLazy
 description: ngxtension/inject-lazy
+badge: stable
+contributor: Enea Jahollari
 ---
 
 `injectLazy` is a helper function that allows us to lazily load a service or any kind of Angular provider.

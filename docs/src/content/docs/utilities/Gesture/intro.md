@@ -1,6 +1,8 @@
 ---
 title: 'Introduction'
 description: 'ngxtension/gestures'
+badge: stable
+contributor: Chau Tran
 sidebar:
   order: 1
 ---

@@ -1,6 +1,8 @@
 ---
 title: computedFrom
 description: ngxtension/computed-from
+badge: stable
+contributor: Enea Jahollari
 ---
 
 `computedFrom` is a helper function that combines the values of `Observable`s or `Signal`s and emits the combined value.

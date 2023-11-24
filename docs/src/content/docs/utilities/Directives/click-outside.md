@@ -1,6 +1,8 @@
 ---
 title: clickOutside
 description: An Angular directive that is used to detect clicks outside the element.
+badge: stable
+contributor: Dale Nguyen
 ---
 
 ## Import
