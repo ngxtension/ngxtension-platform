@@ -33,7 +33,7 @@ describe(signalSlice.name, () => {
 			expect(state.age()).toEqual(initialState.age);
 		});
 
-		it('optional properties are not allowed in initial state', () => {
+		it('should not allow optional properties in initial state', () => {
 			// @ts-expect-error
 			signalSlice<{ optional?: string }, any, any, any>({
 				initialState: { optional: 'test' },
