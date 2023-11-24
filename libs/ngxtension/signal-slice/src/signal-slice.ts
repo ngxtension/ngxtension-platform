@@ -11,6 +11,10 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { connect, type PartialOrValue, type Reducer } from 'ngxtension/connect';
 import { Subject, isObservable, take, type Observable } from 'rxjs';
 
+type NoOptionalProperties<T> = {
+	[P in keyof T]-?: T[P];
+};
+
 type NamedActionSources<TSignalValue> = {
 	[actionName: string]:
 		| Subject<any>
@@ -86,7 +90,7 @@ type ActionStreams<
 export type Source<TSignalValue> = Observable<PartialOrValue<TSignalValue>>;
 
 export type SignalSlice<
-	TSignalValue,
+	TSignalValue extends NoOptionalProperties<TSignalValue>,
 	TActionSources extends NamedActionSources<TSignalValue>,
 	TSelectors extends NamedSelectors,
 	TEffects extends NamedEffects
@@ -98,7 +102,7 @@ export type SignalSlice<
 	ActionStreams<TSignalValue, TActionSources>;
 
 export function signalSlice<
-	TSignalValue,
+	TSignalValue extends NoOptionalProperties<TSignalValue>,
 	TActionSources extends NamedActionSources<TSignalValue>,
 	TSelectors extends NamedSelectors,
 	TEffects extends NamedEffects
