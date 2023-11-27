@@ -2,7 +2,7 @@
 title: injectNavigationEnd
 description: An Angular utility to create an Observable that emits NavigationEnd events from the Angular Router.
 badge: stable
-contributor: Mateusz Stefańczyk
+contributor: mateusz-stefanczyk
 ---
 
 ## Import

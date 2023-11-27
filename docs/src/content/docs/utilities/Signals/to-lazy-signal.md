@@ -2,7 +2,7 @@
 title: toLazySignal
 description: ngxtension/to-lazy-signal
 badge: stable
-contributor: Evgeniy OZ
+contributor: evgeniy-oz
 ---
 
 Using `toLazySignal()`, you can save some requests or improve performance.
