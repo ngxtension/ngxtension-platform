@@ -2,7 +2,7 @@
 title: rxEffect
 description: ngxtension/rx-effect
 badge: stable
-contributor: Lucas Garcia
+contributor: lucas-garcia
 ---
 
 `rxEffect` is a utility function that helps you create a side effect with rxjs, returning an already well handled `Subscription` with `takeUntilDestroyed` within it.

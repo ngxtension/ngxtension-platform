@@ -2,7 +2,7 @@
 title: hostBinding
 description: ngxtension/host-binding
 badge: stable
-contributor: Lucas Garcia
+contributor: lucas-garcia
 ---
 
 `hostBinding` is a function that returns either a _writable_ or _readonly_ signal and binds the value held in that signal to the host property passed as the first argument like `@HostBinding` would do.

@@ -2,7 +2,7 @@
 title: computed/extendedComputed
 description: ngxtension/computed
 badge: stable
-contributor: Chau Tran
+contributor: chau-tran
 ---
 
 `computed` / `extendedComputed` is an extension of Angular's `computed`. The main difference is `extendedComputed` callback is invoked with the previously computed value. This providers better DX for cases where the consumers need conditional computed and the result should have the previously computed value when a condition does not pass.

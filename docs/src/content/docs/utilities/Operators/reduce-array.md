@@ -2,7 +2,7 @@
 title: reduceArray
 description: An RxJS operator designed to apply a reduce function to an array within an Observable stream, simplifying array transformations.
 badge: stable
-contributor: Tomer953
+contributor: tomer
 ---
 
 ## Import

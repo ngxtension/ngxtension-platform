@@ -2,7 +2,7 @@
 title: signalSlice
 description: ngxtension/signalSlice
 badge: stable
-contributor: Josh Morony
+contributor: josh-morony
 ---
 
 `signalSlice` is loosely inspired by the `createSlice` API from Redux Toolkit. The general idea is that it allows you to declaratively create a "slice" of state. This state will be available as a **readonly** signal.
