@@ -32,8 +32,6 @@ export interface InjectDocumentVisibilityOptions {
  effect(() => {
    console.log(this.visibilityState());
  });
- *       console.log(this.visibilityState());
- *     });
  * ```
  *
  * @param options An optional object with the following properties:
