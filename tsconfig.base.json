@@ -52,6 +52,7 @@
 			"ngxtension/inject-destroy": [
 				"libs/ngxtension/inject-destroy/src/index.ts"
 			],
+			"ngxtension/inject-fps": ["libs/ngxtension/inject-fps/src/index.ts"],
 			"ngxtension/inject-is-intersecting": [
 				"libs/ngxtension/inject-is-intersecting/src/index.ts"
 			],
@@ -61,6 +62,9 @@
 			],
 			"ngxtension/inject-query-params": [
 				"libs/ngxtension/inject-query-params/src/index.ts"
+			],
+			"ngxtension/inject-raf-fn": [
+				"libs/ngxtension/inject-raf-fn/src/index.ts"
 			],
 			"ngxtension/intl": ["libs/ngxtension/intl/src/index.ts"],
 			"ngxtension/map-array": ["libs/ngxtension/map-array/src/index.ts"],

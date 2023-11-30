@@ -25,6 +25,10 @@ export const appConfig: ApplicationConfig = {
 				loadComponent: () => import('./drag/drag.component'),
 			},
 			{
+				path: 'fps',
+				loadComponent: () => import('./inject-fps/inject-fps.component'),
+			},
+			{
 				path: 'active-element',
 				loadComponent: () =>
 					import('./active-element/active-element.component'),

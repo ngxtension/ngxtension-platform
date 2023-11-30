@@ -31,6 +31,10 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 			<li>
 				<a routerLink="/active-element">Active Element</a>
 			</li>
+
+			<li>
+				<a routerLink="/fps">Fps</a>
+			</li>
 		</ul>
 
 		<hr />
