@@ -33,6 +33,9 @@
 			"ngxtension/computed-from": [
 				"libs/ngxtension/computed-from/src/index.ts"
 			],
+			"ngxtension/computed-previous": [
+				"libs/ngxtension/computed-previous/src/index.ts"
+			],
 			"ngxtension/connect": ["libs/ngxtension/connect/src/index.ts"],
 			"ngxtension/create-effect": [
 				"libs/ngxtension/create-effect/src/index.ts"
