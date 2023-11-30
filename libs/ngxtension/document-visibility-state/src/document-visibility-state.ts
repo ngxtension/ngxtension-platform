@@ -29,7 +29,9 @@ export interface InjectDocumentVisibilityOptions {
  * @example
  * ```ts
  * const visibilityState = injectDocumentVisibility();
- * effect(() => {
+ effect(() => {
+   console.log(this.visibilityState());
+ });
  *       console.log(this.visibilityState());
  *     });
  * ```
