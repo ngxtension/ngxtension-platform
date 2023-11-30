@@ -31,6 +31,9 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 			<li>
 				<a routerLink="/active-element">Active Element</a>
 			</li>
+			<li>
+				<a routerLink="/document-visibility-state">Document Visibility State</a>
+			</li>
 		</ul>
 
 		<hr />

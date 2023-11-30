@@ -29,6 +29,13 @@ export const appConfig: ApplicationConfig = {
 				loadComponent: () =>
 					import('./active-element/active-element.component'),
 			},
+			{
+				path: 'document-visibility-state',
+				loadComponent: () =>
+					import(
+						'./document-visibility-state/document-visibility-state.component'
+					),
+			},
 		]),
 	],
 };

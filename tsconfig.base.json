@@ -33,6 +33,9 @@
 			"ngxtension/computed-from": [
 				"libs/ngxtension/computed-from/src/index.ts"
 			],
+			"ngxtension/document-visibility-state": [
+				"libs/ngxtension/document-visibility-state/src/index.ts"
+			],
 			"ngxtension/computed-previous": [
 				"libs/ngxtension/computed-previous/src/index.ts"
 			],
