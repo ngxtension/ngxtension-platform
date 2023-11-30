@@ -34,9 +34,11 @@ describe(signalSlice.name, () => {
 		});
 
 		it('should not accept optional properties in initial state', () => {
-			// @ts-expect-error: Testing that signalSlice should not accept an optional property in its initial state
-			signalSlice<{ optional?: string }, any, any, any>({
-				initialState: { optional: 'test' },
+			TestBed.runInInjectionContext(() => {
+				// @ts-expect-error: Testing that signalSlice should not accept an optional property in its initial state
+				signalSlice<{ optional?: string }, any, any, any>({
+					initialState: { optional: 'test' },
+				});
 			});
 		});
 	});
