@@ -59,6 +59,9 @@
 				"libs/ngxtension/inject-is-intersecting/src/index.ts"
 			],
 			"ngxtension/inject-lazy": ["libs/ngxtension/inject-lazy/src/index.ts"],
+			"ngxtension/inject-network": [
+				"libs/ngxtension/inject-network/src/index.ts"
+			],
 			"ngxtension/inject-params": [
 				"libs/ngxtension/inject-params/src/index.ts"
 			],
