@@ -1,5 +1,11 @@
 import { DOCUMENT } from '@angular/common';
-import { inject, runInInjectionContext, signal, type Injector, type Signal } from '@angular/core';
+import {
+	inject,
+	runInInjectionContext,
+	signal,
+	type Injector,
+	type Signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { assertInjector } from 'ngxtension/assert-injector';
 import { connect } from 'ngxtension/connect';
@@ -17,12 +23,7 @@ export type NetworkType =
 	| 'other'
 	| 'unknown';
 
-export type NetworkEffectiveType =
-	| 'slow-2g'
-	| '2g'
-	| '3g'
-	| '4g'
-	| '5g';
+export type NetworkEffectiveType = 'slow-2g' | '2g' | '3g' | '4g' | '5g';
 
 export interface NetworkState {
 	supported: Signal<boolean>;
