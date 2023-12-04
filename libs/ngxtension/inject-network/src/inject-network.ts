@@ -1,6 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import type { Injector, Signal, WritableSignal } from '@angular/core';
-import { inject, runInInjectionContext, signal } from '@angular/core';
+import { inject, runInInjectionContext, signal, type Injector, type Signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { assertInjector } from 'ngxtension/assert-injector';
 import { connect } from 'ngxtension/connect';
