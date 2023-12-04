@@ -152,7 +152,7 @@ export function injectNetwork(
 
 			connect(online, online$);
 			connect(onlineAt, online$, () => Date.now());
-			connect(online, offline$, () => false);
+			connect(online, offline$);
 			connect(offlineAt, offline$, () => Date.now());
 		}
 
