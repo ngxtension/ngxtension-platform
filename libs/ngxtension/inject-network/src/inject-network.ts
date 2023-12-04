@@ -23,8 +23,7 @@ export type NetworkEffectiveType =
 	| '2g'
 	| '3g'
 	| '4g'
-	| '5g'
-	| undefined;
+	| '5g';
 
 export interface NetworkState {
 	supported: Signal<boolean>;
