@@ -119,14 +119,13 @@ export function injectNetwork(
 
 		const online = signal(true);
 		const saveData = signal(false);
-		const offlineAt: WritableSignal<number | undefined> = signal(undefined);
-		const onlineAt: WritableSignal<number | undefined> = signal(undefined);
-		const downlink: WritableSignal<number | undefined> = signal(undefined);
-		const downlinkMax: WritableSignal<number | undefined> = signal(undefined);
-		const rtt: WritableSignal<number | undefined> = signal(undefined);
-		const effectiveType: WritableSignal<NetworkEffectiveType> =
-			signal(undefined);
-		const type: WritableSignal<NetworkType> = signal<NetworkType>('unknown');
+		const offlineAt = signal<number | undefined>(undefined);
+		const onlineAt = signal<number | undefined>(undefined);
+		const downlink = signal<number | undefined>(undefined);
+		const downlinkMax = signal<number | undefined>(undefined);
+		const rtt = signal<number | undefined>(undefined);
+		const effectiveType = signal<NetworkEffectiveType | undefined>(undefined);
+		const type = signal<NetworkType>('unknown');
 
 		const connection = supported() && (navigator as any).connection;
 
