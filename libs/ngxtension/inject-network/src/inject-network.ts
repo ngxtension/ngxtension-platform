@@ -150,7 +150,7 @@ export function injectNetwork(
 			const offline$ = fromEvent(window, 'offline').pipe(map(() => false));
 			const online$ = fromEvent(window, 'online').pipe(map(() => true));
 
-			connect(online, online$, () => true);
+			connect(online, online$);
 			connect(onlineAt, online$, () => Date.now());
 			connect(online, offline$, () => false);
 			connect(offlineAt, offline$, () => Date.now());
