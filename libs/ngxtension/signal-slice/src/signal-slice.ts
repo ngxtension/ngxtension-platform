@@ -140,7 +140,15 @@ export function signalSlice<
 		| ((state: Signal<TSignalValue>) => Source<TSignalValue>)
 	>;
 	actionSources?: TActionSources;
-	selectors?: (state: Signal<TSignalValue>) => TSelectors;
+	selectors?: (
+		state: SignalSlice<
+			TSignalValue,
+			TActionSources,
+			any,
+			TEffects,
+			TActionEffects
+		>
+	) => TSelectors;
 	effects?: (
 		state: SignalSlice<
 			TSignalValue,
@@ -257,7 +265,7 @@ export function signalSlice<
 		});
 	}
 
-	for (const [key, selector] of Object.entries(selectors(readonlyState))) {
+	for (const [key, selector] of Object.entries(selectors(slice))) {
 		Object.defineProperty(readonlyState, key, {
 			value: computed(selector),
 		});
