@@ -305,11 +305,11 @@ describe(signalSlice.name, () => {
 				const state = signalSlice({
 					initialState,
 					selectors: (state) => ({
-						doubleAge: () => state().age * 2,
+						doubleAge: () => state.age() * 2,
 					}),
 				});
 
-				expect(state.doubleAge()).toEqual(state().age * 2);
+				expect(state.doubleAge()).toEqual(state.age() * 2);
 			});
 		});
 	});

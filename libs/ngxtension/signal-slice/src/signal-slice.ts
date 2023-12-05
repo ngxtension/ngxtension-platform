@@ -144,8 +144,8 @@ export function signalSlice<
 		state: SignalSlice<
 			TSignalValue,
 			TActionSources,
-			TSelectors,
 			any,
+			TEffects,
 			TActionEffects
 		>
 	) => TSelectors;
