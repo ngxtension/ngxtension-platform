@@ -227,6 +227,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "robbaman",
+      "name": "Robert Mulder",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4688582?v=4",
+      "profile": "http://www.creativeid.nl",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
