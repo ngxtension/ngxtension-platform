@@ -1,0 +1,109 @@
+---
+title: resize
+description: Una directiva y función de Angular para escuchar eventos de cambio de tamaño de elementos, lo que te permite responder dinámicamente a cambios en el tamaño de los elementos.
+badge: stable
+contributor: tomer
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Importa la directiva
+
+```ts
+import { NgxResize, injectResize } from 'ngxtension/resize';
+```
+
+El `resize` entry point expone 2 symbols:
+
+- `injectResize()`: un CIF que observa el evento de cambio de tamaño en el elemento Host del componente.
+- `NgxResize`: una directiva que puede observar el evento de cambio de tamaño de cualquier elemento al que esté adjunta.
+
+Ambos emiten el resultado del cambio de tamaño fuera de la [Zona Angular](https://angular.io/guide/zone) de forma predeterminada, pero ambos proporcionan una forma de configurar el comportamiento.
+
+## Uso
+
+### `injectResize`
+
+`injectResize` retorna un `Observable<ResizeResult>` (see [ResizeResult TBD]())
+
+```ts
+export class App {
+	resize$ = injectResize(); // Observable<ResizeResult>
+}
+```
+
+### `NgxResize`
+
+<Tabs>
+	<TabItem label="html">
+
+```html
+<div (ngxResize)="onResize($event)">
+	<!-- content -->
+</div>
+```
+
+  </TabItem>
+	<TabItem label="ts">
+
+```ts
+@Component({
+	imports: [NgxResize],
+	templateUrl: './app.html',
+})
+export class App {
+	onResize(event: ResizeResult) {
+		// runs outside of Angular Zone by default
+	}
+}
+```
+
+  </TabItem>
+</Tabs>
+
+Si no eres fan de `inject()`, también puedes usar `NgxResize` en el elemento Host aprovechando `hostDirectives`
+
+```ts
+@Component({
+	hostDirectives: [{ directive: NgxResize, outputs: ['ngxResize'] }],
+})
+export class App {
+	@HostListener('ngxResize', ['$event'])
+	onResize(event: ResizeResult) {
+		// listen for resize event from NgxResize
+	}
+}
+```
+
+### `ResizeOptions`
+
+Podemos pasar opciones específicas de `ResizeOptions` a ambas opciones de inyección y directiva.
+
+```ts
+injectResize(someOptions);
+```
+
+```html
+<div (ngxResize)="onResize($event)" [ngxResizeOptions]="someOptions">
+	<div></div>
+</div>
+```
+
+Para proveer `ResizeOptions` globalmente a la aplicación o a un subárbol de componentes (a través de `Route#providers`), podemos usar `provideResizeOptions()`
+
+```ts
+// Standalone
+bootstrapApplication(App, { providers: [provideResizeOptions(globalOptions)] });
+
+// AppModule
+@NgModule({
+	providers: [provideResizeOptions(globalOptions)],
+})
+export class AppModule {}
+
+// Route#provider (equivalent to Lazy-load modules)
+const route = {
+	path: 'some-path',
+	providers: [provideResizeOptions(subTreeGlobalOptions)],
+};
+```
