@@ -1,5 +1,37 @@
 
 
+## [1.5.0](https://github.com/nartc/ngxtension-platform/compare/1.4.0...1.5.0) (2023-12-06)
+
+
+### Features
+
+* add collection for contributors ([#174](https://github.com/nartc/ngxtension-platform/issues/174)) ([d8b7936](https://github.com/nartc/ngxtension-platform/commit/d8b7936f294105634c37f1cc4a3e7f9477aa2f91))
+* add contributors and badge to doc pages ([#170](https://github.com/nartc/ngxtension-platform/issues/170)) ([06b86a9](https://github.com/nartc/ngxtension-platform/commit/06b86a998fdf1b7c12d109cc709e0abbb0364494))
+* add contributors and badge to doc pages ([#173](https://github.com/nartc/ngxtension-platform/issues/173)) ([b468031](https://github.com/nartc/ngxtension-platform/commit/b4680317f74b264cd30485a04e9fc9d39cd440c4))
+* added computedPrevious helper fn ([#181](https://github.com/nartc/ngxtension-platform/issues/181)) ([96d5de4](https://github.com/nartc/ngxtension-platform/commit/96d5de4233195ad726da364706bdd73c63a34208))
+* added injectDocumentVisibility utility ([f6b5e77](https://github.com/nartc/ngxtension-platform/commit/f6b5e770c4257288924956e0a1f37fe2d4fddadc))
+* **docs:** add internationalization to docs ([#191](https://github.com/nartc/ngxtension-platform/issues/191)) ([cbfbe85](https://github.com/nartc/ngxtension-platform/commit/cbfbe854520a8a4e93fbe0fb7dfb5495ca2ddcf7))
+* ported injectNetwork() to Angular ([#186](https://github.com/nartc/ngxtension-platform/issues/186)) ([684a33a](https://github.com/nartc/ngxtension-platform/commit/684a33ae23332a8f55c7bdf567c4cc63c94b92c5))
+* **signal-slice:** add actionEffects config ([#154](https://github.com/nartc/ngxtension-platform/issues/154)) ([9034032](https://github.com/nartc/ngxtension-platform/commit/9034032d021d16babfd88ad2670fd1842430f58b))
+
+
+### Bug Fixes
+
+* contributors ([e9f8c93](https://github.com/nartc/ngxtension-platform/commit/e9f8c939c5d02bde463e82c1d52210f1b932d458))
+* **signal-slice:** Do not allow optional properties in signalSlice ([#177](https://github.com/nartc/ngxtension-platform/issues/177)) ([84ccf3c](https://github.com/nartc/ngxtension-platform/commit/84ccf3c917112b652d4b6bafd4ac04c792776a56))
+* **signal-slice:** typing for Subject with union type ([#169](https://github.com/nartc/ngxtension-platform/issues/169)) ([746c0fc](https://github.com/nartc/ngxtension-platform/commit/746c0fc1fd15ad81a0b6895904ba371be5ddec0b))
+
+
+### Documentations
+
+* add ajitzero as a contributor for doc ([#172](https://github.com/nartc/ngxtension-platform/issues/172)) ([1b1efe2](https://github.com/nartc/ngxtension-platform/commit/1b1efe2955669f30e630d1eaad9930d76319c950))
+* add fiorelozere as a contributor for code ([#185](https://github.com/nartc/ngxtension-platform/issues/185)) ([0275c02](https://github.com/nartc/ngxtension-platform/commit/0275c02bf94a3bdfc3c8b4750bf84dd7452d6d1a))
+* add nelsongutidev as a contributor for doc ([#192](https://github.com/nartc/ngxtension-platform/issues/192)) ([437aa2c](https://github.com/nartc/ngxtension-platform/commit/437aa2c4eb42142b5f015f013727fb9b0c9b5529))
+* add palexcast as a contributor for code ([#182](https://github.com/nartc/ngxtension-platform/issues/182)) ([776f593](https://github.com/nartc/ngxtension-platform/commit/776f593a38a9e845c1fa760a9f5e61cc1a857cdb))
+* add robbaman as a contributor for code ([#189](https://github.com/nartc/ngxtension-platform/issues/189)) ([7feab72](https://github.com/nartc/ngxtension-platform/commit/7feab72f72a004cf5dfc3d74d43281883621b017))
+* add toLazySignal() documentation ([#168](https://github.com/nartc/ngxtension-platform/issues/168)) ([e4ffaee](https://github.com/nartc/ngxtension-platform/commit/e4ffaee9d68d7ea5b11019cf969cd0d391de641d))
+* fix docs ([8303cb0](https://github.com/nartc/ngxtension-platform/commit/8303cb0bcbea53974da915bf03e15b18172cefb8))
+
 ## [1.4.0](https://github.com/nartc/ngxtension-platform/compare/1.3.0...1.4.0) (2023-11-21)
 
 
