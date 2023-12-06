@@ -12,9 +12,9 @@ describe('drag', () => {
 			clientY: 0,
 		});
 		cy.get('@box').trigger('pointermove', {
+			pointerId: 1,
 			clientX: 300,
 			clientY: 300,
-			pointerId: 1,
 		});
 		cy.get('@box').trigger('pointerup', { pointerId: 1 });
 
