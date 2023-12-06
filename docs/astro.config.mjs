@@ -1,6 +1,11 @@
 import starlight from '@astrojs/starlight';
 import { defineConfig } from 'astro/config';
 
+export const locales = {
+	root: { label: 'English', lang: 'en' },
+	es: { label: 'Español', lang: 'es' },
+};
+
 // https://astro.build/config
 export default defineConfig({
 	integrations: [
@@ -20,15 +25,32 @@ export default defineConfig({
 				{
 					label: 'Getting Started',
 					autogenerate: { directory: 'getting-started' },
+					translations: {
+						es: 'Inicio',
+					},
 				},
 				{
 					label: 'Utilities',
 					autogenerate: { directory: 'utilities' },
+					translations: {
+						es: 'Utilidades',
+					},
 				},
 			],
 			components: {
 				PageTitle: './src/components/PageTitle.astro',
 				MarkdownContent: './src/components/Content.astro',
+			},
+			defaultLocale: 'root',
+			locales: {
+				root: {
+					label: 'English',
+					lang: 'en',
+				},
+				es: {
+					label: 'Español',
+					lang: 'es',
+				},
 			},
 		}),
 	],

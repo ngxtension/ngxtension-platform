@@ -1,0 +1,147 @@
+---
+title: Gesture
+description: ngxtension/gestures
+badge: stable
+contributor: chau-tran
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Uso
+
+Hay varias formas en que podemos utilizar el Gesture de `ngxtension/gestures`
+
+Los ejemplos muestran el uso de `NgxDrag`, para `DragGesture`, pero también se pueden aplicar a otros gestos.
+
+### Directiva
+
+```ts
+import { NgxDrag, type NgxInjectDrag } from 'ngxtension/gestures';
+```
+
+`NgxDrag` es una directiva que podemos usar para adjuntar en cualquier elemento para capturar los eventos de arrastre de ese elemento.
+
+<Tabs>
+	<TabItem label="html">
+
+```html
+<div class="draggable-box" (ngxDrag)="onDrag($event)">
+	<!-- content -->
+</div>
+```
+
+  </TabItem>
+	<TabItem label="ts">
+
+```ts
+@Component({
+	imports: [NgxDrag],
+	templateUrl: './app.html',
+})
+export class App {
+	onDrag(state: NgxInjectDrag['state']) {
+		// fire every time a drag event happens
+	}
+}
+```
+
+  </TabItem>
+</Tabs>
+
+#### Como `hostDirective`
+
+También podemos usar `NgxDrag` en un elemento Host aprovechando `hostDirectives`
+
+```ts
+@Component({
+	selector: 'app-draggable-box',
+	standalone: true,
+	hostDirectives: [{ directive: NgxDrag, outputs: ['ngxDrag'] }],
+	template: ``,
+})
+export class DraggableBox {
+	@HostListener('ngxDrag', ['$event'])
+	onDrag(state: NgxInjectDrag['state']) {
+		// fire every time a drag event happens
+	}
+}
+```
+
+### `injectDrag`
+
+Otra forma de habilitar Drag Gesture es usar el CIF `injectDrag`.
+
+```ts
+@Component({
+	selector: 'app-draggable-box',
+	standalone: true,
+	template: ``,
+})
+export class DraggableBox {
+	constructor() {
+		injectDrag((state) => {
+			// fire every time a drag event happens
+		});
+	}
+}
+```
+
+Con eso en mente, el verdadero poder de `injectDrag` es la facilidad de componer diferentes comportamientos encima de Drag Gesture.
+Por ejemplo, podemos tener un CIF que habilita Drag Gesture y devuelve una `Signal<Vector2>` que puede desencadenar otros efectos.
+
+```ts
+export function injectDragPosition() {
+	const position = signal<Vector2>([0, 0]);
+
+	injectDrag(({ offset }) => {
+		position.set(offset);
+	});
+
+	return position.asReadonly();
+}
+```
+
+## Configuración
+
+- Para `NgxDrag`, podemos proporcionar un objeto de configuración a través del input `[ngxDragConfig]`.
+- Para `injectDrag`, podemos proporcionar una configuración de `Signal<DragConfig>` (o una `Function` que devuelve `DragConfig`) en el segundo argumento
+
+```ts
+injectDrag(dragHandler, {
+	config: () => dragConfig,
+});
+```
+
+## Zone
+
+Drag Gesture está habilitado dentro de Zone por defecto.
+
+Para `NgxDrag`, podemos entrar en modo zoneless a través de la entrada `[ngxDragZoneless]`.
+Para `injectDrag`, podemos entrar en modo zonless a través de la opción `zoneless` en el segundo argumento
+
+```ts
+injectDrag(dragHandler, { zoneless: true });
+```
+
+### Con Global Zoneless
+
+Además, podemos permitir que todos los gestos en un cierto árbol de componentes opten automáticamente por el modo zoneless llamando a `provideZonelessGesture()`
+
+```ts
+// application wise
+bootstrapApplication(App, { providers: [provideZonelessGesture()] });
+
+// route provider
+const routes = [
+	{
+		path: '',
+		providers: [provideZonelessGesture()],
+	},
+];
+
+// component provider
+@Component({
+	providers: [provideZonelessGesture()],
+})
+export class MyComponent {}
+```
