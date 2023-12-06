@@ -1,15 +1,8 @@
 import { DOCUMENT } from '@angular/common';
-import {
-	inject,
-	runInInjectionContext,
-	signal,
-	type Injector,
-	type Signal,
-} from '@angular/core';
+import { inject, signal, type Injector, type Signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { assertInjector } from 'ngxtension/assert-injector';
-import { connect } from 'ngxtension/connect';
-import { fromEvent, map, startWith } from 'rxjs';
+import { fromEvent, map, merge, startWith } from 'rxjs';
 
 // Ported from https://vueuse.org/core/useNetwork/
 
@@ -103,13 +96,12 @@ export interface InjectNetworkOptions {
  *  - `saveData`: A signal that emits `true` if the user activated data saver mode, otherwise `false`.
  *  - `type`: A signal that emits the detected connection/network type.
  */
-export function injectNetwork(
-	options?: InjectNetworkOptions
-): Readonly<NetworkState> {
-	const injector = assertInjector(injectNetwork, options?.injector);
-
-	return runInInjectionContext(injector, () => {
-		const window: Window = options?.window ?? inject(DOCUMENT).defaultView!;
+export function injectNetwork({
+	injector,
+	window: customWindow,
+}: InjectNetworkOptions = {}): Readonly<NetworkState> {
+	return assertInjector(injectNetwork, injector, () => {
+		const window: Window = customWindow ?? inject(DOCUMENT).defaultView!;
 		const navigator = window?.navigator;
 
 		const supported = signal(
@@ -145,13 +137,19 @@ export function injectNetwork(
 		};
 
 		if (window) {
-			const offline$ = fromEvent(window, 'offline').pipe(map(() => false));
-			const online$ = fromEvent(window, 'online').pipe(map(() => true));
-
-			connect(online, online$);
-			connect(onlineAt, online$, () => Date.now());
-			connect(online, offline$);
-			connect(offlineAt, offline$, () => Date.now());
+			merge(
+				fromEvent(window, 'online').pipe(map(() => true)),
+				fromEvent(window, 'offline').pipe(map(() => false))
+			)
+				.pipe(takeUntilDestroyed())
+				.subscribe((isOnline) => {
+					online.set(isOnline);
+					if (isOnline) {
+						onlineAt.set(Date.now());
+					} else {
+						offlineAt.set(Date.now());
+					}
+				});
 		}
 
 		if (connection) {
