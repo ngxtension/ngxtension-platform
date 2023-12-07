@@ -7,7 +7,7 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-26-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-A collection of utilities for [Angular](https://angular.io).
+A collection of utilities for [Angular](https://angular.dev).
 
 ## Installation
 
