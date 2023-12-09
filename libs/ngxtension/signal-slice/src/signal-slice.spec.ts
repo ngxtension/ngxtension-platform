@@ -114,7 +114,7 @@ describe(signalSlice.name, () => {
 			map(() => {
 				testFn();
 				return {};
-			})
+			}),
 		);
 
 		let state: SignalSlice<typeof initialState, any, any, any, any>;
