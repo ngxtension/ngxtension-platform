@@ -133,17 +133,13 @@ describe(signalSlice.name, () => {
 		});
 
 		it('should connect lazy source after selector is accessed', () => {
-			TestBed.runInInjectionContext(() => {
-				state.age();
-				expect(testFn).toHaveBeenCalled();
-			});
+			state.age();
+			expect(testFn).toHaveBeenCalled();
 		});
 
 		it('should connect lazy source after signal value is accessed', () => {
-			TestBed.runInInjectionContext(() => {
-				state.age();
-				expect(testFn).toHaveBeenCalled();
-			});
+			state.age();
+			expect(testFn).toHaveBeenCalled();
 		});
 	});
 
