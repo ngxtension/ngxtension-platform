@@ -123,6 +123,7 @@ export function connect(signal: WritableSignal<unknown>, ...args: any[]) {
 	} as ConnectedSignal<unknown>;
 }
 
+// TODO: there must be a way to parse the args more efficiently
 function parseArgs(
 	args: any[],
 ): [
