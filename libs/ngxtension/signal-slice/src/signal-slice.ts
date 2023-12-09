@@ -1,5 +1,6 @@
 import {
 	DestroyRef,
+	Injector,
 	computed,
 	effect,
 	inject,
@@ -177,6 +178,7 @@ export function signalSlice<
 	TActionEffects
 > {
 	const destroyRef = inject(DestroyRef);
+	const injector = inject(Injector);
 
 	const {
 		initialState,
@@ -288,7 +290,7 @@ export function signalSlice<
 		get(target, property, receiver) {
 			if (!lazySourcesLoaded) {
 				lazySourcesLoaded = true;
-				connectSources(state, lazySources);
+				connectSources(state, lazySources, injector);
 			}
 
 			return Reflect.get(target, property, receiver);
@@ -298,13 +300,14 @@ export function signalSlice<
 
 function connectSources<TSignalValue>(
 	state: WritableSignal<TSignalValue>,
-	sources: SourceConfig<TSignalValue>
+	sources: SourceConfig<TSignalValue>,
+	injector?: Injector
 ) {
 	for (const source of sources) {
 		if (isObservable(source)) {
-			connect(state, source);
+			connect(state, source, injector);
 		} else {
-			connect(state, source(state.asReadonly()));
+			connect(state, source(state.asReadonly()), injector);
 		}
 	}
 }
