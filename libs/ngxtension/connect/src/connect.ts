@@ -8,16 +8,16 @@ export type PartialOrValue<TValue> = TValue extends object
 	: TValue;
 export type Reducer<TValue, TNext> = (
 	previous: TValue,
-	next: TNext
+	next: TNext,
 ) => PartialOrValue<TValue>;
 
 type ConnectedSignal<TSignalValue> = {
 	with<TObservableValue extends PartialOrValue<TSignalValue>>(
-		observable: Observable<TObservableValue>
+		observable: Observable<TObservableValue>,
 	): ConnectedSignal<TSignalValue>;
 	with<TObservableValue>(
 		observable: Observable<TObservableValue>,
-		reducer: Reducer<TSignalValue, TObservableValue>
+		reducer: Reducer<TSignalValue, TObservableValue>,
 	): ConnectedSignal<TSignalValue>;
 	subscription: Subscription;
 };
@@ -44,28 +44,28 @@ type ConnectedSignal<TSignalValue> = {
  */
 export function connect<TSignalValue>(
 	signal: WritableSignal<TSignalValue>,
-	injectorOrDestroyRef?: Injector | DestroyRef
+	injectorOrDestroyRef?: Injector | DestroyRef,
 ): ConnectedSignal<TSignalValue>;
 export function connect<
 	TSignalValue,
-	TObservableValue extends PartialOrValue<TSignalValue>
+	TObservableValue extends PartialOrValue<TSignalValue>,
 >(
 	signal: WritableSignal<TSignalValue>,
 	observable: Observable<TObservableValue>,
-	injectorOrDestroyRef?: Injector | DestroyRef
+	injectorOrDestroyRef?: Injector | DestroyRef,
 ): Subscription;
 export function connect<TSignalValue, TObservableValue>(
 	signal: WritableSignal<TSignalValue>,
 	observable: Observable<TObservableValue>,
 	reducer: Reducer<TSignalValue, TObservableValue>,
-	injectorOrDestroyRef?: Injector | DestroyRef
+	injectorOrDestroyRef?: Injector | DestroyRef,
 ): Subscription;
 export function connect(
 	signal: WritableSignal<unknown>,
 	...args: [
 		(Observable<unknown> | (Injector | DestroyRef))?,
 		(Reducer<unknown, unknown> | (Injector | DestroyRef))?,
-		(Injector | DestroyRef)?
+		(Injector | DestroyRef)?,
 	]
 ) {
 	const [observable, reducer, injectorOrDestroyRef] = parseArgs(args);
@@ -103,8 +103,8 @@ export function connect(
 				connect(
 					signal,
 					...(args as any),
-					injectorOrDestroyRef
-				) as unknown as Subscription
+					injectorOrDestroyRef,
+				) as unknown as Subscription,
 			);
 			return this;
 		},
@@ -116,12 +116,12 @@ function parseArgs(
 	args: [
 		(Observable<unknown> | (Injector | DestroyRef))?,
 		(Reducer<unknown, unknown> | (Injector | DestroyRef))?,
-		(Injector | DestroyRef)?
-	]
+		(Injector | DestroyRef)?,
+	],
 ): [
 	Observable<unknown> | null,
 	Reducer<unknown, unknown> | null,
-	Injector | DestroyRef | null
+	Injector | DestroyRef | null,
 ] {
 	if (args.length > 2) {
 		return [
@@ -136,7 +136,7 @@ function parseArgs(
 		const parsedArgs: [
 			Observable<unknown>,
 			Reducer<unknown, unknown> | null,
-			Injector | DestroyRef | null
+			Injector | DestroyRef | null,
 		] = [arg as Observable<unknown>, null, null];
 		if (typeof arg2 === 'function') {
 			parsedArgs[1] = arg2;

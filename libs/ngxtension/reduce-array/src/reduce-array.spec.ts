@@ -56,7 +56,7 @@ describe(reduceArray.name, () => {
 			reduceArray((_, n) => {
 				count += 1;
 				return n;
-			})
+			}),
 		);
 		result.subscribe((r) => {
 			expect(r).toBeUndefined();

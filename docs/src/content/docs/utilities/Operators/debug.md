@@ -26,7 +26,7 @@ const out$ = in$.pipe(
 		if (n > 2 && Math.random() < 0.9) return n * 2;
 		else throw new Error('You WIN a Maybe error!');
 	}),
-	debug('after')
+	debug('after'),
 );
 
 out$.subscribe();

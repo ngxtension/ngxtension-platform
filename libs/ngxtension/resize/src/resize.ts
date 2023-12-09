@@ -70,7 +70,7 @@ export type ResizeResult = {
  * @see {@link ResizeResult}
  */
 export function injectResize(
-	options: Partial<ResizeOptions> = {}
+	options: Partial<ResizeOptions> = {},
 ): Observable<ResizeResult> {
 	const [{ nativeElement }, zone, document] = [
 		inject(ElementRef) as ElementRef<HTMLElement>,
@@ -108,7 +108,7 @@ export class NgxResize implements OnInit {
 			mergedOptions,
 			this.host.nativeElement,
 			this.document,
-			this.zone
+			this.zone,
 		)
 			.pipe(takeUntilDestroyed(this.destroyRef))
 			.subscribe(this.ngxResize);
@@ -127,7 +127,7 @@ function createResizeStream(
 	}: ResizeOptions,
 	nativeElement: HTMLElement,
 	document: Document,
-	zone: NgZone
+	zone: NgZone,
 ) {
 	const window = document.defaultView;
 	const isSupport = !!window?.ResizeObserver;
@@ -140,7 +140,7 @@ function createResizeStream(
 	const scrollContainers: HTMLOrSVGElement[] | null = findScrollContainers(
 		nativeElement,
 		window,
-		document.body
+		document.body,
 	);
 
 	// set actual debounce values early, so effects know if they should react accordingly
@@ -156,7 +156,7 @@ function createResizeStream(
 		: null;
 
 	const debounceAndTorndown = <T>(
-		debounce: number | null
+		debounce: number | null,
 	): MonoTypeOperatorFunction<T> => {
 		return pipe(debounceTime(debounce ?? 0), takeUntil(torndown$));
 	};
@@ -164,7 +164,7 @@ function createResizeStream(
 	return new Observable<ResizeResult>((subscriber) => {
 		if (!isSupport) {
 			subscriber.error(
-				'[ngx-resize] your browser does not support ResizeObserver. Please consider using a polyfill'
+				'[ngx-resize] your browser does not support ResizeObserver. Please consider using a polyfill',
 			);
 			return;
 		}
@@ -182,7 +182,7 @@ function createResizeStream(
 					nativeElement,
 					window,
 					offsetSize,
-					entries
+					entries,
 				);
 
 				if (emitInZone) zone.run(() => void subscriber.next(result));
@@ -228,7 +228,7 @@ function createResizeStream(
 		};
 	}).pipe(
 		debounceTime(scrollDebounce ?? 0),
-		share({ connector: () => new ReplaySubject(1) })
+		share({ connector: () => new ReplaySubject(1) }),
 	);
 }
 
@@ -236,7 +236,7 @@ function calculateResult(
 	nativeElement: HTMLElement,
 	window: Window,
 	offsetSize: boolean,
-	entries: ResizeObserverEntry[]
+	entries: ResizeObserverEntry[],
 ): [ResizeResult, Omit<DOMRect, 'toJSON'>] {
 	const { left, top, width, height, bottom, right, x, y } =
 		nativeElement.getBoundingClientRect();
@@ -255,16 +255,16 @@ function calculateResult(
 function findScrollContainers(
 	element: HTMLOrSVGElement | null,
 	window: Window | null,
-	documentBody: HTMLElement
+	documentBody: HTMLElement,
 ): HTMLOrSVGElement[] {
 	const result: HTMLOrSVGElement[] = [];
 	if (!element || !window || element === documentBody) return result;
 	const { overflow, overflowX, overflowY } = window.getComputedStyle(
-		element as HTMLElement
+		element as HTMLElement,
 	);
 	if (
 		[overflow, overflowX, overflowY].some(
-			(prop) => prop === 'auto' || prop === 'scroll'
+			(prop) => prop === 'auto' || prop === 'scroll',
 		)
 	)
 		result.push(element);
@@ -273,7 +273,7 @@ function findScrollContainers(
 		...findScrollContainers(
 			(element as HTMLElement).parentElement,
 			window,
-			documentBody
+			documentBody,
 		),
 	];
 }
@@ -291,5 +291,5 @@ const keys: (keyof Omit<ResizeResult, 'entries' | 'dpr'>)[] = [
 ];
 const areBoundsEqual = (
 	a: Omit<ResizeResult, 'entries' | 'dpr'>,
-	b: Omit<ResizeResult, 'entries' | 'dpr'>
+	b: Omit<ResizeResult, 'entries' | 'dpr'>,
 ) => keys.every((key) => a[key] === b[key]);

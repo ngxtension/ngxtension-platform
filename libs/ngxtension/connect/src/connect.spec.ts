@@ -26,7 +26,7 @@ describe(connect.name, () => {
 
 			TestBed.runInInjectionContext(() => {
 				const connectedSignal = connect(state).with(
-					of({ user: { firstName: 'Chau', lastName: 'Tran' } })
+					of({ user: { firstName: 'Chau', lastName: 'Tran' } }),
 				);
 
 				expect(state().user).toEqual({ firstName: 'Chau', lastName: 'Tran' });
@@ -45,7 +45,7 @@ describe(connect.name, () => {
 						user: { ...prev.user, firstName },
 						age,
 						likes: [...prev.likes, newLike],
-					})
+					}),
 				);
 				expect(state()).toEqual({
 					user: { firstName: 'Enea', lastName: 'Tran' },
@@ -126,7 +126,7 @@ describe(connect.name, () => {
 						user: { ...prev.user, firstName },
 						age,
 						likes: [...prev.likes, newLike],
-					})
+					}),
 				);
 				expect(state()).toEqual({
 					user: { firstName: 'Enea', lastName: 'Tran' },

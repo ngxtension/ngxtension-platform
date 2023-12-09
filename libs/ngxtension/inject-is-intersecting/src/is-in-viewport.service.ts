@@ -30,7 +30,7 @@ export class IsInViewportService implements IsInViewportServiceInterface {
 
 		this.#observerListeners.set(
 			element,
-			new Subject<IntersectionObserverEntry>()
+			new Subject<IntersectionObserverEntry>(),
 		);
 		this.#observer?.observe(element);
 

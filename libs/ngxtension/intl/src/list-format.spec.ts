@@ -8,7 +8,7 @@ import { ListFormatPipe, provideListFormatOptions } from './list-format.pipe';
 	standalone: true,
 	template: `
 		<p>{{ ['a', 'b', 'c'] | listFormat }}</p>
-		<p>{{ ['a', 'b', 'c'] | listFormat : 'short' }}</p>
+		<p>{{ ['a', 'b', 'c'] | listFormat: 'short' }}</p>
 	`,
 	imports: [ListFormatPipe],
 })
@@ -18,7 +18,7 @@ class TestComponent {}
 	standalone: true,
 	template: `
 		<p>{{ ['a', 'b', 'c'] | listFormat }}</p>
-		<p>{{ ['a', 'b', 'c'] | listFormat : 'long' }}</p>
+		<p>{{ ['a', 'b', 'c'] | listFormat: 'long' }}</p>
 	`,
 	imports: [ListFormatPipe],
 	providers: [provideListFormatOptions({ style: 'short' })],

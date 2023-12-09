@@ -9,9 +9,9 @@ import {
 @Component({
 	standalone: true,
 	template: `
-		<p>{{ 1 | relativeTimeFormat : 'day' }}</p>
-		<p>{{ -1 | relativeTimeFormat : 'day' }}</p>
-		<p>{{ 2 | relativeTimeFormat : 'day' : 'short' }}</p>
+		<p>{{ 1 | relativeTimeFormat: 'day' }}</p>
+		<p>{{ -1 | relativeTimeFormat: 'day' }}</p>
+		<p>{{ 2 | relativeTimeFormat: 'day' : 'short' }}</p>
 	`,
 	imports: [RelativeTimeFormatPipe],
 })
@@ -20,9 +20,9 @@ class TestComponent {}
 @Component({
 	standalone: true,
 	template: `
-		<p>{{ 1 | relativeTimeFormat : 'day' }}</p>
-		<p>{{ -1 | relativeTimeFormat : 'day' }}</p>
-		<p>{{ 2 | relativeTimeFormat : 'day' : 'narrow' }}</p>
+		<p>{{ 1 | relativeTimeFormat: 'day' }}</p>
+		<p>{{ -1 | relativeTimeFormat: 'day' }}</p>
+		<p>{{ 2 | relativeTimeFormat: 'day' : 'narrow' }}</p>
 	`,
 	imports: [RelativeTimeFormatPipe],
 	providers: [

@@ -13,14 +13,14 @@ describe('track-by', () => {
 		cy.get('button').click();
 		assertCount(
 			10 /* initial 3 + 7 (3 removed, 4 new) */,
-			4 /* initial 3 + 1 new */
+			4 /* initial 3 + 1 new */,
 		);
 
 		// second click
 		cy.get('button').click();
 		assertCount(
 			19 /* initial 3 + 7 (3 removed, 4 new) + 9 (4 removed, 5 new) */,
-			5 /* initial 3 + 1 + 1 new */
+			5 /* initial 3 + 1 + 1 new */,
 		);
 	});
 });

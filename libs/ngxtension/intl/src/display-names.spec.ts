@@ -10,9 +10,9 @@ import {
 @Component({
 	standalone: true,
 	template: `
-		<p>{{ 'en-US' | displayNames : 'language' }}</p>
-		<p>{{ 'US' | displayNames : 'region' }}</p>
-		<p>{{ 'US' | displayNames : 'region' : 'long' }}</p>
+		<p>{{ 'en-US' | displayNames: 'language' }}</p>
+		<p>{{ 'US' | displayNames: 'region' }}</p>
+		<p>{{ 'US' | displayNames: 'region' : 'long' }}</p>
 	`,
 	imports: [DisplayNamesPipe],
 })
@@ -21,9 +21,9 @@ class TestComponent {}
 @Component({
 	standalone: true,
 	template: `
-		<p>{{ 'en-US' | displayNames : 'language' }}</p>
-		<p>{{ 'US' | displayNames : 'region' }}</p>
-		<p>{{ 'US' | displayNames : 'region' : 'short' }}</p>
+		<p>{{ 'en-US' | displayNames: 'language' }}</p>
+		<p>{{ 'US' | displayNames: 'region' }}</p>
+		<p>{{ 'US' | displayNames: 'region' : 'short' }}</p>
 	`,
 	imports: [DisplayNamesPipe],
 	providers: [

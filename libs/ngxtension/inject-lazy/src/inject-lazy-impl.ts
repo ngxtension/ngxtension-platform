@@ -57,7 +57,7 @@ export class InjectLazyImpl<T> {
 					// Creating an environment injector to destroy it afterward
 					const newInjector = createEnvironmentInjector(
 						[type as Provider],
-						environmentInjector
+						environmentInjector,
 					);
 
 					// Destroy the injector to trigger DestroyRef.onDestroy on our service
@@ -68,7 +68,7 @@ export class InjectLazyImpl<T> {
 				}
 
 				return injector.get(type)!;
-			})
+			}),
 		);
 	}
 }

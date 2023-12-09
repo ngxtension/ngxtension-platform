@@ -23,8 +23,8 @@ export default class IfValidator {
 		null,
 		ifValidator(
 			() => this.shouldValidate,
-			[Validators.required, Validators.email]
-		)
+			[Validators.required, Validators.email],
+		),
 	);
 
 	public changeCondition() {

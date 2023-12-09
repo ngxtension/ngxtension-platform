@@ -29,23 +29,23 @@ class TestHost {
 	// class binding
 	valid = hostBinding(
 		'class.valid',
-		computed(() => this.fakeControl().valid)
+		computed(() => this.fakeControl().valid),
 	);
 
 	invalid = hostBinding(
 		'class.invalid',
-		computed(() => !this.valid())
+		computed(() => !this.valid()),
 	);
 
 	klass = hostBinding(
 		'class',
-		computed(() => this.fakeControl().klass)
+		computed(() => this.fakeControl().klass),
 	);
 
 	// style binding
 	color = hostBinding(
 		'style.color',
-		computed(() => (this.valid() ? 'green' : 'red'))
+		computed(() => (this.valid() ? 'green' : 'red')),
 	);
 
 	// style binding with a style unit extension
@@ -57,7 +57,7 @@ class TestHost {
 	// property binding
 	id = hostBinding(
 		'id',
-		computed(() => (this.fakeControl().value.length ? 'filled' : 'empty'))
+		computed(() => (this.fakeControl().value.length ? 'filled' : 'empty')),
 	);
 }
 
@@ -138,7 +138,7 @@ describe(hostBinding.name, () => {
 			const { fixture } = setup();
 
 			expect(fixture.nativeElement.getAttribute('aria-required')).toEqual(
-				'false'
+				'false',
 			);
 		});
 	});
@@ -159,7 +159,7 @@ describe(hostBinding.name, () => {
 
 	describe('out of injection context', () => {
 		const component = (
-			options: { addInjector?: boolean } = { addInjector: false }
+			options: { addInjector?: boolean } = { addInjector: false },
 		) => {
 			@Component({ standalone: true, template: '' })
 			class Comp implements OnInit {
@@ -169,7 +169,7 @@ describe(hostBinding.name, () => {
 					hostBinding(
 						'',
 						signal(null),
-						options?.addInjector ? this.injector : undefined
+						options?.addInjector ? this.injector : undefined,
 					);
 				}
 			}

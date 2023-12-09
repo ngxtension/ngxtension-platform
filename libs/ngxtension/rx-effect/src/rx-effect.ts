@@ -14,16 +14,16 @@ type RxEffectOptions = { destroyRef: DestroyRef };
 export function rxEffect<T>(
 	source: Observable<T>,
 	effect: Effect<T>,
-	options?: RxEffectOptions
+	options?: RxEffectOptions,
 ): Subscription;
 export function rxEffect<T>(
 	source: Observable<T>,
-	options?: RxEffectOptions
+	options?: RxEffectOptions,
 ): Subscription;
 export function rxEffect<T>(
 	source: Observable<T>,
 	effectOrOptions?: Effect<T> | RxEffectOptions,
-	options?: RxEffectOptions
+	options?: RxEffectOptions,
 ) {
 	const effect =
 		effectOrOptions && 'destroyRef' in effectOrOptions
@@ -35,7 +35,7 @@ export function rxEffect<T>(
 	return source
 		.pipe(
 			effect ? tap(effect) : identity,
-			takeUntilDestroyed(options?.destroyRef)
+			takeUntilDestroyed(options?.destroyRef),
 		)
 		.subscribe();
 }

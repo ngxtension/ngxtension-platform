@@ -27,7 +27,7 @@ import { ReplaySubject } from 'rxjs';
  * }
  */
 export const injectDestroy = (
-	injector?: Injector
+	injector?: Injector,
 ): ReplaySubject<void> & { onDestroy: DestroyRef['onDestroy'] } => {
 	injector = assertInjector(injectDestroy, injector);
 

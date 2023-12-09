@@ -30,8 +30,8 @@ export class Some {
 	log = createEffect<number>(
 		pipe(
 			map((value) => value * 2),
-			tap(console.log.bind(console, 'double is -->'))
-		)
+			tap(console.log.bind(console, 'double is -->')),
+		),
 	);
 
 	ngOnInit() {
@@ -59,10 +59,10 @@ export class Some {
 		const log = createEffect<number>(
 			pipe(
 				map((value) => value * this.multiplier),
-				tap(console.log.bind(console, 'multiply is -->'))
+				tap(console.log.bind(console, 'multiply is -->')),
 			),
 			// 4. pass in the injector
-			this.injector
+			this.injector,
 		);
 
 		// 5. start the effect

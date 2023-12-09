@@ -24,7 +24,7 @@ describe(rxEffect.name, () => {
 			imports: [Child],
 			template: `
 				@if (display()) {
-				<child />
+					<child />
 				}
 			`,
 		})

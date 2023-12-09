@@ -64,7 +64,7 @@ describe(debug.name, () => {
 				if (n % 2) return n;
 				else throw '[ERR]';
 			}),
-			debug('test2')
+			debug('test2'),
 		);
 
 		let out = '>';
@@ -138,7 +138,7 @@ describe(debug.name, () => {
 	it('given an observable that unsubscribe >! should console.info unsubscribe + finalize', () => {
 		const in$ = NEVER;
 		const out$ = in$.pipe(
-			debug('test5', { unsubscribe: true, finalize: true })
+			debug('test5', { unsubscribe: true, finalize: true }),
 		);
 
 		let out = '>';
@@ -157,7 +157,7 @@ describe(debug.name, () => {
 					unsubscribe() {
 						out += '!';
 					},
-				})
+				}),
 			)
 			.subscribe()
 			.unsubscribe();

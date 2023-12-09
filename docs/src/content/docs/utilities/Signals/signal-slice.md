@@ -73,7 +73,7 @@ state = signalSlice({
 			this.newMessage$.pipe(
 				map((newMessage) => ({
 					messages: [...state().messages, newMessage],
-				}))
+				})),
 			),
 	],
 });
@@ -95,13 +95,13 @@ state = signalSlice({
 			action$.pipe(
 				map((checklist) => ({
 					checklists: [...state().checklists, checklist],
-				}))
+				})),
 			),
 		remove: (state, action$: Observable<RemoveChecklist>) =>
 			action$.pipe(
 				map((id) => ({
 					checklists: state().checklists.filter((checklist) => checklist.id !== id),
-				}))
+				})),
 			),
 	},
 });
@@ -211,7 +211,7 @@ state = signalSlice({
 			action$.pipe(
 				map((checklist) => ({
 					checklists: [...state().checklists, checklist],
-				}))
+				})),
 			),
 	},
 	effects: (state) => ({

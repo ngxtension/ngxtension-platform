@@ -74,9 +74,9 @@ let c = computedFrom(
 		switchMap(
 			([a, b]) =>
 				// of(a + b) is supposed to be an asynchronous operation (e.g. http request)
-				of(a + b).pipe(delay(1000)) // delay the emission of the combined value by 1 second for demonstration purposes
-		)
-	)
+				of(a + b).pipe(delay(1000)), // delay the emission of the combined value by 1 second for demonstration purposes
+		),
+	),
 );
 
 effect(() => console.log(c())); // 👈 will throw an error!! 💥
@@ -97,10 +97,10 @@ let c = computedFrom(
 	[a, b],
 	pipe(
 		switchMap(
-			([a, b]) => of(a + b).pipe(delay(1000)) // later async emit value
+			([a, b]) => of(a + b).pipe(delay(1000)), // later async emit value
 		),
-		{ initialValue: 42 } // 👈 pass the initial value of the resulting signal
-	)
+		{ initialValue: 42 }, // 👈 pass the initial value of the resulting signal
+	),
 );
 ```
 
@@ -119,8 +119,8 @@ let c = computedFrom(
 	[a, b],
 	pipe(
 		switchMap(([a, b]) => of(a + b).pipe(delay(1000))),
-		startWith(0) // 👈 change the starting value (emits synchronously)
-	)
+		startWith(0), // 👈 change the starting value (emits synchronously)
+	),
 );
 ```
 
@@ -198,7 +198,7 @@ Or you can pass `initialValue` to `computedFrom` in the third argument `options`
 const combined = computedFrom(
 	[page$, filters$],
 	swithMap(([page, filters]) => this.dataService.getArrInfo$(page, filters)),
-	{ initialValue: [] as Info[] } // define the initial value of resulting signal
+	{ initialValue: [] as Info[] }, // define the initial value of resulting signal
 ); // inferred ad Signal<Info[]>
 ```
 
@@ -226,9 +226,9 @@ export class MyComponent {
 			[page, filters$],
 			pipe(
 				switchMap(([page, filters]) => this.dataService.getUserData(this.userId, page, filters)),
-				startWith([] as string[]) // change the initial value
+				startWith([] as string[]), // change the initial value
 			),
-			{ injector: this.injector } // 👈 pass the injector in the options object
+			{ injector: this.injector }, // 👈 pass the injector in the options object
 		);
 	}
 }

@@ -35,14 +35,14 @@ export function createEffect<
 	ObservableType = OriginType extends Observable<infer A> ? A : never,
 	ReturnType = ProvidedType | ObservableType extends void
 		? (
-				observableOrValue?: ObservableType | Observable<ObservableType>
+				observableOrValue?: ObservableType | Observable<ObservableType>,
 		  ) => Subscription
 		: (
-				observableOrValue: ObservableType | Observable<ObservableType>
-		  ) => Subscription
+				observableOrValue: ObservableType | Observable<ObservableType>,
+		  ) => Subscription,
 >(
 	generator: (origin$: OriginType) => Observable<unknown>,
-	injector?: Injector
+	injector?: Injector,
 ): ReturnType {
 	injector = assertInjector(createEffect, injector);
 	return runInInjectionContext(injector, () => {
@@ -53,7 +53,7 @@ export function createEffect<
 			.subscribe();
 
 		return ((
-			observableOrValue?: ObservableType | Observable<ObservableType>
+			observableOrValue?: ObservableType | Observable<ObservableType>,
 		): Subscription => {
 			const observable$ = isObservable(observableOrValue)
 				? observableOrValue.pipe(retry())

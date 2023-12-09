@@ -30,7 +30,7 @@ const [injectFn, provideFn] = createInjectionToken(() => defaultOptions);
  * @returns The provider for the DisplayNamesPipe.
  */
 export function provideDisplayNamesOptions(
-	options: Partial<DisplayNamesOptions>
+	options: Partial<DisplayNamesOptions>,
 ): Provider {
 	return provideFn({ ...defaultOptions, ...options });
 }
@@ -61,7 +61,7 @@ export class DisplayNamesPipe implements PipeTransform {
 		code: string,
 		type: Intl.DisplayNamesType,
 		style?: Intl.DisplayNamesOptions['style'],
-		locale?: string | string[]
+		locale?: string | string[],
 	): ReturnType<Intl.DisplayNames['of']> {
 		try {
 			return new Intl.DisplayNames(locale || this.locale, {

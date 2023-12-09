@@ -34,7 +34,7 @@ export function injectParams<T>(transform: (params: Params) => T): Signal<T>;
  * @param keyOrTransform OPTIONAL The key of the param to return, or a transform function to apply to the params object
  */
 export function injectParams<T>(
-	keyOrTransform?: string | ((params: Params) => T)
+	keyOrTransform?: string | ((params: Params) => T),
 ): Signal<T | Params | string | null> {
 	assertInInjectionContext(injectParams);
 	const route = inject(ActivatedRoute);

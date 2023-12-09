@@ -17,7 +17,7 @@ describe(injectParams.name, () => {
 
 		const instance = await harness.navigateByUrl(
 			'/user/angular',
-			UserProfileComponent
+			UserProfileComponent,
 		);
 
 		expect(instance.params()).toEqual({ id: 'angular' });

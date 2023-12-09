@@ -2,7 +2,7 @@ import { Pipe, type PipeTransform } from '@angular/core';
 
 const error_this = function () {
 	throw new Error(
-		`DON'T USE this INSIDE A FUNCTION CALLED BY | call OR | apply IT MUST BE A PURE FUNCTION!`
+		`DON'T USE this INSIDE A FUNCTION CALLED BY | call OR | apply IT MUST BE A PURE FUNCTION!`,
 	);
 };
 const NOTHIS = !('Proxy' in window)
@@ -14,7 +14,7 @@ const NOTHIS = !('Proxy' in window)
 				set: error_this,
 				deleteProperty: error_this,
 				has: error_this,
-			}
+			},
 	  );
 
 @Pipe({

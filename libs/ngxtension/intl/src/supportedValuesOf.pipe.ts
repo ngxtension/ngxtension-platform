@@ -23,7 +23,7 @@ export class SupportedValuesOf implements PipeTransform {
 			| 'currency'
 			| 'numberingSystem'
 			| 'timeZone'
-			| 'unit'
+			| 'unit',
 	): string[] {
 		try {
 			return Intl.supportedValuesOf(key);

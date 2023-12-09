@@ -14,9 +14,10 @@ describe(createEffect.name, () => {
 		standalone: true,
 		template: `
 			@if ($display1()) {
-			<div>{{ $s() }}</div>
-			} @if ($display2()) {
-			<div>{{ $s() }}</div>
+				<div>{{ $s() }}</div>
+			}
+			@if ($display2()) {
+				<div>{{ $s() }}</div>
 			}
 		`,
 	})

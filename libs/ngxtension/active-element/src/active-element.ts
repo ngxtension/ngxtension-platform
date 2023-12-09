@@ -8,14 +8,14 @@ export function injectActiveElement(injector?: Injector) {
 		const doc = inject(DOCUMENT);
 		return merge(
 			fromEvent(doc, 'focus', { capture: true, passive: true }).pipe(
-				map(() => true)
+				map(() => true),
 			),
 			fromEvent(doc, 'blur', { capture: true, passive: true }).pipe(
-				map(() => false)
-			)
+				map(() => false),
+			),
 		).pipe(
 			map((hasFocus) => (hasFocus ? doc.activeElement : null)),
-			shareReplay({ refCount: true, bufferSize: 1 })
+			shareReplay({ refCount: true, bufferSize: 1 }),
 		);
 	});
 }

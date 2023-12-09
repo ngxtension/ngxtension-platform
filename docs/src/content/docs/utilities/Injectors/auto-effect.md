@@ -68,7 +68,7 @@ effect((onCleanup) => {
 		() => {
 			/* inner effect logic */
 		},
-		{ manualCleanup: true, injector: injector }
+		{ manualCleanup: true, injector: injector },
 	);
 	onCleanup(() => innerEffectRef.destroy());
 });
@@ -83,7 +83,7 @@ autoEffect(() => {
 		() => {
 			/* inner effect logic */
 		},
-		{ manualCleanup: true }
+		{ manualCleanup: true },
 	);
 	return () => innerEffectRef.destroy();
 });

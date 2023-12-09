@@ -12,7 +12,7 @@ import type { ConvertEntryPointToProjectGeneratorSchema } from './schema';
 
 export async function convertEntryPointToProjectGenerator(
 	tree: Tree,
-	options: ConvertEntryPointToProjectGeneratorSchema
+	options: ConvertEntryPointToProjectGeneratorSchema,
 ) {
 	const { name, project } = options;
 	if (name === 'src') {
@@ -24,12 +24,12 @@ export async function convertEntryPointToProjectGenerator(
 
 	const projectPackageJson = readJson(
 		tree,
-		projectConfiguration.root + '/package.json'
+		projectConfiguration.root + '/package.json',
 	);
 
 	if (!projectPackageJson.name) {
 		logger.error(
-			`[local-plugin] project ${project} does not have a name in package.json`
+			`[local-plugin] project ${project} does not have a name in package.json`,
 		);
 		return;
 	}
@@ -89,7 +89,7 @@ export async function convertEntryPointToProjectGenerator(
 		if (json.targets?.lint?.options?.lintFilePatterns) {
 			json.targets.lint.options.lintFilePatterns =
 				json.targets.lint.options.lintFilePatterns.filter(
-					(pattern: string) => !pattern.includes(entryPointPath)
+					(pattern: string) => !pattern.includes(entryPointPath),
 				);
 		}
 		return json;

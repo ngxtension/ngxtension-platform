@@ -105,7 +105,7 @@ export function injectNetwork({
 		const navigator = window?.navigator;
 
 		const supported = signal(
-			window?.navigator && 'connection' in window.navigator
+			window?.navigator && 'connection' in window.navigator,
 		);
 
 		const online = signal(true);
@@ -139,7 +139,7 @@ export function injectNetwork({
 		if (window) {
 			merge(
 				fromEvent(window, 'online').pipe(map(() => true)),
-				fromEvent(window, 'offline').pipe(map(() => false))
+				fromEvent(window, 'offline').pipe(map(() => false)),
 			)
 				.pipe(takeUntilDestroyed())
 				.subscribe((isOnline) => {
@@ -156,7 +156,7 @@ export function injectNetwork({
 			fromEvent(connection, 'change')
 				.pipe(
 					startWith(null), // we need to start with null to trigger the first update
-					takeUntilDestroyed()
+					takeUntilDestroyed(),
 				)
 				.subscribe(() => updateNetworkInformation());
 		}

@@ -35,7 +35,7 @@ import { assertInjector } from 'ngxtension/assert-injector';
 export function hostBinding<T, S extends Signal<T> | WritableSignal<T>>(
 	hostPropertyName: Required<HostBinding>['hostPropertyName'],
 	signal: S,
-	injector?: Injector
+	injector?: Injector,
 ): S {
 	injector = assertInjector(hostBinding, injector);
 
@@ -54,7 +54,9 @@ export function hostBinding<T, S extends Signal<T> | WritableSignal<T>>(
 						element,
 						property,
 						`${value}${unit ?? ''}`,
-						property.startsWith('--') ? RendererStyleFlags2.DashCase : undefined
+						property.startsWith('--')
+							? RendererStyleFlags2.DashCase
+							: undefined,
 					);
 					break;
 				case 'attr':

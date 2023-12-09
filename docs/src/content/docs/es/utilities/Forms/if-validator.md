@@ -34,7 +34,7 @@ export class App {
 	public shouldValidate = true;
 	public form = new FormControl(
 		null,
-		ifValidator(() => this.shouldValidate, [Validators.required, Validators.email])
+		ifValidator(() => this.shouldValidate, [Validators.required, Validators.email]),
 	);
 
 	public changeCondition() {

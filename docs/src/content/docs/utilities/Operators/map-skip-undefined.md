@@ -25,7 +25,7 @@ const out$ = in$.pipe(
 		if (n % 2) return String(n * 2);
 		//else return undefined // <-- this is the same as not returning anything!
 		//In either case the even value is filtered out
-	})
+	}),
 ); //infer Observable<string>
 
 out$.subscribe(console.log); // logs: 2, 6

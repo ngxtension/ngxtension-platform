@@ -10,12 +10,12 @@
  */
 export function createSingletonProxy<
 	SingletonClass extends object,
-	CreationFn extends () => SingletonClass = () => SingletonClass
+	CreationFn extends () => SingletonClass = () => SingletonClass,
 >(
 	/**
 	 * A function that returns a new instance of the class
 	 */
-	createInstance: CreationFn
+	createInstance: CreationFn,
 ): { proxy: SingletonClass; reset: () => void } {
 	let instance: SingletonClass | undefined;
 

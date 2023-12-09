@@ -95,7 +95,7 @@ describe(signalSlice.name, () => {
 						testSource$,
 						(state) =>
 							ageSource$.pipe(
-								map((incrementAge) => ({ age: state().age + incrementAge }))
+								map((incrementAge) => ({ age: state().age + incrementAge })),
 							),
 					],
 				});
@@ -208,7 +208,7 @@ describe(signalSlice.name, () => {
 						load: (state, $: Observable<void>) =>
 							$.pipe(
 								switchMap(() => of(testAge)),
-								map((age) => ({ age }))
+								map((age) => ({ age })),
 							),
 					},
 				});
@@ -226,7 +226,7 @@ describe(signalSlice.name, () => {
 						load: (state, $: Observable<void>) =>
 							$.pipe(
 								switchMap(() => of(35)),
-								map((age) => ({ age }))
+								map((age) => ({ age })),
 							),
 					},
 				});
@@ -243,7 +243,7 @@ describe(signalSlice.name, () => {
 						load: (_state, $: Observable<void>) =>
 							$.pipe(
 								switchMap(() => of(35)),
-								map((age) => ({ age }))
+								map((age) => ({ age })),
 							),
 					},
 				});
@@ -266,8 +266,8 @@ describe(signalSlice.name, () => {
 						load: (_state, $: Observable<number>) =>
 							$.pipe(
 								switchMap((age) =>
-									timer(500).pipe(map(() => ({ age: 35 + age })))
-								)
+									timer(500).pipe(map(() => ({ age: 35 + age }))),
+								),
 							),
 					},
 				});
@@ -324,7 +324,7 @@ describe(signalSlice.name, () => {
 						load: (_state, $: Observable<void>) =>
 							$.pipe(
 								switchMap(() => of(35)),
-								map((age) => ({ age }))
+								map((age) => ({ age })),
 							),
 					},
 					actionEffects: (state) => ({
@@ -351,7 +351,7 @@ describe(signalSlice.name, () => {
 						load: (_state, $: Observable<void>) =>
 							$.pipe(
 								switchMap(() => block$),
-								map(() => ({}))
+								map(() => ({})),
 							),
 					},
 					actionEffects: () => ({
@@ -381,7 +381,7 @@ describe(signalSlice.name, () => {
 							$.pipe(
 								map(() => ({
 									age,
-								}))
+								})),
 							),
 					},
 					actionEffects: () => ({
@@ -420,7 +420,7 @@ describe(signalSlice.name, () => {
 							$.pipe(
 								map(() => {
 									throw error;
-								})
+								}),
 							),
 					},
 					actionEffects: () => ({

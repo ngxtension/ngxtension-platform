@@ -85,7 +85,7 @@ export default class TrackByTest {
 
 	private setup(
 		type: keyof typeof this.mutationsLength,
-		nativeElement: HTMLUListElement
+		nativeElement: HTMLUListElement,
 	) {
 		const mutationObserver = new MutationObserver(this.mutationCallback(type));
 		mutationObserver.observe(nativeElement, { childList: true });

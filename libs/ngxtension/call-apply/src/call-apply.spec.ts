@@ -8,8 +8,8 @@ describe(CallPipe.name, () => {
 	@Component({
 		standalone: true,
 		template: `
-			<p>{{ now | call : ISOFormat }}</p>
-			<b>{{ now | call : doSomething }}</b>
+			<p>{{ now | call: ISOFormat }}</p>
+			<b>{{ now | call: doSomething }}</b>
 		`,
 		imports: [CallPipe],
 	})
@@ -26,7 +26,7 @@ describe(CallPipe.name, () => {
 	@Component({
 		standalone: true,
 		template: `
-			{{ 'WILL FAIL' | call : notPureFn }}
+			{{ 'WILL FAIL' | call: notPureFn }}
 		`,
 		imports: [CallPipe],
 	})
@@ -57,7 +57,7 @@ describe(CallPipe.name, () => {
 			const fixture = TestBed.createComponent(FailDummy);
 			fixture.detectChanges();
 		}).toThrowError(
-			`DON'T USE this INSIDE A FUNCTION CALLED BY | call OR | apply IT MUST BE A PURE FUNCTION!`
+			`DON'T USE this INSIDE A FUNCTION CALLED BY | call OR | apply IT MUST BE A PURE FUNCTION!`,
 		);
 	});
 });
@@ -68,9 +68,9 @@ describe(ApplyPipe.name, () => {
 		standalone: true,
 		template: `
 			<i>{{ IamPure | apply }}</i>
-			<p>{{ ISOFormat | apply : now }}</p>
-			<b>{{ doSomething | apply : 'Hello world' }}</b>
-			<a>{{ doSomething | apply : 'Prova' : 1 : 2 : 3 }}</a>
+			<p>{{ ISOFormat | apply: now }}</p>
+			<b>{{ doSomething | apply: 'Hello world' }}</b>
+			<a>{{ doSomething | apply: 'Prova' : 1 : 2 : 3 }}</a>
 		`,
 		imports: [ApplyPipe],
 	})
@@ -133,7 +133,7 @@ describe(ApplyPipe.name, () => {
 			const fixture = TestBed.createComponent(FailDummy);
 			fixture.detectChanges();
 		}).toThrowError(
-			`DON'T USE this INSIDE A FUNCTION CALLED BY | call OR | apply IT MUST BE A PURE FUNCTION!`
+			`DON'T USE this INSIDE A FUNCTION CALLED BY | call OR | apply IT MUST BE A PURE FUNCTION!`,
 		);
 	});
 });

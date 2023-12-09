@@ -33,9 +33,9 @@ If we want to get the value for a specific param, we can pass the name of the pa
 @Component({
 	template: `
 		@if (user()) {
-		<div>{{ user.name }}</div>
+			<div>{{ user.name }}</div>
 		} @else {
-		<div>No user!</div>
+			<div>No user!</div>
 		}
 	`,
 })
@@ -44,7 +44,7 @@ class TestComponent {
 
 	user = computedFrom(
 		[this.userId],
-		switchMap((id) => this.userService.getUser(id).pipe(startWith(null)))
+		switchMap((id) => this.userService.getUser(id).pipe(startWith(null))),
 	);
 }
 ```

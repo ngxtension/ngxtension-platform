@@ -26,7 +26,7 @@ export class MyComponent {
 
 	isInViewport$ = this.isIntersecting$.pipe(
 		filter((x) => x.intersectionRatio > 0),
-		take(1)
+		take(1),
 	);
 
 	ngOnInit() {
@@ -37,7 +37,7 @@ export class MyComponent {
 		// Only fetch data when the element is in the viewport
 		return this.isInViewport$.pipe(
 			switchMap(() => this.service.getData()),
-			takeUntil(this.destroy$)
+			takeUntil(this.destroy$),
 		);
 	}
 }
@@ -66,7 +66,7 @@ export class MyComponent implements OnInit {
 		divInViewport$
 			.pipe(
 				switchMap(() => this.service.getData()),
-				take(1)
+				take(1),
 			)
 			.subscribe();
 	}

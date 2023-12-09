@@ -35,9 +35,9 @@ If we want to get the value for a specific query param, we can pass the name of 
 		Search results for: {{ searchParam() }}
 
 		@for (user of filteredUsers()) {
-		<div>{{ user.name }}</div>
+			<div>{{ user.name }}</div>
 		} @empty {
-		<div>No users!</div>
+			<div>No users!</div>
 		}
 	`,
 })
@@ -46,7 +46,7 @@ class TestComponent {
 
 	filteredUsers = computedFrom(
 		[this.searchParam],
-		switchMap((searchQuery) => this.userService.getUsers(searchQuery).pipe(startWith([])))
+		switchMap((searchQuery) => this.userService.getUsers(searchQuery).pipe(startWith([]))),
 	);
 }
 ```

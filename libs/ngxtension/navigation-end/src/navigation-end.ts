@@ -8,14 +8,15 @@ import { filter, type Observable } from 'rxjs';
  * @returns An Observable of NavigationEnd events.
  */
 export function injectNavigationEnd(
-	injector?: Injector
+	injector?: Injector,
 ): Observable<NavigationEnd> {
 	injector = assertInjector(injectNavigationEnd, injector);
 	return runInInjectionContext(injector, () => {
 		return inject(Router).events.pipe(
 			filter(
-				(event: Event): event is NavigationEnd => event instanceof NavigationEnd
-			)
+				(event: Event): event is NavigationEnd =>
+					event instanceof NavigationEnd,
+			),
 		);
 	});
 }

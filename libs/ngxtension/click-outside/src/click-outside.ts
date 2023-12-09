@@ -54,8 +54,8 @@ export class ClickOutside implements OnInit {
 				takeUntil(this.destroy$),
 				filter(
 					(event: Event) =>
-						!this.elementRef.nativeElement.contains(event.target)
-				)
+						!this.elementRef.nativeElement.contains(event.target),
+				),
 			)
 
 			.subscribe((event: Event) => {

@@ -94,7 +94,7 @@ describe(createInjectionToken.name, () => {
 		it(`then throw no provider when invoked with an injector without providing`, () => {
 			const injector = Injector.create({ providers: [] });
 			expect(injectFn.bind(injectFn, { injector })).toThrowError(
-				/no provider/i
+				/no provider/i,
 			);
 		});
 
@@ -138,7 +138,7 @@ describe(createInjectionToken.name, () => {
 		const [injectDepFn, provideDepFn] = createInjectionToken(() => 5);
 		const [injectFn, provideFn] = createInjectionToken(
 			() => () => 1 as number,
-			{ multi: true }
+			{ multi: true },
 		);
 
 		it('then provide correct value when pass in a fn', () => {
@@ -168,7 +168,7 @@ describe(createNoopInjectionToken.name, () => {
 	describe('given an injection token', () => {
 		const [injectFn, provideFn] = createNoopInjectionToken<number, true>(
 			'noop',
-			{ multi: true }
+			{ multi: true },
 		);
 		it('then work properly', () => {
 			TestBed.configureTestingModule({

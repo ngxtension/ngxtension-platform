@@ -189,7 +189,7 @@ describe(injectLazy.name, () => {
 				switchMap((service) => service.data$),
 				catchError((error) => {
 					return of(error.message);
-				})
+				}),
 			);
 		}
 

@@ -20,7 +20,7 @@ import { InjectLazyImpl } from './inject-lazy-impl';
  */
 export function injectLazy<T>(
 	loader: LazyImportLoaderFn<T>,
-	injector?: Injector
+	injector?: Injector,
 ): Observable<T> {
 	injector = assertInjector(injectLazy, injector);
 	const injectImpl = injector.get<InjectLazyImpl<T>>(InjectLazyImpl);

@@ -108,8 +108,8 @@ export class Form {
 	readonly #saveChangesOnTheFly = rxEffect(
 		this.user.valueChanges.pipe(
 			debounceTime(500),
-			switchMap((user) => this.userService.save(user))
-		)
+			switchMap((user) => this.userService.save(user)),
+		),
 	);
 }
 ```

@@ -98,7 +98,7 @@ export const [injectBookService, provideBookService] = createInjectionToken(
 	{
 		isRoot: false,
 		extraProviders: [provideState('book', bookReducer), provideEffects(bookEffects)],
-	}
+	},
 );
 
 // routes.ts

@@ -17,7 +17,7 @@ describe(injectQueryParams.name, () => {
 
 		const instance = await harness.navigateByUrl(
 			'/search?query=Angular',
-			SearchComponent
+			SearchComponent,
 		);
 
 		expect(instance.queryParams()).toEqual({ query: 'Angular' });

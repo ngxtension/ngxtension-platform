@@ -29,7 +29,7 @@ describe('TrackByDirectives', () => {
 		expect(items).toHaveLength(3);
 		items.forEach((item, i) => {
 			expect(item.nativeElement.textContent).toContain(
-				String.fromCharCode(97 + i)
+				String.fromCharCode(97 + i),
 			);
 		});
 	});

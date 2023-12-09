@@ -32,28 +32,28 @@ describe(assertInjector.name, () => {
 
 	it('given no custom injector, when run outside injection context, then throw', () => {
 		expect(() => injectDummy()).toThrowError(
-			/injectDummy\(\) can only be used within an injection context/i
+			/injectDummy\(\) can only be used within an injection context/i,
 		);
 		expect(() => injectDummyTwo()).toThrowError(
-			/injectDummyTwo\(\) can only be used within an injection context/i
+			/injectDummyTwo\(\) can only be used within an injection context/i,
 		);
 	});
 
 	it('given a custom injector, when run in that injector context without providing number, then throw', () => {
 		expect(() => injectDummy(Injector.create({ providers: [] }))).toThrowError(
-			/No provider for InjectionToken/i
+			/No provider for InjectionToken/i,
 		);
 		expect(() =>
-			injectDummyTwo(Injector.create({ providers: [] }))
+			injectDummyTwo(Injector.create({ providers: [] })),
 		).toThrowError(/No provider for InjectionToken/i);
 	});
 
 	it('given a custom injector, when run in that injector context and providing number, then return value', () => {
 		const value = injectDummy(
-			Injector.create({ providers: [{ provide: token, useValue: 2 }] })
+			Injector.create({ providers: [{ provide: token, useValue: 2 }] }),
 		);
 		const valueTwo = injectDummyTwo(
-			Injector.create({ providers: [{ provide: token, useValue: 2 }] })
+			Injector.create({ providers: [{ provide: token, useValue: 2 }] }),
 		);
 		expect(value).toEqual(2);
 		expect(valueTwo).toEqual(3);

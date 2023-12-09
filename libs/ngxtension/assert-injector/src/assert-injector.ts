@@ -29,7 +29,7 @@ import {
 export function assertInjector<Runner extends () => any>(
 	fn: Function,
 	injector: Injector | undefined | null,
-	runner: Runner
+	runner: Runner,
 ): ReturnType<Runner>;
 /**
  * `assertInjector` extends `assertInInjectionContext` with an optional `Injector`
@@ -53,12 +53,12 @@ export function assertInjector<Runner extends () => any>(
  */
 export function assertInjector(
 	fn: Function,
-	injector: Injector | undefined | null
+	injector: Injector | undefined | null,
 ): Injector;
 export function assertInjector(
 	fn: Function,
 	injector: Injector | undefined | null,
-	runner?: () => any
+	runner?: () => any,
 ) {
 	!injector && assertInInjectionContext(fn);
 	const assertedInjector = injector ?? inject(Injector);

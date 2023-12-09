@@ -19,7 +19,7 @@ export function injectQueryParams(key: string): Signal<string | null>;
  * @param transform
  */
 export function injectQueryParams<T>(
-	transform: (params: Params) => T
+	transform: (params: Params) => T,
 ): Signal<T>;
 
 /**
@@ -36,7 +36,7 @@ export function injectQueryParams<T>(
  * @param keyOrTransform OPTIONAL The key of the query param to return, or a transform function to apply to the query params object
  */
 export function injectQueryParams<T>(
-	keyOrTransform?: string | ((params: Params) => T)
+	keyOrTransform?: string | ((params: Params) => T),
 ): Signal<T | Params | string | null> {
 	assertInInjectionContext(injectQueryParams);
 	const route = inject(ActivatedRoute);

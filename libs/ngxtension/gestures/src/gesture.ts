@@ -21,17 +21,17 @@ import { injectZonelessGesture } from './zoneless-gesture';
 type InjectGestureFn<
 	TGestureKey extends GestureKey,
 	TGestureHandler extends Handler<TGestureKey, EventTypes[TGestureKey]>,
-	TGestureConfig extends UserGestureConfig[TGestureKey]
+	TGestureConfig extends UserGestureConfig[TGestureKey],
 > = {
 	(
 		handler: (
-			state: Parameters<TGestureHandler>[0] & { cdr: ChangeDetectorRef }
+			state: Parameters<TGestureHandler>[0] & { cdr: ChangeDetectorRef },
 		) => ReturnType<TGestureHandler>,
 		options?: {
 			injector?: Injector;
 			zoneless?: boolean;
 			config?: () => TGestureConfig;
-		}
+		},
 	): void;
 };
 
@@ -52,14 +52,14 @@ export type GestureInfer<TInjectGesture extends (...args: any[]) => void> =
 
 export function createGesture<
 	TGestureKey extends GestureKey,
-	TRecognizer extends Recognizer<TGestureKey>
+	TRecognizer extends Recognizer<TGestureKey>,
 >(_key: TGestureKey, gesture: Type<TRecognizer>) {
 	type GestureHandler = Handler<TGestureKey, EventTypes[TGestureKey]>;
 	type GestureConfig = UserGestureConfig[TGestureKey];
 
 	return function _injectGesture(
 		handler,
-		{ injector, config = () => ({}), zoneless } = {}
+		{ injector, config = () => ({}), zoneless } = {},
 	) {
 		return assertInjector(_injectGesture, injector, () => {
 			const zonelessGesture = injectZonelessGesture();
@@ -75,7 +75,7 @@ export function createGesture<
 
 			const gestureInstance = zoneless
 				? zone.runOutsideAngular(
-						() => new gesture(host.nativeElement, ngHandler)
+						() => new gesture(host.nativeElement, ngHandler),
 				  )
 				: new gesture(host.nativeElement, ngHandler);
 
@@ -92,7 +92,7 @@ export function createGesture<
 			});
 
 			inject(DestroyRef).onDestroy(
-				gestureInstance.destroy.bind(gestureInstance)
+				gestureInstance.destroy.bind(gestureInstance),
 			);
 		});
 	} as InjectGestureFn<TGestureKey, GestureHandler, GestureConfig>;

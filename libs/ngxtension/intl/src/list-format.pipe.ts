@@ -27,7 +27,7 @@ const [injectFn, provideFn] = createInjectionToken(() => defaultOptions);
  * @returns The provider for the ListFormatPipe.
  */
 export function provideListFormatOptions(
-	options: Partial<Intl.ListFormatOptions>
+	options: Partial<Intl.ListFormatOptions>,
 ): Provider {
 	return provideFn({ ...defaultOptions, ...options });
 }
@@ -56,7 +56,7 @@ export class ListFormatPipe implements PipeTransform {
 	transform(
 		value: Iterable<string>,
 		style?: Intl.ListFormatOptions['style'],
-		locale?: string | string[]
+		locale?: string | string[],
 	): string {
 		try {
 			return new Intl.ListFormat(locale || this.locale, {

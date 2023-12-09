@@ -28,26 +28,26 @@ import {
 
 		<h2>Relative Time Format</h2>
 		<p>
-			<strong ngNonBindable>{{ 1 | relativeTimeFormat : 'day' }}</strong>
-			=> {{ 1 | relativeTimeFormat : 'day' }}
+			<strong ngNonBindable>{{ 1 | relativeTimeFormat: 'day' }}</strong>
+			=> {{ 1 | relativeTimeFormat: 'day' }}
 		</p>
 		<p>
-			<strong ngNonBindable>{{ -1 | relativeTimeFormat : 'day' }}</strong>
-			=> {{ -1 | relativeTimeFormat : 'day' }}
+			<strong ngNonBindable>{{ -1 | relativeTimeFormat: 'day' }}</strong>
+			=> {{ -1 | relativeTimeFormat: 'day' }}
 		</p>
 
 		<h2>Display Names</h2>
 		<p>
-			<strong ngNonBindable>{{ 'en' | displayNames : 'language' }}</strong>
-			=> {{ 'en' | displayNames : 'language' }}
+			<strong ngNonBindable>{{ 'en' | displayNames: 'language' }}</strong>
+			=> {{ 'en' | displayNames: 'language' }}
 		</p>
 		<p>
-			<strong ngNonBindable>{{ 'en' | displayNames : 'script' }}</strong>
-			=> {{ 'en' | displayNames : 'script' }}
+			<strong ngNonBindable>{{ 'en' | displayNames: 'script' }}</strong>
+			=> {{ 'en' | displayNames: 'script' }}
 		</p>
 		<p>
-			<strong ngNonBindable>{{ 'en' | displayNames : 'region' }}</strong>
-			=> {{ 'en' | displayNames : 'region' }}
+			<strong ngNonBindable>{{ 'en' | displayNames: 'region' }}</strong>
+			=> {{ 'en' | displayNames: 'region' }}
 		</p>
 	`,
 	host: {

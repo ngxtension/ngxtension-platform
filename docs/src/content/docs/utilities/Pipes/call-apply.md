@@ -24,7 +24,7 @@ For functions with a single argument.
 	selector: 'my-app',
 	imports: [CallPipe],
 	template: `
-		<b>call UTC: {{ now | call : ISOFormat }}</b>
+		<b>call UTC: {{ now | call: ISOFormat }}</b>
 	`,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -49,7 +49,7 @@ describe('convert-entry-point-to-project generator', () => {
 	it('should throw for a non project', async () => {
 		await setup();
 		await expect(
-			initGenerator(tree, { name: entryPoint, project: 'any' })
+			initGenerator(tree, { name: entryPoint, project: 'any' }),
 		).rejects.toThrowError(/cannot find configuration for 'any'/i);
 	});
 
@@ -63,6 +63,6 @@ describe('convert-entry-point-to-project generator', () => {
 function nothingHappened(tree: Tree) {
 	const projectConfiguration = readProjectConfiguration(tree, project);
 	return !tree.exists(
-		projectConfiguration.root + '/' + entryPoint + '/project.json'
+		projectConfiguration.root + '/' + entryPoint + '/project.json',
 	);
 }

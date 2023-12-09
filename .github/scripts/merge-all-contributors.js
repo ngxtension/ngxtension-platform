@@ -18,7 +18,7 @@ module.exports = async ({ github, context }) => {
 	for (const comment of comments?.data || []) {
 		if (comment.user.login.includes('allcontributors')) {
 			console.log(
-				`[merge contributors workflow] found all-contributors comment ${comment.body}`
+				`[merge contributors workflow] found all-contributors comment ${comment.body}`,
 			);
 			const allContributorsPr = comment.body.match(/\/pull\/(\d+)/)?.[1];
 
@@ -31,12 +31,12 @@ module.exports = async ({ github, context }) => {
 
 				console.log(
 					`[merge contributors workflow] found all-contributors PR`,
-					pr
+					pr,
 				);
 
 				if (pr.data && pr.data.mergeable) {
 					console.log(
-						`[merge contributors workflow] merging ${allContributorsPr} on ${owner}/${repo}`
+						`[merge contributors workflow] merging ${allContributorsPr} on ${owner}/${repo}`,
 					);
 					await github.rest.pulls.merge({
 						owner,

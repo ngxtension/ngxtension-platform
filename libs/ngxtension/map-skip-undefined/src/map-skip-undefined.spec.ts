@@ -20,7 +20,7 @@ describe(mapSkipUndefined.name, () => {
 			mapSkipUndefined((n) => {
 				if (n % 2) return String(n * 2);
 				else return undefined; // explict return undefined to skipout (filter) some value from the out observable
-			})
+			}),
 		);
 
 		out$.pipe(toArray()).subscribe((r) => {
@@ -47,7 +47,7 @@ describe(mapSkipUndefined.name, () => {
 					else return undefined;
 				}
 				//else return undefined // <-- this is the same as not returning anything! In either case the value is filtered out
-			})
+			}),
 		);
 
 		doubleNotMultipleOf2Or3$.pipe(toArray()).subscribe((r) => {

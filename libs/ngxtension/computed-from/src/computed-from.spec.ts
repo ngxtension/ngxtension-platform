@@ -114,11 +114,11 @@ describe(computedFrom.name, () => {
 		it('with real async value, you can pass options.initialValue to prevent error, then real value', fakeAsync(() => {
 			TestBed.runInInjectionContext(() => {
 				const value = new Promise<string>((resolve) =>
-					setTimeout(resolve, 1000, 'a')
+					setTimeout(resolve, 1000, 'a'),
 				); //Promise that emit 'a' after 1s
 				const s = computedFrom(
 					{ value },
-					{ initialValue: { value: 'initial' } }
+					{ initialValue: { value: 'initial' } },
 				);
 				expect(s()).toEqual({ value: 'initial' }); // set initial Signal with passed `initialValue` - value must be coerent with Ouput type
 				expect(() => s().value.toUpperCase()).not.toThrow(); //.toEqual('INITIAL');  // No more TS runtime error!!!
@@ -170,7 +170,7 @@ describe(computedFrom.name, () => {
 
 				const s = computedFrom(
 					[valueS, valueO],
-					map(([s, o]) => [s + 1, o + 1])
+					map(([s, o]) => [s + 1, o + 1]),
 				);
 
 				expect(s()).toEqual([2, 2]);
@@ -185,8 +185,8 @@ describe(computedFrom.name, () => {
 					[valueS, valueO],
 					pipe(
 						map(([s, o]) => [s + 1, o + 1]),
-						filter(([s, o]) => s >= 2 && o >= 2)
-					)
+						filter(([s, o]) => s >= 2 && o >= 2),
+					),
 				);
 
 				expect(s()).toEqual([2, 2]);
@@ -211,10 +211,10 @@ describe(computedFrom.name, () => {
 						switchMap(
 							([a, b]) =>
 								// of(a+b) is supposed to be an asynchronous operation (e.g. http request)
-								of(a + b).pipe(delay(1000)) // delay the emission of the combined value by 1 second for demonstration purposes
-						)
+								of(a + b).pipe(delay(1000)), // delay the emission of the combined value by 1 second for demonstration purposes
+						),
 					),
-					{ initialValue: 'initial' }
+					{ initialValue: 'initial' },
 				);
 			}
 
@@ -272,7 +272,7 @@ describe(computedFrom.name, () => {
 					this.data = computedFrom(
 						[this.valueS],
 						map(([s]) => s + this.inputValue),
-						{ injector: this.injector }
+						{ injector: this.injector },
 					);
 				}
 			}
@@ -334,8 +334,8 @@ describe(computedFrom.name, () => {
 					{ page: page$, filter: filters$ },
 					pipe(
 						switchMap(({ page, filter }) => of(page + filter.name)),
-						startWith(42) // force initial sync emit 42
-					)
+						startWith(42), // force initial sync emit 42
+					),
 				); // correctly infers Signal<string|number>
 				expect(combined()).toEqual(42);
 				tick(1000);

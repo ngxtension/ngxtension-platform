@@ -5,7 +5,7 @@ import convertEntryPointToProjectGenerator from '../convert-entry-point-to-proje
 
 export async function entryPointGenerator(
 	tree: Tree,
-	options: SecondaryEntryPointGeneratorOptions
+	options: SecondaryEntryPointGeneratorOptions,
 ) {
 	await librarySecondaryEntryPointGenerator(tree, options);
 	await convertEntryPointToProjectGenerator(tree, {

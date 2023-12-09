@@ -28,7 +28,7 @@ const [injectFn, provideFn] = createInjectionToken(() => defaultOptions);
  * @returns The provider for the RelativeTimeFormatPipe.
  */
 export function provideRelativeTimeFormatOptions(
-	options: Partial<Intl.RelativeTimeFormatOptions>
+	options: Partial<Intl.RelativeTimeFormatOptions>,
 ): Provider {
 	return provideFn({ ...defaultOptions, ...options });
 }
@@ -59,7 +59,7 @@ export class RelativeTimeFormatPipe implements PipeTransform {
 		value: number,
 		unit: Intl.RelativeTimeFormatUnit,
 		style?: Intl.RelativeTimeFormatOptions['style'],
-		locale?: string
+		locale?: string,
 	): ReturnType<Intl.RelativeTimeFormat['format']> {
 		try {
 			return new Intl.RelativeTimeFormat(locale || this.locale, {

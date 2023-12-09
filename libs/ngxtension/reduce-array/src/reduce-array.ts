@@ -3,17 +3,17 @@ import { map, type Observable } from 'rxjs';
 type Reduce = Array<any>['reduce'];
 
 export function reduceArray<T>(
-	reduceFn: (acc: T, item: T, index: number) => T
+	reduceFn: (acc: T, item: T, index: number) => T,
 ): (source: Observable<T[]>) => Observable<T>;
 
 export function reduceArray<T, R = T>(
 	reduceFn: (acc: R, item: T, index: number) => R,
-	initialValue: R
+	initialValue: R,
 ): (source: Observable<T[]>) => Observable<R>;
 
 export function reduceArray(
 	reduceFn: Parameters<Reduce>[0],
-	initialValue?: Parameters<Reduce>[1]
+	initialValue?: Parameters<Reduce>[1],
 ) {
 	return map((array: Array<any>) => {
 		// call reduce function with initialValue

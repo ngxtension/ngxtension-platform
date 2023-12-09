@@ -27,7 +27,7 @@ const [injectFn, provideFn] = createInjectionToken(() => defaultOptions);
  * @returns The provider for the PluralRules.
  */
 export function providePluralRulesOptions(
-	options: Partial<Intl.PluralRulesOptions>
+	options: Partial<Intl.PluralRulesOptions>,
 ): Provider {
 	return provideFn({ ...defaultOptions, ...options });
 }
@@ -55,12 +55,12 @@ export class PluralRulesPipe implements PipeTransform {
 	 */
 	transform(
 		value: number,
-		locale?: string
+		locale?: string,
 	): ReturnType<Intl.PluralRules['select']> | string {
 		try {
 			return new Intl.PluralRules(
 				locale || this.locale,
-				this.defaultOptions
+				this.defaultOptions,
 			).select(value);
 		} catch (e) {
 			console.error(e);

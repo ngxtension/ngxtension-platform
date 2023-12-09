@@ -22,8 +22,8 @@ export type InferObservableSignalOutput<I> = {
 	[K in keyof I]: I[K] extends Signal<infer S>
 		? S
 		: I[K] extends ObservableInput<infer O>
-		? O
-		: never;
+		  ? O
+		  : never;
 };
 /**
  * So that we can have `fn([Observable<A>, Signal<B>]): Observable<[A, B]>`
@@ -35,29 +35,29 @@ type ObservableSignalInputTuple<T> = {
 export function computedFrom<Input extends readonly unknown[], Output = Input>(
 	sources: readonly [...ObservableSignalInputTuple<Input>],
 	operator?: OperatorFunction<Input, Output>,
-	options?: ComputedFromOptions<Output>
+	options?: ComputedFromOptions<Output>,
 ): Signal<Output>;
 
 export function computedFrom<
 	Input extends readonly unknown[],
-	Output = Input //InferObservableSignalOutput<Input>
+	Output = Input, //InferObservableSignalOutput<Input>
 >(
 	sources: readonly [...ObservableSignalInputTuple<Input>],
-	options?: ComputedFromOptions<Input>
+	options?: ComputedFromOptions<Input>,
 ): Signal<Output>;
 
 export function computedFrom<Input extends object, Output = Input>(
 	sources: ObservableSignalInputTuple<Input>,
 	operator?: OperatorFunction<Input, Output>,
-	options?: ComputedFromOptions<Output>
+	options?: ComputedFromOptions<Output>,
 ): Signal<Output>;
 
 export function computedFrom<
 	Input extends object,
-	Output = Input //InferObservableSignalOutput<Input>
+	Output = Input, //InferObservableSignalOutput<Input>
 >(
 	sources: ObservableSignalInputTuple<Input>,
-	options?: ComputedFromOptions<Input>
+	options?: ComputedFromOptions<Input>,
 ): Signal<Output>;
 
 /**
@@ -129,7 +129,7 @@ export function computedFrom<Input = any, Output = Input>(
 }
 
 function _normalizeArgs<Input, Output>(
-	args: any[]
+	args: any[],
 ): {
 	normalizedSources: ObservableInputTuple<Input>;
 	operator: OperatorFunction<Input, Output>;
@@ -142,7 +142,7 @@ function _normalizeArgs<Input, Output>(
 	const hasOperator = typeof args[1] === 'function';
 	if (args.length == 3 && !hasOperator)
 		throw new TypeError(
-			'computedFrom needs pipeable operator as a second argument'
+			'computedFrom needs pipeable operator as a second argument',
 		);
 	if (!hasOperator) args.splice(1, 0, identity);
 	const [sources, operator, options] = args;
@@ -153,7 +153,7 @@ function _normalizeArgs<Input, Output>(
 				acc[keyOrIndex] = toObservable(source, {
 					injector: options?.injector,
 				}).pipe(
-					startWith(untracked(source)) // this is done because toObservable doesn't immediatly emit initialValue of the signal
+					startWith(untracked(source)), // this is done because toObservable doesn't immediatly emit initialValue of the signal
 				);
 			} else if (isObservable(source)) {
 				acc[keyOrIndex] = source.pipe(distinctUntilChanged());
@@ -162,7 +162,7 @@ function _normalizeArgs<Input, Output>(
 			}
 			return acc;
 		},
-		(Array.isArray(sources) ? [] : {}) as any
+		(Array.isArray(sources) ? [] : {}) as any,
 	);
 	return { normalizedSources, operator, hasInitValue, options };
 }

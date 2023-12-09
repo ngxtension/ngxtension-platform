@@ -72,7 +72,7 @@ export function injectFoo(injector?: Injector) {
 				() => {
 					/* do something for inner effect */
 				},
-				{ injector: assertedInjector }
+				{ injector: assertedInjector },
 			);
 		});
 
