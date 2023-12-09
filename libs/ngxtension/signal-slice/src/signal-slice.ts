@@ -139,6 +139,10 @@ export function signalSlice<
 		| Source<TSignalValue>
 		| ((state: Signal<TSignalValue>) => Source<TSignalValue>)
 	>;
+	lazySources?: Array<
+		| Source<TSignalValue>
+		| ((state: Signal<TSignalValue>) => Source<TSignalValue>)
+	>;
 	actionSources?: TActionSources;
 	selectors?: (
 		state: SignalSlice<
@@ -179,6 +183,7 @@ export function signalSlice<
 	const {
 		initialState,
 		sources = [],
+		lazySources = [],
 		actionSources = {},
 		selectors = (() => ({})) as unknown as Exclude<
 			(typeof config)['selectors'],
@@ -197,6 +202,7 @@ export function signalSlice<
 	const state = signal(initialState);
 	const readonlyState = state.asReadonly();
 	const state$ = toObservable(state);
+	let lazySourcesLoaded = false;
 
 	const subs: Subject<any>[] = [];
 
@@ -286,7 +292,23 @@ export function signalSlice<
 		subs.forEach((sub) => sub.complete());
 	});
 
-	return slice;
+	return new Proxy(slice, {
+		get(target, property, receiver) {
+			if (!lazySourcesLoaded) {
+				lazySourcesLoaded = true;
+
+				for (const source of lazySources) {
+					if (isObservable(source)) {
+						connect(state, source);
+					} else {
+						connect(state, source(readonlyState));
+					}
+				}
+			}
+
+			return Reflect.get(target, property, receiver);
+		},
+	});
 }
 
 function addReducerProperties(
