@@ -290,7 +290,7 @@ export function signalSlice<
 		get(target, property, receiver) {
 			if (!lazySourcesLoaded) {
 				lazySourcesLoaded = true;
-				connectSources(state, lazySources, injector);
+				connectSources(state, lazySources, injector, true);
 			}
 
 			return Reflect.get(target, property, receiver);
@@ -301,13 +301,14 @@ export function signalSlice<
 function connectSources<TSignalValue>(
 	state: WritableSignal<TSignalValue>,
 	sources: SourceConfig<TSignalValue>,
-	injector?: Injector
+	injector?: Injector,
+	useUntracked = false,
 ) {
 	for (const source of sources) {
 		if (isObservable(source)) {
-			connect(state, source, injector);
+			connect(state, source, injector, useUntracked);
 		} else {
-			connect(state, source(state.asReadonly()), injector);
+			connect(state, source(state.asReadonly()), injector, useUntracked);
 		}
 	}
 }
