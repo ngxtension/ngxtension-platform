@@ -6,6 +6,7 @@ import {
 	signal,
 	type EffectRef,
 	type Signal,
+	type WritableSignal,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { connect, type PartialOrValue, type Reducer } from 'ngxtension/connect';
@@ -112,6 +113,9 @@ type ActionStreams<
 };
 
 export type Source<TSignalValue> = Observable<PartialOrValue<TSignalValue>>;
+type SourceConfig<TSignalValue> = Array<
+	Source<TSignalValue> | ((state: Signal<TSignalValue>) => Source<TSignalValue>)
+>;
 
 export type SignalSlice<
 	TSignalValue extends NoOptionalProperties<TSignalValue>,
@@ -135,14 +139,8 @@ export function signalSlice<
 	TActionEffects extends NamedActionEffects<TActionSources>,
 >(config: {
 	initialState: TSignalValue;
-	sources?: Array<
-		| Source<TSignalValue>
-		| ((state: Signal<TSignalValue>) => Source<TSignalValue>)
-	>;
-	lazySources?: Array<
-		| Source<TSignalValue>
-		| ((state: Signal<TSignalValue>) => Source<TSignalValue>)
-	>;
+	sources?: SourceConfig<TSignalValue>;
+	lazySources?: SourceConfig<TSignalValue>;
 	actionSources?: TActionSources;
 	selectors?: (
 		state: SignalSlice<
@@ -214,13 +212,7 @@ export function signalSlice<
 		TActionEffects
 	>;
 
-	for (const source of sources) {
-		if (isObservable(source)) {
-			connect(state, source);
-		} else {
-			connect(state, source(readonlyState));
-		}
-	}
+	connectSources(state, sources);
 
 	for (const [key, actionSource] of Object.entries(
 		actionSources as TActionSources,
@@ -296,19 +288,25 @@ export function signalSlice<
 		get(target, property, receiver) {
 			if (!lazySourcesLoaded) {
 				lazySourcesLoaded = true;
-
-				for (const source of lazySources) {
-					if (isObservable(source)) {
-						connect(state, source);
-					} else {
-						connect(state, source(readonlyState));
-					}
-				}
+				connectSources(state, lazySources);
 			}
 
 			return Reflect.get(target, property, receiver);
 		},
 	});
+}
+
+function connectSources<TSignalValue>(
+	state: WritableSignal<TSignalValue>,
+	sources: SourceConfig<TSignalValue>
+) {
+	for (const source of sources) {
+		if (isObservable(source)) {
+			connect(state, source);
+		} else {
+			connect(state, source(state.asReadonly()));
+		}
+	}
 }
 
 function addReducerProperties(
