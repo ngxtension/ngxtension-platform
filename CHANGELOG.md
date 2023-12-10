@@ -1,5 +1,18 @@
 
 
+## [1.6.0](https://github.com/nartc/ngxtension-platform/compare/1.5.0...1.6.0) (2023-12-10)
+
+
+### Features
+
+* **signal-slice:** add lazySources ([#197](https://github.com/nartc/ngxtension-platform/issues/197)) ([44cf5f9](https://github.com/nartc/ngxtension-platform/commit/44cf5f955c7045f39ca57ad23c2f1c2a3b9834c6))
+
+
+### Documentations
+
+* add justinrassier as a contributor for doc ([#195](https://github.com/nartc/ngxtension-platform/issues/195)) ([7aa768d](https://github.com/nartc/ngxtension-platform/commit/7aa768d61dd6b21b7f6421ce3f8e1e949aec3937))
+* update readme to point to angular.dev ([#193](https://github.com/nartc/ngxtension-platform/issues/193)) ([4e670c0](https://github.com/nartc/ngxtension-platform/commit/4e670c08610d21690bca9c90961cecddbd1b7097))
+
 ## [1.5.0](https://github.com/nartc/ngxtension-platform/compare/1.4.0...1.5.0) (2023-12-06)
 
 
