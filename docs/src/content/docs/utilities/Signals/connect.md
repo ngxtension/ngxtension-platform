@@ -43,7 +43,7 @@ export class AppComponent implements OnDestroy {
 
 	pageNumber = signal(1);
 
-	ngOninit() {
+	ngOnInit() {
 		connect(this.pageNumber, this.dataService.pageNumber$, this.injector);
 
 		// or

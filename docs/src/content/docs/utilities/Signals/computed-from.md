@@ -197,7 +197,7 @@ Or you can pass `initialValue` to `computedFrom` in the third argument `options`
 ```ts
 const combined = computedFrom(
 	[page$, filters$],
-	swithMap(([page, filters]) => this.dataService.getArrInfo$(page, filters)),
+	switchMap(([page, filters]) => this.dataService.getArrInfo$(page, filters)),
 	{ initialValue: [] as Info[] }, // define the initial value of resulting signal
 ); // inferred ad Signal<Info[]>
 ```
