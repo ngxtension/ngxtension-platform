@@ -1,11 +1,13 @@
 import {
 	DestroyRef,
+	Injector,
 	computed,
 	effect,
 	inject,
 	signal,
 	type EffectRef,
 	type Signal,
+	type WritableSignal,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { connect, type PartialOrValue, type Reducer } from 'ngxtension/connect';
@@ -112,6 +114,9 @@ type ActionStreams<
 };
 
 export type Source<TSignalValue> = Observable<PartialOrValue<TSignalValue>>;
+type SourceConfig<TSignalValue> = Array<
+	Source<TSignalValue> | ((state: Signal<TSignalValue>) => Source<TSignalValue>)
+>;
 
 export type SignalSlice<
 	TSignalValue extends NoOptionalProperties<TSignalValue>,
@@ -135,10 +140,8 @@ export function signalSlice<
 	TActionEffects extends NamedActionEffects<TActionSources>,
 >(config: {
 	initialState: TSignalValue;
-	sources?: Array<
-		| Source<TSignalValue>
-		| ((state: Signal<TSignalValue>) => Source<TSignalValue>)
-	>;
+	sources?: SourceConfig<TSignalValue>;
+	lazySources?: SourceConfig<TSignalValue>;
 	actionSources?: TActionSources;
 	selectors?: (
 		state: SignalSlice<
@@ -175,10 +178,12 @@ export function signalSlice<
 	TActionEffects
 > {
 	const destroyRef = inject(DestroyRef);
+	const injector = inject(Injector);
 
 	const {
 		initialState,
 		sources = [],
+		lazySources = [],
 		actionSources = {},
 		selectors = (() => ({})) as unknown as Exclude<
 			(typeof config)['selectors'],
@@ -197,6 +202,7 @@ export function signalSlice<
 	const state = signal(initialState);
 	const readonlyState = state.asReadonly();
 	const state$ = toObservable(state);
+	let lazySourcesLoaded = false;
 
 	const subs: Subject<any>[] = [];
 
@@ -208,13 +214,7 @@ export function signalSlice<
 		TActionEffects
 	>;
 
-	for (const source of sources) {
-		if (isObservable(source)) {
-			connect(state, source);
-		} else {
-			connect(state, source(readonlyState));
-		}
-	}
+	connectSources(state, sources);
 
 	for (const [key, actionSource] of Object.entries(
 		actionSources as TActionSources,
@@ -286,7 +286,31 @@ export function signalSlice<
 		subs.forEach((sub) => sub.complete());
 	});
 
-	return slice;
+	return new Proxy(slice, {
+		get(target, property, receiver) {
+			if (!lazySourcesLoaded) {
+				lazySourcesLoaded = true;
+				connectSources(state, lazySources, injector, true);
+			}
+
+			return Reflect.get(target, property, receiver);
+		},
+	});
+}
+
+function connectSources<TSignalValue>(
+	state: WritableSignal<TSignalValue>,
+	sources: SourceConfig<TSignalValue>,
+	injector?: Injector,
+	useUntracked = false,
+) {
+	for (const source of sources) {
+		if (isObservable(source)) {
+			connect(state, source, injector, useUntracked);
+		} else {
+			connect(state, source(state.asReadonly()), injector, useUntracked);
+		}
+	}
 }
 
 function addReducerProperties(

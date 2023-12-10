@@ -108,6 +108,41 @@ describe(signalSlice.name, () => {
 		});
 	});
 
+	describe('lazySources', () => {
+		const testFn = jest.fn();
+		const testSource$ = of('test').pipe(
+			map(() => {
+				testFn();
+				return {};
+			}),
+		);
+
+		let state: SignalSlice<typeof initialState, any, any, any, any>;
+
+		beforeEach(() => {
+			TestBed.runInInjectionContext(() => {
+				state = signalSlice({
+					initialState,
+					lazySources: [testSource$],
+				});
+			});
+		});
+
+		it('should be not connect lazy source initially', () => {
+			expect(testFn).not.toHaveBeenCalled();
+		});
+
+		it('should connect lazy source after selector is accessed', () => {
+			state.age();
+			expect(testFn).toHaveBeenCalled();
+		});
+
+		it('should connect lazy source after signal value is accessed', () => {
+			state.age();
+			expect(testFn).toHaveBeenCalled();
+		});
+	});
+
 	describe('actionSources', () => {
 		it('should create action that updates signal', () => {
 			TestBed.runInInjectionContext(() => {

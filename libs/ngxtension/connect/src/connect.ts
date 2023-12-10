@@ -1,7 +1,12 @@
-import { DestroyRef, Injector, type WritableSignal } from '@angular/core';
+import {
+	DestroyRef,
+	Injector,
+	untracked,
+	type WritableSignal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { assertInjector } from 'ngxtension/assert-injector';
-import { Subscription, isObservable, type Observable } from 'rxjs';
+import { isObservable, Subscription, type Observable } from 'rxjs';
 
 export type PartialOrValue<TValue> = TValue extends object
 	? Partial<TValue>
@@ -45,6 +50,7 @@ type ConnectedSignal<TSignalValue> = {
 export function connect<TSignalValue>(
 	signal: WritableSignal<TSignalValue>,
 	injectorOrDestroyRef?: Injector | DestroyRef,
+	useUntracked?: boolean,
 ): ConnectedSignal<TSignalValue>;
 export function connect<
 	TSignalValue,
@@ -53,22 +59,18 @@ export function connect<
 	signal: WritableSignal<TSignalValue>,
 	observable: Observable<TObservableValue>,
 	injectorOrDestroyRef?: Injector | DestroyRef,
+	useUntracked?: boolean,
 ): Subscription;
 export function connect<TSignalValue, TObservableValue>(
 	signal: WritableSignal<TSignalValue>,
 	observable: Observable<TObservableValue>,
 	reducer: Reducer<TSignalValue, TObservableValue>,
 	injectorOrDestroyRef?: Injector | DestroyRef,
+	useUntracked?: boolean,
 ): Subscription;
-export function connect(
-	signal: WritableSignal<unknown>,
-	...args: [
-		(Observable<unknown> | (Injector | DestroyRef))?,
-		(Reducer<unknown, unknown> | (Injector | DestroyRef))?,
-		(Injector | DestroyRef)?,
-	]
-) {
-	const [observable, reducer, injectorOrDestroyRef] = parseArgs(args);
+export function connect(signal: WritableSignal<unknown>, ...args: any[]) {
+	const [observable, reducer, injectorOrDestroyRef, useUntracked] =
+		parseArgs(args);
 
 	if (observable) {
 		let destroyRef = null;
@@ -81,13 +83,21 @@ export function connect(
 		}
 
 		return observable.pipe(takeUntilDestroyed(destroyRef)).subscribe((x) => {
-			signal.update((prev) => {
-				if (typeof prev === 'object' && !Array.isArray(prev)) {
-					return { ...prev, ...((reducer?.(prev, x) || x) as object) };
-				}
+			const update = () => {
+				signal.update((prev) => {
+					if (typeof prev === 'object' && !Array.isArray(prev)) {
+						return { ...prev, ...((reducer?.(prev, x) || x) as object) };
+					}
 
-				return reducer?.(prev, x) || x;
-			});
+					return reducer?.(prev, x) || x;
+				});
+			};
+
+			if (useUntracked) {
+				untracked(update);
+			} else {
+				update();
+			}
 		});
 	}
 
@@ -103,7 +113,8 @@ export function connect(
 				connect(
 					signal,
 					...(args as any),
-					injectorOrDestroyRef,
+					injectorOrDestroyRef as any,
+					useUntracked,
 				) as unknown as Subscription,
 			);
 			return this;
@@ -112,45 +123,67 @@ export function connect(
 	} as ConnectedSignal<unknown>;
 }
 
+// TODO: there must be a way to parse the args more efficiently
 function parseArgs(
-	args: [
-		(Observable<unknown> | (Injector | DestroyRef))?,
-		(Reducer<unknown, unknown> | (Injector | DestroyRef))?,
-		(Injector | DestroyRef)?,
-	],
+	args: any[],
 ): [
 	Observable<unknown> | null,
 	Reducer<unknown, unknown> | null,
 	Injector | DestroyRef | null,
+	boolean,
 ] {
-	if (args.length > 2) {
+	if (args.length > 3) {
 		return [
 			args[0] as Observable<unknown>,
 			args[1] as Reducer<unknown, unknown>,
 			args[2] as Injector | DestroyRef,
+			args[3] as boolean,
+		];
+	}
+
+	if (args.length === 3) {
+		if (typeof args[2] === 'boolean') {
+			return [
+				args[0] as Observable<unknown>,
+				null,
+				args[1] as Injector | DestroyRef,
+				args[2],
+			];
+		}
+
+		return [
+			args[0] as Observable<unknown>,
+			args[1] as Reducer<unknown, unknown>,
+			args[2] as Injector | DestroyRef,
+			false,
 		];
 	}
 
 	if (args.length === 2) {
-		const [arg, arg2] = args;
-		const parsedArgs: [
-			Observable<unknown>,
-			Reducer<unknown, unknown> | null,
-			Injector | DestroyRef | null,
-		] = [arg as Observable<unknown>, null, null];
-		if (typeof arg2 === 'function') {
-			parsedArgs[1] = arg2;
-		} else {
-			parsedArgs[2] = arg2 as Injector | DestroyRef;
+		if (typeof args[1] === 'boolean') {
+			return [null, null, args[0] as Injector | DestroyRef, args[1]];
 		}
 
-		return parsedArgs;
+		if (typeof args[1] === 'function') {
+			return [
+				args[0] as Observable<unknown>,
+				args[1] as Reducer<unknown, unknown>,
+				null,
+				false,
+			];
+		}
+
+		return [
+			args[0] as Observable<unknown>,
+			null,
+			args[1] as Injector | DestroyRef,
+			false,
+		];
 	}
 
-	const arg = args[0];
-	if (isObservable(arg)) {
-		return [arg, null, null];
+	if (isObservable(args[0])) {
+		return [args[0] as Observable<unknown>, null, null, false];
 	}
 
-	return [null, null, arg as Injector | DestroyRef];
+	return [null, null, args[0] as Injector | DestroyRef, false];
 }
