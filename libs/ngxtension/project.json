@@ -34,14 +34,7 @@
 		},
 		"lint": {
 			"executor": "@nx/eslint:lint",
-			"outputs": ["{options.outputFile}"],
-			"options": {
-				"lintFilePatterns": [
-					"libs/ngxtension/**/*.ts",
-					"libs/ngxtension/**/*.html",
-					"libs/ngxtension/package.json"
-				]
-			}
+			"outputs": ["{options.outputFile}"]
 		},
 		"publish": {
 			"command": "npm publish",
