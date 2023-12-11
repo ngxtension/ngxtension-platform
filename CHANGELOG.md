@@ -1,5 +1,20 @@
 
 
+## [1.6.1](https://github.com/nartc/ngxtension-platform/compare/1.6.0...1.6.1) (2023-12-11)
+
+
+### Bug Fixes
+
+* **signal-slice:** add apply trap to proxy for loading lazySources when signal value accessed directly ([#200](https://github.com/nartc/ngxtension-platform/issues/200)) ([fa68a8d](https://github.com/nartc/ngxtension-platform/commit/fa68a8d49607a3acbbe4d3c7354f2325e9bbe2c7))
+* typos ([#198](https://github.com/nartc/ngxtension-platform/issues/198)) ([039eefb](https://github.com/nartc/ngxtension-platform/commit/039eefbda5fc5a71fc1e3c3e72c71d362b5024fc))
+
+
+### Documentations
+
+* add rlmestre as a contributor for doc ([#201](https://github.com/nartc/ngxtension-platform/issues/201)) ([f2fdc7b](https://github.com/nartc/ngxtension-platform/commit/f2fdc7b15f021267abb70a9baf8cab8647aeaef6))
+* Add Spanish translations to Injector/Intl doc pages ([#199](https://github.com/nartc/ngxtension-platform/issues/199)) ([a2e33ef](https://github.com/nartc/ngxtension-platform/commit/a2e33ef4a936ae8eb5f95195fc2201381f55a7ad))
+* add swami-sanapathi as a contributor for doc ([#202](https://github.com/nartc/ngxtension-platform/issues/202)) ([29d5503](https://github.com/nartc/ngxtension-platform/commit/29d550356d3d2bb6fbc5e9c8f3b678c865f4ec9f))
+
 ## [1.6.0](https://github.com/nartc/ngxtension-platform/compare/1.5.0...1.6.0) (2023-12-10)
 
 
