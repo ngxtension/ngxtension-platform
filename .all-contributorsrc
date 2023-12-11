@@ -263,6 +263,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "swami-sanapathi",
+      "name": "Swami",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40539126?v=4",
+      "profile": "https://github.com/swami-sanapathi",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
