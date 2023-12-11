@@ -78,9 +78,8 @@ class TestComponent implements OnInit {
 }
 ```
 
-## Testing
+## Pruebas
 
-In order to test the lazy injected service we can mock them using `mockLazyProvider`.
 Para probar el servicio lazy-loaded, podemos simularlos usando `mockLazyProvider`.
 
 ### Ejemplo

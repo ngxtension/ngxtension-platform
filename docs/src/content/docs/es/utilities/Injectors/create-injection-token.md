@@ -84,7 +84,7 @@ export const [injectCount, provideCount] = createInjectionToken(countFactory, {
 
 #### `extraProviders`
 
-We can also pass in other providers, via `extraProviders`, to `createInjectionToken` so when we call `provideFn()`, we provide those providers as well.
+También podemos pasar otros proveedores, a través de `extraProviders`, a `createInjectionToken` para que cuando llamemos a `provideFn()` proporcionemos esos proveedores también.
 
 ```ts
 import { bookReducer } from './book.reducer';
@@ -105,7 +105,7 @@ export const [injectBookService, provideBookService] = createInjectionToken(
 export const routes = [
 	{
 		path: 'book/:id',
-		//          👇 will also provideState() and provideEffects
+		//          👇 también proporcionará provideState() y provideEffects
 		providers: [provideBookService()],
 		loadComponent: () => import('./book/book.component'),
 	},
@@ -114,29 +114,29 @@ export const routes = [
 
 #### `multi`
 
-As the name suggested, we can also create a multi `InjectionToken` via `createInjectionToken` by passing `multi: true` to the `CreateInjectionTokenOptions`.
+Como el nombre sugiere, también podemos crear un `InjectionToken` multi a través de `createInjectionToken` pasando `multi: true` a `CreateInjectionTokenOptions`.
 
 :::caution
 
-- When `multi: true`, the return type will be altered.
-- When `multi: true`, then `isRoot` option will be skipped entirely. The `InjectionToken` will be forced to be a non-root token.
+- Cuando `multi: true`, el tipo de retorno se alterará.
+- Cuando `multi: true`, la opcion `isRoot` se omitirá por completo. El `InjectionToken` se forzará a ser un token no-root.
 
 :::
 
 ```ts
 const [injectFn, provideFn] = createInjectionToken(() => 1, { multi: true });
 
-const values = injectFn(); // number[] instead of number
+const values = injectFn(); // number[] en vez de number
 
 provideFn(value);
-//        👆 this STILL accepts a number
+//        👆 esto AÚN acepta un número
 ```
 
 #### `token`
 
-If we already have an `InjectionToken` that we want to turn into `injectFn` and `provideFn`, we can pass that token, via `token`, to `createInjectionToken`.
+Si tenemos un `InjectionToken` que queremos convertir en `injectFn` y `provideFn`, podemos pasar ese token, a través de `token`, a `createInjectionToken`.
 
-One use-case is if our factory has a dependency on the same `InjectionToken` (i.e: a hierarchical tree-like structure where child `Service` might optionally have a parent `Service`)
+Un caso de uso es si nuestra fábrica tiene una dependencia en el mismo `InjectionToken` (es decir, una estructura jerárquica en forma de árbol donde el `Service` hijo puede tener opcionalmente un `Service` padre)
 
 ```ts
 export const SERVICE = new InjectionToken<TreeService>('TreeService');
@@ -152,59 +152,59 @@ export const [injectService, provideService] = createInjectionToken(serviceFacto
 });
 ```
 
-Note that if `token` is passed in and `isRoot: true`, `createInjectionToken` will throw an error.
+Note que si se pasa `token` e `isRoot: true`, `createInjectionToken` lanzará un error.
 
 ### `createNoopInjectionToken`
 
-As the name suggested, `createNoopInjectionToken` is the same as `createInjectionToken` but instead of factory function, it accepts description and options. This is useful when we want to create a `multi` token but we do not have a factory function.
+Como su nombre sugiere, `createNoopInjectionToken` es lo mismo que `createInjectionToken` pero en lugar de una función fábrica, acepta una descripción y opciones. Esto es útil cuando queremos crear un token `multi` pero no tenemos una función fábrica.
 
-It also **supports a generic type** for the `InjectionToken` that it creates:
+También **admite un tipo genérico** para el `InjectionToken` que crea:
 
 ```ts
-const [injectFn, provideFn] = createNoopInjectionToken<number, true>('description', { multi: true });
+const [injectFn, provideFn] = createNoopInjectionToken<number, true>('descripción', { multi: true });
 
 injectFn(); // number[]
-provideFn(1); // accepts number
-provideFn(() => 1); // accepts a factory returning a number;
+provideFn(1); // acepta number
+provideFn(() => 1); // acepta una fábrica que devuelve un número;
 ```
 
 :::tip[Note]
 Note **true** inside `createNoopInjectionToken<number, true>` and in `multi: true`. This is to help TypeScript to return the correct type for `injectFn` and `provideFn`
+Note **true** dentro de `createNoopInjectionToken<number, true>` y en `multi: true`. Esto es para ayudar a TypeScript a devolver el tipo correcto para `injectFn` y `provideFn`
 :::
 
-Even though it's meant for `multi` token, it can be used for non-multi token as well:
+Aunque está destinado a un token `multi`, también se puede utilizar para un token no-multi:
 
 ```ts
-const [injectFn, provideFn] = createNoopInjectionToken<number>('description');
+const [injectFn, provideFn] = createNoopInjectionToken<number>('descripción');
 injectFn(); // number;
-provideFn(1); // accepts number
-provideFn(() => 1); // accepts a factory returning a number;
+provideFn(1); // acepta number
+provideFn(() => 1); // acepta una fábrica que devuelve un número;
 ```
 
 ## `ProvideFn`
 
-`createInjectionToken` and `createNoopInjectionToken` returns a `provideFn` which is a function that accepts either a value or a **factory function** that returns the value.
+`createInjectionToken` y `createNoopInjectionToken` devuelven un `provideFn` que es una función que acepta un valor o una **función fábrica** que devuelve el valor.
 
-In the case where the value of the token is a `Function` (i.e: `NG_VALIDATORS` is a multi token whose values are functions), `provideFn` accepts a 2nd argument to distinguish between a **factory function** or a **function as value**
+En el caso de que el valor del token sea una `Function` (es decir, `NG_VALIDATORS` es un token multi cuyos valores son funciones), `provideFn` acepta un segundo argumento para distinguir entre una **función fábrica** o una **función como valor**
 
 ```ts
 const [injectFn, provideFn] = createInjectionToken(() => {
-	// this token returns Function as value
+	// este token devuelve Function como valor
 	return () => 1;
 });
 
-// NOTE: this is providing the function value as-is
+// NOTE: esto proporciona el valor de la función tal cual
 provideFn(() => 2, true);
-// NOTE: this is providing the function as a factory
+// NOTE: esto proporciona la función como una fábrica
 provideFn(() => () => injectDepFn(), false);
 ```
 
-By default, `provideFn` will treat the function as a factory function. If we want to provide the function as-is, we need to pass in `true` as the second argument.
+Por defecto, `provideFn` tratará la función como una función fábrica. Si queremos proporcionar la función tal cual, necesitamos pasar `true` como segundo argumento.
 
-## Custom Injector
+## Inyector personalizado
 
-The `injectFn` returned by `createInjectionToken` also accepts a custom `Injector` to allow the consumers to call the `injectFn`
-outside of an Injection Context.
+La `injectFn` devuelta por `createInjectionToken` también acepta un `Injector` personalizado para permitir a los consumidores llamar a la `injectFn` fuera de un contexto de inyección.
 
 ```ts
 function countFactory() {
@@ -225,14 +225,14 @@ export class Counter {
 
 ## Environment Initializer
 
-Sometimes, it is required for **root** tokens to be initialized in `ENVIRONMENT_INITIALIZER`. Instead of providing `ENVIRONMENT_INITIALIZER` manually, we can retrieve the initializer provider function from `createInjectionToken` to do so.
+A veces, es necesario inicializar los tokens **root** en `ENVIRONMENT_INITIALIZER`. En lugar de proporcionar `ENVIRONMENT_INITIALIZER` manualmente, podemos recuperar la función proveedora del inicializador de `createInjectionToken` para hacerlo.
 
 :::caution
-The **initializer provider** function is a **noop** for non-root tokens.
+El **proveedor de inicializador** es un **noop** para tokens no-root.
 :::
 
 ```ts
-const [injectOne /* skip provider fn */ /* skip the token */, , , provideOneInitializer] = createInjectionToken(() => 1);
+const [injectOne /* omitir la fn */ /* omitir el token */, , , provideOneInitializer] = createInjectionToken(() => 1);
 
 bootstrapApplication(App, {
 	providers: [provideOneInitializer()],

@@ -79,7 +79,6 @@ export class MyComponent {
 
 ## Cómo funciona
 
-The helper functions injects the `DestroyRef` class from Angular, and on the `onDestroy` lifecycle hook, it emits from the `Subject` and completes it.
 La función auxiliar inyecta la clase `DestroyRef` de Angular, y en el hook `onDestroy`, emite desde el `Subject` y lo completa.
 
 ```ts
