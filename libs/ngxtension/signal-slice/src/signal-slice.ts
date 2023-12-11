@@ -286,14 +286,21 @@ export function signalSlice<
 		subs.forEach((sub) => sub.complete());
 	});
 
+	const connectLazySources = () => {
+		if (!lazySourcesLoaded) {
+			lazySourcesLoaded = true;
+			connectSources(state, lazySources, injector, true);
+		}
+	};
+
 	return new Proxy(slice, {
 		get(target, property, receiver) {
-			if (!lazySourcesLoaded) {
-				lazySourcesLoaded = true;
-				connectSources(state, lazySources, injector, true);
-			}
-
+			connectLazySources();
 			return Reflect.get(target, property, receiver);
+		},
+		apply(target, thisArg, argumentsList) {
+			connectLazySources();
+			return Reflect.apply(target, thisArg, argumentsList);
 		},
 	});
 }

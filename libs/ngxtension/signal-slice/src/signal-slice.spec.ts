@@ -126,6 +126,8 @@ describe(signalSlice.name, () => {
 					lazySources: [testSource$],
 				});
 			});
+
+			jest.clearAllMocks();
 		});
 
 		it('should be not connect lazy source initially', () => {
@@ -138,7 +140,7 @@ describe(signalSlice.name, () => {
 		});
 
 		it('should connect lazy source after signal value is accessed', () => {
-			state.age();
+			state().age;
 			expect(testFn).toHaveBeenCalled();
 		});
 	});
