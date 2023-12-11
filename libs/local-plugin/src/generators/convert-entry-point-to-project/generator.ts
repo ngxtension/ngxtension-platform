@@ -75,12 +75,6 @@ export async function convertEntryPointToProjectGenerator(
 			lint: {
 				executor: '@nx/eslint:lint',
 				outputs: ['{options.outputFile}'],
-				options: {
-					lintFilePatterns: [
-						`${entryPointPath}/**/*.ts`,
-						`${entryPointPath}/**/*.html`,
-					],
-				},
 			},
 		},
 	});

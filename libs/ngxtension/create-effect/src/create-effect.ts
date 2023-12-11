@@ -36,10 +36,10 @@ export function createEffect<
 	ReturnType = ProvidedType | ObservableType extends void
 		? (
 				observableOrValue?: ObservableType | Observable<ObservableType>,
-		  ) => Subscription
+			) => Subscription
 		: (
 				observableOrValue: ObservableType | Observable<ObservableType>,
-		  ) => Subscription,
+			) => Subscription,
 >(
 	generator: (origin$: OriginType) => Observable<unknown>,
 	injector?: Injector,

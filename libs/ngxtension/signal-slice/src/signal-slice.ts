@@ -73,12 +73,12 @@ type ActionEffects<TActionSources> = NamedActionEffects<TActionSources>;
 type Action<TSignalValue, TValue> = TValue extends [void]
 	? () => Promise<TSignalValue>
 	: [unknown] extends TValue
-	  ? () => Promise<TSignalValue>
-	  : (
+		? () => Promise<TSignalValue>
+		: (
 				value: TValue extends [infer TInferred]
 					? TInferred | Observable<TInferred>
 					: TValue | Observable<TValue>,
-	    ) => Promise<TSignalValue>;
+			) => Promise<TSignalValue>;
 
 type ActionMethod<
 	TSignalValue,
@@ -89,8 +89,8 @@ type ActionMethod<
 ) => any
 	? Action<TSignalValue, [TObservableValue]>
 	: TActionSource extends Subject<infer TSubjectValue>
-	  ? Action<TSignalValue, [TSubjectValue]>
-	  : never;
+		? Action<TSignalValue, [TSubjectValue]>
+		: never;
 
 type ActionMethods<
 	TSignalValue,
@@ -107,10 +107,10 @@ type ActionStreams<
 		string as `${K}$`]: TActionSources[K] extends Reducer<TSignalValue, unknown>
 		? Observable<void>
 		: TActionSources[K] extends Reducer<TSignalValue, infer TValue>
-		  ? TValue extends Observable<any>
+			? TValue extends Observable<any>
 				? TValue
 				: Observable<TValue>
-		  : never;
+			: never;
 };
 
 export type Source<TSignalValue> = Observable<PartialOrValue<TSignalValue>>;

@@ -22,8 +22,8 @@ export type InferObservableSignalOutput<I> = {
 	[K in keyof I]: I[K] extends Signal<infer S>
 		? S
 		: I[K] extends ObservableInput<infer O>
-		  ? O
-		  : never;
+			? O
+			: never;
 };
 /**
  * So that we can have `fn([Observable<A>, Signal<B>]): Observable<[A, B]>`
@@ -102,13 +102,13 @@ export function computedFrom<Input = any, Output = Input>(
 		? toSignal(combineLatest(normalizedSources).pipe(operator), {
 				initialValue: options!.initialValue!, // I'm sure initialValue exist because hasInitValue is true
 				injector, // eventually passing the injector toSignal to use correct Injection context
-		  })
+			})
 		: toSignal(combineLatest(normalizedSources).pipe(operator), {
 				injector, // eventually passing the injector toSignal to use the correct Injection context
 				requireSync: true, // thiw will use native toSignal behaviour that check if all Observables emit sync otherwise throw error
 				// -> So if anyone forget to use startWith it will error! This is preferred to old "spurious" sync emit of null or Input ([], {})
 				// that can cause runtime errors that TS can't catch because the old signature Signal<Output> is not "stricter" for those cases!
-		  });
+			});
 	return ret;
 	/* // We can decide to customize the error to be more specific for computedFrom
 	} catch (e: any) {

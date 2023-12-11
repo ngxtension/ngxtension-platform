@@ -47,7 +47,7 @@ export type GestureInfer<TInjectGesture extends (...args: any[]) => void> =
 				handlerParameters: Parameters<TInjectGesture>[0];
 				state: Parameters<Parameters<TInjectGesture>[0]>[0];
 				config: GestureConfig;
-		  }
+			}
 		: never;
 
 export function createGesture<
@@ -76,7 +76,7 @@ export function createGesture<
 			const gestureInstance = zoneless
 				? zone.runOutsideAngular(
 						() => new gesture(host.nativeElement, ngHandler),
-				  )
+					)
 				: new gesture(host.nativeElement, ngHandler);
 
 			effect(() => {

@@ -15,7 +15,7 @@ const NOTHIS = !('Proxy' in window)
 				deleteProperty: error_this,
 				has: error_this,
 			},
-	  );
+		);
 
 @Pipe({
 	name: 'call',
