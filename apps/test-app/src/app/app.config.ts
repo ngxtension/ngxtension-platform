@@ -36,6 +36,10 @@ export const appConfig: ApplicationConfig = {
 						'./document-visibility-state/document-visibility-state.component'
 					),
 			},
+			{
+				path: 'form',
+				loadComponent: () => import('./form/form.component'),
+			},
 		]),
 	],
 };

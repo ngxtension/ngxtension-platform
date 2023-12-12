@@ -21,10 +21,13 @@
 		"@angular/platform-browser": "17.0.6",
 		"@angular/platform-browser-dynamic": "17.0.6",
 		"@angular/router": "17.0.6",
+		"@conform-to/dom": "^0.9.1",
+		"@conform-to/zod": "^0.9.1",
 		"@swc/helpers": "0.5.3",
 		"@use-gesture/vanilla": "^10.3.0",
 		"rxjs": "~7.8.1",
 		"tslib": "^2.6.2",
+		"zod": "^3.22.4",
 		"zone.js": "0.14.2"
 	},
 	"devDependencies": {

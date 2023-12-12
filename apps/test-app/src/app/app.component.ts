@@ -34,6 +34,9 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 			<li>
 				<a routerLink="/document-visibility-state">Document Visibility State</a>
 			</li>
+			<li>
+				<a routerLink="/form">Form</a>
+			</li>
 		</ul>
 
 		<hr />
