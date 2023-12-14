@@ -13,6 +13,7 @@ type FakeControl = {
 	klass?: string | null;
 	valid: boolean;
 	value: number[];
+	attribute?: boolean | string | null;
 };
 
 @Component({
@@ -52,7 +53,10 @@ class TestHost {
 	width = hostBinding('style.width.px', signal(500));
 
 	// attribute binding
-	required = hostBinding('attr.aria-required', signal(false));
+	required = hostBinding(
+		'attr.aria-required',
+		computed(() => this.fakeControl().attribute),
+	);
 
 	// property binding
 	id = hostBinding(
@@ -134,16 +138,28 @@ describe(hostBinding.name, () => {
 	});
 
 	describe('attribute binding', () => {
-		it('should bind the aria-required to "false"', () => {
-			const { fixture } = setup();
+		it('should bind the aria-required to <string>true"', () => {
+			const { fixture } = setup({ attribute: 'true' });
 
-			expect(fixture.nativeElement.getAttribute('aria-required')).toEqual(
-				'false',
-			);
+			const attr = fixture.nativeElement.getAttribute('aria-required');
+			expect(attr).toEqual('true');
+		});
+
+		it('should bind the aria-required to "false"', () => {
+			const { fixture } = setup({ attribute: false });
+
+			const attr = fixture.nativeElement.getAttribute('aria-required');
+			expect(attr).toEqual('false');
+		});
+
+		it('should remove the attribute when "null"', () => {
+			const { fixture } = setup({ attribute: null });
+			const attr = fixture.nativeElement.getAttribute('aria-required');
+			expect(attr).toEqual(null);
 		});
 	});
 
-	describe('propery binding', () => {
+	describe('property binding', () => {
 		it('should bind the "empty" id', () => {
 			const { fixture } = setup();
 
