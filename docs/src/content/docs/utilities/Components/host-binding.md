@@ -17,16 +17,16 @@ With `@HostBinding` you can bind a color from a class property:
 
 ```ts
 @Component({
-  standalone: true;
-  selector: 'my-component'
-  template: '...'
+	standalone: true,
+	selector: 'my-component',
+	template: '...',
 })
 export class MyComponent {
-  @HostBinding('style.color') color = 'red';
+	@HostBinding('style.color') color = 'red';
 
-  updateColor(color: 'red' | 'blue') {
-    this.color = color;
-  }
+	updateColor(color: 'red' | 'blue') {
+		this.color = color;
+	}
 }
 ```
 
@@ -34,15 +34,32 @@ With `hostBinding` you can now bind anything like `@HostBinding` on writable or 
 
 ```ts
 @Component({
-  standalone: true;
-  selector: 'my-component'
-  template: '...'
+	standalone: true,
+	selector: 'my-component',
+	template: '...',
 })
 export class MyComponent {
-  color = hostBinding('style.color', signal('red'));
+	color = hostBinding('style.color', signal('red'));
 
-  updateColor(color: 'red' | 'blue') {
-    this.color.set(color);
-  }
+	updateColor(color: 'red' | 'blue') {
+		this.color.set(color);
+	}
+}
+```
+
+With `hostBinding` you can update and remove attributes, like `@HostBinding`.
+
+```ts
+@Component({
+	standalone: true,
+	selector: 'my-component',
+	template: '...',
+})
+export class MyComponent {
+	#ariaHidden = hostBinding('attr.aria-hidden', signal(false));
+
+	updateAriaHidden(value: boolean) {
+		this.#ariaHidden.set(value);
+	}
 }
 ```
