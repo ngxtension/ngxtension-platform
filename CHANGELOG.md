@@ -1,5 +1,17 @@
 
 
+## [1.6.2](https://github.com/nartc/ngxtension-platform/compare/1.6.1...1.6.2) (2023-12-14)
+
+
+### Bug Fixes
+
+* **host-binding:** allows attributes to be removed with nullish value… ([#205](https://github.com/nartc/ngxtension-platform/issues/205)) ([9b8639b](https://github.com/nartc/ngxtension-platform/commit/9b8639b96fe2ed3dba72e86b9caa13b8051a2c2e))
+
+
+### Documentations
+
+* add geometricpanda as a contributor for code ([#206](https://github.com/nartc/ngxtension-platform/issues/206)) ([65a1c10](https://github.com/nartc/ngxtension-platform/commit/65a1c10ddd1c161077b480010563fa80867f5322))
+
 ## [1.6.1](https://github.com/nartc/ngxtension-platform/compare/1.6.0...1.6.1) (2023-12-11)
 
 
