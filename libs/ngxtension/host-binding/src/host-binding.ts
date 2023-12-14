@@ -60,12 +60,10 @@ export function hostBinding<T, S extends Signal<T> | WritableSignal<T>>(
 					);
 					break;
 				case 'attr':
-					const v = value ?? null;
-
-					if (v === null) {
+					if (value == null) {
 						renderer.removeAttribute(element, property);
 					} else {
-						renderer.setAttribute(element, property, String(v));
+						renderer.setAttribute(element, property, String(value));
 					}
 					break;
 				case 'class':
