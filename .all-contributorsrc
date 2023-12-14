@@ -210,6 +210,13 @@
 			"avatar_url": "https://avatars.githubusercontent.com/u/40539126?v=4",
 			"profile": "https://github.com/swami-sanapathi",
 			"contributions": ["doc"]
+		},
+		{
+			"login": "geometricpanda",
+			"name": "Jim Drury",
+			"avatar_url": "https://avatars.githubusercontent.com/u/708229?v=4",
+			"profile": "https://github.com/geometricpanda",
+			"contributions": ["code"]
 		}
 	],
 	"contributorsPerLine": 7,
