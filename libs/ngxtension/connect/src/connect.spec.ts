@@ -92,6 +92,42 @@ describe(connect.name, () => {
 		});
 	});
 
+	describe('connects a signal to a signal in injection context', () => {
+		@Component({
+			standalone: true,
+			template: '{{ count() }}-{{ mainCount() }}',
+		})
+		class TestComponent {
+			mainCount = signal(0);
+			count = signal(0);
+
+			constructor() {
+				connect(this.count, () => this.mainCount());
+			}
+		}
+
+		let component: TestComponent;
+		let fixture: ComponentFixture<TestComponent>;
+
+		beforeEach(async () => {
+			fixture = TestBed.createComponent(TestComponent);
+			component = fixture.componentInstance;
+		});
+
+		it('works fine', () => {
+			fixture.detectChanges();
+			expect(fixture.nativeElement.textContent).toBe('0-0');
+
+			component.mainCount.set(1);
+			fixture.detectChanges();
+			expect(fixture.nativeElement.textContent).toBe('1-1');
+
+			component.mainCount.set(2);
+			fixture.detectChanges();
+			expect(fixture.nativeElement.textContent).toBe('2-2');
+		});
+	});
+
 	describe('connects to a slice of a state signal', () => {
 		it('should update properly', () => {
 			const state = signal({
