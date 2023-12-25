@@ -10,7 +10,7 @@
 			"options": {
 				"jestConfig": "libs/ngxtension/jest.config.ts",
 				"testPathPattern": ["control-error"],
-				"passWithNoTests": true
+				"passWithNoTests": false
 			},
 			"configurations": {
 				"ci": {
