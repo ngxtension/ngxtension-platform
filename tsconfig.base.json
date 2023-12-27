@@ -44,9 +44,6 @@
 				"libs/ngxtension/create-injection-token/src/index.ts"
 			],
 			"ngxtension/debug": ["libs/ngxtension/debug/src/index.ts"],
-			"ngxtension/inject-document-visibility": [
-				"libs/ngxtension/inject-document-visibility/src/index.ts"
-			],
 			"ngxtension/filter-array": ["libs/ngxtension/filter-array/src/index.ts"],
 			"ngxtension/filter-nil": ["libs/ngxtension/filter-nil/src/index.ts"],
 			"ngxtension/gestures": ["libs/ngxtension/gestures/src/index.ts"],
@@ -54,6 +51,9 @@
 			"ngxtension/if-validator": ["libs/ngxtension/if-validator/src/index.ts"],
 			"ngxtension/inject-destroy": [
 				"libs/ngxtension/inject-destroy/src/index.ts"
+			],
+			"ngxtension/inject-document-visibility": [
+				"libs/ngxtension/inject-document-visibility/src/index.ts"
 			],
 			"ngxtension/inject-is-intersecting": [
 				"libs/ngxtension/inject-is-intersecting/src/index.ts"
