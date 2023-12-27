@@ -44,8 +44,8 @@
 				"libs/ngxtension/create-injection-token/src/index.ts"
 			],
 			"ngxtension/debug": ["libs/ngxtension/debug/src/index.ts"],
-			"ngxtension/document-visibility-state": [
-				"libs/ngxtension/document-visibility-state/src/index.ts"
+			"ngxtension/inject-document-visibility": [
+				"libs/ngxtension/inject-document-visibility/src/index.ts"
 			],
 			"ngxtension/filter-array": ["libs/ngxtension/filter-array/src/index.ts"],
 			"ngxtension/filter-nil": ["libs/ngxtension/filter-nil/src/index.ts"],
