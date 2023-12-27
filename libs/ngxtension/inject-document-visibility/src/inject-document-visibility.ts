@@ -42,7 +42,7 @@ export interface InjectDocumentVisibilityOptions {
  */
 
 export function injectDocumentVisibility(
-	options?: InjectDocumentVisibilityOptions
+	options?: InjectDocumentVisibilityOptions,
 ): Signal<DocumentVisibilityState> {
 	const injector = assertInjector(injectDocumentVisibility, options?.injector);
 
@@ -51,10 +51,10 @@ export function injectDocumentVisibility(
 
 		const docVisible$: Observable<DocumentVisibilityState> = fromEvent(
 			doc,
-			'visibilitychange'
+			'visibilitychange',
 		).pipe(
 			startWith(doc.visibilityState),
-			map(() => doc.visibilityState)
+			map(() => doc.visibilityState),
 		);
 
 		return toSignal<DocumentVisibilityState>(docVisible$, {
