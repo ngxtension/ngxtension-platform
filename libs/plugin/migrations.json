@@ -1,0 +1,16 @@
+{
+	"generators": {
+		"rename-document-visibility": {
+			"version": "1.7.0",
+			"description": "Rename 'injectDocumentVisibility' import",
+			"implementation": "./src/migrations/rename-document-visibility/rename-document-visibility"
+		}
+	},
+	"schematics": {
+		"rename-document-visibility": {
+			"version": "1.7.0",
+			"description": "Rename 'injectDocumentVisibility' import",
+			"factory": "./src/migrations/rename-document-visibility/compat"
+		}
+	}
+}

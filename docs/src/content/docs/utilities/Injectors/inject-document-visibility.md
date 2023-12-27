@@ -1,6 +1,6 @@
 ---
-title: documentVisibilityState
-description: ngxtension/document-visibility-state
+title: injectDocumentVisibility
+description: ngxtension/inject-document-visibility
 badge: stable
 contributor: fiorelozere
 ---
@@ -8,7 +8,7 @@ contributor: fiorelozere
 `injectDocumentVisibility` is a utility function that provides a reactive signal reflecting the current visibility state of the document. This function is particularly useful for scenarios such as tracking user presence on a webpage (e.g., for analytics or pausing/resuming activities) and can be adapted for use with iframes or in testing environments.
 
 ```ts
-import { injectDocumentVisibility } from 'ngxtension/document-visibility-state';
+import { injectDocumentVisibility } from 'ngxtension/inject-document-visibility';
 ```
 
 ## Usage
