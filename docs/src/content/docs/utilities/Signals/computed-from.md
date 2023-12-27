@@ -99,8 +99,8 @@ let c = computedFrom(
 		switchMap(
 			([a, b]) => of(a + b).pipe(delay(1000)), // later async emit value
 		),
-		{ initialValue: 42 }, // 👈 pass the initial value of the resulting signal
 	),
+	{ initialValue: 42 }, // 👈 pass the initial value of the resulting signal
 );
 ```
 
