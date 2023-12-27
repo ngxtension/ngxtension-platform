@@ -27,6 +27,11 @@
 						"input": "./libs/plugin",
 						"glob": "generators.json",
 						"output": "."
+					},
+					{
+						"input": "./libs/plugin",
+						"glob": "migrations.json",
+						"output": "."
 					}
 				]
 			}
