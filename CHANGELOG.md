@@ -1,5 +1,18 @@
 
 
+## [1.7.0](https://github.com/nartc/ngxtension-platform/compare/1.6.2...1.7.0) (2023-12-27)
+
+
+### Features
+
+* connect two signals with each other ([#209](https://github.com/nartc/ngxtension-platform/issues/209)) ([be0edcc](https://github.com/nartc/ngxtension-platform/commit/be0edcc47c13ddb4fe572d4c78e18c37e1ae845e))
+
+
+### Documentations
+
+* renamed documentVisibilityState to injectDocumentVisibility ([#211](https://github.com/nartc/ngxtension-platform/issues/211)) ([230cf4b](https://github.com/nartc/ngxtension-platform/commit/230cf4b1cdfe88e6ba3b02df0153ca5db6ca7ca4)), closes [#210](https://github.com/nartc/ngxtension-platform/issues/210)
+* third arg is the options-obj for computedFrom ([#210](https://github.com/nartc/ngxtension-platform/issues/210)) ([344c3fe](https://github.com/nartc/ngxtension-platform/commit/344c3fe043087bb2d29995d4a301cb59a4de69a2))
+
 ## [1.6.2](https://github.com/nartc/ngxtension-platform/compare/1.6.1...1.6.2) (2023-12-14)
 
 
