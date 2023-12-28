@@ -1,6 +1,6 @@
 ---
 title: NgxControlError
-description: Structural directive to manage displaying form control errors consistently and reduce boilerplate.
+description: Structural directive for displaying form control errors consistently and reduce boilerplate.
 badge: stable
 contributor: robby-rabbitman
 ---
