@@ -163,6 +163,66 @@ export interface NgxControlErrorContext {
 	track: string | string[];
 }
 
+/**
+ * `NgxControlError` helps to manage displaying form control errors consistently and reduce boilerplate.
+ *
+ * **Before:** For every control, you had at least one if statement.
+ *
+ *
+ * ```html
+ * <label>
+ *   <b>Name</b>
+ *   <input type="text" [formControl]="name" />
+ *   ＠if (form.controls.name.errors['required'] && (form.controls.name.touched || form.submitted)) {
+ *     <strong>Name is required.</strong>
+ *   }
+ * </label>
+ * ```
+ *
+ * **After:** You pass the control and specify which errors should be tracked. In this example just `required`. You can also pass a list.
+ *
+ * ```html
+ * <label>
+ *   <b>Name</b>
+ *   <input type="text" [formControl]="name" />
+ *   <strong *ngxControlError="name; track: 'required'">
+ *     Name is required.
+ *   </strong>
+ * </label>
+ * ```
+ *
+ * Per default the template will only be rendered, when the control errors includes the tracked error and is touched or the form has been submitted.
+ * This behavior can be configured via {@link NgxControlError.errorStateMatcher input} or {@link NGX_CONTROL_ERROR_STATE_MATCHER DI}.
+ *
+ *
+ * ## Integration
+ *
+ * ### {@link https://github.com/ngx-translate/core NGX Translate}
+ *
+ * You can pass the error to the translate pipe, which translates the specific error.
+ *
+ * ```html
+ * <label>
+ *   <b>Mail</b>
+ *   <input type="text" [formControl]="mail" />
+ *    ＠for (errorName of ['required', 'email', 'myCustomError']; track errorName) {
+ *			<strong *ngxControlError="name; track: errorName; let error">
+ *        {{ "PATH.TO.MAIL_CONTROL.ERRORS." + errorName | translate: error}}
+ *      </strong>
+ *		}
+ * </label>
+ * ```
+ *
+ * ### {@link https://github.com/angular/components Angular Material}
+ *
+ * ```html
+ * <mat-form-field>
+ *   <mat-label>Name</mat-label>
+ *   <input matInput [formControl]="name" required />
+ *	 <mat-error *ngxControlError="name; track: 'required'">Name is required.</mat-error>
+ * </mat-form-field>
+ * ```
+ */
 @Directive({
 	selector: '[ngxControlError]',
 	standalone: true,
