@@ -30,7 +30,7 @@ export const appConfig: ApplicationConfig = {
 					import('./active-element/active-element.component'),
 			},
 			{
-				path: 'document-visibility-state',
+				path: 'inject-document-visibility',
 				loadComponent: () =>
 					import(
 						'./document-visibility-state/document-visibility-state.component'

@@ -1,5 +1,5 @@
 import { Component, effect } from '@angular/core';
-import { injectDocumentVisibility } from 'ngxtension/document-visibility-state';
+import { injectDocumentVisibility } from 'ngxtension/inject-document-visibility';
 
 @Component({
 	template: `

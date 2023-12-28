@@ -30,5 +30,11 @@
 	},
 	"sideEffects": false,
 	"generators": "./plugin/generators.json",
-	"schematics": "./plugin/generators.json"
+	"schematics": "./plugin/generators.json",
+	"nx-migrations": {
+		"migrations": "./plugin/migrations.json"
+	},
+	"ng-update": {
+		"migrations": "./plugin/migrations.json"
+	}
 }

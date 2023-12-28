@@ -1,4 +1,13 @@
 {
 	"type": "commonjs",
-	"generators": "./generators.json"
+	"generators": "./generators.json",
+	"nx-migrations": {
+		"migrations": "./migrations.json"
+	},
+	"ng-update": {
+		"migrations": "./migrations.json"
+	},
+	"dependencies": {
+		"@nx/devkit": "17.2.0"
+	}
 }
