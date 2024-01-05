@@ -33,18 +33,10 @@ export function createSignal<T>(
 ): WritableSignal<T> & { value: T } {
 	const sig = signal<T>(...args);
 
-	Object.defineProperties(sig, {
-		value: {
-			get() {
-				return sig();
-			},
-			set(value: T) {
-				sig.set(value);
-			},
-		},
-	});
-
-	return sig as WritableSignal<T> & { value: T };
+	return Object.defineProperty(sig, 'value', {
+    get: sig.asReadonly(),
+    set: sig.set.bind(sig),
+	}) as WritableSignal<T> & { value: T };
 }
 
 export function createComputed<T>(
