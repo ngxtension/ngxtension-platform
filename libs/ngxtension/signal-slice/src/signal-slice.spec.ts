@@ -352,7 +352,8 @@ describe(signalSlice.name, () => {
 
 		it('all types should work with selectors defined', () => {
 			TestBed.runInInjectionContext(() => {
-				signalSlice({
+				const testFn = jest.fn();
+				const state = signalSlice({
 					initialState,
 					selectors: (state) => ({
 						someSelector: () => state.age() * 2,
@@ -361,7 +362,12 @@ describe(signalSlice.name, () => {
 						someActionSource: (state, $: Observable<void>) =>
 							$.pipe(map(() => ({ age: state().age }))),
 						someOtherActionSource: (state, $: Observable<void>) =>
-							$.pipe(map(() => ({}))),
+							$.pipe(
+								map(() => {
+									testFn();
+									return {};
+								})
+							),
 					},
 					actionEffects: (state) => ({
 						someActionSource: () => {
@@ -378,6 +384,10 @@ describe(signalSlice.name, () => {
 						},
 					}),
 				});
+
+				state.someActionSource();
+
+				expect(testFn).toHaveBeenCalled();
 			});
 		});
 	});
