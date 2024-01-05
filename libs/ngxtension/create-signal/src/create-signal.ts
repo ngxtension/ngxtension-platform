@@ -32,25 +32,23 @@ export function createSignal<T>(
 	...args: Parameters<typeof signal<T>>
 ): WritableSignal<T> & { value: T } {
 	const sig = signal<T>(...args);
-
 	return Object.defineProperty(sig, 'value', {
-    get: sig.asReadonly(),
-    set: sig.set.bind(sig),
+		get: sig.asReadonly(),
+		set: sig.set.bind(sig),
 	}) as WritableSignal<T> & { value: T };
 }
 
+/**
+ * Creates a computed signal with a `value` property.
+ * @param args - Arguments to pass to `computed()`.
+ * @returns A computed signal with a `value` property.
+ * @see createSignal
+ */
 export function createComputed<T>(
 	...args: Parameters<typeof computed<T>>
 ): Signal<T> & { value: T } {
 	const sig = computed<T>(...args);
-
-	Object.defineProperties(sig, {
-		value: {
-			get() {
-				return sig();
-			},
-		},
-	});
-
-	return sig as Signal<T> & { value: T };
+	return Object.defineProperty(sig, 'value', { get: sig }) as Signal<T> & {
+		value: T;
+	};
 }
