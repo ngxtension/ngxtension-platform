@@ -1,5 +1,33 @@
 {
 	"name": "docs",
 	"$schema": "../node_modules/nx/schemas/project-schema.json",
-	"projectType": "application"
+	"projectType": "application",
+	"targets": {
+		"package": {
+			"executor": "nx:run-commands",
+			"options": {
+				"commands": [
+					"pnpm nx run docs:build-docs",
+					"pnpm nx run docs:move-static"
+				],
+				"parallel": false
+			}
+		},
+		"build-docs": {
+			"executor": "nx:run-commands",
+			"options": {
+				"commands": [
+					"pnpm exec nx build docs",
+					"pnpm exec nx graph --file=docs/dist/dep-graph/index.html"
+				],
+				"parallel": false
+			}
+		},
+		"move-static": {
+			"command": "mv dep-graph/static static",
+			"options": {
+				"cwd": "docs/dist"
+			}
+		}
+	}
 }

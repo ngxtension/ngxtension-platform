@@ -33,7 +33,7 @@ jobs:
       - name: Create local build artifacts
         run: |
           echo "Building documentation..."
-          pnpm exec nx build docs
+          pnpm exec nx package docs
 
       - name: Init git and commit local artifacts
         run: |

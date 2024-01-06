@@ -36,6 +36,13 @@ export default defineConfig({
 						es: 'Utilidades',
 					},
 				},
+				{
+					label: 'Project Graph',
+					translations: {
+						es: 'Gráfico de Proyecto',
+					},
+					link: '/dep-graph',
+				},
 			],
 			components: {
 				PageTitle: './src/components/PageTitle.astro',
