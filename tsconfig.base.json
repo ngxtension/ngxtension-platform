@@ -83,7 +83,9 @@
 			"ngxtension/resize": ["libs/ngxtension/resize/src/index.ts"],
 			"ngxtension/rx-effect": ["libs/ngxtension/rx-effect/src/index.ts"],
 			"ngxtension/signal-slice": ["libs/ngxtension/signal-slice/src/index.ts"],
-			"ngxtension/signal-value": ["libs/ngxtension/signal-value/src/index.ts"],
+			"ngxtension/create-signal": [
+				"libs/ngxtension/create-signal/src/index.ts"
+			],
 			"ngxtension/singleton-proxy": [
 				"libs/ngxtension/singleton-proxy/src/index.ts"
 			],

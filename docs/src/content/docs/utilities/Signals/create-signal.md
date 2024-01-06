@@ -1,7 +1,7 @@
 ---
 title: createSignal / createComputed
-description: ngxtension/signal-value
-entryPoint: signal-value
+description: ngxtension/create-signal
+entryPoint: create-signal
 badge: stable
 contributor: enea-jahollari
 ---
@@ -13,7 +13,7 @@ It mimics the style of [vue.js ref](https://vuejs.org/api/reactivity-core.html#r
 ## Usage
 
 ```ts
-import { createSignal, createComputed } from 'ngxtension/signal-value';
+import { createSignal, createComputed } from 'ngxtension/create-signal';
 
 const state = createSignal({ count: 0 });
 
