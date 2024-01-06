@@ -2,6 +2,7 @@
 title: injectDestroy
 description: ngxtension/inject-destroy
 badge: stable
+entryPoint: inject-destroy
 contributor: enea-jahollari
 ---
 

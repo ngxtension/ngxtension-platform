@@ -2,6 +2,7 @@
 title: createInjectionToken
 description: Crea un InjectionToken y devuelve un injectFn y provideFn para el mismo.
 badge: stable
+entryPoint: create-injection-token
 contributor: chau-tran
 ---
 

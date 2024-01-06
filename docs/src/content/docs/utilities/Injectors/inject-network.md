@@ -1,6 +1,7 @@
 ---
 title: injectNetwork
 description: ngxtension/inject-network
+entryPoint: inject-network
 badge: stable
 contributor: fiorelozere
 ---

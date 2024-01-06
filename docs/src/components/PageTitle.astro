@@ -3,35 +3,71 @@ import Default from '@astrojs/starlight/components/PageTitle.astro';
 import type { Props } from '@astrojs/starlight/props';
 
 const badge = Astro.props.entry.data.badge;
+const entryPoint = Astro.props.entry.data.entryPoint;
+const bundleJsUrl = `https://deno.bundlejs.com?q=ngxtension/${entryPoint}&treeshake=[*]&config={%22esbuild%22:{%22external%22:[%22rxjs%22,%22@angular/core%22,%22@angular/common%22,%22@angular/forms%22,%22@angular/router%22]}}`;
+
+const { size } = await fetch(bundleJsUrl)
+	.then((res) => {
+		if (!res.ok) {
+			return { size: { size: 'N/A' } };
+		}
+		return res.json();
+	})
+	.then(({ size }) => size);
 ---
 
 <div class="page-title-content">
-    <Default {...Astro.props}><slot /></Default>
-    {badge && <div class="chip">{badge}</div> }
+	<Default {...Astro.props}><slot /></Default>
+	<div class="chip-container">
+		{badge && <div class="chip">{badge}</div>}
+		{
+			entryPoint && (
+				<div
+					class="chip"
+					title="This is the compressed bundled size that includes all entry points this entry point depends on."
+				>
+					<a href={bundleJsUrl} target="_blank" rel="noreferrer noreferrer">
+						{size}
+					</a>
+				</div>
+			)
+		}
+	</div>
 </div>
 
 <style>
-    .page-title-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+	.page-title-content {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
 
-    @media (max-width: 1010px) {
-        .page-title-content {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-    } 
+	@media (max-width: 1010px) {
+		.page-title-content {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+	}
 
-    .chip {
-        border-width: 1px;
-        border-style: solid;
-        border-radius: 6px;
-        padding: 2px 8px;
-        color: var(--sl-color-text);
-        width: fit-content;
-        height: fit-content;
-        margin-top: 1rem;
-    }
+	.chip-container {
+		display: flex;
+		gap: 0.5rem;
+		align-items: center;
+	}
+
+	.chip {
+		border-width: 1px;
+		border-style: solid;
+		border-radius: 6px;
+		padding: 2px 8px;
+		color: var(--sl-color-text);
+		width: fit-content;
+		height: fit-content;
+		margin-top: 1rem;
+	}
+
+	.chip a {
+		text-decoration: none;
+		color: var(--sl-color-text);
+	}
 </style>

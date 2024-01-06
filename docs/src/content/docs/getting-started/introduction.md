@@ -13,3 +13,5 @@ Find yourself adding something over and over again to every Angular projects? Th
 ## Bundle-size Consideration
 
 The library is entirely consisted of [Secondary Entry Point](https://angular.io/guide/angular-package-format#entrypoints-and-code-splitting). Even though we ship `ngxtension` as one package (so it is easy for consumers to install), Angular build pipeline should handle code-splitting and tree-shaking properly for all the entry points that `ngxtension` comes with.
+
+The GZIP size badge (if available) is provided by [bundlejs](https://bundlejs.dev/) and it is shown as the bundled size of the entry point and all of its `ngxtension` dependencies. For example, `ngxtension/connect` depends on `ngxtension/assert-injector` so the GZIP size badge of `ngxtension/connect` will be the bundled size of `ngxtension/connect` and `ngxtension/assert-injector`.

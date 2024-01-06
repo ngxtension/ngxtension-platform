@@ -2,6 +2,7 @@
 title: assertInjector
 description: Una utilidad de Angular para afirmar que una función se invoca en un contexto de inyección y devolver el Injector garantizado.
 badge: stable
+entryPoint: assert-injector
 contributor: chau-tran
 ---
 

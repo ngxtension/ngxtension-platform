@@ -2,6 +2,7 @@
 title: ifValidator / ifAsyncValidator
 descripción: Funciones para cambiar dinámicamente la validación del Formulario Reactivo de Angular.
 badge: stable
+entryPoint: if-validator
 contributor: tomer
 ---
 

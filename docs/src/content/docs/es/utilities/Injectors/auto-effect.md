@@ -2,6 +2,7 @@
 title: injectAutoEffect
 description: Una utilidad de Angular para crear un Effect auto-alambrado.
 badge: stable
+entryPoint: auto-effect
 contributor: chau-tran
 ---
 

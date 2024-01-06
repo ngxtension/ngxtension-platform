@@ -1,6 +1,7 @@
 ---
 title: computed/extendedComputed
 description: ngxtension/computed
+entryPoint: computed
 badge: stable
 contributor: chau-tran
 ---

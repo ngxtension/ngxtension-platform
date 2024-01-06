@@ -2,6 +2,7 @@
 title: NgxControlError
 description: Directiva estructural para mostrar errores de control de formulario de manera consistente y reducir el código repetitivo.
 badge: stable
+entryPoint: control-error
 contributor: robby-rabbitman
 ---
 

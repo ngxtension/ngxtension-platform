@@ -49,16 +49,7 @@ export default defineConfig({
 				MarkdownContent: './src/components/Content.astro',
 			},
 			defaultLocale: 'root',
-			locales: {
-				root: {
-					label: 'English',
-					lang: 'en',
-				},
-				es: {
-					label: 'Español',
-					lang: 'es',
-				},
-			},
+			locales,
 		}),
 	],
 });

@@ -2,12 +2,18 @@
 	"singleQuote": true,
 	"useTabs": true,
 	"htmlWhitespaceSensitivity": "ignore",
-	"plugins": ["prettier-plugin-organize-imports"],
+	"plugins": ["prettier-plugin-astro", "prettier-plugin-organize-imports"],
 	"overrides": [
 		{
 			"files": "*.md",
 			"options": {
 				"printWidth": 80
+			}
+		},
+		{
+			"files": "*.astro",
+			"options": {
+				"parser": "astro"
 			}
 		}
 	]

@@ -1,6 +1,7 @@
 ---
 title: injectParams
 description: ngxtension/inject-params
+entryPoint: inject-params
 badge: stable
 contributor: enea-jahollari
 ---

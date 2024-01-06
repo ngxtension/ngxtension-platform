@@ -1,6 +1,7 @@
 ---
 title: computedPrevious
 description: ngxtension/computed-previous
+entryPoint: computed-previous
 badge: stable
 contributor: enea-jahollari
 ---

@@ -2,6 +2,7 @@
 title: Intl
 description: Utilidades adicionales de Intl para formatear números, strings y otros objetos.
 badge: stable
+entryPoint: intl
 contributor: ion-prodan
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: injectDocumentVisibility
 description: ngxtension/inject-document-visibility
+entryPoint: inject-document-visibility
 badge: stable
 contributor: fiorelozere
 ---

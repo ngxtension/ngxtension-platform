@@ -1,6 +1,7 @@
 ---
 title: createSignal / createComputed
 description: ngxtension/signal-value
+entryPoint: signal-value
 badge: stable
 contributor: enea-jahollari
 ---

@@ -1,6 +1,7 @@
 ---
 title: createEffect
 description: ngxtension/create-effect
+entryPoint: create-effect
 badge: stable
 contributor: chau-tran
 ---

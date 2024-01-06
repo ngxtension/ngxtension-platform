@@ -1,6 +1,7 @@
 ---
 title: injectAutoEffect
 description: ngxtension/auto-effect
+entryPoint: auto-effect
 badge: stable
 contributor: chau-tran
 ---

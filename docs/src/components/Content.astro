@@ -4,18 +4,19 @@ import type { Props } from '@astrojs/starlight/props';
 import { getEntry } from 'astro:content';
 import Contributor from './Contributor.astro';
 
-const contributor = Astro.props.entry.data.contributor ? await getEntry(Astro.props.entry.data.contributor) : null;
-
+const contributor = Astro.props.entry.data.contributor
+	? await getEntry(Astro.props.entry.data.contributor)
+	: null;
 ---
 
-{ contributor && <Contributor {...contributor.data}/> }
+{contributor && <Contributor {...contributor.data} />}
 
 <Default {...Astro.props}><slot /></Default>
 
 <style>
-    .contributor {
-        margin-top: -1rem;
-        font-size: var(--sl-text-xs);
-        color: var(--sl-color-gray-3);
-    }
+	.contributor {
+		margin-top: -1rem;
+		font-size: var(--sl-text-xs);
+		color: var(--sl-color-gray-3);
+	}
 </style>

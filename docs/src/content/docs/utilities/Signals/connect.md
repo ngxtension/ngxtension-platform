@@ -1,6 +1,7 @@
 ---
 title: connect
 description: ngxtension/connect
+entryPoint: connect
 badge: stable
 contributor: enea-jahollari
 ---

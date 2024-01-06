@@ -1,4 +1,4 @@
-import { docsSchema, i18nSchema } from '@astrojs/starlight/schema';
+import { docsSchema } from '@astrojs/starlight/schema';
 import { defineCollection, reference, z } from 'astro:content';
 
 const contributors = defineCollection({
@@ -15,14 +15,9 @@ const docs = defineCollection({
 	schema: (ctx) =>
 		docsSchema()(ctx).extend({
 			badge: z.enum(['stable', 'unstable', 'experimental']).optional(),
+			entryPoint: z.string().optional(),
 			contributor: reference('contributors').optional(),
 		}),
 });
 
-const i18n = defineCollection({ type: 'data', schema: i18nSchema() });
-
-export const collections = {
-	docs: docs,
-	i18n: i18n,
-	contributors: contributors,
-};
+export const collections = { docs, contributors };

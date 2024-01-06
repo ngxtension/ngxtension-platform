@@ -1,6 +1,7 @@
 ---
 title: Intl
 description: Additional Intl Utilities for formatting numbers, strings, and other objects.
+entryPoint: intl
 badge: stable
 contributor: ion-prodan
 ---

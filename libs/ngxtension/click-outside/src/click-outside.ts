@@ -1,4 +1,5 @@
 import { DOCUMENT } from '@angular/common';
+import type { OnInit } from '@angular/core';
 import {
 	Directive,
 	ElementRef,
@@ -7,8 +8,6 @@ import {
 	NgZone,
 	Output,
 } from '@angular/core';
-
-import type { OnInit } from '@angular/core';
 import { createInjectionToken } from 'ngxtension/create-injection-token';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { filter, fromEvent, Subject, takeUntil } from 'rxjs';
