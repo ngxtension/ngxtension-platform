@@ -1,5 +1,24 @@
 
 
+## [1.8.0](https://github.com/nartc/ngxtension-platform/compare/1.7.0...1.8.0) (2024-01-06)
+
+
+### Features
+
+* add createSignal and createComputed helper functions ([#216](https://github.com/nartc/ngxtension-platform/issues/216)) ([a852fb5](https://github.com/nartc/ngxtension-platform/commit/a852fb5333b0857275e943fc2a101a17760d2d4e))
+* **NgxControlError:** add NgxControlError directive to form utils ([#212](https://github.com/nartc/ngxtension-platform/issues/212)) ([28af6cc](https://github.com/nartc/ngxtension-platform/commit/28af6cc5a75a85b7b27d146bf2d114ccba67413e))
+
+
+### Bug Fixes
+
+* **create-signal:** add index ([53b22de](https://github.com/nartc/ngxtension-platform/commit/53b22de567f57202ba5eace7a9bd83f2e3432b0d))
+* **signal-slice:** prevent early inference in selector typing ([#214](https://github.com/nartc/ngxtension-platform/issues/214)) ([2d3a216](https://github.com/nartc/ngxtension-platform/commit/2d3a216e84ea1a45cf597978c0ef4a973fa9f700))
+
+
+### Documentations
+
+* add RobbyRabbitman as a contributor for code ([#217](https://github.com/nartc/ngxtension-platform/issues/217)) ([8a53717](https://github.com/nartc/ngxtension-platform/commit/8a537179624da2001b6f33c667cdb393d7f40b3c))
+
 ## [1.7.0](https://github.com/nartc/ngxtension-platform/compare/1.6.2...1.7.0) (2023-12-27)
 
 
