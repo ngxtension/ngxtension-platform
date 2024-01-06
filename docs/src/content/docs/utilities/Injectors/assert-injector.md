@@ -18,7 +18,10 @@ import { assertInjector } from 'ngxtension/assert-injector';
 `assertInjector` is mainly used for Custom Inject Functions (CIFs) or abstract functions that might depend on an Injection Context (i.e: `effect()` or `takeUntilDestroyed()`).
 
 ```ts
-export function toSignal<T>(observable: Observable<T>, injector?: Injector): Signal<T> {
+export function toSignal<T>(
+	observable: Observable<T>,
+	injector?: Injector,
+): Signal<T> {
 	injector = assertInjector(toSignal, injector);
 	return runInInjectionContext(injector, () => {
 		const source = signal<T>(undefined!);
@@ -40,7 +43,10 @@ export function toSignal<T>(observable: Observable<T>, injector?: Injector): Sig
 `assertInjector` can also accept a `runner` which is a function that will be invoked in the Injection Context of the guaranteed `Injector` that it asserts. This usage shortens the CIF by not having to call `runInInjectionContext` explicitly.
 
 ```ts
-export function toSignal<T>(observable: Observable<T>, injector?: Injector): Signal<T> {
+export function toSignal<T>(
+	observable: Observable<T>,
+	injector?: Injector,
+): Signal<T> {
 	return assertInjector(toSignal, injector, () => {
 		const source = signal<T>(undefined!);
 

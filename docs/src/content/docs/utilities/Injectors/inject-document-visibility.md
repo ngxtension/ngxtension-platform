@@ -26,7 +26,9 @@ effect(() => {
 ## API
 
 ```ts
-function injectDocumentVisibility(options?: InjectDocumentVisibilityOptions): Signal<DocumentVisibilityState>;
+function injectDocumentVisibility(
+	options?: InjectDocumentVisibilityOptions,
+): Signal<DocumentVisibilityState>;
 ```
 
 ### Parameters

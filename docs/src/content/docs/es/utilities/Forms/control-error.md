@@ -19,7 +19,9 @@ import { NgxControlError } from 'ngxtension/control-error';
 <label>
 	<b>Nombre</b>
 	<input type="text" [formControl]="name" />
-	<strong *ngxControlError="name; track: 'required'">Se requiere el nombre.</strong>
+	<strong *ngxControlError="name; track: 'required'">
+		Se requiere el nombre.
+	</strong>
 </label>
 ```
 
@@ -44,7 +46,10 @@ Un `StateMatcher` es una función que devuelve un observable.
 La directiva **SOLO** renderiza la plantilla cuando el `StateMatcher` emite `true`.
 
 ```ts
-export type StateMatcher = (control: AbstractControl, parent?: FormGroupDirective | NgForm) => Observable<boolean>;
+export type StateMatcher = (
+	control: AbstractControl,
+	parent?: FormGroupDirective | NgForm,
+) => Observable<boolean>;
 ```
 
 Por defecto, el control se considera en un _estado de error_ cuando 1. su estado es `INVALID` y 2. está tocado o su formulario se ha enviado.
@@ -63,7 +68,11 @@ provideNgxControlError({ errorStateMatcher: customErrorStateMatcher });
 <label>
 	<b>Nombre</b>
 	<input type="text" [formControl]="name" />
-	<strong *ngxControlError="name; track: 'required'; errorStateMatcher: customErrorStateMatcher">Se requiere el nombre.</strong>
+	<strong
+		*ngxControlError="name; track: 'required'; errorStateMatcher: customErrorStateMatcher"
+	>
+		Se requiere el nombre.
+	</strong>
 </label>
 ```
 
@@ -78,7 +87,10 @@ Puede iterar sobre todos los posibles errores y pasar los `errors` al tubo de tr
 	<b>Correo</b>
 	<input type="email" [formControl]="mail" />
 	@for (error of ['required', 'email', 'myCustomError']; track error) {
-	<strong *ngxControlError="mail; track: error">{{ "RUTA.A.ERRORES.DE.CONTROL.DE.CORREO." + error | translate: mail.errors }}</strong>
+	<strong *ngxControlError="mail; track: error">
+		{{ "RUTA.A.ERRORES.DE.CONTROL.DE.CORREO." + error | translate: mail.errors
+		}}
+	</strong>
 	}
 </label>
 ```
@@ -89,6 +101,8 @@ Puede iterar sobre todos los posibles errores y pasar los `errors` al tubo de tr
 <mat-form-field>
 	<mat-label>Nombre</mat-label>
 	<input matInput [formControl]="name" />
-	<mat-error *ngxControlError="name; track: 'required'">Se requiere el nombre.</mat-error>
+	<mat-error *ngxControlError="name; track: 'required'">
+		Se requiere el nombre.
+	</mat-error>
 </mat-form-field>
 ```

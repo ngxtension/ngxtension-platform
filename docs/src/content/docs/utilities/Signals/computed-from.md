@@ -225,7 +225,9 @@ export class MyComponent {
 		this.data = computedFrom(
 			[page, filters$],
 			pipe(
-				switchMap(([page, filters]) => this.dataService.getUserData(this.userId, page, filters)),
+				switchMap(([page, filters]) =>
+					this.dataService.getUserData(this.userId, page, filters),
+				),
 				startWith([] as string[]), // change the initial value
 			),
 			{ injector: this.injector }, // 👈 pass the injector in the options object

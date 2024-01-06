@@ -25,7 +25,8 @@ Enhanced usage + testing: [Lazy loading your services in Angular with tests in m
 It can be a normal dynamic import or a default dynamic import from a module.
 
 ```ts
-const DataServiceImport = () => import('./data-service').then((m) => m.MyService);
+const DataServiceImport = () =>
+	import('./data-service').then((m) => m.MyService);
 // or
 const DataServiceImport = () => import('./data-service');
 ```
@@ -40,7 +41,8 @@ export class MyService {
 ```
 
 ```ts test.component.ts
-const DataServiceImport = () => import('./data-service').then((m) => m.MyService);
+const DataServiceImport = () =>
+	import('./data-service').then((m) => m.MyService);
 
 @Component({
 	standalone: true,
@@ -87,7 +89,8 @@ In order to test the lazy injected service we can mock them using `mockLazyProvi
 Let's test the below component
 
 ```ts
-const MyDataServiceImport = () => import('./my-data.service.ts').then((x) => x.MyDataService);
+const MyDataServiceImport = () =>
+	import('./my-data.service.ts').then((x) => x.MyDataService);
 
 @Component({})
 class TestComponent {

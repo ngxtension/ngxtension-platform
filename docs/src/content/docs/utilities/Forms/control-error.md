@@ -44,7 +44,10 @@ A `StateMatcher` is a function which returns an observable.
 The directive **ONLY** renders the template when the `StateMatcher` emits `true`.
 
 ```ts
-export type StateMatcher = (control: AbstractControl, parent?: FormGroupDirective | NgForm) => Observable<boolean>;
+export type StateMatcher = (
+	control: AbstractControl,
+	parent?: FormGroupDirective | NgForm,
+) => Observable<boolean>;
 ```
 
 Per default the control is considered in an _error state_ when 1. its status is `INVALID` and 2. it is touched or its form has been submitted.
@@ -63,7 +66,11 @@ provideNgxControlError({ errorStateMatcher: customErrorStateMatcher });
 <label>
 	<b>Name</b>
 	<input type="text" [formControl]="name" />
-	<strong *ngxControlError="name; track: 'required'; errorStateMatcher: customErrorStateMatcher">Name is required.</strong>
+	<strong
+		*ngxControlError="name; track: 'required'; errorStateMatcher: customErrorStateMatcher"
+	>
+		Name is required.
+	</strong>
 </label>
 ```
 
@@ -78,7 +85,9 @@ You can iterate over all possible errors and pass the `errors` to the translate 
 	<b>Mail</b>
 	<input type="email" [formControl]="mail" />
 	@for (error of ['required', 'email', 'myCustomError']; track error) {
-	<strong *ngxControlError="mail; track: error">{{ "PATH.TO.MAIL_CONTROL.ERRORS." + error | translate: mail.errors }}</strong>
+	<strong *ngxControlError="mail; track: error">
+		{{ "PATH.TO.MAIL_CONTROL.ERRORS." + error | translate: mail.errors }}
+	</strong>
 	}
 </label>
 ```
@@ -89,6 +98,8 @@ You can iterate over all possible errors and pass the `errors` to the translate 
 <mat-form-field>
 	<mat-label>Name</mat-label>
 	<input matInput [formControl]="name" />
-	<mat-error *ngxControlError="name; track: 'required'">Name is required.</mat-error>
+	<mat-error *ngxControlError="name; track: 'required'">
+		Name is required.
+	</mat-error>
 </mat-form-field>
 ```

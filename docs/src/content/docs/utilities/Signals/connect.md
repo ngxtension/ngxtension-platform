@@ -79,7 +79,9 @@ export class MyComponent {
 
 		// we want to connect `lastName$` stream to `state`
 		// and when `lastName$` emits, update the state with the `reducer` fn
-		connect(this.state, this.lastName$, (prev, lastName) => ({ user: { ...prev.user, lastName } }));
+		connect(this.state, this.lastName$, (prev, lastName) => ({
+			user: { ...prev.user, lastName },
+		}));
 
 		// logs: first name changed, chau
 
@@ -125,7 +127,9 @@ Or, if you need to use a reducer to access the previous signal value, you can
 use this syntax:
 
 ```ts
-connect(this.state, this.lastName$, (prev, lastName) => ({ user: { ...prev.user, lastName } }));
+connect(this.state, this.lastName$, (prev, lastName) => ({
+	user: { ...prev.user, lastName },
+}));
 ```
 
 However, if you want to use multiple different streams with different reducers,
@@ -150,8 +154,12 @@ a single connect call:
 ```ts
 connect(this.state)
 	.with(this.someStream$)
-	.with(this.lastName$, (prev, lastName) => ({ user: { ...prev.user, lastName } }))
-	.with(this.firstName$, (prev, firstName) => ({ user: { ...prev.user, firstName } }));
+	.with(this.lastName$, (prev, lastName) => ({
+		user: { ...prev.user, lastName },
+	}))
+	.with(this.firstName$, (prev, firstName) => ({
+		user: { ...prev.user, firstName },
+	}));
 ```
 
 This allows for any combination of streams without reducers and streams with
