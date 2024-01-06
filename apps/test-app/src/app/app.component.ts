@@ -34,6 +34,10 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 			<li>
 				<a routerLink="/document-visibility-state">Document Visibility State</a>
 			</li>
+
+			<li>
+				<a routerLink="/control-error">Control Error</a>
+			</li>
 		</ul>
 
 		<hr />
