@@ -4,7 +4,7 @@
 </p>
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-30-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-31-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A collection of utilities for [Angular](https://angular.dev).
@@ -92,6 +92,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/swami-sanapathi"><img src="https://avatars.githubusercontent.com/u/40539126?v=4?s=100" width="100px;" alt="Swami"/><br /><sub><b>Swami</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=swami-sanapathi" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://www.twitch.tv/geometricjim"><img src="https://avatars.githubusercontent.com/u/708229?v=4?s=100" width="100px;" alt="Jim Drury (he/him)"/><br /><sub><b>Jim Drury (he/him)</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=geometricpanda" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/RobbyRabbitman"><img src="https://avatars.githubusercontent.com/u/54601487?v=4?s=100" width="100px;" alt="Robby Rabbitman"/><br /><sub><b>Robby Rabbitman</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=RobbyRabbitman" title="Code">💻</a></td>
     </tr>
   </tbody>
   <tfoot>
