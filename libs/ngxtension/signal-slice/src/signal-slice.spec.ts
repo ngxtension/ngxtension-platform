@@ -349,6 +349,47 @@ describe(signalSlice.name, () => {
 				expect(state.doubleAge()).toEqual(state.age() * 2);
 			});
 		});
+
+		it('all types should work with selectors defined', () => {
+			TestBed.runInInjectionContext(() => {
+				const testFn = jest.fn();
+				const state = signalSlice({
+					initialState,
+					selectors: (state) => ({
+						someSelector: () => state.age() * 2,
+					}),
+					actionSources: {
+						someActionSource: (state, $: Observable<void>) =>
+							$.pipe(map(() => ({ age: state().age }))),
+						someOtherActionSource: (state, $: Observable<void>) =>
+							$.pipe(
+								map(() => {
+									testFn();
+									return {};
+								}),
+							),
+					},
+					actionEffects: (state) => ({
+						someActionSource: () => {
+							state.age();
+							state.someSelector();
+							state.someOtherActionSource();
+						},
+					}),
+					effects: (state) => ({
+						someEffect: () => {
+							state.age();
+							state.someSelector();
+							state.someActionSource();
+						},
+					}),
+				});
+
+				state.someActionSource();
+
+				expect(testFn).toHaveBeenCalled();
+			});
+		});
 	});
 
 	describe('actionEffects', () => {

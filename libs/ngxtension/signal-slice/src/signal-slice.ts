@@ -132,6 +132,17 @@ export type SignalSlice<
 	ActionMethods<TSignalValue, TActionSources> &
 	ActionStreams<TSignalValue, TActionSources>;
 
+type SelectorsState<TSignalValue extends NoOptionalProperties<TSignalValue>> =
+	Signal<TSignalValue> & Selectors<TSignalValue>;
+
+type EffectsState<
+	TSignalValue extends NoOptionalProperties<TSignalValue>,
+	TActionSources extends NamedActionSources<TSignalValue>,
+	TSelectors extends NamedSelectors,
+> = SelectorsState<TSignalValue> &
+	ExtraSelectors<TSelectors> &
+	ActionMethods<TSignalValue, TActionSources>;
+
 export function signalSlice<
 	TSignalValue extends NoOptionalProperties<TSignalValue>,
 	TActionSources extends NamedActionSources<TSignalValue>,
@@ -143,32 +154,12 @@ export function signalSlice<
 	sources?: SourceConfig<TSignalValue>;
 	lazySources?: SourceConfig<TSignalValue>;
 	actionSources?: TActionSources;
-	selectors?: (
-		state: SignalSlice<
-			TSignalValue,
-			TActionSources,
-			any,
-			TEffects,
-			TActionEffects
-		>,
-	) => TSelectors;
+	selectors?: (state: SelectorsState<TSignalValue>) => TSelectors;
 	effects?: (
-		state: SignalSlice<
-			TSignalValue,
-			TActionSources,
-			TSelectors,
-			any,
-			TActionEffects
-		>,
+		state: EffectsState<TSignalValue, TActionSources, TSelectors>,
 	) => TEffects;
 	actionEffects?: (
-		state: SignalSlice<
-			TSignalValue,
-			TActionSources,
-			TSelectors,
-			any,
-			TActionEffects
-		>,
+		state: EffectsState<TSignalValue, TActionSources, TSelectors>,
 	) => TActionEffects;
 }): SignalSlice<
 	TSignalValue,
