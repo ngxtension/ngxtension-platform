@@ -46,7 +46,9 @@ class TestComponent {
 
 	filteredUsers = computedFrom(
 		[this.searchParam],
-		switchMap((searchQuery) => this.userService.getUsers(searchQuery).pipe(startWith([]))),
+		switchMap((searchQuery) =>
+			this.userService.getUsers(searchQuery).pipe(startWith([])),
+		),
 	);
 }
 ```

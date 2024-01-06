@@ -45,10 +45,13 @@ export class Form {
 		lastName: new FormControl({ value: '', disabled: true }),
 	});
 
-	readonly #toggleLastNameAccess = rxEffect(this.user.controls.firstName.valueChanges, (firstName) => {
-		if (firstName) this.user.controls.lastName.enable();
-		else this.user.controls.lastName.disable();
-	});
+	readonly #toggleLastNameAccess = rxEffect(
+		this.user.controls.firstName.valueChanges,
+		(firstName) => {
+			if (firstName) this.user.controls.lastName.enable();
+			else this.user.controls.lastName.disable();
+		},
+	);
 }
 ```
 
@@ -62,7 +65,6 @@ With a `TapObserver`
 	template: `
 		<form [formGroup]="user">
 			<input type="text" formControlName="firstName" />
-
 			<input type="text" formControlName="lastName" />
 		</form>
 	`,
@@ -73,12 +75,15 @@ export class Form {
 		lastName: new FormControl({ value: '', disabled: true }),
 	});
 
-	readonly #toggleLastNameAccess = rxEffect(this.user.controls.firstName.valueChanges, {
-		next: (firstName) => {
-			if (firstName) this.user.controls.lastName.enable();
-			else this.user.controls.lastName.disable();
+	readonly #toggleLastNameAccess = rxEffect(
+		this.user.controls.firstName.valueChanges,
+		{
+			next: (firstName) => {
+				if (firstName) this.user.controls.lastName.enable();
+				else this.user.controls.lastName.disable();
+			},
 		},
-	});
+	);
 }
 ```
 
@@ -92,7 +97,6 @@ With the effect handled directly within the source
 	template: `
 		<form [formGroup]="user">
 			<input type="text" formControlName="firstName" />
-
 			<input type="text" formControlName="lastName" />
 		</form>
 	`,

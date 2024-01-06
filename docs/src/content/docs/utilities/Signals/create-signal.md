@@ -37,7 +37,9 @@ console.log(double.value); // Logs 2
 ### `createSignal`
 
 ```ts
-function createSignal<T>(...args: Parameters<typeof signal<T>>): WritableSignal<T> & { value: T };
+function createSignal<T>(
+	...args: Parameters<typeof signal<T>>
+): WritableSignal<T> & { value: T };
 ```
 
 Creates a writable signal with a `value` property.
@@ -45,7 +47,9 @@ Creates a writable signal with a `value` property.
 ### `createComputed`
 
 ```ts
-function createComputed<T>(...args: Parameters<typeof computed<T>>): Signal<T> & { value: T };
+function createComputed<T>(
+	...args: Parameters<typeof computed<T>>
+): Signal<T> & { value: T };
 ```
 
 Creates a computed under the hood and returns it with a `value` property.
