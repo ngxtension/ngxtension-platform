@@ -37,6 +37,9 @@
 				"libs/ngxtension/computed-previous/src/index.ts"
 			],
 			"ngxtension/connect": ["libs/ngxtension/connect/src/index.ts"],
+			"ngxtension/control-error": [
+				"libs/ngxtension/control-error/src/index.ts"
+			],
 			"ngxtension/create-effect": [
 				"libs/ngxtension/create-effect/src/index.ts"
 			],

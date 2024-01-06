@@ -36,6 +36,10 @@ export const appConfig: ApplicationConfig = {
 						'./document-visibility-state/document-visibility-state.component'
 					),
 			},
+			{
+				path: 'control-error',
+				loadComponent: () => import('./control-error/control-error.component'),
+			},
 		]),
 	],
 };
