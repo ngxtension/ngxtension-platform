@@ -1,5 +1,17 @@
 
 
+## [1.8.1](https://github.com/nartc/ngxtension-platform/compare/1.8.0...1.8.1) (2024-01-06)
+
+
+### Bug Fixes
+
+* **create-signal:** change signal-value to create-signal ([08aa14f](https://github.com/nartc/ngxtension-platform/commit/08aa14f40e105c9b5649e320244c035819609dd3))
+
+
+### Documentations
+
+* add gzip size badge ([5432502](https://github.com/nartc/ngxtension-platform/commit/5432502281c16cf6726ab3a6c0e7592f66eb0ed1))
+
 ## [1.8.0](https://github.com/nartc/ngxtension-platform/compare/1.7.0...1.8.0) (2024-01-06)
 
 
