@@ -45,14 +45,10 @@ export class Form {
 		lastName: new FormControl({ value: '', disabled: true }),
 	});
 
-	readonly #toggleLastNameAccess = rxEffect(
-    	this.user.controls.firstName.valueChanges,
-    	(firstName) => {
-		  	if (firstName) this.user.controls.lastName.enable();
-		  	else this.user.controls.lastName.disable();
-			else this.user.controls.lastName.disable();
-    	}
-	);
+	readonly #toggleLastNameAccess = rxEffect(this.user.controls.firstName.valueChanges, (firstName) => {
+		if (firstName) this.user.controls.lastName.enable();
+		else this.user.controls.lastName.disable();
+	});
 }
 ```
 
