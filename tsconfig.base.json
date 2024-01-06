@@ -37,6 +37,9 @@
 				"libs/ngxtension/computed-previous/src/index.ts"
 			],
 			"ngxtension/connect": ["libs/ngxtension/connect/src/index.ts"],
+			"ngxtension/control-error": [
+				"libs/ngxtension/control-error/src/index.ts"
+			],
 			"ngxtension/create-effect": [
 				"libs/ngxtension/create-effect/src/index.ts"
 			],
@@ -80,6 +83,7 @@
 			"ngxtension/resize": ["libs/ngxtension/resize/src/index.ts"],
 			"ngxtension/rx-effect": ["libs/ngxtension/rx-effect/src/index.ts"],
 			"ngxtension/signal-slice": ["libs/ngxtension/signal-slice/src/index.ts"],
+			"ngxtension/signal-value": ["libs/ngxtension/signal-value/src/index.ts"],
 			"ngxtension/singleton-proxy": [
 				"libs/ngxtension/singleton-proxy/src/index.ts"
 			],

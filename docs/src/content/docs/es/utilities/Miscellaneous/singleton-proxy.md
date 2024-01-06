@@ -16,7 +16,9 @@ Crédito a [Poimandres](https://pmnd.rs/) por el código original en [R3F Rapier
 ```ts
 import { createSingletonProxy } from 'ngxtension/singleton-proxy';
 
-const { proxy: worldProxy, reset: resetWorld } = createSingletonProxy(() => new rapier.World([0, -9.81, 0]));
+const { proxy: worldProxy, reset: resetWorld } = createSingletonProxy(
+	() => new rapier.World([0, -9.81, 0]),
+);
 
 worldProxy.gravity; // rapier.World() será creado hasta que llegue a este punto
 

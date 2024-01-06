@@ -25,7 +25,8 @@ Uso avanzado + testing: [Lazy loading your services in Angular with tests in min
 Puede ser un import dinámico normal o un import dinámico predeterminado de un módulo.
 
 ```ts
-const DataServiceImport = () => import('./data-service').then((m) => m.MyService);
+const DataServiceImport = () =>
+	import('./data-service').then((m) => m.MyService);
 // o
 const DataServiceImport = () => import('./data-service');
 ```
@@ -40,7 +41,8 @@ export class MyService {
 ```
 
 ```ts test.component.ts
-const DataServiceImport = () => import('./data-service').then((m) => m.MyService);
+const DataServiceImport = () =>
+	import('./data-service').then((m) => m.MyService);
 
 @Component({
 	standalone: true,
@@ -87,7 +89,8 @@ Para probar el servicio lazy-loaded, podemos simularlos usando `mockLazyProvider
 Probemos el siguiente componente
 
 ```ts
-const MyDataServiceImport = () => import('./my-data.service.ts').then((x) => x.MyDataService);
+const MyDataServiceImport = () =>
+	import('./my-data.service.ts').then((x) => x.MyDataService);
 
 @Component({})
 class TestComponent {

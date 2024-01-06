@@ -217,6 +217,13 @@
 			"avatar_url": "https://avatars.githubusercontent.com/u/708229?v=4",
 			"profile": "https://www.twitch.tv/geometricjim",
 			"contributions": ["code"]
+		},
+		{
+			"login": "RobbyRabbitman",
+			"name": "Robby Rabbitman",
+			"avatar_url": "https://avatars.githubusercontent.com/u/54601487?v=4",
+			"profile": "https://github.com/RobbyRabbitman",
+			"contributions": ["code"]
 		}
 	],
 	"contributorsPerLine": 7,

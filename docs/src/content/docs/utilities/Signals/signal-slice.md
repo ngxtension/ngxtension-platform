@@ -50,7 +50,9 @@ One way to update state is through the use of `sources`. These are intended to b
 You can supply a source like this:
 
 ```ts
-loadChecklists$ = this.checklistsLoaded$.pipe(map((checklists) => ({ checklists, loaded: true })));
+loadChecklists$ = this.checklistsLoaded$.pipe(
+	map((checklists) => ({ checklists, loaded: true })),
+);
 
 state = signalSlice({
 	initialState: this.initialState,
@@ -100,7 +102,9 @@ state = signalSlice({
 		remove: (state, action$: Observable<RemoveChecklist>) =>
 			action$.pipe(
 				map((id) => ({
-					checklists: state().checklists.filter((checklist) => checklist.id !== id),
+					checklists: state().checklists.filter(
+						(checklist) => checklist.id !== id,
+					),
 				})),
 			),
 	},

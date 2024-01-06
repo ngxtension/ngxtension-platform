@@ -97,7 +97,10 @@ export const [injectBookService, provideBookService] = createInjectionToken(
 	},
 	{
 		isRoot: false,
-		extraProviders: [provideState('book', bookReducer), provideEffects(bookEffects)],
+		extraProviders: [
+			provideState('book', bookReducer),
+			provideEffects(bookEffects),
+		],
 	},
 );
 
@@ -145,11 +148,14 @@ function serviceFactory(parent: TreeService | null) {
 	/* */
 }
 
-export const [injectService, provideService] = createInjectionToken(serviceFactory, {
-	isRoot: false,
-	deps: [[new Optional(), new SkipSelf(), SERVICE]],
-	token: SERVICE,
-});
+export const [injectService, provideService] = createInjectionToken(
+	serviceFactory,
+	{
+		isRoot: false,
+		deps: [[new Optional(), new SkipSelf(), SERVICE]],
+		token: SERVICE,
+	},
+);
 ```
 
 Note that if `token` is passed in and `isRoot: true`, `createInjectionToken` will throw an error.
@@ -161,7 +167,10 @@ As the name suggested, `createNoopInjectionToken` is the same as `createInjectio
 It also **supports a generic type** for the `InjectionToken` that it creates:
 
 ```ts
-const [injectFn, provideFn] = createNoopInjectionToken<number, true>('description', { multi: true });
+const [injectFn, provideFn] = createNoopInjectionToken<number, true>(
+	'description',
+	{ multi: true },
+);
 
 injectFn(); // number[]
 provideFn(1); // accepts number
@@ -232,7 +241,12 @@ The **initializer provider** function is a **noop** for non-root tokens.
 :::
 
 ```ts
-const [injectOne /* skip provider fn */ /* skip the token */, , , provideOneInitializer] = createInjectionToken(() => 1);
+const [
+	injectOne /* skip provider fn */ /* skip the token */,
+	,
+	,
+	provideOneInitializer,
+] = createInjectionToken(() => 1);
 
 bootstrapApplication(App, {
 	providers: [provideOneInitializer()],
