@@ -5,5 +5,8 @@
 pnpm-lock.yaml
 CHANGELOG.md
 README.md
+.prettierignore
 
 /.nx/cache
+
+/apps/test-app/src/assets/fontawesome

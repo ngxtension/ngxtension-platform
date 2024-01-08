@@ -38,6 +38,10 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 			<li>
 				<a routerLink="/control-error">Control Error</a>
 			</li>
+
+			<li>
+				<a routerLink="/svg-sprite">Svg Sprite</a>
+			</li>
 		</ul>
 
 		<hr />
