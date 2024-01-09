@@ -6,7 +6,7 @@ entryPoint: control-error
 contributor: robby-rabbitman
 ---
 
-`NgxControlError` es una directiva estructural para mostrar errores de control de formulario de manera consistente y reducir el código repetitivo.
+`NgxControlError` es una directiva estructural para mostrar consistentemente los errores de los controles de formulario, reduciendo al mismo tiempo la redundancia de código.
 
 ## Importar
 
@@ -26,7 +26,7 @@ import { NgxControlError } from 'ngxtension/control-error';
 </label>
 ```
 
-La plantilla se renderizará cuando el control esté en un [_estado de error_](#configuración) y sus errores incluyan el/los error(es) rastreado(s).
+La plantilla se renderizará cuando el control esté en un [_estado de error_](#configuration) y sus errores incluyan el/los error(es) rastreado(s).
 
 Sin `NgxControlError`:
 
@@ -43,8 +43,8 @@ Sin `NgxControlError`:
 ## Configuración
 
 Un `StateMatcher` define cuándo el control proporcionado está en un _estado de error_.
-Un `StateMatcher` es una función que devuelve un observable.
-La directiva **SOLO** renderiza la plantilla cuando el `StateMatcher` emite `true`.
+Un `StateMatcher` es una función que devuelve un observable. Cada vez que el `StateMatcher` emite un valor, la directiva verifica si debe renderizar u ocultar su plantilla:
+La directiva renderiza su plantilla cuando el `StateMatcher` emite `true` y los errores del control incluyen al menos un error rastreado, de lo contrario, su plantilla estará oculta.
 
 ```ts
 export type StateMatcher = (
@@ -53,9 +53,22 @@ export type StateMatcher = (
 ) => Observable<boolean>;
 ```
 
-Por defecto, el control se considera en un _estado de error_ cuando 1. su estado es `INVALID` y 2. está tocado o su formulario se ha enviado.
+Por defecto, se considera que el control está en un _estado de error_ cuando 1. su estado es `INVALID` y 2. está `touched` o su formulario ha sido `submitted`.
 
-Puede anular este comportamiento:
+Puedes anular este comportamiento:
+
+```ts
+/**
+ * Un control está en un estado de error cuando su estado es inválido.
+ * Emite siempre que statusChanges emita.
+ * Puedes querer agregar más fuentes, como valueChanges.
+ */
+export const customErrorStateMatcher: StateMatcher = (control) =>
+	control.statusChanges.pipe(
+		startWith(control.status),
+		map((status) => status === 'INVALID'),
+	);
+```
 
 ### DI
 
@@ -81,7 +94,7 @@ provideNgxControlError({ errorStateMatcher: customErrorStateMatcher });
 
 ### [NGX Translate](https://github.com/ngx-translate/core)
 
-Puede iterar sobre todos los posibles errores y pasar los `errors` al tubo de traducción:
+Puedes iterar sobre todos los errores posibles y pasar los `errors` al pipe de traducción:
 
 ```html
 <label>
@@ -89,8 +102,7 @@ Puede iterar sobre todos los posibles errores y pasar los `errors` al tubo de tr
 	<input type="email" [formControl]="mail" />
 	@for (error of ['required', 'email', 'myCustomError']; track error) {
 	<strong *ngxControlError="mail; track: error">
-		{{ "RUTA.A.ERRORES.DE.CONTROL.DE.CORREO." + error | translate: mail.errors
-		}}
+		{{ "RUTA.A.ERRORES.CONTROL.CORREO." + error | translate: mail.errors }}
 	</strong>
 	}
 </label>

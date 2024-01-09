@@ -25,8 +25,10 @@ import {
 	BehaviorSubject,
 	Observable,
 	combineLatest,
+	distinctUntilChanged,
 	map,
 	of,
+	shareReplay,
 	startWith,
 	switchMap,
 } from 'rxjs';
@@ -52,7 +54,7 @@ export const dirty$ = (control: AbstractControl) => {
 		dirty$.next(true);
 	};
 
-	return dirty$;
+	return dirty$.pipe(distinctUntilChanged());
 };
 
 export const touched$ = (control: AbstractControl) => {
@@ -76,7 +78,7 @@ export const touched$ = (control: AbstractControl) => {
 		touched$.next(false);
 	};
 
-	return touched$;
+	return touched$.pipe(distinctUntilChanged());
 };
 
 /**
@@ -99,11 +101,15 @@ export const NGX_DEFAULT_CONTROL_ERROR_STATE_MATCHER: StateMatcher = (
 	combineLatest(
 		[
 			control.valueChanges.pipe(startWith(control.value)),
-			control.statusChanges.pipe(startWith(control.status)),
+			control.statusChanges.pipe(
+				startWith(control.status),
+				distinctUntilChanged(),
+			),
 			touched$(control),
 			parent?.ngSubmit.pipe(
 				map(() => true),
 				startWith(parent.submitted),
+				distinctUntilChanged(),
 			) ?? of(false),
 		],
 		(value, status, touched, submitted) =>
@@ -193,16 +199,32 @@ export interface NgxControlErrorContext {
  * ## Configuration
  *
  * A `StateMatcher` defines when the provided control is in an _error state_.
- * A `StateMatcher` is a function which returns an observable.
- * The directive **ONLY** renders the template when the `StateMatcher` emits `true`.
+ * A `StateMatcher` is a function which returns an observable. Every time the `StateMatcher` emits a value, the directive checks whether it should render or hide its template:
+ * The directive renders its template when the `StateMatcher` emits `true` and the errors of the control include at least 1 tracked error, else its template will be hidden.
  *
  * ```ts
- * export type StateMatcher = (control: AbstractControl, parent?: FormGroupDirective | NgForm) => Observable<boolean>;
+ * export type StateMatcher = (
+ * control: AbstractControl,
+ * parent?: FormGroupDirective | NgForm,
+ * ) => Observable<boolean>;
  * ```
  *
- * Per default the control is considered in an _error state_ when 1. its status is `INVALID` and 2. it is touched or its form has been submitted.
+ * Per default the control is considered in an _error state_ when 1. its status is `INVALID` and 2. it is `touched` or its form has been `submitted`.
  *
  * You can override this behavior:
+ *
+ * ```ts
+ * //
+ * // A control is in an error state when its status is invalid.
+ * // Emits whenever statusChanges emits.
+ * // You may want to add more sources, such as valueChanges.
+ * //
+ * export const customErrorStateMatcher: StateMatcher = (control) =>
+ * control.statusChanges.pipe(
+ * startWith(control.status),
+ * map((status) => status === 'INVALID'),
+ * );
+ * ```
  *
  * ### Via DI
  *
@@ -396,6 +418,7 @@ export class NgxControlError {
 				),
 			),
 		),
+		shareReplay(1), // cache the latest errorStateMatcher computation
 	);
 
 	/**
