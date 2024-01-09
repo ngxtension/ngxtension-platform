@@ -6,7 +6,7 @@ badge: stable
 contributor: robby-rabbitman
 ---
 
-A directive for rendering _symbols_ of svg sprites.
+A directive for rendering _symbols_ of svg sprites. It is done with the [`use`](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/use) element.
 
 ## Import
 
@@ -74,9 +74,9 @@ The `sprite` input of the `NgxSvgSpriteFragment` should reference the `name` pro
 
 ### Auto View Box
 
-When a symbol of a svg sprite is rendered the `viewBox` attribute or `height` and `width` _should_ be set. The `svg` element does not copy/use the `viewBox` attribute of the symbol in the svg sprite, therefore the svg will have default dimensions of 300x150, which is probably not correct.
+When a symbol of an svg sprite is rendered the `viewBox` attribute or `height` and `width` _should_ be set. The `svg` element does not copy/use the `viewBox` attribute of the symbol in the svg sprite, therefore the svg will have default dimensions of 300x150 px, which is probably not preferred.
 
-Per default when a svg sprite is registered, the svg sprite is in addition fetched with js. `NgxSvgSpriteFragment` will copy the `viewBox` attribute of the symbol to its host.
+Per default when an svg sprite is registered, the svg sprite is fetched with js in addition. `NgxSvgSpriteFragment` will copy the `viewBox` attribute of the symbol to its host.
 
 This behavior can be disabled.
 

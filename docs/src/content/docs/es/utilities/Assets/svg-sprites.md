@@ -6,7 +6,7 @@ badge: stable
 contributor: robby-rabbitman
 ---
 
-Una directiva para renderizar _símbolos_ de sprites de svg.
+Una directiva para renderizar _símbolos_ de sprites de svg. Se realiza con el elemento [`use`](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/use).
 
 ## Importar
 
@@ -34,7 +34,7 @@ Sin `NgxSvgSpriteFragment`:
 
 En tu proyecto, puedes utilizar la [API de Composición de Directivas](https://angular.io/guide/directive-composition-api) para crear sprites de svg específicos.
 
-En este ejemplo, se crea un sprite de svg de las _marcas de fontawesome_.
+En este ejemplo, se crea un sprite svg de las _marcas de fontawesome_.
 
 ```html
 <svg faBrand="github"></svg>
@@ -57,7 +57,7 @@ export class FaBrandSvg {
 
 ## Configuración
 
-Para renderizar un símbolo, se deben proporcionar sprites.
+Para renderizar un símbolo, es necesario proporcionar sprites.
 
 ```ts
 provideSvgSprites(
@@ -74,9 +74,9 @@ La entrada `sprite` del `NgxSvgSpriteFragment` debe hacer referencia a la propie
 
 ### Auto View Box
 
-Cuando se renderiza un símbolo de un sprite de svg, _debería_ establecerse el atributo `viewBox` o las propiedades `height` y `width`. El elemento `svg` no copia/utiliza el atributo `viewBox` del símbolo en el sprite de svg, por lo que el svg tendrá dimensiones predeterminadas de 300x150, que probablemente no sean correctas.
+Cuando se renderiza un símbolo de un sprite de svg, _deberían_ establecerse el atributo `viewBox` o las propiedades `height` y `width`. El elemento `svg` no copia/utiliza el atributo `viewBox` del símbolo en el sprite de svg, por lo que el svg tendrá dimensiones predeterminadas de 300x150 píxeles, que probablemente no sean las preferidas.
 
-Por defecto, cuando se registra un sprite de svg, se obtiene adicionalmente con js. `NgxSvgSpriteFragment` copiará el atributo `viewBox` del símbolo a su host.
+Por defecto, cuando se registra un sprite de svg, el sprite de svg se obtiene adicionalmente con js. `NgxSvgSpriteFragment` copiará el atributo `viewBox` del símbolo a su host.
 
 Este comportamiento se puede deshabilitar.
 
@@ -124,7 +124,7 @@ provideSvgSprites(
 );
 ```
 
-### URL
+### Url
 
 Por defecto, al usar la función `createSvgSprite`, la `url` devolverá `'${baseUrl}#${fragment}'`. Esto se puede sobrescribir:
 
