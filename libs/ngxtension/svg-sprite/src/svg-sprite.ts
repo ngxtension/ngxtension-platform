@@ -59,19 +59,20 @@ export interface NgxSvgSprite {
 	classes?: (fragment: string) => string[] | string;
 }
 
+export type CreateSvgSpriteOptions = Omit<NgxSvgSprite, 'url'> &
+	Partial<Pick<NgxSvgSprite, 'url'>>;
+
 /**
  * Creates a {@link NgxSvgSprite}.
  *
- * @param sprite
+ * @param options
  * @returns
  */
-export const createSvgSprite = (
-	sprite: Omit<NgxSvgSprite, 'url'> & Partial<Pick<NgxSvgSprite, 'url'>>,
-) => {
-	if (sprite.url == null)
-		sprite.url = (baseUrl, fragment) => `${baseUrl}#${fragment}`;
+export const createSvgSprite = (options: CreateSvgSpriteOptions) => {
+	if (options.url == null)
+		options.url = (baseUrl, fragment) => `${baseUrl}#${fragment}`;
 
-	return sprite as NgxSvgSprite;
+	return options as NgxSvgSprite;
 };
 
 /**
@@ -308,26 +309,28 @@ export class NgxSvgSpriteFragment implements OnInit {
 	public ngOnInit() {
 		runInInjectionContext(this.injector, () => {
 			// Copy the 'viewBox' from the 'symbol' element in the sprite to this svg.
-			effect(() => {
-				const element = this.element;
+			// Turn this effect in a 'noop' when the svg already has a 'viewBox'.
+			if (!this.element.hasAttribute('viewBox'))
+				effect(() => {
+					const element = this.element;
+					const autoViewBox = this.autoViewBox$();
+					const svg = this.svg$();
+					const fragment = this.fragment$();
 
-				// turn this effect in a 'noop' when the svg already has a 'viewBox'.
-				if (element.hasAttribute('viewBox')) return;
+					if (!autoViewBox || svg == null || fragment == null) return;
 
-				const autoViewBox = this.autoViewBox$();
-				const svg = this.svg$();
-				const fragment = this.fragment$();
+					try {
+						const viewBox = svg
+							.querySelector(`#${fragment}`)
+							?.getAttribute('viewBox');
 
-				if (!autoViewBox || svg == null || fragment == null) return;
+						if (viewBox == null) return;
 
-				const viewBox = svg
-					.querySelector(`#${fragment}`)
-					?.getAttribute('viewBox');
-
-				if (viewBox == null) return;
-
-				element.setAttribute('viewBox', viewBox);
-			});
+						element.setAttribute('viewBox', viewBox);
+					} catch {
+						// the querySelector could throw due to an invalid selector
+					}
+				});
 
 			// Create a 'use' element which instantiates a 'symbol' element of the sprite.
 			effect((beforeEach) => {

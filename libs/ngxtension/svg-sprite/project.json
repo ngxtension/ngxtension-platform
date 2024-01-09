@@ -10,7 +10,7 @@
 			"options": {
 				"jestConfig": "libs/ngxtension/jest.config.ts",
 				"testPathPattern": ["svg-sprite"],
-				"passWithNoTests": true
+				"passWithNoTests": false
 			},
 			"configurations": {
 				"ci": {
