@@ -397,7 +397,7 @@ export class NgxSvgSpriteFragment implements OnInit {
 	 *
 	 * @see overrides {@link NgxSvgSprite.autoViewBox}
 	 */
-	public readonly autoViewBoxDisabled$ = signal<boolean>(false);
+	public readonly autoViewBoxDisabled$ = signal(false);
 
 	/**
 	 * @ignore
