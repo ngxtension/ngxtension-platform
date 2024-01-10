@@ -5,11 +5,11 @@ import { By } from '@angular/platform-browser';
 import { Observable, firstValueFrom, of } from 'rxjs';
 import { ajax } from 'rxjs/ajax';
 import {
-	CreateSvgSpriteOptions,
+	CreateNgxSvgSpriteOptions,
 	NgxSvgSprite,
 	NgxSvgSpriteFragment,
 	NgxSvgSprites,
-	createSvgSprite,
+	provideSvgSprites,
 } from './svg-sprite';
 
 jest.mock('rxjs/ajax', () => ({
@@ -18,35 +18,47 @@ jest.mock('rxjs/ajax', () => ({
 }));
 
 describe('svg-sprite', () => {
-	describe('createSvgSprite', () => {
+	describe('provideSvgSprites', () => {
+		const provideMockSvgSprites =
+			(test: (sprites: NgxSvgSprites) => void | Promise<void>) =>
+			async (...sprites: CreateNgxSvgSpriteOptions[]) => {
+				TestBed.configureTestingModule({
+					providers: [provideSvgSprites(...sprites)],
+				});
+				await TestBed.runInInjectionContext(() => test(inject(NgxSvgSprites)));
+				TestBed.resetTestingModule();
+			};
+
 		it('should add a url builder which joins the baseUrl and fragment with a hashtag, when not provided', () => {
 			const mockOptions1 = {
 				name: 'some-sprite',
 				baseUrl: '',
-			} satisfies CreateSvgSpriteOptions;
-
-			expect(
-				createSvgSprite(mockOptions1).url(mockOptions1.baseUrl, 'foo'),
-			).toEqual('#foo');
+			} satisfies CreateNgxSvgSpriteOptions;
 
 			const mockOptions2 = {
 				name: 'some-other-sprite',
 				baseUrl: 'some/other/sprite.svg',
-			} satisfies CreateSvgSpriteOptions;
-
-			expect(
-				createSvgSprite(mockOptions2).url(mockOptions2.baseUrl, 'foo'),
-			).toEqual('some/other/sprite.svg#foo');
+			} satisfies CreateNgxSvgSpriteOptions;
 
 			const mockOptions3 = {
 				name: 'another-sprite',
 				baseUrl: 'another/sprite.svg',
 				url: (baseUrl, fragment) => `${baseUrl}#some-prefix-${fragment}`,
-			} satisfies CreateSvgSpriteOptions;
+			} satisfies CreateNgxSvgSpriteOptions;
 
-			expect(
-				createSvgSprite(mockOptions3).url(mockOptions3.baseUrl, 'foo'),
-			).toEqual('another/sprite.svg#some-prefix-foo');
+			provideMockSvgSprites((sprites) => {
+				expect(
+					sprites.get(mockOptions1.name).url(mockOptions1.baseUrl, 'foo'),
+				).toEqual('#foo');
+
+				expect(
+					sprites.get(mockOptions2.name).url(mockOptions2.baseUrl, 'foo'),
+				).toEqual('some/other/sprite.svg#foo');
+
+				expect(
+					sprites.get(mockOptions3.name).url(mockOptions3.baseUrl, 'foo'),
+				).toEqual('another/sprite.svg#some-prefix-foo');
+			})(mockOptions1, mockOptions2, mockOptions3);
 		});
 	});
 

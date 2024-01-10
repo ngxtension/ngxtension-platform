@@ -1,6 +1,6 @@
 import { type ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { createSvgSprite, provideSvgSprites } from 'ngxtension/svg-sprite';
+import { provideSvgSprites } from 'ngxtension/svg-sprite';
 
 export const appConfig: ApplicationConfig = {
 	providers: [
@@ -46,18 +46,18 @@ export const appConfig: ApplicationConfig = {
 				loadComponent: () => import('./svg-sprite/svg-sprite.component'),
 				providers: [
 					provideSvgSprites(
-						createSvgSprite({
+						{
 							name: 'fa-regular',
 							baseUrl: 'assets/fontawesome/sprites/regular.svg',
-						}),
-						createSvgSprite({
+						},
+						{
 							name: 'fa-solid',
 							baseUrl: 'assets/fontawesome/sprites/solid.svg',
-						}),
-						createSvgSprite({
+						},
+						{
 							name: 'fa-brands',
 							baseUrl: 'assets/fontawesome/sprites/brands.svg',
-						}),
+						},
 					),
 				],
 			},

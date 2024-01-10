@@ -66,22 +66,6 @@ export interface NgxSvgSprite {
 	classes?: (fragment: string) => string[] | string;
 }
 
-export type CreateSvgSpriteOptions = Omit<NgxSvgSprite, 'url'> &
-	Partial<Pick<NgxSvgSprite, 'url'>>;
-
-/**
- * Creates a {@link NgxSvgSprite}.
- *
- * @param options
- * @returns
- */
-export const createSvgSprite = (options: CreateSvgSpriteOptions) => {
-	if (options.url == null)
-		options.url = (baseUrl, fragment) => `${baseUrl}#${fragment}`;
-
-	return options as NgxSvgSprite;
-};
-
 /**
  * This service registers {@link NgxSvgSprite svg sprites}, which can be rendered via {@link NgxSvgSpriteFragment}.
  */
@@ -141,22 +125,41 @@ export class NgxSvgSprites {
 	public readonly get = (name: string) => this.sprites[name];
 }
 
+export type CreateNgxSvgSpriteOptions = Omit<NgxSvgSprite, 'url'> &
+	Partial<Pick<NgxSvgSprite, 'url'>>;
+
 /**
  *
  * @param sprites
- * @returns an environment provider which registers icon sprites.
+ * @returns an environment provider which registers svg sprites. The default `url` of a sprite will be `${baseUrl}#${fragment}`.
  */
-export const provideSvgSprites = (...sprites: NgxSvgSprite[]) =>
+export const provideSvgSprites = (...sprites: CreateNgxSvgSpriteOptions[]) =>
 	makeEnvironmentProviders([
 		{
 			provide: ENVIRONMENT_INITIALIZER,
 			multi: true,
 			useFactory: () => {
 				const service = inject(NgxSvgSprites);
-				return () => sprites.forEach((sprite) => service.register(sprite));
+				return () =>
+					sprites.forEach((sprite) =>
+						service.register(createSvgSprite(sprite)),
+					);
 			},
 		},
 	]);
+
+/**
+ * Creates a {@link NgxSvgSprite} with a default `url` builder of `${baseUrl}#${fragment}`.
+ *
+ * @param options
+ * @returns
+ */
+const createSvgSprite = (options: CreateNgxSvgSpriteOptions) => {
+	if (options.url == null)
+		options.url = (baseUrl, fragment) => `${baseUrl}#${fragment}`;
+
+	return options as NgxSvgSprite;
+};
 
 /**
  * A directive for rendering _symbols_ of svg sprites. It is done with the [`use`](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/use) element.
