@@ -13,10 +13,17 @@ import {
 	signal,
 	type OnInit,
 } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { injectAutoEffect } from 'ngxtension/auto-effect';
-import { filterNil } from 'ngxtension/filter-nil';
-import { defer, map, shareReplay, switchMap, type Observable } from 'rxjs';
+import { computedFrom } from 'ngxtension/computed-from';
+import {
+	defer,
+	map,
+	of,
+	pipe,
+	shareReplay,
+	switchMap,
+	type Observable,
+} from 'rxjs';
 import { ajax } from 'rxjs/ajax';
 
 /**
@@ -416,11 +423,9 @@ export class NgxSvgSpriteFragment implements OnInit {
 	/**
 	 * @ignore
 	 */
-	private readonly svg$ = toSignal(
-		toObservable(this.spriteConfig$).pipe(
-			filterNil(),
-			switchMap(({ svg$ }) => svg$),
-		),
+	private readonly svg$ = computedFrom(
+		{ sprite: this.spriteConfig$ },
+		pipe(switchMap(({ sprite }) => sprite?.svg$ ?? of(undefined))),
 	);
 
 	/**
