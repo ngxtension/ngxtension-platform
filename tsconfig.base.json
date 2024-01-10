@@ -46,6 +46,9 @@
 			"ngxtension/create-injection-token": [
 				"libs/ngxtension/create-injection-token/src/index.ts"
 			],
+			"ngxtension/create-signal": [
+				"libs/ngxtension/create-signal/src/index.ts"
+			],
 			"ngxtension/debug": ["libs/ngxtension/debug/src/index.ts"],
 			"ngxtension/filter-array": ["libs/ngxtension/filter-array/src/index.ts"],
 			"ngxtension/filter-nil": ["libs/ngxtension/filter-nil/src/index.ts"],
@@ -83,12 +86,10 @@
 			"ngxtension/resize": ["libs/ngxtension/resize/src/index.ts"],
 			"ngxtension/rx-effect": ["libs/ngxtension/rx-effect/src/index.ts"],
 			"ngxtension/signal-slice": ["libs/ngxtension/signal-slice/src/index.ts"],
-			"ngxtension/create-signal": [
-				"libs/ngxtension/create-signal/src/index.ts"
-			],
 			"ngxtension/singleton-proxy": [
 				"libs/ngxtension/singleton-proxy/src/index.ts"
 			],
+			"ngxtension/svg-sprite": ["libs/ngxtension/svg-sprite/src/index.ts"],
 			"ngxtension/to-lazy-signal": [
 				"libs/ngxtension/to-lazy-signal/src/index.ts"
 			],

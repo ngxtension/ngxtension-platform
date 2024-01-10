@@ -1,0 +1,7 @@
+:host {
+	svg {
+		width: 4rem;
+		border: 2px red solid;
+		margin: 0 1rem;
+	}
+}
