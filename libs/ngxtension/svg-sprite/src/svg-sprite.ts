@@ -4,19 +4,17 @@ import {
 	ENVIRONMENT_INITIALIZER,
 	ElementRef,
 	Injectable,
-	Injector,
 	Input,
 	NgZone,
 	booleanAttribute,
 	computed,
-	effect,
 	inject,
 	makeEnvironmentProviders,
-	runInInjectionContext,
 	signal,
 	type OnInit,
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { injectAutoEffect } from 'ngxtension/auto-effect';
 import { filterNil } from 'ngxtension/filter-nil';
 import { defer, map, shareReplay, switchMap, type Observable } from 'rxjs';
 import { ajax } from 'rxjs/ajax';
@@ -305,7 +303,7 @@ export class NgxSvgSpriteFragment implements OnInit {
 	/**
 	 * @ignore
 	 */
-	private readonly injector = inject(Injector);
+	private readonly autoEffect = injectAutoEffect();
 
 	/**
 	 * @ignore
@@ -316,77 +314,72 @@ export class NgxSvgSpriteFragment implements OnInit {
 	 * @ignore
 	 */
 	public ngOnInit() {
-		runInInjectionContext(this.injector, () => {
-			// Copy the 'viewBox' from the 'symbol' element in the sprite to this svg.
-			// Turn this effect in a 'noop' when the svg already has a 'viewBox'.
-			if (!this.element.hasAttribute('viewBox'))
-				effect(() => {
-					const element = this.element;
-					const autoViewBox = this.autoViewBox$();
-					const svg = this.svg$();
-					const fragment = this.fragment$();
-
-					if (!autoViewBox || svg == null || fragment == null) return;
-
-					try {
-						const viewBox = svg
-							.querySelector(`#${fragment}`)
-							?.getAttribute('viewBox');
-
-						if (viewBox == null) return;
-
-						element.setAttribute('viewBox', viewBox);
-					} catch {
-						// the querySelector could throw due to an invalid selector
-					}
-				});
-
-			// Create a 'use' element which instantiates a 'symbol' element of the sprite.
-			effect((beforeEach) => {
-				const fragment = this.fragment$();
-				const sprite = this.sprite$();
-				const spriteConfig = this.spriteConfig$();
+		// Copy the 'viewBox' from the 'symbol' element in the sprite to this svg.
+		// Do not launch this effect when the svg already has a 'viewBox'.
+		if (!this.element.hasAttribute('viewBox'))
+			this.autoEffect(() => {
 				const element = this.element;
-				const document = this.document;
+				const autoViewBox = this.autoViewBox$();
+				const svg = this.svg$();
+				const fragment = this.fragment$();
 
-				let classes: string[] = [];
+				if (!autoViewBox || svg == null || fragment == null) return;
 
-				// Clear child nodes and remove old classes of this svg.
-				beforeEach(() => {
-					element.replaceChildren();
-					element.classList.remove(...classes);
-				});
+				try {
+					const viewBox = svg
+						.querySelector(`#${fragment}`)
+						?.getAttribute('viewBox');
 
-				if (fragment == null || sprite == null || spriteConfig == null) return;
+					if (viewBox == null) return;
 
-				const useElement = document.createElementNS(
-					element.namespaceURI,
-					'use',
-				);
-
-				// Add classes when provided.
-				if (spriteConfig.classes != null) {
-					const _classes = spriteConfig.classes(fragment);
-					classes =
-						typeof _classes === 'string'
-							? _classes.split(' ').filter(Boolean)
-							: _classes;
-					element.classList.add(...classes);
+					element.setAttribute('viewBox', viewBox);
+				} catch {
+					// the querySelector could throw due to an invalid selector
 				}
-
-				useElement.setAttribute(
-					'href',
-					spriteConfig.url(spriteConfig.baseUrl, fragment),
-				);
-
-				// Support old browsers. Modern browser will ignore this if they support 'href'.
-				useElement.setAttribute(
-					'xlink:href',
-					spriteConfig.url(spriteConfig.baseUrl, fragment),
-				);
-
-				element.appendChild(useElement);
 			});
+
+		// Create a 'use' element which instantiates a 'symbol' element of the sprite.
+		this.autoEffect(() => {
+			const fragment = this.fragment$();
+			const sprite = this.sprite$();
+			const spriteConfig = this.spriteConfig$();
+			const element = this.element;
+			const document = this.document;
+
+			let classes: string[] = [];
+
+			if (fragment == null || sprite == null || spriteConfig == null) return;
+
+			const useElement = document.createElementNS(element.namespaceURI, 'use');
+
+			// Add classes when provided.
+			if (spriteConfig.classes != null) {
+				const _classes = spriteConfig.classes(fragment);
+				classes =
+					typeof _classes === 'string'
+						? _classes.split(' ').filter(Boolean)
+						: _classes;
+				element.classList.add(...classes);
+			}
+
+			useElement.setAttribute(
+				'href',
+				spriteConfig.url(spriteConfig.baseUrl, fragment),
+			);
+
+			// Support old browsers. Modern browser will ignore this if they support 'href'.
+			useElement.setAttribute(
+				'xlink:href',
+				spriteConfig.url(spriteConfig.baseUrl, fragment),
+			);
+
+			element.appendChild(useElement);
+
+			// Cleanup: clear child nodes and remove old classes of this svg.
+			return () => {
+				element.replaceChildren();
+				element.classList.remove(...classes);
+			};
 		});
 	}
 
