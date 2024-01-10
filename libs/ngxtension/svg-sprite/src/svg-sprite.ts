@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common';
 import {
 	Directive,
 	ENVIRONMENT_INITIALIZER,
@@ -296,6 +297,11 @@ export class NgxSvgSpriteFragment implements OnInit {
 	/**
 	 * @ignore
 	 */
+	private readonly document = inject(DOCUMENT);
+
+	/**
+	 * @ignore
+	 */
 	private readonly injector = inject(Injector);
 
 	/**
@@ -338,6 +344,7 @@ export class NgxSvgSpriteFragment implements OnInit {
 				const sprite = this.sprite$();
 				const spriteConfig = this.spriteConfig$();
 				const element = this.element;
+				const document = this.document;
 
 				let classes: string[] = [];
 
