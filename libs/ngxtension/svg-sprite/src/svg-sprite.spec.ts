@@ -3,6 +3,7 @@ import { Component, Provider, inject } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Observable, firstValueFrom, of } from 'rxjs';
+import { ajax } from 'rxjs/ajax';
 import {
 	CreateSvgSpriteOptions,
 	NgxSvgSprite,
@@ -10,6 +11,11 @@ import {
 	NgxSvgSprites,
 	createSvgSprite,
 } from './svg-sprite';
+
+jest.mock('rxjs/ajax', () => ({
+	...jest.requireActual('rxjs/ajax'),
+	ajax: jest.fn(),
+}));
 
 describe('svg-sprite', () => {
 	describe('createSvgSprite', () => {
@@ -49,26 +55,17 @@ describe('svg-sprite', () => {
 			await TestBed.runInInjectionContext(test);
 		};
 
-		let globalFetch: typeof global.fetch;
+		const mockAjax = ajax as unknown as jest.Mock;
 
-		const mockFetch = jest.fn();
-
-		const nextFetch = (text: string) =>
-			mockFetch.mockResolvedValueOnce({
-				text: () => Promise.resolve(text),
-			});
-
-		beforeAll(() => {
-			globalFetch = global.fetch;
-			global.fetch = mockFetch;
-		});
-
-		afterAll(() => {
-			global.fetch = globalFetch;
-		});
+		const nextAjax = (svgAsText: string) =>
+			mockAjax.mockReturnValueOnce(
+				of({
+					response: new DOMParser().parseFromString(svgAsText, 'image/svg+xml'),
+				}),
+			);
 
 		beforeEach(() => {
-			mockFetch.mockClear();
+			mockAjax.mockClear();
 		});
 
 		it(
@@ -95,7 +92,7 @@ describe('svg-sprite', () => {
 					url: () => '',
 				} satisfies NgxSvgSprite;
 
-				nextFetch(`
+				nextAjax(`
         <svg>
           <symbol id="some-symbol" viewBox="0 0 1 2"></symbol>
         </svg>
@@ -103,7 +100,7 @@ describe('svg-sprite', () => {
 
 				sprites.register(mockSprite1);
 
-				nextFetch(`
+				nextAjax(`
         <svg>
           <symbol id="symbol-other-symbol" viewBox="0 0 1 2"></symbol>
         </svg>
@@ -117,7 +114,7 @@ describe('svg-sprite', () => {
 		);
 
 		it(
-			'should fetch a svg',
+			'should fetch svg lazily',
 			test(async () => {
 				const sprites = inject(NgxSvgSprites);
 
@@ -133,9 +130,11 @@ describe('svg-sprite', () => {
         </svg>
         `;
 
-				nextFetch(mockSvg);
+				nextAjax(mockSvg);
 
 				sprites.register(mockSprite);
+
+				expect(mockAjax).toHaveBeenCalledTimes(0);
 
 				const svg = await firstValueFrom(sprites.get('some-sprite').svg$);
 
@@ -145,7 +144,7 @@ describe('svg-sprite', () => {
 				await firstValueFrom(sprites.get('some-sprite').svg$);
 				await firstValueFrom(sprites.get('some-sprite').svg$);
 
-				expect(mockFetch).toHaveBeenCalledTimes(1);
+				expect(mockAjax).toHaveBeenCalledTimes(1);
 			}),
 		);
 	});

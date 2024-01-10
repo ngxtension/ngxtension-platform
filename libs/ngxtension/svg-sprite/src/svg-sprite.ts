@@ -18,7 +18,8 @@ import {
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { filterNil } from 'ngxtension/filter-nil';
-import { from, map, shareReplay, switchMap, type Observable } from 'rxjs';
+import { defer, map, shareReplay, switchMap, type Observable } from 'rxjs';
+import { ajax } from 'rxjs/ajax';
 
 /**
  * Represents a svg sprite.
@@ -104,14 +105,16 @@ export class NgxSvgSprites {
 	public readonly register = (sprite: NgxSvgSprite) => {
 		this.sprites[sprite.name] = {
 			...sprite,
-			svg$: from(
-				this.ngZone.runOutsideAngular(() => fetch(sprite.baseUrl)),
+			svg$: defer(() =>
+				this.ngZone.runOutsideAngular(() =>
+					ajax<SVGGraphicsElement>({
+						url: sprite.baseUrl,
+						responseType: 'document',
+					}),
+				),
 			).pipe(
-				switchMap((response) => response.text()),
-				map((text) => {
-					const svg = new DOMParser()
-						.parseFromString(text, 'text/xml')
-						.querySelector('svg');
+				map(({ response }) => {
+					const svg = response.querySelector('svg');
 
 					if (svg == null)
 						throw new Error(
