@@ -41,8 +41,8 @@ without `NgxControlError`:
 ## Configuration
 
 A `StateMatcher` defines when the provided control is in an _error state_.
-A `StateMatcher` is a function which returns an observable.
-The directive **ONLY** renders the template when the `StateMatcher` emits `true`.
+A `StateMatcher` is a function which returns an observable. Every time the `StateMatcher` emits a value, the directive checks whether it should render or hide its template:
+The directive renders its template when the `StateMatcher` emits `true` and the errors of the control include at least 1 tracked error, else its template will be hidden.
 
 ```ts
 export type StateMatcher = (
@@ -51,9 +51,22 @@ export type StateMatcher = (
 ) => Observable<boolean>;
 ```
 
-Per default the control is considered in an _error state_ when 1. its status is `INVALID` and 2. it is touched or its form has been submitted.
+Per default the control is considered in an _error state_ when 1. its status is `INVALID` and 2. it is `touched` or its form has been `submitted`.
 
 You can override this behavior:
+
+```ts
+/**
+ * A control is in an error state when its status is invalid.
+ * Emits whenever statusChanges emits.
+ * You may want to add more sources, such as valueChanges.
+ */
+export const customErrorStateMatcher: StateMatcher = (control) =>
+	control.statusChanges.pipe(
+		startWith(control.status),
+		map((status) => status === 'INVALID'),
+	);
+```
 
 ### Via DI
 
