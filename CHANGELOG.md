@@ -1,5 +1,12 @@
 
 
+## [1.9.2](https://github.com/nartc/ngxtension-platform/compare/1.9.1...1.9.2) (2024-01-11)
+
+
+### Bug Fixes
+
+* **plugin:** use correct property name for file path ([a24d995](https://github.com/nartc/ngxtension-platform/commit/a24d99578fb08add11ad1b9cbfabea030603a440))
+
 ## [1.9.1](https://github.com/nartc/ngxtension-platform/compare/1.9.0...1.9.1) (2024-01-11)
 
 
