@@ -1,5 +1,12 @@
 
 
+## [1.9.4](https://github.com/nartc/ngxtension-platform/compare/1.9.3...1.9.4) (2024-01-11)
+
+
+### Bug Fixes
+
+* **plugin:** ensure to track withTransforms regardless of typenode exists or not ([b512f1f](https://github.com/nartc/ngxtension-platform/commit/b512f1f45118f54417dc4f25905ca5c8769f0ddf))
+
 ## [1.9.3](https://github.com/nartc/ngxtension-platform/compare/1.9.2...1.9.3) (2024-01-11)
 
 
