@@ -1,5 +1,12 @@
 
 
+## [1.9.3](https://github.com/nartc/ngxtension-platform/compare/1.9.2...1.9.3) (2024-01-11)
+
+
+### Bug Fixes
+
+* **plugin:** make sure all classes in a file is processed ([4a687a5](https://github.com/nartc/ngxtension-platform/commit/4a687a5526cc189f93965a6608df5ae43b6c0a9d))
+
 ## [1.9.2](https://github.com/nartc/ngxtension-platform/compare/1.9.1...1.9.2) (2024-01-11)
 
 
