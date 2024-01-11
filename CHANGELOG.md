@@ -1,5 +1,12 @@
 
 
+## [1.9.5](https://github.com/nartc/ngxtension-platform/compare/1.9.4...1.9.5) (2024-01-11)
+
+
+### Bug Fixes
+
+* **plugin:** get all projects if project nor path is passed in ([34293d1](https://github.com/nartc/ngxtension-platform/commit/34293d12a14e494acb7b4f2cd198dc95bfb5261c))
+
 ## [1.9.4](https://github.com/nartc/ngxtension-platform/compare/1.9.3...1.9.4) (2024-01-11)
 
 
