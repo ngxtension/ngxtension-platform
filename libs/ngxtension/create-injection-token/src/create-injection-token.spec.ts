@@ -183,12 +183,14 @@ describe(createNoopInjectionToken.name, () => {
 });
 
 describe(createService.name, () => {
-	it('should work', () => {
-		const [injectFn] = createService(() => 1);
+	it('should be able to access property returned from service', () => {
+		const [injectFn] = createService(() => {
+			return { someProp: 1 };
+		});
 
 		TestBed.runInInjectionContext(() => {
-			const value = injectFn();
-			expect(value).toEqual(1);
+			const service = injectFn();
+			expect(service.someProp).toEqual(1);
 		});
 	});
 });

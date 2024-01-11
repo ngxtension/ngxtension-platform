@@ -49,7 +49,7 @@ export type CreateInjectionTokenOptions<
 	};
 
 export type CreateServiceOptions<
-	TFactory extends (...args: any[]) => any,
+	TFactory extends (...args: any[]) => object,
 	TFactoryDeps extends Parameters<TFactory> = Parameters<TFactory>,
 > = (TFactoryDeps[0] extends undefined
 	? { deps?: never }
@@ -275,7 +275,7 @@ export function createNoopInjectionToken<
 }
 
 export function createService<
-	TFactory extends (...args: any[]) => any,
+	TFactory extends (...args: any[]) => object,
 	TFactoryDeps extends Parameters<TFactory> = Parameters<TFactory>,
 	TOptions extends CreateInjectionTokenOptions<
 		TFactory,
