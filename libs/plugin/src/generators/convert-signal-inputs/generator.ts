@@ -1,6 +1,7 @@
 import {
 	Tree,
 	formatFiles,
+	getProjects,
 	logger,
 	readJson,
 	readProjectConfiguration,
@@ -222,9 +223,12 @@ export async function convertSignalInputsGenerator(
 			return;
 		}
 	} else {
-		visitNotIgnoredFiles(tree, tree.root, (path) => {
-			trackContents(tree, path);
-		});
+		const projects = getProjects(tree);
+		for (const project of projects.values()) {
+			visitNotIgnoredFiles(tree, project.root, (path) => {
+				trackContents(tree, path);
+			});
+		}
 	}
 
 	for (const { path: sourcePath } of contentsStore.collection) {
