@@ -1,5 +1,19 @@
 
 
+## [1.9.0](https://github.com/nartc/ngxtension-platform/compare/1.8.1...1.9.0) (2024-01-11)
+
+
+### Features
+
+* **create-injection-token:** add createService ([#222](https://github.com/nartc/ngxtension-platform/issues/222)) ([294c66a](https://github.com/nartc/ngxtension-platform/commit/294c66a8668774be8fe4be8a43f76fda7789db6f))
+* **NgxSvgSprite:** add a directive for rendering symbols of svg sprites ([#219](https://github.com/nartc/ngxtension-platform/issues/219)) ([c585aca](https://github.com/nartc/ngxtension-platform/commit/c585aca16e2badb3261d2ee8243a651d8d6a3787))
+* **plugin:** generator to convert to signal inputs ([39bd37e](https://github.com/nartc/ngxtension-platform/commit/39bd37eed331ea489b5d406f8546b5289d505f8d))
+
+
+### Refactor
+
+* **NgxControlError:** improve statematcher ([#220](https://github.com/nartc/ngxtension-platform/issues/220)) ([9507c07](https://github.com/nartc/ngxtension-platform/commit/9507c070b591efbc32b8225044c6afe7777b22b8))
+
 ## [1.8.1](https://github.com/nartc/ngxtension-platform/compare/1.8.0...1.8.1) (2024-01-06)
 
 
