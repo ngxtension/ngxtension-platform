@@ -76,12 +76,15 @@ function getSignalInputInitializer(
 		transformType = '',
 		defaultToUndefined = false,
 	) => {
+		if (transformType) {
+			contentsStore.withTransforms.add(className);
+		}
+
 		if (propertyTypeNode) {
 			const typeNode = propertyTypeNode.getText();
 			const types = ['<'];
 
 			if (transformType) {
-				contentsStore.withTransforms.add(className);
 				types.push(transformType, ',');
 			}
 
@@ -97,7 +100,9 @@ function getSignalInputInitializer(
 
 			writer.write(types.concat('>').join(''));
 		}
+
 		writer.write('(');
+
 		if (!isRequired) {
 			if (propertyInitializer) {
 				writer.write(propertyInitializer.getText());
