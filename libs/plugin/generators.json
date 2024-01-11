@@ -4,6 +4,11 @@
 			"factory": "./src/generators/init/generator",
 			"schema": "./src/generators/init/schema.json",
 			"description": "Init ngxtension"
+		},
+		"convert-signal-inputs": {
+			"factory": "./src/generators/convert-signal-inputs/generator",
+			"schema": "./src/generators/convert-signal-inputs/schema.json",
+			"description": "libs/plugin/src/generators/convert-signal-inputs/ generator"
 		}
 	},
 	"schematics": {
@@ -11,6 +16,11 @@
 			"factory": "./src/generators/init/compat",
 			"schema": "./src/generators/init/schema.json",
 			"description": "Init ngxtension"
+		},
+		"convert-signal-inputs": {
+			"factory": "./src/generators/convert-signal-inputs/compat",
+			"schema": "./src/generators/convert-signal-inputs/schema.json",
+			"description": "libs/plugin/src/generators/convert-signal-inputs/ generator"
 		}
 	}
 }

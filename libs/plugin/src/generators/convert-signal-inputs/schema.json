@@ -1,0 +1,17 @@
+{
+	"$schema": "http://json-schema.org/schema",
+	"$id": "",
+	"title": "",
+	"type": "object",
+	"properties": {
+		"project": {
+			"type": "string",
+			"aliases": ["name", "projectName"],
+			"description": "Project for which to convert signal inputs."
+		},
+		"path": {
+			"type": "string",
+			"description": "Path to the component/directive you want to conver to signal inputs"
+		}
+	}
+}
