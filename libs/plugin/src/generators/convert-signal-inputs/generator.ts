@@ -144,8 +144,6 @@ function getSignalInputInitializer(
 				transformType = 'any';
 			}
 
-			console.log({ optionsAsText, transformType });
-
 			writeTypeNodeAndInitializer(writer, required, transformType, true);
 			writer.write(optionsAsText ? `, ${optionsAsText});` : ');');
 		} else if (Node.isStringLiteral(decoratorArg)) {
@@ -224,8 +222,8 @@ export async function convertSignalInputsGenerator(
 		});
 	}
 
-	for (const { path, content } of contentsStore.collection) {
-		const sourceFile = contentsStore.project.getSourceFile(path);
+	for (const { path: sourcePath } of contentsStore.collection) {
+		const sourceFile = contentsStore.project.getSourceFile(sourcePath);
 		const targetClass = sourceFile.getClass((classDecl) => {
 			return !!classDecl.getDecorator((decoratorDecl) => {
 				return ['Component', 'Directive'].includes(decoratorDecl.getName());
@@ -277,7 +275,7 @@ export async function convertSignalInputsGenerator(
 	}
 
 	if (contentsStore.withTransforms.size) {
-		logger.warn(
+		logger.info(
 			`
 [ngxtension] The following classes have had some Inputs with "transform" converted. Please double check the type arguments on the "transform" Inputs
 
@@ -289,6 +287,10 @@ export async function convertSignalInputsGenerator(
 	}
 
 	await formatFiles(tree);
+
+	logger.info(
+		`[ngxtension] Conversion completed. Please check the content and run your formatter as needed.`,
+	);
 }
 
 export default convertSignalInputsGenerator;
