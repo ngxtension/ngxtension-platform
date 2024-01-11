@@ -1,5 +1,12 @@
 
 
+## [1.9.1](https://github.com/nartc/ngxtension-platform/compare/1.9.0...1.9.1) (2024-01-11)
+
+
+### Bug Fixes
+
+* **plugin:** add ts-morph to dep of ngxtension ([a78fdae](https://github.com/nartc/ngxtension-platform/commit/a78fdae158a4e38ca544138bed07d2a98a8293f9))
+
 ## [1.9.0](https://github.com/nartc/ngxtension-platform/compare/1.8.1...1.9.0) (2024-01-11)
 
 
