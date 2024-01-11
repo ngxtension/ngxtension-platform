@@ -48,16 +48,16 @@ export class MyCmp {
     set leaveMeAlone(value: number) {
         console.log('setter', value);
     }
-    public normalInput = input('');
-    public withoutDefault = input<string | undefined>();
-    public withoutDefaultUnion = input<string | undefined>();
-    public withDefaultAlias = input(123, { alias: 'defaultAlias' });
-    public withoutDefaultAlias = input<number | undefined>(undefined, { alias: 'noDefaultAlias' });
-    public justAStringAlias = input('', { alias: 'stringAlias' });
-    public withTransform = input<boolean, string | ''>(false, { transform: booleanAttribute });
-    public requiredInput = input.required<string>();
-    public requiredWithAlias = input.required<boolean>({ alias: 'requiredAlias' });
-    public requiredWithAliasAndTransform = input.required<number, string | ''>({ alias: 'transformedRequiredAlias', transform: numberAttribute });
+    normalInput = input('');
+    withoutDefault = input<string | undefined>();
+    withoutDefaultUnion = input<string | undefined>();
+    withDefaultAlias = input(123, { alias: 'defaultAlias' });
+    withoutDefaultAlias = input<number | undefined>(undefined, { alias: 'noDefaultAlias' });
+    justAStringAlias = input('', { alias: 'stringAlias' });
+    withTransform = input<boolean, string | ''>(false, { transform: booleanAttribute });
+    requiredInput = input.required<string>();
+    requiredWithAlias = input.required<boolean>({ alias: 'requiredAlias' });
+    requiredWithAliasAndTransform = input.required<number, string | ''>({ alias: 'transformedRequiredAlias', transform: numberAttribute });
     ;
     ;
     ;
@@ -79,6 +79,7 @@ describe('convertSignalInputsGenerator', () => {
 
 	function setup(file: keyof typeof filesMap) {
 		tree = createTreeWithEmptyWorkspace({ layout: 'apps-libs' });
+		tree.write('package.json', `{"dependencies": {"@angular/core": "17.1.0"}}`);
 		tree.write(`libs/my-file.ts`, filesMap[file]);
 
 		return () => {

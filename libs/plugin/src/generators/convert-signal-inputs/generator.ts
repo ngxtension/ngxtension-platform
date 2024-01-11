@@ -224,51 +224,57 @@ export async function convertSignalInputsGenerator(
 
 	for (const { path: sourcePath } of contentsStore.collection) {
 		const sourceFile = contentsStore.project.getSourceFile(sourcePath);
-		const targetClass = sourceFile.getClass((classDecl) => {
-			return !!classDecl.getDecorator((decoratorDecl) => {
+
+		const classes = sourceFile.getClasses();
+
+		for (const targetClass of classes) {
+			const applicableDecorator = targetClass.getDecorator((decoratorDecl) => {
 				return ['Component', 'Directive'].includes(decoratorDecl.getName());
 			});
-		});
+			if (!applicableDecorator) continue;
 
-		if (!targetClass) continue;
+			const hasSignalInputImport = sourceFile.getImportDeclaration(
+				(importDecl) =>
+					importDecl.getModuleSpecifierValue() === '@angular/core' &&
+					importDecl
+						.getNamedImports()
+						.some((namedImport) => namedImport.getName() === 'input'),
+			);
 
-		const hasSignalInputImport = sourceFile.getImportDeclaration(
-			(importDecl) =>
-				importDecl.getModuleSpecifierValue() === '@angular/core' &&
-				importDecl
-					.getNamedImports()
-					.some((namedImport) => namedImport.getName() === 'input'),
-		);
+			if (!hasSignalInputImport) {
+				sourceFile.addImportDeclaration({
+					namedImports: ['input'],
+					moduleSpecifier: '@angular/core',
+				});
+			}
 
-		if (!hasSignalInputImport) {
-			sourceFile.addImportDeclaration({
-				namedImports: ['input'],
-				moduleSpecifier: '@angular/core',
-			});
-		}
+			const classProperties = targetClass.getChildrenOfKind(
+				SyntaxKind.PropertyDeclaration,
+			);
 
-		const classProperties = targetClass.getChildrenOfKind(
-			SyntaxKind.PropertyDeclaration,
-		);
+			for (const classProperty of classProperties) {
+				const inputDecorator = classProperty.getDecorator('Input');
+				if (!inputDecorator) continue;
 
-		for (const classProperty of classProperties) {
-			const inputDecorator = classProperty.getDecorator('Input');
-			if (!inputDecorator) continue;
+				const { name, isReadonly, docs, scope, hasOverrideKeyword } =
+					classProperty.getStructure();
 
-			targetClass.addProperty({
-				name: classProperty.getName(),
-				initializer: getSignalInputInitializer(
-					targetClass.getName(),
-					inputDecorator,
-					classProperty,
-				),
-				scope: classProperty.getScope(),
-				docs: classProperty.getJsDocs().map((jsDoc) => jsDoc.getStructure()),
-				isReadonly: classProperty.isReadonly(),
-			});
+				targetClass.addProperty({
+					name,
+					isReadonly,
+					docs,
+					scope,
+					hasOverrideKeyword,
+					initializer: getSignalInputInitializer(
+						targetClass.getName(),
+						inputDecorator,
+						classProperty,
+					),
+				});
 
-			// remove old class property Input
-			classProperty.remove();
+				// remove old class property Input
+				classProperty.remove();
+			}
 		}
 
 		tree.write(sourcePath, sourceFile.print());
@@ -278,18 +284,19 @@ export async function convertSignalInputsGenerator(
 		logger.info(
 			`
 [ngxtension] The following classes have had some Inputs with "transform" converted. Please double check the type arguments on the "transform" Inputs
-
 `,
 		);
 		contentsStore.withTransforms.forEach((className) => {
-			logger.log(`- ${className}`);
+			logger.info(`- ${className}`);
 		});
 	}
 
 	await formatFiles(tree);
 
 	logger.info(
-		`[ngxtension] Conversion completed. Please check the content and run your formatter as needed.`,
+		`
+[ngxtension] Conversion completed. Please check the content and run your formatter as needed.
+`,
 	);
 }
 
