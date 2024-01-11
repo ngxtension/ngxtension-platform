@@ -271,7 +271,7 @@ export async function convertSignalInputsGenerator(
 			classProperty.remove();
 		}
 
-		tree.write(path, sourceFile.print());
+		tree.write(sourcePath, sourceFile.print());
 	}
 
 	if (contentsStore.withTransforms.size) {
