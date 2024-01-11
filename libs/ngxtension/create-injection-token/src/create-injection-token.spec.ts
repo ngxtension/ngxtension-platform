@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import {
 	createInjectionToken,
 	createNoopInjectionToken,
+	createService,
 } from './create-injection-token';
 
 describe(createInjectionToken.name, () => {
@@ -177,6 +178,19 @@ describe(createNoopInjectionToken.name, () => {
 				const values = injectFn();
 				expect(values).toEqual([1, 2]);
 			});
+		});
+	});
+});
+
+describe(createService.name, () => {
+	it('should be able to access property returned from service', () => {
+		const [injectFn] = createService(() => {
+			return { someProp: 1 };
+		});
+
+		TestBed.runInInjectionContext(() => {
+			const service = injectFn();
+			expect(service.someProp).toEqual(1);
 		});
 	});
 });
