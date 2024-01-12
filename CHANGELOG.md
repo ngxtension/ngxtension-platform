@@ -1,5 +1,12 @@
 
 
+## [1.9.7](https://github.com/nartc/ngxtension-platform/compare/1.9.6...1.9.7) (2024-01-12)
+
+
+### Bug Fixes
+
+* **plugin:** input.required parameter should be the option object if exist ([dbb7cf4](https://github.com/nartc/ngxtension-platform/commit/dbb7cf48a6cbc202cde3f12ee79bb693fff72beb))
+
 ## [1.9.6](https://github.com/nartc/ngxtension-platform/compare/1.9.5...1.9.6) (2024-01-12)
 
 
