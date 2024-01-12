@@ -298,7 +298,7 @@ export async function convertSignalInputsGenerator(
 							),
 						});
 
-						node.replaceWithText(newProperty.getText());
+						node.replaceWithText(newProperty.print());
 
 						// remove old class property Input
 						newProperty.remove();

@@ -97,6 +97,9 @@ export class MyCmp {
   @Input({ transform: booleanAttribute }) withTransform: string | '' = false;
   @Input({ required: true }) requiredInput!: string;
   @Input({ required: true, alias: 'requiredAlias' }) requiredWithAlias!: boolean;
+  /*
+   * @description I go with requiredWithAliasAndTransform
+   */
   @Input({ required: true, alias: 'transformedRequiredAlias', transform: numberAttribute }) requiredWithAliasAndTransform!: string | '';
 
   @Input() set leaveMeAlone(value: number) {
