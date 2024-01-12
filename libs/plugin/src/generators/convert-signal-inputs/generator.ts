@@ -12,6 +12,7 @@ import { readFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { exit } from 'node:process';
 import {
+	CallExpression,
 	CodeBlockWriter,
 	Decorator,
 	Node,
@@ -21,6 +22,7 @@ import {
 	WriterFunction,
 } from 'ts-morph';
 import { ConvertSignalInputsGeneratorSchema } from './schema';
+// import { parseTemplate} from '@angular-eslint/bundled-angular-compiler';
 
 class ContentsStore {
 	private _project: Project = null!;
@@ -178,6 +180,10 @@ function getSignalInputInitializer(
 	};
 }
 
+function getStartLineInfo(node: Node) {
+	return `${node.getStartLineNumber()}:${node.getStartLinePos()}:${node.getFullStart()}:${node.getFullWidth()}`;
+}
+
 export async function convertSignalInputsGenerator(
 	tree: Tree,
 	options: ConvertSignalInputsGeneratorSchema,
@@ -318,6 +324,13 @@ export async function convertSignalInputsGenerator(
 						.forEach((property) => {
 							const decoratorPropertyName = property.getName();
 
+							if (decoratorPropertyName === 'template') {
+								// const templateAst = parseTemplate(
+								// 	property.getFullText(),
+								// 	`${path}.html`,
+								// );
+							}
+
 							if (
 								decoratorPropertyName === 'host' ||
 								decoratorPropertyName === 'template'
@@ -325,7 +338,10 @@ export async function convertSignalInputsGenerator(
 								let originalText = property.getFullText();
 								convertedInputs.forEach((convertedInput) => {
 									originalText = originalText.replaceAll(
-										new RegExp(`\\b${convertedInput}\\b`, 'gm'),
+										new RegExp(
+											`\\b\(?!\\[\)${convertedInput}\\b\(?!\\]\)`,
+											'gm',
+										),
 										`${convertedInput}()`,
 									);
 								});
@@ -361,18 +377,44 @@ export async function convertSignalInputsGenerator(
 				}
 
 				// process ts class references
+				const nonNullifyProperties = new Map<string, string>();
 				for (const propertyAccessExpression of targetClass.getDescendantsOfKind(
 					SyntaxKind.PropertyAccessExpression,
 				)) {
 					const propertyName = propertyAccessExpression.getName();
+					const startLineInfo = getStartLineInfo(propertyAccessExpression);
+
+					const ifParent = propertyAccessExpression.getFirstAncestorByKind(
+						SyntaxKind.IfStatement,
+					);
+
+					const ternaryParent = propertyAccessExpression.getFirstAncestorByKind(
+						SyntaxKind.ConditionalExpression,
+					);
+
+					if (
+						(ifParent &&
+							getStartLineInfo(ifParent.getExpression()) === startLineInfo) ||
+						(ternaryParent &&
+							getStartLineInfo(ternaryParent.getCondition()) === startLineInfo)
+					) {
+						nonNullifyProperties.set(propertyName, startLineInfo);
+					}
+
 					if (convertedInputs.has(propertyName)) {
-						propertyAccessExpression.replaceWithText(
+						const callExpression = propertyAccessExpression.replaceWithText(
 							`${propertyAccessExpression.getText()}()`,
-						);
+						) as CallExpression;
+
+						// this means that this property has been used in an if/ternary condition above
+						if (
+							nonNullifyProperties.has(propertyName) &&
+							nonNullifyProperties.get(propertyName) !== startLineInfo
+						) {
+							callExpression.replaceWithText(`${callExpression.getText()}!`);
+						}
 					}
 				}
-
-				// process template references
 			}
 		}
 

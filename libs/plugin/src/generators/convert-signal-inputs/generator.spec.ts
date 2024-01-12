@@ -113,6 +113,9 @@ export class MyCmp {
     if (this.withTransform) {
       imABoolean = this.withTransform;
     }
+
+    const ternary = this.withoutDefault ? this.withoutDefault.toString() : null;
+    const optional = this.withoutDefaultAlias?.toString() || null;
   }
 
   handleClick() {

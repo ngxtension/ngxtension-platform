@@ -51,13 +51,13 @@ export class MyCmp {
     console.log(this.justAStringAlias());
 
     if (this.withTransform()) {
-      imABoolean = this.withTransform();
+      imABoolean = this.withTransform()!;
     }
   }
 
   handleClick() {
     if (this.requiredInput()) {
-      let test = this.requiredInput() + this.requiredWithAlias();
+      let test = this.requiredInput()! + this.requiredWithAlias();
     } else {
       let test = this.requiredWithAliasAndTransform() + this.requiredWithAlias();
     }
@@ -111,13 +111,16 @@ export class MyCmp {
     console.log(this.justAStringAlias());
 
     if (this.withTransform()) {
-      imABoolean = this.withTransform();
+      imABoolean = this.withTransform()!;
     }
+
+    const ternary = this.withoutDefault() ? this.withoutDefault()!.toString() : null;
+    const optional = this.withoutDefaultAlias()?.toString() || null;
   }
 
   handleClick() {
     if (this.requiredInput()) {
-      let test = this.requiredInput() + this.requiredWithAlias();
+      let test = this.requiredInput()! + this.requiredWithAlias();
     } else {
       let test = this.requiredWithAliasAndTransform() + this.requiredWithAlias();
     }
