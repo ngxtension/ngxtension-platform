@@ -1,5 +1,12 @@
 
 
+## [1.9.9](https://github.com/nartc/ngxtension-platform/compare/1.9.8...1.9.9) (2024-01-12)
+
+
+### Bug Fixes
+
+* **plugin:** update ts references with awareness of ternaries and if block ([89e431e](https://github.com/nartc/ngxtension-platform/commit/89e431e0ffb70e31f30c2e0432a7406fa67fbfc6))
+
 ## [1.9.8](https://github.com/nartc/ngxtension-platform/compare/1.9.7...1.9.8) (2024-01-12)
 
 
