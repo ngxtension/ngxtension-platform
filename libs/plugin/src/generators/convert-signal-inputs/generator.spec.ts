@@ -20,8 +20,31 @@ export class MyCmp {}
 	component: `
 import { Component, Input } from '@angular/core';
 
-@Component({})
+@Component({
+  template: \`
+    <div>{{ inputWithoutType }}</div>
+
+    <div [id]="normalInput">{{ withoutDefault }}</div>
+
+    @if (withoutDefaultUnion) {
+      <app-test [acceptsString]="withoutDefaultUnion" />
+
+      @if (withoutDefaultAlias) {
+        <app-test [acceptsString]="withoutDefaultAlias || withoutDefaultUnion" />
+      }
+    }
+
+    <ng-container *ngIf="withDefaultAlias">
+      <app-test [acceptsString]="withDefaultAlias" />
+
+      <ng-container *ngIf="withoutDefaultAlias">
+        <app-test [acceptsString]="withoutDefaultAlias || withDefaultAlias" />
+      </ng-container>
+    </ng-container>
+  \`
+})
 export class MyCmp {
+  @Input() inputWithoutType;
   @Input() normalInput = '';
   @Input() withoutDefault?: string;
   @Input() withoutDefaultUnion: string | undefined;
@@ -36,13 +59,52 @@ export class MyCmp {
   @Input() set leaveMeAlone(value: number) {
     console.log('setter', value);
   }
+
+  ngOnInit() {
+    let imABoolean = false;
+    console.log(this.justAStringAlias);
+
+    if (this.withTransform) {
+      imABoolean = this.withTransform;
+    }
+  }
+
+  handleClick() {
+    if (this.requiredInput) {
+      let test = this.requiredInput + this.requiredWithAlias;
+    } else {
+      let test = this.requiredWithAliasAndTransform + this.requiredWithAlias;
+    }
+  }
 }
 `,
 } as const;
 
-const output = `import { Component, Input } from '@angular/core';
-import { input } from "@angular/core";
-@Component({})
+const output = `import { Component, Input, input } from '@angular/core';
+import { input } from '@angular/core';
+@Component({
+  template: \`
+    <div>{{ inputWithoutType() }}</div>
+
+    <div [id]="normalInput()">{{ withoutDefault() }}</div>
+
+    @if (withoutDefaultUnion()) {
+      <app-test [acceptsString]="withoutDefaultUnion()!" />
+
+      @if (withoutDefaultAlias()) {
+        <app-test [acceptsString]="withoutDefaultAlias()! || withoutDefaultUnion()!" />
+      }
+    }
+
+    <ng-container *ngIf="withDefaultAlias()">
+      <app-test [acceptsString]="withDefaultAlias()" />
+
+      <ng-container *ngIf="withoutDefaultAlias()">
+        <app-test [acceptsString]="withoutDefaultAlias() || withDefaultAlias()" />
+      </ng-container>
+    </ng-container>
+  \`
+})
 export class MyCmp {
     @Input()
     set leaveMeAlone(value: number) {
@@ -58,16 +120,24 @@ export class MyCmp {
     requiredInput = input.required<string>();
     requiredWithAlias = input.required<boolean>({ alias: 'requiredAlias' });
     requiredWithAliasAndTransform = input.required<number, string | ''>({ alias: 'transformedRequiredAlias', transform: numberAttribute });
-    ;
-    ;
-    ;
-    ;
-    ;
-    ;
-    ;
-    ;
-    ;
-    ;
+
+    
+  ngOnInit() {
+    let imABoolean = false;
+    console.log(this.justAStringAlias());
+
+    if (this.withTransform()) {
+      imABoolean = this.withTransform()!;
+    }
+  }
+
+  handleClick() {
+    if (this.requiredInput()) {
+      let test = this.requiredInput() + this.requiredWithAlias();
+    } else {
+      let test = this.requiredWithAliasAndTransform() + this.requiredWithAlias();
+    }
+  }
 }
 `;
 
