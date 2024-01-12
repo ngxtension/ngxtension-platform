@@ -233,7 +233,7 @@ describe('convertSignalInputsGenerator', () => {
 		expect(updated).toMatchSnapshot();
 	});
 
-	it.only('should convert properly for templateUrl', async () => {
+	it('should convert properly for templateUrl', async () => {
 		const readContent = setup('componentWithTemplateUrl');
 		await convertSignalInputsGenerator(tree, options);
 		const [updated, , updatedHtml] = readContent();
