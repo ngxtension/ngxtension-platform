@@ -334,4 +334,47 @@ describe(connect.name, () => {
 			expect(component.count()).toBe(1); // should not change
 		});
 	});
+
+	describe('connects an observable with single emit to a null signal in injection context', () => {
+		@Component({ standalone: true, template: '' })
+		class TestComponent {
+			text = signal<string | null>(null);
+
+			constructor() {
+				connect(this.text, of('text'));
+			}
+		}
+
+		let component: TestComponent;
+		let fixture: ComponentFixture<TestComponent>;
+
+		beforeEach(async () => {
+			fixture = TestBed.createComponent(TestComponent);
+			component = fixture.componentInstance;
+		});
+		it('works fine', () => {
+			expect(component.text()).toBe('text');
+		});
+	});
+	describe('connects an observable with multiple emits to a null signal in injection context', () => {
+		@Component({ standalone: true, template: '' })
+		class TestComponent {
+			text = signal<string | null>(null);
+
+			constructor() {
+				connect(this.text, of('text', null, 'text2'));
+			}
+		}
+
+		let component: TestComponent;
+		let fixture: ComponentFixture<TestComponent>;
+
+		beforeEach(async () => {
+			fixture = TestBed.createComponent(TestComponent);
+			component = fixture.componentInstance;
+		});
+		it('works fine', () => {
+			expect(component.text()).toBe('text2');
+		});
+	});
 });
