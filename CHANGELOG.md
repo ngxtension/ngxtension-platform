@@ -1,5 +1,12 @@
 
 
+## [1.9.8](https://github.com/nartc/ngxtension-platform/compare/1.9.7...1.9.8) (2024-01-12)
+
+
+### Bug Fixes
+
+* **plugin:** ensure to keep jsdoc with properties ([cc8731f](https://github.com/nartc/ngxtension-platform/commit/cc8731f172ecf27fae61fad283138540329ef700))
+
 ## [1.9.7](https://github.com/nartc/ngxtension-platform/compare/1.9.6...1.9.7) (2024-01-12)
 
 
