@@ -8,5 +8,6 @@ README.md
 .prettierignore
 
 /.nx/cache
+**/*.snap
 
 /apps/test-app/src/assets/fontawesome

@@ -2,12 +2,14 @@ import {
 	Tree,
 	formatFiles,
 	getProjects,
+	joinPathFragments,
 	logger,
 	readJson,
 	readProjectConfiguration,
 	visitNotIgnoredFiles,
 } from '@nx/devkit';
 import { readFileSync } from 'node:fs';
+import { dirname } from 'node:path';
 import { exit } from 'node:process';
 import {
 	CodeBlockWriter,
@@ -40,9 +42,11 @@ class ContentsStore {
 	}
 }
 
-const contentsStore = new ContentsStore();
-
-function trackContents(tree: Tree, fullPath: string) {
+function trackContents(
+	tree: Tree,
+	contentsStore: ContentsStore,
+	fullPath: string,
+) {
 	if (fullPath.endsWith('.ts')) {
 		const fileContent =
 			tree.read(fullPath, 'utf8') || readFileSync(fullPath, 'utf8');
@@ -63,6 +67,7 @@ function trackContents(tree: Tree, fullPath: string) {
 }
 
 function getSignalInputInitializer(
+	contentsStore: ContentsStore,
 	className: string,
 	decorator: Decorator,
 	property: PropertyDeclaration,
@@ -166,6 +171,7 @@ export async function convertSignalInputsGenerator(
 	tree: Tree,
 	options: ConvertSignalInputsGeneratorSchema,
 ) {
+	const contentsStore = new ContentsStore();
 	const packageJson = readJson(tree, 'package.json');
 	const angularCorePackage = packageJson['dependencies']['@angular/core'];
 
@@ -206,7 +212,7 @@ export async function convertSignalInputsGenerator(
 			return exit(1);
 		}
 
-		trackContents(tree, path);
+		trackContents(tree, contentsStore, path);
 	} else if (project) {
 		try {
 			const projectConfiguration = readProjectConfiguration(tree, project);
@@ -216,7 +222,7 @@ export async function convertSignalInputsGenerator(
 			}
 
 			visitNotIgnoredFiles(tree, projectConfiguration.root, (path) => {
-				trackContents(tree, path);
+				trackContents(tree, contentsStore, path);
 			});
 		} catch (err) {
 			logger.error(`[ngxtension] ${err}`);
@@ -226,13 +232,29 @@ export async function convertSignalInputsGenerator(
 		const projects = getProjects(tree);
 		for (const project of projects.values()) {
 			visitNotIgnoredFiles(tree, project.root, (path) => {
-				trackContents(tree, path);
+				trackContents(tree, contentsStore, path);
 			});
 		}
 	}
 
 	for (const { path: sourcePath } of contentsStore.collection) {
 		const sourceFile = contentsStore.project.getSourceFile(sourcePath);
+
+		const hasSignalInputImport = sourceFile.getImportDeclaration(
+			(importDecl) =>
+				importDecl.getModuleSpecifierValue() === '@angular/core' &&
+				importDecl
+					.getNamedImports()
+					.some((namedImport) => namedImport.getName() === 'input'),
+		);
+
+		// NOTE: only add input import if we don't have it and we find the first Input decorator
+		if (!hasSignalInputImport) {
+			sourceFile.addImportDeclaration({
+				namedImports: ['input'],
+				moduleSpecifier: '@angular/core',
+			});
+		}
 
 		const classes = sourceFile.getClasses();
 
@@ -242,51 +264,108 @@ export async function convertSignalInputsGenerator(
 			});
 			if (!applicableDecorator) continue;
 
-			const hasSignalInputImport = sourceFile.getImportDeclaration(
-				(importDecl) =>
-					importDecl.getModuleSpecifierValue() === '@angular/core' &&
-					importDecl
-						.getNamedImports()
-						.some((namedImport) => namedImport.getName() === 'input'),
-			);
+			const convertedInputs = new Set<string>();
 
-			if (!hasSignalInputImport) {
-				sourceFile.addImportDeclaration({
-					namedImports: ['input'],
-					moduleSpecifier: '@angular/core',
-				});
-			}
+			targetClass.forEachChild((node) => {
+				if (Node.isPropertyDeclaration(node)) {
+					const inputDecorator = node.getDecorator('Input');
+					if (inputDecorator) {
+						const { name, isReadonly, docs, scope, hasOverrideKeyword } =
+							node.getStructure();
 
-			const classProperties = targetClass.getChildrenOfKind(
-				SyntaxKind.PropertyDeclaration,
-			);
+						const newProperty = targetClass.addProperty({
+							name,
+							isReadonly,
+							docs,
+							scope,
+							hasOverrideKeyword,
+							initializer: getSignalInputInitializer(
+								contentsStore,
+								targetClass.getName(),
+								inputDecorator,
+								node,
+							),
+						});
 
-			for (const classProperty of classProperties) {
-				const inputDecorator = classProperty.getDecorator('Input');
-				if (!inputDecorator) continue;
+						node.replaceWithText(newProperty.getText());
 
-				const { name, isReadonly, docs, scope, hasOverrideKeyword } =
-					classProperty.getStructure();
+						// remove old class property Input
+						newProperty.remove();
 
-				targetClass.addProperty({
-					name,
-					isReadonly,
-					docs,
-					scope,
-					hasOverrideKeyword,
-					initializer: getSignalInputInitializer(
-						targetClass.getName(),
-						inputDecorator,
-						classProperty,
-					),
-				});
+						// track converted inputs
+						convertedInputs.add(name);
+					}
+				}
+			});
 
-				// remove old class property Input
-				classProperty.remove();
+			if (convertedInputs.size) {
+				// process decorator metadata references
+				const decoratorArg = applicableDecorator.getArguments()[0];
+				if (Node.isObjectLiteralExpression(decoratorArg)) {
+					decoratorArg
+						.getChildrenOfKind(SyntaxKind.PropertyAssignment)
+						.forEach((property) => {
+							const decoratorPropertyName = property.getName();
+
+							if (
+								decoratorPropertyName === 'host' ||
+								decoratorPropertyName === 'template'
+							) {
+								let originalText = property.getFullText();
+								convertedInputs.forEach((convertedInput) => {
+									originalText = originalText.replaceAll(
+										new RegExp(`\\b${convertedInput}\\b`, 'gm'),
+										`${convertedInput}()`,
+									);
+								});
+
+								if (originalText !== property.getFullText()) {
+									property.replaceWithText(originalText);
+								}
+							} else if (decoratorPropertyName === 'templateUrl') {
+								const dir = dirname(sourcePath);
+								const templatePath = joinPathFragments(
+									dir,
+									property
+										.getInitializer()
+										.getText()
+										.slice(1, property.getInitializer().getText().length - 1),
+								);
+								let templateText = tree.exists(templatePath)
+									? tree.read(templatePath, 'utf8')
+									: '';
+
+								if (templateText) {
+									convertedInputs.forEach((convertedInput) => {
+										templateText = templateText.replaceAll(
+											new RegExp(`\\b${convertedInput}\\b`, 'gm'),
+											`${convertedInput}()`,
+										);
+									});
+
+									tree.write(templatePath, templateText);
+								}
+							}
+						});
+				}
+
+				// process ts class references
+				for (const propertyAccessExpression of targetClass.getDescendantsOfKind(
+					SyntaxKind.PropertyAccessExpression,
+				)) {
+					const propertyName = propertyAccessExpression.getName();
+					if (convertedInputs.has(propertyName)) {
+						propertyAccessExpression.replaceWithText(
+							`${propertyAccessExpression.getText()}()`,
+						);
+					}
+				}
+
+				// process template references
 			}
 		}
 
-		tree.write(sourcePath, sourceFile.print());
+		tree.write(sourcePath, sourceFile.getFullText());
 	}
 
 	if (contentsStore.withTransforms.size) {

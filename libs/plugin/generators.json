@@ -7,6 +7,7 @@
 		},
 		"convert-signal-inputs": {
 			"factory": "./src/generators/convert-signal-inputs/generator",
+			"aliases": ["signal-inputs"],
 			"schema": "./src/generators/convert-signal-inputs/schema.json",
 			"description": "libs/plugin/src/generators/convert-signal-inputs/ generator"
 		}
@@ -19,6 +20,7 @@
 		},
 		"convert-signal-inputs": {
 			"factory": "./src/generators/convert-signal-inputs/compat",
+			"aliases": ["signal-inputs"],
 			"schema": "./src/generators/convert-signal-inputs/schema.json",
 			"description": "libs/plugin/src/generators/convert-signal-inputs/ generator"
 		}
