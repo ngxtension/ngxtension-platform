@@ -1,5 +1,14 @@
 
 
+## [1.9.6](https://github.com/nartc/ngxtension-platform/compare/1.9.5...1.9.6) (2024-01-12)
+
+
+### Bug Fixes
+
+* add more dumb input usages for testing ([#224](https://github.com/nartc/ngxtension-platform/issues/224)) ([2cec792](https://github.com/nartc/ngxtension-platform/commit/2cec792f4c24cf79558d85752d0dee4ef5c213c7))
+* **connect:** handle null when performing typeof object ([#223](https://github.com/nartc/ngxtension-platform/issues/223)) ([b542fdf](https://github.com/nartc/ngxtension-platform/commit/b542fdf56813c17d2c3c1316dc755bfb5eb5ef7b))
+* **plugin:** update references ([d88e260](https://github.com/nartc/ngxtension-platform/commit/d88e2603474cf0938d706bba95831837ba0cecf1))
+
 ## [1.9.5](https://github.com/nartc/ngxtension-platform/compare/1.9.4...1.9.5) (2024-01-11)
 
 
