@@ -37,10 +37,10 @@ export class MyCmp {
   withDefaultAlias = input(123, {alias: 'defaultAlias'});
   withoutDefaultAlias = input<number| undefined>(undefined, {alias: 'noDefaultAlias'});
   justAStringAlias = input('', { alias: 'stringAlias' });
-  withTransform = input<boolean,string | ''>(false, {transform: booleanAttribute});
+  withTransform = input<boolean,string | ''>(booleanAttribute(false), {transform: booleanAttribute});
   requiredInput = input.required<string>();
-  requiredWithAlias = input.required<boolean>(, {alias: 'requiredAlias'});
-  requiredWithAliasAndTransform = input.required<number,string | ''>(, {alias: 'transformedRequiredAlias', transform: numberAttribute});
+  requiredWithAlias = input.required<boolean>({alias: 'requiredAlias'});
+  requiredWithAliasAndTransform = input.required<number,string | ''>({alias: 'transformedRequiredAlias', transform: numberAttribute});
 
   @Input() set leaveMeAlone(value: number) {
     console.log('setter', value);
@@ -94,10 +94,10 @@ export class MyCmp {
   withDefaultAlias = input(123, {alias: 'defaultAlias'});
   withoutDefaultAlias = input<number| undefined>(undefined, {alias: 'noDefaultAlias'});
   justAStringAlias = input('', { alias: 'stringAlias' });
-  withTransform = input<boolean,string | ''>(false, {transform: booleanAttribute});
+  withTransform = input<boolean,string | ''>(booleanAttribute(false), {transform: booleanAttribute});
   requiredInput = input.required<string>();
-  requiredWithAlias = input.required<boolean>(, {alias: 'requiredAlias'});
-  requiredWithAliasAndTransform = input.required<number,string | ''>(, {alias: 'transformedRequiredAlias', transform: numberAttribute});
+  requiredWithAlias = input.required<boolean>({alias: 'requiredAlias'});
+  requiredWithAliasAndTransform = input.required<number,string | ''>({alias: 'transformedRequiredAlias', transform: numberAttribute});
 
   @Input() set leaveMeAlone(value: number) {
     console.log('setter', value);

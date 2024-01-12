@@ -123,67 +123,6 @@ export class MyCmp {
 `,
 } as const;
 
-const output = `import { Component, Input, input } from '@angular/core';
-import { input } from '@angular/core';
-@Component({
-  template: \`
-    <div>{{ inputWithoutType() }}</div>
-
-    <div [id]="normalInput()">{{ withoutDefault() }}</div>
-
-    @if (withoutDefaultUnion()) {
-      <app-test [acceptsString]="withoutDefaultUnion()!" />
-
-      @if (withoutDefaultAlias()) {
-        <app-test [acceptsString]="withoutDefaultAlias()! || withoutDefaultUnion()!" />
-      }
-    }
-
-    <ng-container *ngIf="withDefaultAlias()">
-      <app-test [acceptsString]="withDefaultAlias()" />
-
-      <ng-container *ngIf="withoutDefaultAlias()">
-        <app-test [acceptsString]="withoutDefaultAlias() || withDefaultAlias()" />
-      </ng-container>
-    </ng-container>
-  \`
-})
-export class MyCmp {
-    @Input()
-    set leaveMeAlone(value: number) {
-        console.log('setter', value);
-    }
-    normalInput = input('');
-    withoutDefault = input<string | undefined>();
-    withoutDefaultUnion = input<string | undefined>();
-    withDefaultAlias = input(123, { alias: 'defaultAlias' });
-    withoutDefaultAlias = input<number | undefined>(undefined, { alias: 'noDefaultAlias' });
-    justAStringAlias = input('', { alias: 'stringAlias' });
-    withTransform = input<boolean, string | ''>(false, { transform: booleanAttribute });
-    requiredInput = input.required<string>();
-    requiredWithAlias = input.required<boolean>({ alias: 'requiredAlias' });
-    requiredWithAliasAndTransform = input.required<number, string | ''>({ alias: 'transformedRequiredAlias', transform: numberAttribute });
-
-
-  ngOnInit() {
-    let imABoolean = false;
-    console.log(this.justAStringAlias());
-
-    if (this.withTransform()) {
-      imABoolean = this.withTransform()!;
-    }
-  }
-
-  handleClick() {
-    if (this.requiredInput()) {
-      let test = this.requiredInput() + this.requiredWithAlias();
-    } else {
-      let test = this.requiredWithAliasAndTransform() + this.requiredWithAlias();
-    }
-  }
-}
-`;
-
 describe('convertSignalInputsGenerator', () => {
 	let tree: Tree;
 	const options: ConvertSignalInputsGeneratorSchema = {

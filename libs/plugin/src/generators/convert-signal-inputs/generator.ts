@@ -110,10 +110,17 @@ function getSignalInputInitializer(
 		writer.write('(');
 
 		if (!isRequired) {
-			if (propertyInitializer) {
-				writer.write(propertyInitializer.getText());
-			} else if (defaultToUndefined) {
-				writer.write('undefined');
+			let defaultValue = propertyInitializer
+				? propertyInitializer.getText()
+				: defaultToUndefined
+					? 'undefined'
+					: '';
+
+			if (defaultValue) {
+				if (['boolean', 'number'].includes(transformType)) {
+					defaultValue = `${transformType}Attribute(${defaultValue})`;
+				}
+				writer.write(defaultValue);
 			}
 		}
 	};
@@ -156,7 +163,11 @@ function getSignalInputInitializer(
 			}
 
 			writeTypeNodeAndInitializer(writer, required, transformType, true);
-			writer.write(optionsAsText ? `, ${optionsAsText});` : ');');
+			if (required) {
+				writer.write(optionsAsText ? `${optionsAsText});` : ');');
+			} else {
+				writer.write(optionsAsText ? `, ${optionsAsText});` : ');');
+			}
 		} else if (Node.isStringLiteral(decoratorArg)) {
 			writeTypeNodeAndInitializer(writer, false, '', true);
 			writer.write(`, { alias: ${decoratorArg.getText()} });`);
