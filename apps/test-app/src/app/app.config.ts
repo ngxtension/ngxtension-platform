@@ -61,6 +61,11 @@ export const appConfig: ApplicationConfig = {
 					),
 				],
 			},
+			{
+				path: 'control-value-accessor',
+				loadComponent: () =>
+					import('./control-value-accessor/control-value-accessor'),
+			},
 		]),
 	],
 };
