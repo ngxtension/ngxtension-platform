@@ -11,7 +11,7 @@ import {
 	type OnInit,
 } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { NgControl, type ControlValueAccessor } from '@angular/forms';
+import { NgControl, NgModel, type ControlValueAccessor } from '@angular/forms';
 import { rxEffect } from 'ngxtension/rx-effect';
 import { skip } from 'rxjs';
 
@@ -20,7 +20,7 @@ const noop = () => undefined;
 @Directive({
 	standalone: true,
 })
-export class MixinControlValueAccessor<T>
+export class MixinControlValueAccessor<T = unknown>
 	implements ControlValueAccessor, OnInit
 {
 	/** @ignore */
@@ -55,11 +55,11 @@ export class MixinControlValueAccessor<T>
 	public ngOnInit(): void {
 		if (this.ngControl != null) {
 			runInInjectionContext(this.injector, () => {
-				// NOTE: Don't use signal effects here because we have no idea if we are setting other signals here.
+				// NOTE: Don't use 'effect' because we have no idea if we are setting other signals here.
 
 				// sync value
 				rxEffect(toObservable(this.value$), (value) => {
-					if (this.compareTo(this.ngControl?.value, value))
+					if (!this.compareTo(this.ngControl?.value, value))
 						this.onChange(value);
 				});
 
@@ -90,6 +90,10 @@ export class MixinControlValueAccessor<T>
 	@Input({ transform: booleanAttribute })
 	public set disabled(disabled: boolean) {
 		this.disabled$.set(disabled);
+	}
+
+	public get disabled() {
+		return this.disabled$();
 	}
 
 	/**
@@ -129,9 +133,23 @@ export class MixinControlValueAccessor<T>
 	/**  This function is set by the forms api, if a control is present. */
 	private onTouched: () => void = noop;
 
+	/**
+	 * `NgModel` sets up the control in `ngOnChanges`. Idk if bug or on purpose, but `writeValue` and `setDisabledState` are called before the inputs are set.
+	 * {@link https://github.com/angular/angular/blob/main/packages/forms/src/directives/ng_model.ts#L223}
+	 *
+	 * @ignore
+	 */
+	private get registered() {
+		return this.ngControl instanceof NgModel
+			? (this.ngControl as unknown as { _registered: boolean })._registered
+			: true;
+	}
+
 	// control value accessor implementation
 
-	public writeValue = (value: T) => (this.value = value);
+	public writeValue = (value: T) => {
+		if (this.registered) this.value = value;
+	};
 
 	public registerOnChange = (onChange: (value: T) => void) =>
 		(this.onChange = onChange);
@@ -139,5 +157,7 @@ export class MixinControlValueAccessor<T>
 	public registerOnTouched = (onTouched: () => void) =>
 		(this.onTouched = onTouched);
 
-	public setDisabledState = (disabled: boolean) => this.disabled$.set(disabled);
+	public setDisabledState = (disabled: boolean) => {
+		if (this.registered) this.disabled$.set(disabled);
+	};
 }
