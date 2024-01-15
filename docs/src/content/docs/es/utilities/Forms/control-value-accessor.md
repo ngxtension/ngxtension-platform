@@ -133,8 +133,8 @@ export class SelectorUsuario {
 Con uso:
 
 ```html
-<selector-usuario [formControl]="controlUsuario" [opciones]="usuarios" />
-<selector-usuario [(ngModel)]="usuario" [opciones]="usuarios" />
+<selector-usuario [formControl]="controlUsuario" [usuarios]="usuarios" />
+<selector-usuario [(ngModel)]="usuario" [usuarios]="usuarios" />
 ```
 
 ## Sin `NgControl`

@@ -128,8 +128,8 @@ export class UserSelect {
 With usage:
 
 ```html
-<user-select [formControl]="userControl" [options]="users" />
-<user-select [(ngModel)]="user" [options]="users" />
+<user-select [formControl]="userControl" [users]="users" />
+<user-select [(ngModel)]="user" [users]="users" />
 ```
 
 ## Without `NgControl`
