@@ -4,5 +4,5 @@
 	"lib": {
 		"entryFile": "src/index.ts"
 	},
-	"allowedNonPeerDependencies": ["@nx/devkit", "nx"]
+	"allowedNonPeerDependencies": ["@nx/devkit", "nx", "ts-morph"]
 }

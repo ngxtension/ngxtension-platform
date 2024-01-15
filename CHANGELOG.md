@@ -1,5 +1,84 @@
 
 
+## [1.9.9](https://github.com/nartc/ngxtension-platform/compare/1.9.8...1.9.9) (2024-01-12)
+
+
+### Bug Fixes
+
+* **plugin:** update ts references with awareness of ternaries and if block ([89e431e](https://github.com/nartc/ngxtension-platform/commit/89e431e0ffb70e31f30c2e0432a7406fa67fbfc6))
+
+## [1.9.8](https://github.com/nartc/ngxtension-platform/compare/1.9.7...1.9.8) (2024-01-12)
+
+
+### Bug Fixes
+
+* **plugin:** ensure to keep jsdoc with properties ([cc8731f](https://github.com/nartc/ngxtension-platform/commit/cc8731f172ecf27fae61fad283138540329ef700))
+
+## [1.9.7](https://github.com/nartc/ngxtension-platform/compare/1.9.6...1.9.7) (2024-01-12)
+
+
+### Bug Fixes
+
+* **plugin:** input.required parameter should be the option object if exist ([dbb7cf4](https://github.com/nartc/ngxtension-platform/commit/dbb7cf48a6cbc202cde3f12ee79bb693fff72beb))
+
+## [1.9.6](https://github.com/nartc/ngxtension-platform/compare/1.9.5...1.9.6) (2024-01-12)
+
+
+### Bug Fixes
+
+* add more dumb input usages for testing ([#224](https://github.com/nartc/ngxtension-platform/issues/224)) ([2cec792](https://github.com/nartc/ngxtension-platform/commit/2cec792f4c24cf79558d85752d0dee4ef5c213c7))
+* **connect:** handle null when performing typeof object ([#223](https://github.com/nartc/ngxtension-platform/issues/223)) ([b542fdf](https://github.com/nartc/ngxtension-platform/commit/b542fdf56813c17d2c3c1316dc755bfb5eb5ef7b))
+* **plugin:** update references ([d88e260](https://github.com/nartc/ngxtension-platform/commit/d88e2603474cf0938d706bba95831837ba0cecf1))
+
+## [1.9.5](https://github.com/nartc/ngxtension-platform/compare/1.9.4...1.9.5) (2024-01-11)
+
+
+### Bug Fixes
+
+* **plugin:** get all projects if project nor path is passed in ([34293d1](https://github.com/nartc/ngxtension-platform/commit/34293d12a14e494acb7b4f2cd198dc95bfb5261c))
+
+## [1.9.4](https://github.com/nartc/ngxtension-platform/compare/1.9.3...1.9.4) (2024-01-11)
+
+
+### Bug Fixes
+
+* **plugin:** ensure to track withTransforms regardless of typenode exists or not ([b512f1f](https://github.com/nartc/ngxtension-platform/commit/b512f1f45118f54417dc4f25905ca5c8769f0ddf))
+
+## [1.9.3](https://github.com/nartc/ngxtension-platform/compare/1.9.2...1.9.3) (2024-01-11)
+
+
+### Bug Fixes
+
+* **plugin:** make sure all classes in a file is processed ([4a687a5](https://github.com/nartc/ngxtension-platform/commit/4a687a5526cc189f93965a6608df5ae43b6c0a9d))
+
+## [1.9.2](https://github.com/nartc/ngxtension-platform/compare/1.9.1...1.9.2) (2024-01-11)
+
+
+### Bug Fixes
+
+* **plugin:** use correct property name for file path ([a24d995](https://github.com/nartc/ngxtension-platform/commit/a24d99578fb08add11ad1b9cbfabea030603a440))
+
+## [1.9.1](https://github.com/nartc/ngxtension-platform/compare/1.9.0...1.9.1) (2024-01-11)
+
+
+### Bug Fixes
+
+* **plugin:** add ts-morph to dep of ngxtension ([a78fdae](https://github.com/nartc/ngxtension-platform/commit/a78fdae158a4e38ca544138bed07d2a98a8293f9))
+
+## [1.9.0](https://github.com/nartc/ngxtension-platform/compare/1.8.1...1.9.0) (2024-01-11)
+
+
+### Features
+
+* **create-injection-token:** add createService ([#222](https://github.com/nartc/ngxtension-platform/issues/222)) ([294c66a](https://github.com/nartc/ngxtension-platform/commit/294c66a8668774be8fe4be8a43f76fda7789db6f))
+* **NgxSvgSprite:** add a directive for rendering symbols of svg sprites ([#219](https://github.com/nartc/ngxtension-platform/issues/219)) ([c585aca](https://github.com/nartc/ngxtension-platform/commit/c585aca16e2badb3261d2ee8243a651d8d6a3787))
+* **plugin:** generator to convert to signal inputs ([39bd37e](https://github.com/nartc/ngxtension-platform/commit/39bd37eed331ea489b5d406f8546b5289d505f8d))
+
+
+### Refactor
+
+* **NgxControlError:** improve statematcher ([#220](https://github.com/nartc/ngxtension-platform/issues/220)) ([9507c07](https://github.com/nartc/ngxtension-platform/commit/9507c070b591efbc32b8225044c6afe7777b22b8))
+
 ## [1.8.1](https://github.com/nartc/ngxtension-platform/compare/1.8.0...1.8.1) (2024-01-06)
 
 

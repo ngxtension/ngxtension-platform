@@ -116,7 +116,12 @@ export function connect(signal: WritableSignal<unknown>, ...args: any[]) {
 		return observable.pipe(takeUntilDestroyed(destroyRef)).subscribe((x) => {
 			const update = () => {
 				signal.update((prev) => {
-					if (typeof prev === 'object' && !Array.isArray(prev)) {
+					if (
+						prev !== undefined &&
+						prev !== null &&
+						typeof prev === 'object' &&
+						!Array.isArray(prev)
+					) {
 						return { ...prev, ...((reducer?.(prev, x) || x) as object) };
 					}
 
