@@ -1,1 +1,1 @@
-export * from './control-value-accessor.mixin';
+export * from './control-value-accessor';

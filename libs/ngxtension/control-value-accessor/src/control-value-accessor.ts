@@ -12,15 +12,45 @@ import {
 } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { NgControl, NgModel, type ControlValueAccessor } from '@angular/forms';
+import { createInjectionToken } from 'ngxtension/create-injection-token';
 import { rxEffect } from 'ngxtension/rx-effect';
 import { skip } from 'rxjs';
 
 const noop = () => undefined;
 
+/** @see {@link NgxControlValueAccessor.compareTo}. */
+export type NgxControlValueAccessorCompareTo<T = any> = (
+	a?: T,
+	b?: T,
+) => boolean;
+
+export const [injectCvaCompareTo, provideCvaCompareTo] = createInjectionToken<
+	() => NgxControlValueAccessorCompareTo
+>(() => Object.is);
+
+export const [injectCvaDefaultValue, provideCvaDefaultValue] =
+	createInjectionToken<() => any>(() => null);
+
+/**
+ * Provides a {@link NgxControlValueAccessorCompareTo comparator} based on a property of `T`.
+ *
+ * @example
+ * ```ts
+ * interface User {
+ * 	id: string;
+ * 	name: string;
+ * }
+ *
+ * provideCvaCompareToByProp<User>('id');
+ * ```
+ */
+export const provideCvaCompareToByProp = <T>(prop: keyof T) =>
+	provideCvaCompareTo((a, b) => Object.is(a?.[prop], b?.[prop]), true);
+
 @Directive({
 	standalone: true,
 })
-export class MixinControlValueAccessor<T = unknown>
+export class NgxControlValueAccessor<T = any>
 	implements ControlValueAccessor, OnInit
 {
 	/** @ignore */
@@ -32,16 +62,23 @@ export class MixinControlValueAccessor<T = unknown>
 		optional: true,
 	});
 
+	/** @ignore */
 	public constructor() {
 		if (this.ngControl != null) this.ngControl.valueAccessor = this;
 	}
 
-	/** The value of this mixin. If a control is present, it reflects it's value. */
-	public readonly value$ = signal(null as T, {
+	/** @ignore */
+	private initialValue = (): T => {
+		if (this.ngControl != null) return this.ngControl.value;
+		return injectCvaDefaultValue();
+	};
+
+	/** The value of this. If a control is present, it reflects it's value. */
+	public readonly value$ = signal(this.initialValue(), {
 		equal: (a, b) => this.compareTo(a, b),
 	});
 
-	/** Whether this mixin is disabled. If a control is present, it reflects it's disabled state. */
+	/** Whether this is disabled. If a control is present, it reflects it's disabled state. */
 	public readonly disabled$ = signal(this.ngControl?.disabled ?? false);
 
 	/**
@@ -49,7 +86,8 @@ export class MixinControlValueAccessor<T = unknown>
 	 *
 	 * Defaults to {@link Object.is} in order to align with change detection behavior for inputs.
 	 */
-	public readonly compareTo$ = signal<(a?: T, b?: T) => boolean>(Object.is);
+	public readonly compareTo$ =
+		signal<NgxControlValueAccessorCompareTo<T>>(injectCvaCompareTo());
 
 	/** @ignore */
 	public ngOnInit(): void {
@@ -76,7 +114,7 @@ export class MixinControlValueAccessor<T = unknown>
 		}
 	}
 
-	/** The value of this mixin. If a control is present, it reflects it's value. */
+	/** The value of this. If a control is present, it reflects it's value. */
 	@Input()
 	public set value(value: T) {
 		this.value$.set(value);
@@ -86,7 +124,7 @@ export class MixinControlValueAccessor<T = unknown>
 		return this.value$();
 	}
 
-	/** Whether this mixin is disabled. If a control is present, it reflects it's disabled state. */
+	/** Whether this is disabled. If a control is present, it reflects it's disabled state. */
 	@Input({ transform: booleanAttribute })
 	public set disabled(disabled: boolean) {
 		this.disabled$.set(disabled);
@@ -102,7 +140,7 @@ export class MixinControlValueAccessor<T = unknown>
 	 * Defaults to {@link Object.is} in order to align with change detection behavior for inputs.
 	 */
 	@Input()
-	public set compareTo(compareTo: (a?: T, b?: T) => boolean) {
+	public set compareTo(compareTo) {
 		if (typeof compareTo === 'function') this.compareTo$.set(compareTo);
 	}
 
@@ -111,7 +149,7 @@ export class MixinControlValueAccessor<T = unknown>
 	}
 
 	/**
-	 * Emits whenever this {@link MixinControlValueAccessor.value$ value} changes.
+	 * Emits whenever this {@link NgxControlValueAccessor.value$ value} changes.
 	 */
 	@Output()
 	public readonly valueChange = toObservable(this.value$).pipe(skip(1)); // -> hot observable
@@ -121,8 +159,8 @@ export class MixinControlValueAccessor<T = unknown>
 	 *
 	 * NOTE: Whenever a `blur` event is triggered on this host, this function is called.
 	 *
-	 * @see {@link MixinControlValueAccessor.registerOnTouched}
-	 * @see {@link MixinControlValueAccessor.ngControl}
+	 * @see {@link NgxControlValueAccessor.registerOnTouched}
+	 * @see {@link NgxControlValueAccessor.ngControl}
 	 */
 	@HostListener('blur')
 	public markAsTouched = () => this.onTouched();

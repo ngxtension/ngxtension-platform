@@ -8,14 +8,14 @@ import {
 	ReactiveFormsModule,
 } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { MixinControlValueAccessor } from './control-value-accessor.mixin';
+import { NgxControlValueAccessor } from './control-value-accessor';
 
-describe('MixinControlValueAccessor', () => {
+describe('NgxControlValueAccessor', () => {
 	@Component({
 		selector: 'custom-input',
 		hostDirectives: [
 			{
-				directive: MixinControlValueAccessor,
+				directive: NgxControlValueAccessor,
 				inputs: ['value', 'disabled', 'compareTo'],
 				outputs: ['valueChange'],
 			},
@@ -31,7 +31,7 @@ describe('MixinControlValueAccessor', () => {
 		standalone: true,
 	})
 	class CustomInput {
-		cva: MixinControlValueAccessor<string> = inject(MixinControlValueAccessor);
+		cva = inject<NgxControlValueAccessor<string>>(NgxControlValueAccessor);
 	}
 
 	const render = <T>(
