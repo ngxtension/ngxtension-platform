@@ -1,6 +1,5 @@
 import {
 	Directive,
-	HostListener,
 	Injector,
 	Input,
 	Output,
@@ -308,7 +307,6 @@ export class NgxControlValueAccessor<T = any>
 	 * @see {@link NgxControlValueAccessor.registerOnTouched}
 	 * @see {@link NgxControlValueAccessor.ngControl}
 	 */
-	@HostListener('blur')
 	public markAsTouched = () => this.onTouched();
 
 	/** This function is set by the forms api, if a control is present. */
