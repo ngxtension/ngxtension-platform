@@ -12,7 +12,7 @@ import { assertInjector } from 'ngxtension/assert-injector';
 import { Observable, Subject, isObservable, switchMap } from 'rxjs';
 
 export function computedAsync<T>(
-	computation: () => Promise<T> | Observable<T> | null | undefined,
+	computation: () => Promise<T> | Observable<T> | T | null,
 	options?:
 		| (CreateComputedOptions<void> & { initialValue?: T; injector?: Injector })
 		| undefined,
@@ -21,17 +21,20 @@ export function computedAsync<T>(
 		const destroyRef = inject(DestroyRef);
 
 		const source$ = new Subject<Promise<T> | Observable<T>>();
+		const sourceValue = signal<T | null>(options?.initialValue ?? null);
 
 		const effectRef = effect(
 			() => {
 				const newSource = computation();
-				if (!isObservable(newSource) && !isPromise(newSource)) return;
+				if (!isObservable(newSource) && !isPromise(newSource)) {
+					// set the value directly
+					sourceValue.set(newSource);
+					return;
+				}
 				untracked(() => source$.next(newSource));
 			},
 			{ injector: options?.injector },
 		);
-
-		const sourceValue = signal<T | null>(options?.initialValue ?? null);
 
 		const sourceResult = source$
 			.pipe(switchMap((source$) => source$))
