@@ -7,9 +7,20 @@ import {
 	signal,
 	untracked,
 	type CreateComputedOptions,
+	type Signal,
 } from '@angular/core';
 import { assertInjector } from 'ngxtension/assert-injector';
 import { Observable, Subject, isObservable, switchMap } from 'rxjs';
+
+interface ComputedAsyncOptions<T> extends CreateComputedOptions<void> {
+	initialValue?: T;
+	injector?: Injector;
+}
+
+export function computedAsync<T>(
+	computation: () => Promise<T> | Observable<T> | T | null,
+	options?: ComputedAsyncOptions<T> | undefined,
+): T extends null ? Signal<T | null> : Signal<T>;
 
 /**
  * A computed value that can be async! This is useful for when you need to compute a value based on a Promise or Observable.

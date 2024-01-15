@@ -1,5 +1,5 @@
-import { signal } from '@angular/core';
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { Signal, signal } from '@angular/core';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { delay, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { computedAsync } from './computed-async';
@@ -154,5 +154,38 @@ describe(computedAsync.name, () => {
 				// 2 was skipped -> the computation was cancelled
 			});
 		}));
+	});
+
+	describe('is typesafe', () => {
+		it('initial value', () => {
+			const a: Signal<number> = computedAsync(() => {
+				if (Math.random() > 0.5) return Promise.resolve(1);
+				return Promise.resolve(1);
+			});
+
+			const b: Signal<number> = computedAsync(() => {
+				if (Math.random() > 0.5) return of(1);
+				return of(1);
+			});
+
+			const c: Signal<number | null> = computedAsync(
+				() => {
+					return 1;
+				},
+				{ initialValue: null },
+			);
+
+			const d: Signal<string> = computedAsync(
+				() => {
+					return '';
+				},
+				{ initialValue: '' },
+			);
+
+			expect(a).toBeTruthy();
+			expect(b).toBeTruthy();
+			expect(c).toBeTruthy();
+			expect(d).toBeTruthy();
+		});
 	});
 });
