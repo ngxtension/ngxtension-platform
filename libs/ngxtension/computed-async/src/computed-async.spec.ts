@@ -158,34 +158,36 @@ describe(computedAsync.name, () => {
 
 	describe('is typesafe', () => {
 		it('initial value', () => {
-			const a: Signal<number> = computedAsync(() => {
-				if (Math.random() > 0.5) return Promise.resolve(1);
-				return Promise.resolve(1);
+			TestBed.runInInjectionContext(() => {
+				const a: Signal<number> = computedAsync(() => {
+					if (Math.random() > 0.5) return Promise.resolve(1);
+					return Promise.resolve(1);
+				});
+
+				const b: Signal<number> = computedAsync(() => {
+					if (Math.random() > 0.5) return of(1);
+					return of(1);
+				});
+
+				const c: Signal<number | null> = computedAsync(
+					() => {
+						return 1;
+					},
+					{ initialValue: null },
+				);
+
+				const d: Signal<string> = computedAsync(
+					() => {
+						return '';
+					},
+					{ initialValue: '' },
+				);
+
+				expect(a).toBeTruthy();
+				expect(b).toBeTruthy();
+				expect(c).toBeTruthy();
+				expect(d).toBeTruthy();
 			});
-
-			const b: Signal<number> = computedAsync(() => {
-				if (Math.random() > 0.5) return of(1);
-				return of(1);
-			});
-
-			const c: Signal<number | null> = computedAsync(
-				() => {
-					return 1;
-				},
-				{ initialValue: null },
-			);
-
-			const d: Signal<string> = computedAsync(
-				() => {
-					return '';
-				},
-				{ initialValue: '' },
-			);
-
-			expect(a).toBeTruthy();
-			expect(b).toBeTruthy();
-			expect(c).toBeTruthy();
-			expect(d).toBeTruthy();
 		});
 	});
 });
