@@ -112,17 +112,20 @@ describe(computedAsync.name, () => {
 				expect(logs).toEqual([1, 2]);
 			});
 		}));
-		it('cancels previous computation', fakeAsync(() => {
+		it('behavior: switch (default) -> previous computation', fakeAsync(() => {
 			TestBed.runInInjectionContext(() => {
 				const logs: number[] = [];
 				const value = signal(1);
 
-				const s = computedAsync(() => {
-					return of(value()).pipe(
-						delay(100),
-						tap((v) => logs.push(v)),
-					);
-				});
+				const s = computedAsync(
+					() => {
+						return of(value()).pipe(
+							delay(100),
+							tap((v) => logs.push(v)),
+						);
+					},
+					// { behavior: 'switch' },
+				);
 
 				expect(s()).toEqual(null); // initial value
 				TestBed.flushEffects();
@@ -152,6 +155,139 @@ describe(computedAsync.name, () => {
 				expect(logs).toEqual([1, 3]);
 
 				// 2 was skipped -> the computation was cancelled
+			});
+		}));
+		it('behavior: concat -> does not cancel previous computation', fakeAsync(() => {
+			TestBed.runInInjectionContext(() => {
+				const logs: number[] = [];
+				const value = signal(1);
+
+				const s = computedAsync(
+					() => {
+						return of(value()).pipe(
+							delay(100),
+							tap((v) => logs.push(v)),
+						);
+					},
+					{ behavior: 'concat' },
+				);
+
+				expect(s()).toEqual(null); // initial value
+				TestBed.flushEffects();
+				expect(s()).toEqual(null); // initial value
+				tick(50);
+				expect(s()).toEqual(null); // initial value
+				tick(50);
+				// now we have 100ms passed
+				expect(s()).toEqual(1);
+				expect(logs).toEqual([1]);
+
+				value.set(2);
+				TestBed.flushEffects();
+				expect(s()).toEqual(1); // still the old value
+				tick(50); // wait 50ms
+				expect(s()).toEqual(1);
+				expect(logs).toEqual([1]);
+
+				value.set(3);
+				TestBed.flushEffects();
+
+				tick(50); // wait 50ms
+				expect(s()).toEqual(2);
+				expect(logs).toEqual([1, 2]);
+
+				// now the next computation starts again, so we need to wait 100ms
+				tick(100); // wait 50ms
+				expect(s()).toEqual(3);
+				expect(logs).toEqual([1, 2, 3]);
+			});
+		}));
+		it('behavior: merge -> runs everything in parallel', fakeAsync(() => {
+			TestBed.runInInjectionContext(() => {
+				const logs: number[] = [];
+				const value = signal(1);
+
+				const s = computedAsync(
+					() => {
+						return of(value()).pipe(
+							delay(100),
+							tap((v) => logs.push(v)),
+						);
+					},
+					{ behavior: 'merge' },
+				);
+
+				expect(s()).toEqual(null); // initial value
+				TestBed.flushEffects();
+				expect(s()).toEqual(null); // initial value
+				tick(50);
+				expect(s()).toEqual(null); // initial value
+				tick(50);
+				// now we have 100ms passed
+				expect(s()).toEqual(1);
+				expect(logs).toEqual([1]);
+
+				value.set(2);
+				TestBed.flushEffects();
+
+				value.set(0);
+				TestBed.flushEffects();
+
+				value.set(3);
+				TestBed.flushEffects();
+
+				value.set(4);
+				TestBed.flushEffects();
+
+				tick(100); // wait 50ms
+				expect(s()).toEqual(4);
+				expect(logs).toEqual([1, 2, 0, 3, 4]);
+			});
+		}));
+		it('behavior: exhaust -> skips new computations until last one completes', fakeAsync(() => {
+			TestBed.runInInjectionContext(() => {
+				const logs: number[] = [];
+				const value = signal(1);
+
+				const s = computedAsync(
+					() => {
+						return of(value()).pipe(
+							delay(100),
+							tap((v) => logs.push(v)),
+						);
+					},
+					{ behavior: 'exhaust' },
+				);
+
+				expect(s()).toEqual(null); // initial value
+				TestBed.flushEffects();
+				expect(s()).toEqual(null); // initial value
+				tick(50);
+				expect(s()).toEqual(null); // initial value
+				tick(50);
+				// now we have 100ms passed
+				expect(s()).toEqual(1);
+				expect(logs).toEqual([1]);
+
+				value.set(2);
+				TestBed.flushEffects();
+				expect(s()).toEqual(1); // still the old value
+				tick(50); // wait 50ms
+
+				value.set(3);
+				TestBed.flushEffects();
+
+				expect(s()).toEqual(1);
+				expect(logs).toEqual([1]);
+
+				tick(50); // wait 50ms
+				expect(s()).toEqual(2);
+				expect(logs).toEqual([1, 2]);
+
+				// now the next computation starts again, so we need to wait 100ms
+				tick(100); // wait 50ms
+				expect(s()).toEqual(2);
+				expect(logs).toEqual([1, 2]);
 			});
 		}));
 	});
