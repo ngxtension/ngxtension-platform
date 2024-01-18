@@ -20,18 +20,15 @@ import {
 	switchMap,
 } from 'rxjs';
 
-export type ComputedAsyncBehavior = 'switch' | 'merge' | 'concat' | 'exhaust';
+type ComputedAsyncBehavior = 'switch' | 'merge' | 'concat' | 'exhaust';
 
-interface ComputedAsyncOptions<T> extends CreateComputedOptions<void> {
+type ComputationResult<T> = Promise<T> | Observable<T> | T | undefined;
+
+interface ComputedAsyncOptions<T> extends CreateComputedOptions<T> {
 	initialValue?: T;
 	injector?: Injector;
 	behavior?: ComputedAsyncBehavior;
 }
-
-export function computedAsync<T>(
-	computation: () => Promise<T> | Observable<T> | T | null,
-	options?: ComputedAsyncOptions<T> | undefined,
-): T extends null ? Signal<T | null> : Signal<T>;
 
 /**
  * A computed value that can be async! This is useful for when you need to compute a value based on a Promise or Observable.
@@ -76,9 +73,9 @@ export function computedAsync<T>(
  * @param options
  */
 export function computedAsync<T>(
-	computation: () => Promise<T> | Observable<T> | T | null,
-	options: ComputedAsyncOptions<T> | undefined = { behavior: 'switch' },
-) {
+	computation: (previousValue?: T | undefined) => ComputationResult<T>,
+	options?: ComputedAsyncOptions<T>,
+): Signal<T> {
 	return assertInjector(computedAsync, options?.injector, () => {
 		const destroyRef = inject(DestroyRef);
 
@@ -86,11 +83,17 @@ export function computedAsync<T>(
 		const sourceEvent$ = new Subject<Promise<T> | Observable<T>>();
 
 		// will hold the current value
-		const sourceValue = signal<T | null>(options?.initialValue ?? null);
+		const sourceValue = signal<T | undefined>(
+			options?.initialValue ?? undefined,
+		);
 
 		const effectRef = effect(
 			() => {
-				const newSource = computation();
+				// we need to have an untracked() here because we don't want to register the sourceValue as a dependency
+				// otherwise, we would have an infinite loop
+				const currentValue = untracked(() => sourceValue());
+
+				const newSource = computation(currentValue);
 				if (!isObservable(newSource) && !isPromise(newSource)) {
 					// if the new source is not an observable or a promise, we set the value immediately
 					untracked(() => sourceValue.set(newSource));
@@ -124,7 +127,13 @@ export function computedAsync<T>(
 
 		// we return a computed value that will return the current value
 		// in order to support the same API as computed()
-		return computed(() => sourceValue(), { equal: options?.equal });
+		return computed(
+			() => {
+				const value: T = sourceValue()!;
+				return value;
+			},
+			{ equal: options?.equal },
+		);
 	});
 }
 

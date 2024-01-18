@@ -1,4 +1,4 @@
-import { Signal, signal } from '@angular/core';
+import { signal } from '@angular/core';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { delay, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -13,10 +13,10 @@ describe(computedAsync.name, () => {
 			TestBed.runInInjectionContext(() => {
 				const value = signal<null | undefined>(null);
 				const result = computedAsync(() => value());
-				expect(result()).toEqual(null); // initial value
-				value.set(undefined);
+				expect(result()).toEqual(undefined); // initial value
+				value.set(null);
 				TestBed.flushEffects();
-				expect(result()).toEqual(undefined);
+				expect(result()).toEqual(null);
 			});
 		}));
 		it('objects', fakeAsync(() => {
@@ -28,7 +28,7 @@ describe(computedAsync.name, () => {
 					return data().map((v) => v + value());
 				});
 
-				expect(result()).toEqual(null); // initial value
+				expect(result()).toEqual(undefined); // initial value
 				TestBed.flushEffects();
 				expect(result()).toEqual([1, 2, 3]);
 				value.set(1);
@@ -58,6 +58,49 @@ describe(computedAsync.name, () => {
 		}));
 	});
 
+	describe('works with previousValue', () => {
+		it('and can be retrieved in the callback fn', fakeAsync(() => {
+			TestBed.runInInjectionContext(() => {
+				const logs: number[] = [];
+				const value = signal(1);
+
+				// TODO(enea): the prev param has unknown type for some reason
+				const s = computedAsync((previousValue: number | undefined) => {
+					const v = value();
+					if (previousValue !== undefined) {
+						logs.push(previousValue * 1000);
+					}
+					return promise(v, 100).then((x) => logs.push(x));
+				});
+
+				expect(s()).toEqual(undefined); // initial value
+				expect(logs).toEqual([]);
+				TestBed.flushEffects();
+				expect(s()).toEqual(undefined); // initial value
+				expect(logs).toEqual([]);
+				tick(100); // wait 100ms for promise to resolve
+				expect(s()).toEqual(1);
+				expect(logs).toEqual([1]);
+
+				value.set(3);
+				TestBed.flushEffects();
+				expect(s()).toEqual(1); // still the old value
+				expect(logs).toEqual([1, 1000]);
+				tick(100); // wait 100ms for promise to resolve
+				expect(s()).toEqual(3);
+				expect(logs).toEqual([1, 1000, 3]);
+
+				value.set(4);
+				TestBed.flushEffects();
+				expect(s()).toEqual(3); // still the old value
+				expect(logs).toEqual([1, 1000, 3, 3000]); // previousValue is 3 and it gets pushed again
+				tick(100); // wait 100ms for promise to resolve
+				expect(s()).toEqual(4);
+				expect(logs).toEqual([1, 1000, 3, 3000, 4]);
+			});
+		}));
+	});
+
 	describe('works with promises', () => {
 		it('waits for them to resolve', fakeAsync(() => {
 			TestBed.runInInjectionContext(() => {
@@ -67,9 +110,9 @@ describe(computedAsync.name, () => {
 				const s = computedAsync(() => {
 					return promise(value(), 100).then((v) => logs.push(v));
 				});
-				expect(s()).toEqual(null); // initial value
+				expect(s()).toEqual(undefined); // initial value
 				TestBed.flushEffects();
-				expect(s()).toEqual(null); // initial value
+				expect(s()).toEqual(undefined); // initial value
 				tick(100); // wait 100ms for promise to resolve
 				expect(s()).toEqual(1);
 				expect(logs).toEqual([1]);
@@ -97,9 +140,9 @@ describe(computedAsync.name, () => {
 					);
 				});
 
-				expect(s()).toEqual(null); // initial value
+				expect(s()).toEqual(undefined); // initial value
 				TestBed.flushEffects();
-				expect(s()).toEqual(null); // initial value
+				expect(s()).toEqual(undefined); // initial value
 				tick(100); // wait 100ms for promise to resolve
 				expect(s()).toEqual(1);
 				expect(logs).toEqual([1]);
@@ -127,9 +170,9 @@ describe(computedAsync.name, () => {
 					// { behavior: 'switch' },
 				);
 
-				expect(s()).toEqual(null); // initial value
+				expect(s()).toEqual(undefined); // initial value
 				TestBed.flushEffects();
-				expect(s()).toEqual(null); // initial value
+				expect(s()).toEqual(undefined); // initial value
 				tick(100); // wait 100ms for promise to resolve
 				expect(s()).toEqual(1);
 				expect(logs).toEqual([1]);
@@ -172,11 +215,11 @@ describe(computedAsync.name, () => {
 					{ behavior: 'concat' },
 				);
 
-				expect(s()).toEqual(null); // initial value
+				expect(s()).toEqual(undefined); // initial value
 				TestBed.flushEffects();
-				expect(s()).toEqual(null); // initial value
+				expect(s()).toEqual(undefined); // initial value
 				tick(50);
-				expect(s()).toEqual(null); // initial value
+				expect(s()).toEqual(undefined); // initial value
 				tick(50);
 				// now we have 100ms passed
 				expect(s()).toEqual(1);
@@ -217,11 +260,11 @@ describe(computedAsync.name, () => {
 					{ behavior: 'merge' },
 				);
 
-				expect(s()).toEqual(null); // initial value
+				expect(s()).toEqual(undefined); // initial value
 				TestBed.flushEffects();
-				expect(s()).toEqual(null); // initial value
+				expect(s()).toEqual(undefined); // initial value
 				tick(50);
-				expect(s()).toEqual(null); // initial value
+				expect(s()).toEqual(undefined); // initial value
 				tick(50);
 				// now we have 100ms passed
 				expect(s()).toEqual(1);
@@ -259,11 +302,11 @@ describe(computedAsync.name, () => {
 					{ behavior: 'exhaust' },
 				);
 
-				expect(s()).toEqual(null); // initial value
+				expect(s()).toEqual(undefined); // initial value
 				TestBed.flushEffects();
-				expect(s()).toEqual(null); // initial value
+				expect(s()).toEqual(undefined); // initial value
 				tick(50);
-				expect(s()).toEqual(null); // initial value
+				expect(s()).toEqual(undefined); // initial value
 				tick(50);
 				// now we have 100ms passed
 				expect(s()).toEqual(1);
@@ -295,24 +338,28 @@ describe(computedAsync.name, () => {
 	describe('is typesafe', () => {
 		it('initial value', () => {
 			TestBed.runInInjectionContext(() => {
-				const a: Signal<number> = computedAsync(() => {
+				// : Signal<number>
+				const a = computedAsync(() => {
 					if (Math.random() > 0.5) return Promise.resolve(1);
 					return Promise.resolve(1);
 				});
 
-				const b: Signal<number> = computedAsync(() => {
+				// : Signal<number>
+				const b = computedAsync(() => {
 					if (Math.random() > 0.5) return of(1);
 					return of(1);
 				});
 
-				const c: Signal<number | null> = computedAsync(
+				// : Signal<number | null>
+				const c = computedAsync(
 					() => {
 						return 1;
 					},
 					{ initialValue: null },
 				);
 
-				const d: Signal<string> = computedAsync(
+				// : Signal<string>
+				const d = computedAsync(
 					() => {
 						return '';
 					},
