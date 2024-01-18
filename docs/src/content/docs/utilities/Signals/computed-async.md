@@ -140,3 +140,26 @@ If we want to keep the previous computation, but also wait for it to complete be
 If we want to ignore the new computation if the previous one is not completed, we can use the `exhaust` behavior.
 
 - Uses `exhaustMap` operator
+
+### Use with previous computed value
+
+If we want to use the previous computed value in the next computation, we can read it in the callback function as the first argument.
+
+```ts movie-card.ts
+import { injectQueryParams } from 'ngxtension/inject-query-params';
+
+export class UserTasks {
+	private http = inject(HttpClient);
+	userId = injectQueryParams('userId');
+
+	userTasks = computedAsync(
+		(previousTasks) => {
+			// Use previousTasks to do something
+			return this.http.get(
+				`https://localhost/api/tasks?userId=${this.userId()}`,
+			);
+		},
+		{ initialValue: [] },
+	);
+}
+```
