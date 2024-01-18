@@ -70,7 +70,10 @@ describe(computedAsync.name, () => {
 					if (previousValue !== undefined) {
 						logs.push(previousValue * 1000);
 					}
-					return promise(v, 100).then((x) => logs.push(x));
+					return promise(v, 100).then((x) => {
+						logs.push(x);
+						return x;
+					});
 				});
 
 				expect(s()).toEqual(undefined); // initial value
