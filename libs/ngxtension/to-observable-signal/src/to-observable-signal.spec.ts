@@ -43,8 +43,8 @@ describe('toObservableSignal()', () => {
 		TestBed.flushEffects();
 
 		observableSignal.subscribe((value) => {
-			done();
 			expect(value).toBe('Hello');
+			done();
 		});
 	});
 
