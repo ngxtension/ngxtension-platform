@@ -116,7 +116,6 @@ export function computedAsync<T>(
 			error: (error) => {
 				// NOTE: Error should be handled by the user (using catchError or .catch())
 				sourceValue.set(error);
-				throw error;
 			},
 		});
 
