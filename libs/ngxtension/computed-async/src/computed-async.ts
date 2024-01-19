@@ -13,11 +13,11 @@ import { assertInjector } from 'ngxtension/assert-injector';
 import {
 	Observable,
 	Subject,
-	concatMap,
-	exhaustMap,
+	concatAll,
+	exhaustAll,
 	isObservable,
-	mergeMap,
-	switchMap,
+	mergeAll,
+	switchAll,
 } from 'rxjs';
 
 type ComputedAsyncBehavior = 'switch' | 'merge' | 'concat' | 'exhaust';
@@ -141,16 +141,14 @@ function createFlattenObservable<T>(
 	source: Subject<Promise<T> | Observable<T>>,
 	behavior: ComputedAsyncBehavior,
 ): Observable<T> {
-	switch (behavior) {
-		case 'merge':
-			return source.pipe(mergeMap((s) => s));
-		case 'concat':
-			return source.pipe(concatMap((s) => s));
-		case 'exhaust':
-			return source.pipe(exhaustMap((s) => s));
-		default: // switch
-			return source.pipe(switchMap((s) => s));
-	}
+	const KEY_OPERATOR_MAP = {
+		merge: mergeAll,
+		concat: concatAll,
+		exhaust: exhaustAll,
+		switch: switchAll,
+	};
+
+	return source.pipe(KEY_OPERATOR_MAP[behavior]());
 }
 
 function isPromise<T>(value: any): value is Promise<T> {
