@@ -94,14 +94,14 @@ export function computedAsync<T>(
 				const currentValue = untracked(() => sourceValue());
 
 				const newSource = computation(currentValue);
+
 				if (!isObservable(newSource) && !isPromise(newSource)) {
 					// if the new source is not an observable or a promise, we set the value immediately
 					untracked(() => sourceValue.set(newSource));
-					return;
+				} else {
+					// we untrack the source$.next() so that we don't register other signals as dependencies
+					untracked(() => sourceEvent$.next(newSource));
 				}
-
-				// we untrack the source$.next() so that we don't register other signals as dependencies
-				untracked(() => sourceEvent$.next(newSource));
 			},
 			{ injector: options?.injector },
 		);
