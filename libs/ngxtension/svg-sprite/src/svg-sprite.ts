@@ -182,7 +182,7 @@ const createSvgSprite = (options: CreateNgxSvgSpriteOptions) => {
  *
  * ```html
  * <svg viewBox="0 0 496 512">
- * <use href="assets/fontawesome/sprites/brands.svg#github"></use>
+ * 	<use href="assets/fontawesome/sprites/brands.svg#github"></use>
  * </svg>
  * ```
  *
@@ -198,16 +198,16 @@ const createSvgSprite = (options: CreateNgxSvgSpriteOptions) => {
  *
  * ```ts
  * @Directive({
- * selector: 'svg[faBrand]',
- * standalone: true,
- * hostDirectives: [
- * { directive: NgxSvgSpriteFragment, inputs: ['fragment:faBrand'] },
- * ],
+ * 	selector: 'svg[faBrand]',
+ * 	standalone: true,
+ * 	hostDirectives: [
+ * 		{ directive: NgxSvgSpriteFragment, inputs: ['fragment:faBrand'] },
+ * 	],
  * })
  * export class FaBrandSvg {
- * constructor() {
- * inject(NgxSvgSpriteFragment).sprite = 'fa-brands';
- * }
+ * 	constructor() {
+ * 		inject(NgxSvgSpriteFragment).sprite = 'fa-brands';
+ * 	}
  * }
  * ```
  *
@@ -216,12 +216,10 @@ const createSvgSprite = (options: CreateNgxSvgSpriteOptions) => {
  * In order to render a symbol, sprites have to be provided.
  *
  * ```ts
- * provideSvgSprites(
- * createSvgSprite({
- * name: 'fa-brands',
- * baseUrl: 'assets/fontawesome/sprites/brands.svg',
- * }),
- * );
+ * provideSvgSprites({
+ * 	name: 'fa-brands',
+ * 	baseUrl: 'assets/fontawesome/sprites/brands.svg',
+ * });
  * ```
  *
  * The `name` property can reference any arbitrary value, but should be unique, since you can register multiple different svg sprites.
@@ -241,13 +239,11 @@ const createSvgSprite = (options: CreateNgxSvgSpriteOptions) => {
  * Auto View Box is disabled for the svg sprite.
  *
  * ```ts
- * provideSvgSprites(
- * createSvgSprite({
- * name: 'fa-brands',
- * baseUrl: 'assets/fontawesome/sprites/brands.svg',
- * autoViewBox: false,
- * }),
- * );
+ * provideSvgSprites({
+ * 	name: 'fa-brands',
+ * 	baseUrl: 'assets/fontawesome/sprites/brands.svg',
+ * 	autoViewBox: false,
+ * });
  * ```
  *
  * #### Disable via `autoViewBoxDisabled` Input
@@ -271,27 +267,23 @@ const createSvgSprite = (options: CreateNgxSvgSpriteOptions) => {
  * When the `classes` function is set, a list of classes will be added by the `NgxSvgSpriteFragment` to its host.
  *
  * ```ts
- * provideSvgSprites(
- * createSvgSprite({
- * name: 'my-sprite',
- * baseUrl: 'path/to/my/sprite.svg',
- * classes: (fragment) => ['some-class', `some-other-class-${fragment}`],
- * }),
- * );
+ * provideSvgSprites({
+ * 	name: 'my-sprite',
+ * 	baseUrl: 'path/to/my/sprite.svg',
+ * 	classes: (fragment) => ['some-class', `some-other-class-${fragment}`],
+ * });
  * ```
  *
  * ### Url
  *
- * Per default when using the `createSvgSprite` function, the `url` will return `'${baseUrl}#${fragment}'`. This can be overwritten:
+ * Per default when providing a sprite, the `url` will return `'${baseUrl}#${fragment}'`. This can be overwritten:
  *
  * ```ts
- * provideSvgSprites(
- * createSvgSprite({
- * name: 'my-sprite',
- * baseUrl: 'path/to/my/sprite.svg',
- * url: (baseUrl, fragment) => `${baseUrl}#some-prefix-${fragment}`,
- * }),
- * );
+ * provideSvgSprites({
+ * 	name: 'my-sprite',
+ * 	baseUrl: 'path/to/my/sprite.svg',
+ * 	url: (baseUrl, fragment) => `${baseUrl}#some-prefix-${fragment}`,
+ * });
  * ```
  */
 @Directive({

@@ -60,12 +60,10 @@ export class FaBrandSvg {
 In order to render a symbol, sprites have to be provided.
 
 ```ts
-provideSvgSprites(
-	createSvgSprite({
-		name: 'fa-brands',
-		baseUrl: 'assets/fontawesome/sprites/brands.svg',
-	}),
-);
+provideSvgSprites({
+	name: 'fa-brands',
+	baseUrl: 'assets/fontawesome/sprites/brands.svg',
+});
 ```
 
 The `name` property can reference any arbitrary value, but should be unique, since you can register multiple different svg sprites.
@@ -85,13 +83,11 @@ This behavior can be disabled.
 Auto View Box is disabled for the svg sprite.
 
 ```ts
-provideSvgSprites(
-	createSvgSprite({
-		name: 'fa-brands',
-		baseUrl: 'assets/fontawesome/sprites/brands.svg',
-		autoViewBox: false,
-	}),
-);
+provideSvgSprites({
+	name: 'fa-brands',
+	baseUrl: 'assets/fontawesome/sprites/brands.svg',
+	autoViewBox: false,
+});
 ```
 
 #### Disable via `autoViewBoxDisabled` Input
@@ -115,25 +111,21 @@ Auto View Box is disabled for a `svg` element, when the `viewBox` attribute alre
 When the `classes` function is set, a list of classes will be added by the `NgxSvgSpriteFragment` to its host.
 
 ```ts
-provideSvgSprites(
-	createSvgSprite({
-		name: 'my-sprite',
-		baseUrl: 'path/to/my/sprite.svg',
-		classes: (fragment) => ['some-class', `some-other-class-${fragment}`],
-	}),
-);
+provideSvgSprites({
+	name: 'my-sprite',
+	baseUrl: 'path/to/my/sprite.svg',
+	classes: (fragment) => ['some-class', `some-other-class-${fragment}`],
+});
 ```
 
 ### Url
 
-Per default when using the `createSvgSprite` function, the `url` will return `'${baseUrl}#${fragment}'`. This can be overwritten:
+Per default when providing a sprite, the `url` will return `'${baseUrl}#${fragment}'`. This can be overwritten:
 
 ```ts
-provideSvgSprites(
-	createSvgSprite({
-		name: 'my-sprite',
-		baseUrl: 'path/to/my/sprite.svg',
-		url: (baseUrl, fragment) => `${baseUrl}#some-prefix-${fragment}`,
-	}),
-);
+provideSvgSprites({
+	name: 'my-sprite',
+	baseUrl: 'path/to/my/sprite.svg',
+	url: (baseUrl, fragment) => `${baseUrl}#some-prefix-${fragment}`,
+});
 ```
