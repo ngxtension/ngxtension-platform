@@ -1,5 +1,12 @@
 
 
+## [1.10.1](https://github.com/nartc/ngxtension-platform/compare/1.10.0...1.10.1) (2024-01-20)
+
+
+### Bug Fixes
+
+* correct export for toObservableSignal feature ([#231](https://github.com/nartc/ngxtension-platform/issues/231)) ([83cb2ab](https://github.com/nartc/ngxtension-platform/commit/83cb2ab53ad573b1784be7350340043f515698de))
+
 ## [1.10.0](https://github.com/nartc/ngxtension-platform/compare/1.9.9...1.10.0) (2024-01-20)
 
 
