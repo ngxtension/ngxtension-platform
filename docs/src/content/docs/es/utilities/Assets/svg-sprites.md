@@ -60,12 +60,10 @@ export class FaBrandSvg {
 Para renderizar un símbolo, es necesario proporcionar sprites.
 
 ```ts
-provideSvgSprites(
-	createSvgSprite({
-		name: 'fa-brands',
-		baseUrl: 'assets/fontawesome/sprites/brands.svg',
-	}),
-);
+provideSvgSprites({
+	name: 'fa-brands',
+	baseUrl: 'assets/fontawesome/sprites/brands.svg',
+});
 ```
 
 La propiedad `name` puede hacer referencia a cualquier valor arbitrario, pero debe ser única, ya que puedes registrar múltiples sprites de svg diferentes.
@@ -85,13 +83,11 @@ Este comportamiento se puede deshabilitar.
 La Auto View Box está deshabilitada para el sprite de svg.
 
 ```ts
-provideSvgSprites(
-	createSvgSprite({
-		name: 'fa-brands',
-		baseUrl: 'assets/fontawesome/sprites/brands.svg',
-		autoViewBox: false,
-	}),
-);
+provideSvgSprites({
+	name: 'fa-brands',
+	baseUrl: 'assets/fontawesome/sprites/brands.svg',
+	autoViewBox: false,
+});
 ```
 
 #### Deshabilitar mediante la Entrada `autoViewBoxDisabled`
@@ -115,25 +111,21 @@ La Auto View Box está deshabilitada para un elemento `svg` cuando el atributo `
 Cuando se establece la función `classes`, se agregarán una lista de clases al `NgxSvgSpriteFragment` en su host.
 
 ```ts
-provideSvgSprites(
-	createSvgSprite({
-		name: 'my-sprite',
-		baseUrl: 'path/to/my/sprite.svg',
-		classes: (fragment) => ['some-class', `some-other-class-${fragment}`],
-	}),
-);
+provideSvgSprites({
+	name: 'my-sprite',
+	baseUrl: 'path/to/my/sprite.svg',
+	classes: (fragment) => ['some-class', `some-other-class-${fragment}`],
+});
 ```
 
 ### Url
 
-Por defecto, al usar la función `createSvgSprite`, la `url` devolverá `'${baseUrl}#${fragment}'`. Esto se puede sobrescribir:
+Por defecto, al proporcionar un sprite, la propiedad `url` devolverá `'${baseUrl}#${fragment}'`. Esto puede ser sobrescrito:
 
 ```ts
-provideSvgSprites(
-	createSvgSprite({
-		name: 'my-sprite',
-		baseUrl: 'path/to/my/sprite.svg',
-		url: (baseUrl, fragment) => `${baseUrl}#some-prefix-${fragment}`,
-	}),
-);
+provideSvgSprites({
+	name: 'my-sprite',
+	baseUrl: 'path/to/my/sprite.svg',
+	url: (baseUrl, fragment) => `${baseUrl}#some-prefix-${fragment}`,
+});
 ```
