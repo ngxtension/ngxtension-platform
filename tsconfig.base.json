@@ -96,6 +96,9 @@
 			"ngxtension/to-lazy-signal": [
 				"libs/ngxtension/to-lazy-signal/src/index.ts"
 			],
+			"ngxtension/to-observable-signal": [
+				"libs/ngxtension/to-observable-signal/src/index.ts"
+			],
 			"ngxtension/trackby-id-prop": [
 				"libs/ngxtension/trackby-id-prop/src/index.ts"
 			],
