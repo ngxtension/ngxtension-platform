@@ -16,7 +16,7 @@ import { injectQueryParams } from 'ngxtension/inject-query-params';
 
 ## Usage
 
-`injectQueryParams` when is called, returns a signal with the current query params.
+`injectQueryParams` when it's called, returns a signal with the current query params.
 
 ```ts
 @Component({
@@ -65,5 +65,49 @@ class TestComponent {
 		const keys = this.queryParamsKeys();
 		return ['search', 'sort', 'page'].every((x) => keys.includes(x));
 	});
+}
+```
+
+If we want to get the value for a specific query param and transform it into any shape, we can pass the name of the query param and a `transform` function.
+
+```ts
+@Component({
+	template: `
+		Number: {{ number1() }} New number: {{ newNumber() }}
+	`,
+})
+class TestComponent {
+	number1 = injectQueryParams('id', { transform: numberAttribute }); // returns a signal with the value of the search query param
+
+	newNumber = computed(() => this.number1() * 2);
+}
+```
+
+If we want to get the values for a specific query param, we can pass the name of the query param, to `injectQueryParams.array`.
+
+```ts
+// Example url: /search?products=Angular&products=Analog
+
+@Component({
+	template: `
+		Selected products: {{ productNames() }}
+
+		@for (product of products(); track product.id) {
+			<div>{{ product.name }}</div>
+		} @empty {
+			<div>No products!</div>
+		}
+	`,
+})
+class TestComponent {
+	productService = inject(ProductService);
+	productNames = injectQueryParams.array('products'); // returns a signal with the array values of the product query param
+
+	products = computedFrom(
+		[this.productNames],
+		switchMap((productNames) =>
+			this.productService.getByNames(productNames).pipe(startWith([])),
+		),
+	);
 }
 ```
