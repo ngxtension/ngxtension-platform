@@ -43,6 +43,9 @@
 			"ngxtension/control-error": [
 				"libs/ngxtension/control-error/src/index.ts"
 			],
+			"ngxtension/control-value-accessor": [
+				"libs/ngxtension/control-value-accessor/src/index.ts"
+			],
 			"ngxtension/create-effect": [
 				"libs/ngxtension/create-effect/src/index.ts"
 			],
