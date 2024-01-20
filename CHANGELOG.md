@@ -1,5 +1,19 @@
 
 
+## [1.10.0](https://github.com/nartc/ngxtension-platform/compare/1.9.9...1.10.0) (2024-01-20)
+
+
+### Features
+
+* add toObservableSignal() ([#230](https://github.com/nartc/ngxtension-platform/issues/230)) ([2c7e42c](https://github.com/nartc/ngxtension-platform/commit/2c7e42c21e2412c0249ce68851a5827ca6386200))
+* added computed-async impl ([#229](https://github.com/nartc/ngxtension-platform/issues/229)) ([debe8ee](https://github.com/nartc/ngxtension-platform/commit/debe8eeabc61570688f6d4b1c75e36c874650fec))
+* **NgxControlValueAccessor:** Add NgxControlValueAccessor ([#227](https://github.com/nartc/ngxtension-platform/issues/227)) ([7692c46](https://github.com/nartc/ngxtension-platform/commit/7692c46eb2078270da6cf0d7f4d6c98ed98f8682))
+
+
+### Documentations
+
+* **NgxSvgSprite:** align  provideSvgSprites sections with implementation ([#226](https://github.com/nartc/ngxtension-platform/issues/226)) ([28020f6](https://github.com/nartc/ngxtension-platform/commit/28020f62ad0acd3c183fca0002efb535fd615d8f))
+
 ## [1.9.9](https://github.com/nartc/ngxtension-platform/compare/1.9.8...1.9.9) (2024-01-12)
 
 
