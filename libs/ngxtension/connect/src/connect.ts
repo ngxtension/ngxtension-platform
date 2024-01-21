@@ -118,7 +118,13 @@ export function connect(signal: WritableSignal<unknown>, ...args: any[]) {
 				signal.update((prev) => {
 					if (isObject(prev)) {
 						if (!isObject(x)) {
-							return reducer ? { ...prev, ...(reducer(prev, x) as object) } : x;
+							if (reducer) {
+								const reducedValue = reducer(prev, x);
+								return isObject(reducedValue)
+									? { ...prev, ...(reducedValue as object) }
+									: reducedValue;
+							}
+							return x;
 						} else {
 							return { ...prev, ...((reducer?.(prev, x) || x) as object) };
 						}

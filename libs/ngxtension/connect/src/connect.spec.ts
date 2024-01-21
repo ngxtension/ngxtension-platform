@@ -63,6 +63,7 @@ describe(connect.name, () => {
 			source$ = new Subject<number>();
 
 			objectSignal = signal<any>({});
+			reducerSignal = signal<any>({});
 			objectSource$ = new Subject<any>();
 
 			// this works too
@@ -71,6 +72,9 @@ describe(connect.name, () => {
 			constructor() {
 				connect(this.count, this.source$.pipe(take(2)));
 				connect(this.objectSignal, this.objectSource$);
+				connect(this.reducerSignal, this.objectSource$, (_, curr) => {
+					return curr;
+				});
 			}
 		}
 
@@ -95,7 +99,7 @@ describe(connect.name, () => {
 			expect(component.count()).toBe(2); // should not change because we only took 2 values
 		});
 
-		it('correctly updates from object values', () => {
+		it('correctly updates from literal object values to non-literal object values', () => {
 			component.objectSource$.next(null);
 			expect(component.objectSignal()).toEqual(null);
 
@@ -116,6 +120,11 @@ describe(connect.name, () => {
 			component.objectSource$.next({});
 			component.objectSource$.next([]);
 			expect(component.objectSignal()).toEqual([]);
+		});
+
+		it('correctly updates from object literal object values with reducer', () => {
+			component.objectSource$.next(null);
+			expect(component.reducerSignal()).toEqual(null);
 		});
 	});
 
