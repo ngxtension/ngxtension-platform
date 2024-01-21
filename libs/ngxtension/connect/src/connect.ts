@@ -116,7 +116,9 @@ export function connect(signal: WritableSignal<unknown>, ...args: any[]) {
 		return observable.pipe(takeUntilDestroyed(destroyRef)).subscribe((x) => {
 			const update = () => {
 				signal.update((prev) => {
-					if (!isObject(prev)) return reducer?.(prev, x) || x;
+					if (!isObject(prev)) {
+						return reducer?.(prev, x) || x;
+					}
 
 					if (!isObject(x)) {
 						const reducedValue = reducer ? reducer(prev, x) : x;
