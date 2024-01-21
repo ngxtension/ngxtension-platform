@@ -62,11 +62,15 @@ describe(connect.name, () => {
 			count = signal(0);
 			source$ = new Subject<number>();
 
+			objectSignal = signal<any>({});
+			objectSource$ = new Subject<any>();
+
 			// this works too
 			// sub = connect(this.count, this.source$.pipe(take(2)));
 
 			constructor() {
 				connect(this.count, this.source$.pipe(take(2)));
+				connect(this.objectSignal, this.objectSource$);
 			}
 		}
 
@@ -89,6 +93,29 @@ describe(connect.name, () => {
 
 			component.source$.next(3);
 			expect(component.count()).toBe(2); // should not change because we only took 2 values
+		});
+
+		it('correctly updates from object values', () => {
+			component.objectSource$.next(null);
+			expect(component.objectSignal()).toEqual(null);
+
+			component.objectSource$.next({});
+			expect(component.objectSignal()).toEqual({});
+
+			component.objectSource$.next('test');
+			expect(component.objectSignal()).toEqual('test');
+
+			component.objectSource$.next({});
+			component.objectSource$.next(1);
+			expect(component.objectSignal()).toEqual(1);
+
+			component.objectSource$.next({});
+			component.objectSource$.next(undefined);
+			expect(component.objectSignal()).toEqual(undefined);
+
+			component.objectSource$.next({});
+			component.objectSource$.next([]);
+			expect(component.objectSignal()).toEqual([]);
 		});
 	});
 
@@ -229,6 +256,42 @@ describe(connect.name, () => {
 			// updating lastName should not run firstName effect
 			expect(component.firstNameEffectCount).toEqual(1);
 			expect(component.lastNameEffectCount).toEqual(2);
+		});
+	});
+
+	describe('connects an observable to a signal in injection context', () => {
+		@Component({ standalone: true, template: '' })
+		class TestComponent {
+			count = signal(0);
+			source$ = new Subject<number>();
+
+			// this works too
+			// sub = connect(this.count, this.source$.pipe(take(2)));
+
+			constructor() {
+				connect(this.count, this.source$.pipe(take(2)));
+			}
+		}
+
+		let component: TestComponent;
+		let fixture: ComponentFixture<TestComponent>;
+
+		beforeEach(async () => {
+			fixture = TestBed.createComponent(TestComponent);
+			component = fixture.componentInstance;
+		});
+
+		it('works fine', () => {
+			expect(component.count()).toBe(0);
+
+			component.source$.next(1);
+			expect(component.count()).toBe(1);
+
+			component.source$.next(2);
+			expect(component.count()).toBe(2);
+
+			component.source$.next(3);
+			expect(component.count()).toBe(2); // should not change because we only took 2 values
 		});
 	});
 
