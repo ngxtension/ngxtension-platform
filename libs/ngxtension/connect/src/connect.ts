@@ -116,16 +116,18 @@ export function connect(signal: WritableSignal<unknown>, ...args: any[]) {
 		return observable.pipe(takeUntilDestroyed(destroyRef)).subscribe((x) => {
 			const update = () => {
 				signal.update((prev) => {
-					if (
-						prev !== undefined &&
-						prev !== null &&
-						typeof prev === 'object' &&
-						!Array.isArray(prev)
-					) {
-						return { ...prev, ...((reducer?.(prev, x) || x) as object) };
+					if (!isObject(prev)) {
+						return reducer?.(prev, x) || x;
 					}
 
-					return reducer?.(prev, x) || x;
+					if (!isObject(x)) {
+						const reducedValue = reducer ? reducer(prev, x) : x;
+						return isObject(reducedValue)
+							? { ...prev, ...(reducedValue as object) }
+							: reducedValue;
+					}
+
+					return { ...prev, ...((reducer?.(prev, x) || x) as object) };
 				});
 			};
 
@@ -244,4 +246,13 @@ function parseArgs(
 	}
 
 	return [null, null, args[0] as Injector | DestroyRef, false, null];
+}
+
+function isObject(val: any): val is object {
+	return (
+		typeof val === 'object' &&
+		val !== undefined &&
+		val !== null &&
+		!Array.isArray(val)
+	);
 }
