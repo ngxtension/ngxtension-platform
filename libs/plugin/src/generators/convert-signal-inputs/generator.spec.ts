@@ -127,6 +127,51 @@ export class MyCmp {
   }
 }
 `,
+	issue236: `
+@Component({
+  selector: 'app-request-info',
+  templateUrl: './request-info.component.html',
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatButtonModule,
+    AsyncPipe,
+    NgIf,
+  ],
+})
+export class RequestInfoComponent implements OnInit {
+  #formBuilder = inject(NonNullableFormBuilder);
+  #lookuper = inject(AddressLookuper);
+
+  formGroup = this.#formBuilder.group({
+    address: [''],
+  });
+  title = 'Request More Information';
+  @Input() address = '';
+  submitter$ = new Subject<void>();
+  lookupResult$: Observable<string> | undefined;
+
+  ngOnInit(): void {
+    if (this.address) {
+      this.formGroup.setValue({ address: this.address });
+    }
+
+    this.lookupResult$ = this.submitter$.pipe(
+      switchMap(() => {
+        assertDefined(this.formGroup.value.address);
+        return this.#lookuper.lookup(this.formGroup.value.address);
+      }),
+      map((found) => (found ? 'Brochure sent' : 'Address not found')),
+    );
+  }
+
+  search(): void {
+    this.submitter$.next();
+  }
+}`,
 } as const;
 
 describe('convertSignalInputsGenerator', () => {
@@ -184,5 +229,12 @@ describe('convertSignalInputsGenerator', () => {
 		const [updated, , updatedHtml] = readContent();
 		expect(updated).toMatchSnapshot();
 		expect(updatedHtml).toMatchSnapshot();
+	});
+
+	it('should convert properly for issue #236', async () => {
+		const readContent = setup('issue236');
+		await convertSignalInputsGenerator(tree, options);
+		const [updated] = readContent();
+		expect(updated).toMatchSnapshot();
 	});
 });

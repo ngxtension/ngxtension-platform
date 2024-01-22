@@ -381,7 +381,12 @@ export async function convertSignalInputsGenerator(
 				for (const propertyAccessExpression of targetClass.getDescendantsOfKind(
 					SyntaxKind.PropertyAccessExpression,
 				)) {
+					const propertyExpression = propertyAccessExpression.getExpression();
+					if (!Node.isThisExpression(propertyExpression)) continue;
+
 					const propertyName = propertyAccessExpression.getName();
+					if (!convertedInputs.has(propertyName)) continue;
+
 					const startLineInfo = getStartLineInfo(propertyAccessExpression);
 
 					const ifParent = propertyAccessExpression.getFirstAncestorByKind(
@@ -401,18 +406,16 @@ export async function convertSignalInputsGenerator(
 						nonNullifyProperties.set(propertyName, startLineInfo);
 					}
 
-					if (convertedInputs.has(propertyName)) {
-						const callExpression = propertyAccessExpression.replaceWithText(
-							`${propertyAccessExpression.getText()}()`,
-						) as CallExpression;
+					const callExpression = propertyAccessExpression.replaceWithText(
+						`${propertyAccessExpression.getText()}()`,
+					) as CallExpression;
 
-						// this means that this property has been used in an if/ternary condition above
-						if (
-							nonNullifyProperties.has(propertyName) &&
-							nonNullifyProperties.get(propertyName) !== startLineInfo
-						) {
-							callExpression.replaceWithText(`${callExpression.getText()}!`);
-						}
+					// this means that this property has been used in an if/ternary condition above
+					if (
+						nonNullifyProperties.has(propertyName) &&
+						nonNullifyProperties.get(propertyName) !== startLineInfo
+					) {
+						callExpression.replaceWithText(`${callExpression.getText()}!`);
 					}
 				}
 			}

@@ -78,6 +78,57 @@ export class MyCmp {
 "
 `;
 
+exports[`convertSignalInputsGenerator should convert properly for issue #236 1`] = `
+"import { input } from "@angular/core";
+
+@Component({
+  selector: 'app-request-info',
+  templateUrl: './request-info.component.html',
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatButtonModule,
+    AsyncPipe,
+    NgIf,
+  ],
+})
+export class RequestInfoComponent implements OnInit {
+  #formBuilder = inject(NonNullableFormBuilder);
+  #lookuper = inject(AddressLookuper);
+
+  formGroup = this.#formBuilder.group({
+    address: [''],
+  });
+  title = 'Request More Information';
+  address = input('');
+  submitter$ = new Subject<void>();
+  lookupResult$: Observable<string> | undefined;
+
+  ngOnInit(): void {
+    if (this.address()) {
+      this.formGroup.setValue({ address: this.address()! });
+    }
+
+    this.lookupResult$ = this.submitter$.pipe(
+      switchMap(() => {
+        assertDefined(this.formGroup.value.address);
+        return this.#lookuper.lookup(this.formGroup.value.address);
+      }),
+      map((found) => (found ? 'Brochure sent' : 'Address not found')),
+    );
+  }
+
+  search(): void {
+    this.submitter$.next();
+  }
+
+;
+}"
+`;
+
 exports[`convertSignalInputsGenerator should convert properly for templateUrl 1`] = `
 "
 import { Component, Input } from '@angular/core';
