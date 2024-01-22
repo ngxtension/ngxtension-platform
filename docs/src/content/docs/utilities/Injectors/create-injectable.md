@@ -19,9 +19,24 @@ configuration.
 
 ## Usage
 
+### Shared Service
+
 ```ts
-// defining a service
-export const MyService = createInjectable(
+// defining a shared service
+export const [MyService] = createInjectable(() => {
+	const myState = signal(1);
+
+	return { myState: myState.asReadonly() };
+});
+
+// using the service
+const myService = inject(MyService);
+```
+
+### Non-root Service
+
+```ts
+export const [MyService, provideMyService] = createInjectable(
 	() => {
 		const myState = signal(1);
 
@@ -29,7 +44,14 @@ export const MyService = createInjectable(
 	},
 	{ isRoot: false },
 );
+```
 
-// using a service
+```ts
+{
+	providers: [provideMyService()];
+}
+```
+
+```ts
 const myService = inject(MyService);
 ```
