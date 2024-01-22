@@ -13,19 +13,24 @@ The general difference is that rather than using a class, we use a `function` to
 create the injectable. Whatever the function returns is what will be the
 consumable public API of the service, everything else will be private.
 
-Pass `{ providedIn: 'root' }` to the 2nd argument of `createInjectable` if you want to create a root service.
+### `providedIn`
 
-## Usage
+By default, `createInjectable` returns a root service with `providedIn: 'root'`. You can override this by passing in a second argument to `createInjectable`:
+
+- `scoped`: The service will be scoped to where it is provided in (i.e: `providers` array)
+- `platform`: The service will be scoped to the platform (i.e: `platform-browser`). This is recommended if you create services that are used across multiple apps on the same platform.
 
 ### Non-root Service
 
 ```ts
 // defining a service
-export const MyService = createInjectable(() => {
-	const myState = signal(1);
-
-	return { myState: myState.asReadonly() };
-});
+export const MyService = createInjectable(
+	() => {
+		const myState = signal(1);
+		return { myState: myState.asReadonly() };
+	},
+	{ providedIn: 'scoped' },
+);
 ```
 
 ```ts
@@ -44,16 +49,26 @@ const myService = inject(MyService);
 
 ```ts
 // defining a root service
-export const MyService = createInjectable(
-	() => {
-		const myState = signal(1);
-		return { myState: myState.asReadonly() };
-	},
-	{ providedIn: 'root' },
-);
+export const MyService = createInjectable(() => {
+	const myState = signal(1);
+	return { myState: myState.asReadonly() };
+});
 ```
 
 ```ts
 // using the service
 const myService = inject(MyService);
+```
+
+### Using a named function
+
+It is possible to use a named function as the `factory` instead of an arrow function. If a named function is used, the name of the function will be used as the name of the service constructor.
+
+```ts
+export const MyService = createInjectable(function MyService() {
+	const myState = signal(1);
+	return { myState: myState.asReadonly() };
+});
+
+console.log(MyService.name); // MyService
 ```

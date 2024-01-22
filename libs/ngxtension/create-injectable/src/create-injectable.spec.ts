@@ -5,13 +5,10 @@ import { createInjectable } from './create-injectable';
 describe(createInjectable.name, () => {
 	it('should be able to access property returned from injectable', () => {
 		let count = 0;
-		const MyInjectable = createInjectable(
-			() => {
-				count += 1;
-				return { someProp: 1 };
-			},
-			{ providedIn: 'root' },
-		);
+		const MyInjectable = createInjectable(() => {
+			count += 1;
+			return { someProp: 1 };
+		});
 
 		TestBed.runInInjectionContext(() => {
 			// should be lazy until `inject()` is invoked
@@ -34,10 +31,13 @@ describe(createInjectable.name, () => {
 
 	it('should be able to provide non-root injectable', () => {
 		let count = 0;
-		const MyInjectable = createInjectable(() => {
-			count += 1;
-			return { someProp: 1 };
-		});
+		const MyInjectable = createInjectable(
+			() => {
+				count += 1;
+				return { someProp: 1 };
+			},
+			{ providedIn: 'scoped' },
+		);
 
 		TestBed.configureTestingModule({
 			providers: [MyInjectable],
