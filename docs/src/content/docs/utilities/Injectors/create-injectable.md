@@ -3,7 +3,7 @@ title: createInjectable
 description: A function based approach for creating Injectable services
 entryPoint: create-injectable
 badge: experimental
-contributor: chau-tran
+contributor: josh-morony
 ---
 
 `createInjectable` returns a class behind the scenes as a way to
