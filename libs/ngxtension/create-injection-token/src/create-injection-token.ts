@@ -48,17 +48,6 @@ export type CreateInjectionTokenOptions<
 		extraProviders?: Provider | EnvironmentProviders;
 	};
 
-export type CreateServiceOptions<
-	TFactory extends (...args: any[]) => object,
-	TFactoryDeps extends Parameters<TFactory> = Parameters<TFactory>,
-> = (TFactoryDeps[0] extends undefined
-	? { deps?: never }
-	: { deps: CreateInjectionTokenDeps<TFactory, TFactoryDeps> }) & {
-	isRoot?: boolean;
-	token?: InjectionToken<ReturnType<TFactory>>;
-	extraProviders?: Provider | EnvironmentProviders;
-};
-
 type CreateProvideFnOptions<
 	TFactory extends (...args: any[]) => any,
 	TFactoryDeps extends Parameters<TFactory> = Parameters<TFactory>,
@@ -272,18 +261,4 @@ export function createNoopInjectionToken<
 		token,
 		() => {},
 	] as CreateInjectionTokenReturn<TReturn, true>;
-}
-
-export function createService<
-	TFactory extends (...args: any[]) => object,
-	TFactoryDeps extends Parameters<TFactory> = Parameters<TFactory>,
-	TOptions extends CreateInjectionTokenOptions<
-		TFactory,
-		TFactoryDeps
-	> = CreateServiceOptions<TFactory, TFactoryDeps>,
->(
-	factory: TFactory,
-	options?: TOptions,
-): CreateInjectionTokenReturn<ReturnType<TFactory>> {
-	return createInjectionToken(factory, options);
 }

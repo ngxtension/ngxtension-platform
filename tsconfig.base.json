@@ -49,6 +49,9 @@
 			"ngxtension/create-effect": [
 				"libs/ngxtension/create-effect/src/index.ts"
 			],
+			"ngxtension/create-injectable": [
+				"libs/ngxtension/create-injectable/src/index.ts"
+			],
 			"ngxtension/create-injection-token": [
 				"libs/ngxtension/create-injection-token/src/index.ts"
 			],
