@@ -22,7 +22,7 @@ type CreateInjectionTokenDep<TTokenType> =
 	| (abstract new (...args: any[]) => TTokenType)
 	| InjectionToken<TTokenType>;
 
-export type CreateInjectionTokenDeps<
+type CreateInjectionTokenDeps<
 	TFactory extends (...args: any[]) => any,
 	TFactoryDeps extends Parameters<TFactory> = Parameters<TFactory>,
 > = {
@@ -68,7 +68,7 @@ type InjectFn<TFactoryReturn> = {
 	): TFactoryReturn | null;
 };
 
-export type ProvideFn<
+type ProvideFn<
 	TNoop extends boolean,
 	TFactoryReturn,
 	TReturn = TFactoryReturn extends Array<infer Item> ? Item : TFactoryReturn,
