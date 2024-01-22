@@ -1,5 +1,18 @@
 
 
+## [1.11.0](https://github.com/nartc/ngxtension-platform/compare/1.10.2...1.11.0) (2024-01-22)
+
+
+### Features
+
+* **create-injectable:** add createInjectable (replaces createService) ([#239](https://github.com/nartc/ngxtension-platform/issues/239)) ([b3344cf](https://github.com/nartc/ngxtension-platform/commit/b3344cf487103496193946da79860e10e3d33cbb))
+
+
+### Bug Fixes
+
+* **create-injectable:** providedIn root by default ([a948b31](https://github.com/nartc/ngxtension-platform/commit/a948b31ad22a1282637c23218a1dca7745bfc874))
+* **plugin:** only update property access with "this" as the expression ([26e94a7](https://github.com/nartc/ngxtension-platform/commit/26e94a710f413e774bd6454ac21496f2d434e9cb)), closes [#236](https://github.com/nartc/ngxtension-platform/issues/236)
+
 ## [1.10.2](https://github.com/nartc/ngxtension-platform/compare/1.10.1...1.10.2) (2024-01-22)
 
 
