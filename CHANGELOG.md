@@ -1,5 +1,19 @@
 
 
+## [1.10.2](https://github.com/nartc/ngxtension-platform/compare/1.10.1...1.10.2) (2024-01-22)
+
+
+### Bug Fixes
+
+* add dependency ts-morph for Signals Input migrator ([#237](https://github.com/nartc/ngxtension-platform/issues/237)) ([b3a93e5](https://github.com/nartc/ngxtension-platform/commit/b3a93e5650baab2bd46a7fe2b223310dc79a1969))
+* **connect:** update literal object values correctly for non-literal object values ([#234](https://github.com/nartc/ngxtension-platform/issues/234)) ([f4d2c19](https://github.com/nartc/ngxtension-platform/commit/f4d2c196493c9b727eb4265f739e61ee653c8aac))
+
+
+### Documentations
+
+* add docs for signal inputs migration ([#233](https://github.com/nartc/ngxtension-platform/issues/233)) ([1d442ba](https://github.com/nartc/ngxtension-platform/commit/1d442ba9fd9771e6967513caa53594b1dd5d9b75))
+* add rainerhahnekamp as a contributor for code ([#238](https://github.com/nartc/ngxtension-platform/issues/238)) ([200a8d5](https://github.com/nartc/ngxtension-platform/commit/200a8d5d5f9e3b9ba98031c50cee84f726538fd1))
+
 ## [1.10.1](https://github.com/nartc/ngxtension-platform/compare/1.10.0...1.10.1) (2024-01-20)
 
 
