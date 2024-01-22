@@ -68,7 +68,7 @@ type InjectFn<TFactoryReturn> = {
 	): TFactoryReturn | null;
 };
 
-type ProvideFn<
+export type ProvideFn<
 	TNoop extends boolean,
 	TFactoryReturn,
 	TReturn = TFactoryReturn extends Array<infer Item> ? Item : TFactoryReturn,
