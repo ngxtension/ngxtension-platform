@@ -7,6 +7,7 @@ import {
 	createInjectionToken,
 	type CreateInjectionTokenDeps,
 	type CreateInjectionTokenOptions,
+	type ProvideFn,
 } from 'ngxtension/create-injection-token';
 
 export type CreateInjectableOptions<
@@ -20,13 +21,22 @@ export type CreateInjectableOptions<
 	extraProviders?: Provider | EnvironmentProviders;
 };
 
+type CreateInjectableReturn<TFactoryReturn> = [
+	InjectionToken<TFactoryReturn>,
+	ProvideFn<false, TFactoryReturn>,
+];
+
 export function createInjectable<
-	TFactory extends (...args: any[]) => object,
+	TFactory extends (...args: any[]) => any,
 	TFactoryDeps extends Parameters<TFactory> = Parameters<TFactory>,
 	TOptions extends CreateInjectionTokenOptions<
 		TFactory,
 		TFactoryDeps
 	> = CreateInjectableOptions<TFactory, TFactoryDeps>,
->(factory: TFactory, options?: TOptions): InjectionToken<ReturnType<TFactory>> {
-	return createInjectionToken(factory, options)[2];
+>(
+	factory: TFactory,
+	options?: TOptions,
+): CreateInjectableReturn<ReturnType<TFactory>> {
+	const [, provideFn, token] = createInjectionToken(factory, options);
+	return [token, provideFn];
 }
