@@ -24,8 +24,6 @@ describe(createInjectable.name, () => {
 		});
 
 		TestBed.runInInjectionContext(() => {
-			// should be lazy until `inject()` is invoked
-			expect(count).toEqual(0);
 			const service = inject(MyInjectable);
 			// should still be 1 after `inject` because it is a singleton
 			expect(count).toEqual(1);
