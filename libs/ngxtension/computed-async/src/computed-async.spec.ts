@@ -341,13 +341,13 @@ describe(computedAsync.name, () => {
 	describe('is typesafe', () => {
 		it('initial value', () => {
 			TestBed.runInInjectionContext(() => {
-				// : Signal<number>
+				// : Signal<number | undefined>
 				const a = computedAsync(() => {
 					if (Math.random() > 0.5) return Promise.resolve(1);
 					return Promise.resolve(1);
 				});
 
-				// : Signal<number>
+				// : Signal<number | undefined>
 				const b = computedAsync(() => {
 					if (Math.random() > 0.5) return of(1);
 					return of(1);
@@ -369,10 +369,19 @@ describe(computedAsync.name, () => {
 					{ initialValue: '' },
 				);
 
+        // : Signal<string | undefined>
+				const e = computedAsync(
+					() => {
+						return '';
+					},
+					{ initialValue: undefined },
+				);
+
 				expect(a).toBeTruthy();
 				expect(b).toBeTruthy();
 				expect(c).toBeTruthy();
 				expect(d).toBeTruthy();
+				expect(e).toBeTruthy();
 			});
 		});
 	});

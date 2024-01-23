@@ -1,23 +1,23 @@
 import {
-	DestroyRef,
-	Injector,
-	computed,
-	effect,
-	inject,
-	signal,
-	untracked,
-	type CreateComputedOptions,
-	type Signal,
+  DestroyRef,
+  Injector,
+  computed,
+  effect,
+  inject,
+  signal,
+  untracked,
+  type CreateComputedOptions,
+  type Signal,
 } from '@angular/core';
 import { assertInjector } from 'ngxtension/assert-injector';
 import {
-	Observable,
-	Subject,
-	concatAll,
-	exhaustAll,
-	isObservable,
-	mergeAll,
-	switchAll,
+  Observable,
+  Subject,
+  concatAll,
+  exhaustAll,
+  isObservable,
+  mergeAll,
+  switchAll,
 } from 'rxjs';
 
 type ComputedAsyncBehavior = 'switch' | 'merge' | 'concat' | 'exhaust';
@@ -40,7 +40,7 @@ interface ComputedAsyncOptions<T> extends CreateComputedOptions<T> {
  * );
  * ```
  *
- * The computed value will be `null` until the promise resolves.
+ * The computed value will be `undefined` until the promise resolves.
  * Everytime the userId changes, the fetch will be called again, and the previous fetch will be cancelled (it uses switchMap by default).
  * If the promise rejects, the error will be thrown.
  *
@@ -74,8 +74,19 @@ interface ComputedAsyncOptions<T> extends CreateComputedOptions<T> {
  */
 export function computedAsync<T>(
 	computation: (previousValue?: T | undefined) => ComputationResult<T>,
+): Signal<T|undefined>
+export function computedAsync<T>(
+	computation: (previousValue?: T | undefined) => ComputationResult<T>,
+  options: {initialValue:undefined} & ComputedAsyncOptions<T>,
+): Signal<T|undefined>
+export function computedAsync<T>(
+	computation: (previousValue?: T | undefined) => ComputationResult<T>,
+	options: ComputedAsyncOptions<T>,
+): Signal<T>
+export function computedAsync<T>(
+	computation: (previousValue?: T | undefined) => ComputationResult<T>,
 	options?: ComputedAsyncOptions<T>,
-): Signal<T> {
+): Signal<T|undefined> {
 	return assertInjector(computedAsync, options?.injector, () => {
 		const destroyRef = inject(DestroyRef);
 
