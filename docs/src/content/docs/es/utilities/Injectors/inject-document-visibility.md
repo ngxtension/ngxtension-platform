@@ -3,7 +3,7 @@ title: documentVisibilityState
 description: ngxtension/inject-document-visibility
 badge: stable
 entryPoint: inject-document-visibility
-contributor: fiorelozere
+contributors: ['fiorelozere']
 ---
 
 `injectDocumentVisibility` es una función que proporciona una signal reactiva que refleja el estado de visibilidad actual del documento. Esta función es particularmente útil para escenarios como el seguimiento de la presencia del usuario en una página web (por ejemplo, para análisis o pausar/reanudar actividades) y se puede adaptar para su uso con iframes o en entornos de prueba.

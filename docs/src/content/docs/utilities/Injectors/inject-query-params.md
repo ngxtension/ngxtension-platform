@@ -3,7 +3,7 @@ title: injectQueryParams
 description: ngxtension/inject-query-params
 entryPoint: inject-query-params
 badge: stable
-contributor: enea-jahollari
+contributors: ['enea-jahollari']
 ---
 
 `injectQueryParams` is a helper function that allows us to inject query params from the current route as a signal.

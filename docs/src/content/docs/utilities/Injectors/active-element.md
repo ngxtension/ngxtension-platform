@@ -3,7 +3,7 @@ title: injectActiveElement
 description: An Angular utility to create an Observable that emits active element from the document.
 entryPoint: active-element
 badge: stable
-contributor: nevzat-topçu
+contributors: ['nevzat-topçu']
 ---
 
 ## Import

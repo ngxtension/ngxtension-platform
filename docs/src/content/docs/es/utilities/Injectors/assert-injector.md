@@ -3,7 +3,7 @@ title: assertInjector
 description: Una utilidad de Angular para afirmar que una función se invoca en un contexto de inyección y devolver el Injector garantizado.
 badge: stable
 entryPoint: assert-injector
-contributor: chau-tran
+contributors: ['chau-tran']
 ---
 
 `assertInjector` es una extensión de [`assertInInjectionContext`](https://angular.io/api/core/assertInInjectionContext) que acepta una `Function` y un `Injector` personalizado opcional.

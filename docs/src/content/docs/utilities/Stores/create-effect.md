@@ -3,7 +3,7 @@ title: createEffect
 description: ngxtension/create-effect
 entryPoint: create-effect
 badge: stable
-contributor: chau-tran
+contributors: ['chau-tran']
 ---
 
 `createEffect` is a standalone version of [NgRx ComponentStore Effect](https://ngrx.io/guide/component-store/effect)

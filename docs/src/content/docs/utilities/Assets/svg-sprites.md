@@ -3,7 +3,7 @@ title: Svg Sprites
 description: A directive for rendering symbols of svg sprites.
 entryPoint: svg-sprite
 badge: stable
-contributor: robby-rabbitman
+contributors: ['robby-rabbitman']
 ---
 
 A directive for rendering _symbols_ of svg sprites. It is done with the [`use`](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/use) element.

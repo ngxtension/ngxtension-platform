@@ -3,7 +3,7 @@ title: injectNetwork
 description: ngxtension/inject-network
 entryPoint: inject-network
 badge: stable
-contributor: fiorelozere
+contributors: ['fiorelozere']
 ---
 
 This injector is useful for tracking the current network state of the user. It provides information about the system's connection type, such as 'wifi' or 'cellular'. This utility, along with a singular property added to the Navigator interface (Navigator.connection), allows for the identification of the general type of network connection a system is using. This functionality is particularly useful for choosing between high definition or low definition content depending on the user's network connection.

@@ -3,7 +3,7 @@ title: injectParams
 description: ngxtension/inject-params
 entryPoint: inject-params
 badge: stable
-contributor: enea-jahollari
+contributors: ['enea-jahollari']
 ---
 
 `injectParams` is a helper function that allows us to inject params from the current route as a signal.

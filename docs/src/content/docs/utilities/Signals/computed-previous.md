@@ -3,7 +3,7 @@ title: computedPrevious
 description: ngxtension/computed-previous
 entryPoint: computed-previous
 badge: stable
-contributor: enea-jahollari
+contributors: ['enea-jahollari']
 ---
 
 `computedPrevious` is a helper function that returns a `signal` that emits the previous value of the passed `signal`. It's useful when you want to keep track of the previous value of a signal.

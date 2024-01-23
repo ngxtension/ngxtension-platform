@@ -3,7 +3,7 @@ title: injectAutoEffect
 description: ngxtension/auto-effect
 entryPoint: auto-effect
 badge: stable
-contributor: chau-tran
+contributors: ['chau-tran']
 ---
 
 `injectAutoEffect` is a CIF that returns an _auto-wired_ `Effect`, hence the name `auto-effect`. This `Effect` can be used in places that do not have an **implicit** Injection Context like `ngOnInit` or `afterNextRender`

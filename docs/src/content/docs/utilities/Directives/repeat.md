@@ -3,7 +3,7 @@ title: repeat
 description: An Angular directive extending NgFor to allow iteration over a fixed number of iterations.
 entryPoint: repeat
 badge: stable
-contributor: chau-tran
+contributors: ['chau-tran']
 ---
 
 ## Import

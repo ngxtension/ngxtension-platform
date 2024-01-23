@@ -3,7 +3,7 @@ title: connect
 description: ngxtension/connect
 entryPoint: connect
 badge: stable
-contributor: enea-jahollari
+contributors: ['enea-jahollari']
 ---
 
 `connect` is a utility function that connects a signal to an observable and returns a subscription. The subscription is automatically unsubscribed when the component is destroyed. If it's not called in an injection context, it must be called with an injector or DestroyRef.

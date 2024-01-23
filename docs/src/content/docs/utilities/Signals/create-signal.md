@@ -3,7 +3,7 @@ title: createSignal / createComputed
 description: ngxtension/create-signal
 entryPoint: create-signal
 badge: stable
-contributor: enea-jahollari
+contributors: ['enea-jahollari']
 ---
 
 `createSignal` and `createComputed` are helper functions that create a `Signal` or `Computed` and return it with a `value` property.
