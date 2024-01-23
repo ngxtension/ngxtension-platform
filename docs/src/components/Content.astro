@@ -4,12 +4,16 @@ import type { Props } from '@astrojs/starlight/props';
 import { getEntry } from 'astro:content';
 import Contributor from './Contributor.astro';
 
-const contributor = Astro.props.entry.data.contributor
-	? await getEntry(Astro.props.entry.data.contributor)
+const contributors = Astro.props.entry.data.contributors
+	? await Promise.all(
+			Astro.props.entry.data.contributors.map((contributor) =>
+				getEntry(contributor),
+			),
+		)
 	: null;
 ---
 
-{contributor && <Contributor {...contributor.data} />}
+{contributors && <Contributor {contributors} />}
 
 <Default {...Astro.props}><slot /></Default>
 
