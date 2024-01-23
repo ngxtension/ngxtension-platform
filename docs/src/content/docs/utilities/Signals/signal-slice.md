@@ -12,6 +12,10 @@ The key motivation, and what makes this declarative, is that all the ways for
 updating this signal are declared upfront with `sources` and `actionSources`.
 It is not possible to imperatively update the state.
 
+:::tip[Note]
+This can be improved when TypeScript 5.4 is released, but until then the **ordering of configurations** is important to infer types correctly. To prevent potential typing issues, make sure to supply both `effects` and `actionEffects` **after** all other configurations.
+:::
+
 ## Basic Usage
 
 ```ts
