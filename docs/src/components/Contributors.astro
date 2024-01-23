@@ -1,0 +1,81 @@
+---
+import { Icon } from '@astrojs/starlight/components';
+
+interface Contributor {
+	name: string;
+	twitter?: string;
+	linkedin?: string;
+	github?: string;
+	website?: string;
+}
+
+interface Props {
+	contributors: Contributor[];
+}
+
+const { contributors } = Astro.props;
+---
+
+<p class="contributors">
+	Created by
+
+	{
+		contributors.map(
+			({ data: { name, twitter, linkedin, github, website } }) => (
+				<span class="contributor">
+					{name}
+					{twitter && (
+						<a href={twitter}>
+							<Icon class="icon" name="twitter" size="0.75rem" />
+						</a>
+					)}
+					{linkedin && (
+						<a href={linkedin}>
+							<Icon class="icon" name="linkedin" size="0.75rem" />
+						</a>
+					)}
+					{github && (
+						<a href={github}>
+							<Icon class="icon" name="github" size="0.75rem" />
+						</a>
+					)}
+					{website && (
+						<a href={website}>
+							<Icon class="icon" name="external" size="0.75rem" />
+						</a>
+					)}
+				</span>
+			),
+		)
+	}
+</p>
+
+<style>
+	a {
+		text-decoration: none;
+	}
+
+	.contributors {
+		display: flex;
+		gap: 0.3rem;
+		align-items: center;
+		margin-top: -1rem;
+		font-size: var(--sl-text-xs);
+		color: var(--sl-color-gray-3);
+	}
+
+	.contributor {
+		background-color: var(--sl-color-gray-6);
+		border-radius: 6px;
+		padding: 2px 8px;
+	}
+
+	.icon {
+		vertical-align: middle;
+		color: var(--sl-color-gray-3);
+
+		&:hover {
+			color: var(--sl-color-accent-high);
+		}
+	}
+</style>

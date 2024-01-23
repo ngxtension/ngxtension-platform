@@ -3,7 +3,7 @@ title: assertInjector
 description: ngxtension/assert-injector
 entryPoint: assert-injector
 badge: stable
-contributor: chau-tran
+contributors: ['chau-tran']
 ---
 
 `assertInjector` is an extension of [`assertInInjectionContext`](https://angular.io/api/core/assertInInjectionContext) that accepts a `Function` and an optional custom `Injector`

@@ -3,7 +3,7 @@ title: computedFrom
 description: ngxtension/computed-from
 entryPoint: computed-from
 badge: stable
-contributor: enea-jahollari
+contributors: ['enea-jahollari']
 ---
 
 `computedFrom` is a helper function that combines the values of `Observable`s or `Signal`s and emits the combined value.

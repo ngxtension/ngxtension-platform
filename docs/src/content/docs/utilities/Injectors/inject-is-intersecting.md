@@ -3,7 +3,7 @@ title: injectIsIntersecting
 description: ngxtension/inject-is-intersecting
 entryPoint: inject-is-intersecting
 badge: stable
-contributor: enea-jahollari
+contributors: ['enea-jahollari']
 ---
 
 `injectIsIntersecting` is a helper function that returns an observable that emits when the component/directive or a given element is being intersected.

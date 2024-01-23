@@ -3,7 +3,7 @@ title: ifValidator / ifAsyncValidator
 description: Utility functions to dynamically change the validation of Angular's Reactive Form.
 entryPoint: if-validator
 badge: stable
-contributor: tomer
+contributors: ['tomer']
 ---
 
 ## Import

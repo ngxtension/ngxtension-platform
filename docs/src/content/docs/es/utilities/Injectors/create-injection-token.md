@@ -3,7 +3,7 @@ title: createInjectionToken
 description: Crea un InjectionToken y devuelve un injectFn y provideFn para el mismo.
 badge: stable
 entryPoint: create-injection-token
-contributor: chau-tran
+contributors: ['chau-tran']
 ---
 
 `createInjectionToken` es una abstacción sobre la creación de un [`InjectionToken`](https://angular.io/api/core/InjectionToken) y devuelve una tupla de `[injectFn, provideFn, TOKEN]`

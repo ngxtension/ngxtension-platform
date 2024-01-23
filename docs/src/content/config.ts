@@ -16,7 +16,7 @@ const docs = defineCollection({
 		docsSchema()(ctx).extend({
 			badge: z.enum(['stable', 'unstable', 'experimental']).optional(),
 			entryPoint: z.string().optional(),
-			contributor: reference('contributors').optional(),
+			contributors: z.array(reference('contributors')).optional(),
 		}),
 });
 

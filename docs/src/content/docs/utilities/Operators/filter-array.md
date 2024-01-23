@@ -3,7 +3,7 @@ title: filterArray
 description: An RxJS operator to simplify the process of filtering arrays within an Observable stream.
 entryPoint: filter-array
 badge: stable
-contributor: thomas-laforge
+contributors: ['thomas-laforge']
 ---
 
 ## Import

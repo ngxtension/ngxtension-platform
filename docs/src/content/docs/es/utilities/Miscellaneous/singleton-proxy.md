@@ -3,7 +3,7 @@ title: createSingletonProxy
 description: ngxtension/singleton-proxy
 badge: stable
 entryPoint: singleton-proxy
-contributor: chau-tran
+contributors: ['chau-tran']
 ---
 
 `createSingletonProxy` crea una instancia singleton de una clase dada cuando se accede a una propiedad dentro de ella, no antes.

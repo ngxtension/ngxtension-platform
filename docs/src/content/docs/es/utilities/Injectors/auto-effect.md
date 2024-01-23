@@ -3,7 +3,7 @@ title: injectAutoEffect
 description: Una utilidad de Angular para crear un Effect auto-alambrado.
 badge: stable
 entryPoint: auto-effect
-contributor: chau-tran
+contributors: ['chau-tran']
 ---
 
 `injectAutoEffect` es una CIF que devuelve un `Effect` _auto-alambrado_, por tanto el nombre `auto-effect`. Este `Effect` se puede usar en lugares que no tienen un Contexto de Inyección **implícito** como `ngOnInit` o `afterNextRender`.

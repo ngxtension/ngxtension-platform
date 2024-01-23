@@ -3,7 +3,7 @@ title: toObservableSignal
 description: ngxtension/to-observable-signal
 entryPoint: to-observable-signal
 badge: stable
-contributor: evgeniy-oz
+contributors: ['evgeniy-oz']
 ---
 
 `toObservableSignal()` combines the functionality of Angular Signal and RxJS Observable.

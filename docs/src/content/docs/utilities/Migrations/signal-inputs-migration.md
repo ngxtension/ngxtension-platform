@@ -3,7 +3,7 @@ title: Signal Inputs Migration
 description: Schematics for migrating decorator inputs to signal inputs (including input references)
 entryPoint: convert-signal-inputs
 badge: stable
-contributor: chau-tran
+contributors: ['chau-tran']
 ---
 
 In Angular v17.1, signal inputs were released. Signal inputs enables developers to have more declarative and reactive code patterns. This is the reason why `ngxtension` publishes schematics that handles the code migration for you.

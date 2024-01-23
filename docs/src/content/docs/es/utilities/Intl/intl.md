@@ -3,7 +3,7 @@ title: Intl
 description: Utilidades adicionales de Intl para formatear números, strings y otros objetos.
 badge: stable
 entryPoint: intl
-contributor: ion-prodan
+contributors: ['ion-prodan']
 ---
 
 Esto es una colección de pipes diseñados para aplicaciones Angular que aprovechan la [API Intl](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl).

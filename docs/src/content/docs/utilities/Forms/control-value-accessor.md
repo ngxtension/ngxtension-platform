@@ -3,7 +3,7 @@ title: NgxControlValueAccessor
 description: A directive to reduce boilerplate when building custom inputs.
 entryPoint: control-value-accessor
 badge: stable
-contributor: robby-rabbitman
+contributors: ['robby-rabbitman']
 ---
 
 `NgxControlValueAccessor` is a directive to reduce boilerplate when building components, which implement the [ControlValueAccessor](https://angular.io/api/forms/ControlValueAccessor) interface.

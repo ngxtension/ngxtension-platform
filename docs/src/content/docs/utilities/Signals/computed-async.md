@@ -3,7 +3,7 @@ title: computedAsync
 description: ngxtension/computed-async
 entryPoint: computed-async
 badge: stable
-contributor: enea-jahollari
+contributors: ['enea-jahollari']
 ---
 
 `computedAsync` is a helper function that allows us to compute a value based on a Promise or Observable, but also supports return regular values (that are not Promises or Observables).

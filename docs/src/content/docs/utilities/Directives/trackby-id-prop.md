@@ -3,7 +3,7 @@ title: TrackById / TrackByProp
 description: Angular directives that simplify using trackBy in *ngFor, eliminating the need for custom component methods.
 entryPoint: trackby-id-prop
 badge: stable
-contributor: daniele-morosinotto
+contributors: ['daniele-morosinotto']
 ---
 
 ## Import

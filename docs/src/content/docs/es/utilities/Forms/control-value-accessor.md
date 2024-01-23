@@ -3,7 +3,7 @@ title: NgxControlValueAccessor
 description: Una directiva para reducir la redundancia al construir entradas personalizadas.
 entryPoint: control-value-accessor
 badge: stable
-contributor: robby-rabbitman
+contributors: ['robby-rabbitman']
 ---
 
 `NgxControlValueAccessor` es una directiva para reducir la redundancia al construir componentes que implementan la interfaz [ControlValueAccessor](https://angular.io/api/forms/ControlValueAccessor).
