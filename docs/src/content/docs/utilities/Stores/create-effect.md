@@ -3,7 +3,7 @@ title: createEffect
 description: ngxtension/create-effect
 entryPoint: create-effect
 badge: stable
-contributors: ['chau-tran']
+contributors: ['chau-tran', 'evgeniy-oz']
 ---
 
 `createEffect` is a standalone version of [NgRx ComponentStore Effect](https://ngrx.io/guide/component-store/effect)
@@ -63,11 +63,33 @@ export class Some {
 				tap(console.log.bind(console, 'multiply is -->')),
 			),
 			// 4. pass in the injector
-			this.injector,
+			{ injector: this.injector },
 		);
 
 		// 5. start the effect
 		log(interval(1000));
 	}
+}
+```
+
+### Resubscribe on errors
+
+By default, `createEffect()` will re-subscribe on errors, using `retry()` operator.  
+This behavior can be configured or turned off, using optional second argument:
+
+```ts
+@Component({})
+export class Example {
+	// Will not resubscribe on error
+	private loadProducts = createEffect<string>(
+		(_) => _.pipe(switchMap((id) => this.api.loadProducts(id))),
+		{ retryOnEror: false },
+	);
+
+	// Will resubscribe on error with a delay, not more than 3 times
+	private loadProducts = createEffect<string>(
+		(_) => _.pipe(switchMap((id) => this.api.loadProducts(id))),
+		{ retryOnEror: { count: 3, delay: 500 } },
+	);
 }
 ```
