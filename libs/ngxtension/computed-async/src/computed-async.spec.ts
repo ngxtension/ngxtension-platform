@@ -398,7 +398,7 @@ describe(computedAsync.name, () => {
 					return of(1);
 				});
 
-				// : Signal<number | null>
+				// : Signal<number | null | undefined>
 				const c = computedAsync(
 					() => {
 						return 1;
@@ -406,12 +406,20 @@ describe(computedAsync.name, () => {
 					{ initialValue: null },
 				);
 
-				// : Signal<string>
+				// : Signal<string | undefined>
 				const d = computedAsync(
 					() => {
 						return '';
 					},
 					{ initialValue: '' },
+				);
+
+				// : Signal<string>
+				const d1 = computedAsync(
+					() => {
+						return '';
+					},
+					{ initialValue: '', requireSync: true },
 				);
 
 				// : Signal<string | undefined>
@@ -426,6 +434,7 @@ describe(computedAsync.name, () => {
 				expect(b).toBeTruthy();
 				expect(c).toBeTruthy();
 				expect(d).toBeTruthy();
+				expect(d1).toBeTruthy();
 				expect(e).toBeTruthy();
 			});
 		});

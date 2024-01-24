@@ -30,6 +30,20 @@ interface ComputedAsyncOptions<T> extends CreateComputedOptions<T> {
 	behavior?: ComputedAsyncBehavior;
 }
 
+type OptionsWithInitialValue<T> = { initialValue: T } & ComputedAsyncOptions<T>;
+type OptionsWithOptionalInitialValue<T> = {
+	initialValue?: T | undefined | null;
+} & ComputedAsyncOptions<T>;
+type OptionsWithRequireSync<T> = {
+	requireSync: true;
+} & ComputedAsyncOptions<T>;
+
+type ObservableComputation<T> = (
+	previousValue?: T | undefined,
+) => Observable<T> | T;
+
+type PromiseComputation<T> = (previousValue?: T | undefined) => Promise<T> | T;
+
 /**
  * A computed value that can be async! This is useful for when you need to compute a value based on a Promise or Observable.
  *
@@ -97,30 +111,30 @@ export function computedAsync<T>(
 // Options with `undefined` initial value -> result includes `undefined`.
 export function computedAsync<T>(
 	computation: (previousValue?: T | undefined) => Promise<T> | T | undefined,
-	options: { initialValue?: undefined } & ComputedAsyncOptions<T>,
+	options: OptionsWithOptionalInitialValue<T>,
 ): Signal<T | undefined>;
 
 // Options with `null` initial value -> `null`.
 export function computedAsync<T>(
-	computation: (previousValue?: T | undefined) => Promise<T> | T,
+	computation: PromiseComputation<T>,
 	options: { initialValue?: null } & ComputedAsyncOptions<T>,
 ): Signal<T | null>;
 
 // Options with a more specific initial value type.
 export function computedAsync<T>(
-	computation: (previousValue?: T | undefined) => Promise<T> | T,
-	options: { initialValue: T } & ComputedAsyncOptions<T>,
+	computation: PromiseComputation<T>,
+	options: OptionsWithInitialValue<T>,
 ): Signal<T>;
 
+// Options with `requireSync` -> never.
 export function computedAsync<T>(
 	computation: (previousValue?: T | undefined) => Promise<T>,
-	options: {
-		initialValue?: T | undefined | null;
+	options: OptionsWithOptionalInitialValue<T> & {
 		/**
 		 * @throws Because the promise will not resolve synchronously.
 		 */
 		requireSync: true;
-	} & ComputedAsyncOptions<T>,
+	},
 ): never;
 
 /*
@@ -138,7 +152,7 @@ export function computedAsync<T>(
 
 // Options with `null` initial value -> `null`.
 export function computedAsync<T>(
-	computation: (previousValue?: T | undefined) => Observable<T> | T,
+	computation: ObservableComputation<T>,
 	options: {
 		initialValue?: null;
 		requireSync?: false;
@@ -147,26 +161,20 @@ export function computedAsync<T>(
 
 // Options with `undefined` initial value and `requireSync` -> strict result type.
 export function computedAsync<T>(
-	computation: (previousValue?: T | undefined) => Observable<T> | T,
-	options: {
-		initialValue?: undefined;
-		requireSync: true;
-	} & ComputedAsyncOptions<T>,
+	computation: ObservableComputation<T>,
+	options: OptionsWithRequireSync<T> & { initialValue?: undefined },
 ): Signal<T>;
 
 // Options with `T` initial value and `requireSync` -> strict result type.
 export function computedAsync<T>(
-	computation: (previousValue?: T | undefined) => Observable<T> | T,
-	options: {
-		initialValue: T;
-		requireSync: true;
-	} & ComputedAsyncOptions<T>,
+	computation: ObservableComputation<T>,
+	options: OptionsWithRequireSync<T> & { initialValue: T },
 ): Signal<T>;
 
 // Options with `T` initial value and no `requireSync` -> strict result type.
 export function computedAsync<T>(
-	computation: (previousValue?: T | undefined) => Observable<T> | T,
-	options: { initialValue: T } & ComputedAsyncOptions<T>,
+	computation: ObservableComputation<T>,
+	options: OptionsWithInitialValue<T>,
 ): Signal<T>;
 
 export function computedAsync<T>(
@@ -188,8 +196,9 @@ export function computedAsync<T>(
 			const initialComputation = computation(undefined);
 
 			// we don't support promises with requireSync and no initialValue
-			if (isPromise(initialComputation))
+			if (isPromise(initialComputation)) {
 				throw new Error(REQUIRE_SYNC_PROMISE_MESSAGE);
+			}
 
 			sourceValue = signal<State<T>>({ kind: StateKind.NoValue });
 
@@ -199,6 +208,8 @@ export function computedAsync<T>(
 						next: (value) => sourceValue.set({ kind: StateKind.Value, value }),
 						error: (error) => sourceValue.set({ kind: StateKind.Error, error }),
 					})
+					// we need to unsubscribe because we don't want to keep the subscription
+					// we only care about the initial value
 					.unsubscribe();
 
 				if (sourceValue()!.kind === StateKind.NoValue)
@@ -276,6 +287,8 @@ export function computedAsync<T>(
 						throw state.error;
 					case StateKind.NoValue:
 						throw new Error(REQUIRE_SYNC_ERROR_MESSAGE);
+					default:
+						throw new Error('Unknown state');
 				}
 			},
 			{ equal: options?.equal },
