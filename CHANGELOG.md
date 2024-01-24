@@ -1,5 +1,24 @@
 
 
+## [1.12.0](https://github.com/nartc/ngxtension-platform/compare/1.11.0...1.12.0) (2024-01-24)
+
+
+### Features
+
+* **computed:** mark computed / extendedComputed as deprecate ([9553dc3](https://github.com/nartc/ngxtension-platform/commit/9553dc329fc2cb1f67bee4102ddcaf4c3a5681a9))
+
+
+### Bug Fixes
+
+* **computedAsync:** typings should return a union of undefined when no initial value. ([#247](https://github.com/nartc/ngxtension-platform/issues/247)) ([5cd496a](https://github.com/nartc/ngxtension-platform/commit/5cd496a3a1084f1ee6e80410030c173f9a74a3cb)), closes [#243](https://github.com/nartc/ngxtension-platform/issues/243)
+
+
+### Documentations
+
+* add JeanMeche as a contributor for code ([#248](https://github.com/nartc/ngxtension-platform/issues/248)) ([187d9e6](https://github.com/nartc/ngxtension-platform/commit/187d9e60c98ab8998615481a90e6031690392efe))
+* add support for multiple contributors to a utility ([#242](https://github.com/nartc/ngxtension-platform/issues/242)) ([9d91ea0](https://github.com/nartc/ngxtension-platform/commit/9d91ea0b99e37e15a8ee41601e1268dad7abed6a))
+* **signal-slice:** add note about effect ordering ([#241](https://github.com/nartc/ngxtension-platform/issues/241)) ([62a2816](https://github.com/nartc/ngxtension-platform/commit/62a28165a4fe78b0c5c4276258a7772667515b86))
+
 ## [1.11.0](https://github.com/nartc/ngxtension-platform/compare/1.10.2...1.11.0) (2024-01-22)
 
 
