@@ -271,7 +271,7 @@ export function computedAsync<T>(
 			sourceResult.unsubscribe();
 		});
 
-		if (options?.requireSync && sourceValue()!.kind === StateKind.NoValue) {
+		if (options?.requireSync && sourceValue().kind === StateKind.NoValue) {
 			throw new Error(REQUIRE_SYNC_ERROR_MESSAGE);
 		}
 
