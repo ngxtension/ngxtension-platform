@@ -104,6 +104,18 @@ describe(computedAsync.name, () => {
 		}));
 	});
 
+	describe('works with requireSync', () => {
+		it('returns correct value and doesnt throw error', fakeAsync(() => {
+			TestBed.runInInjectionContext(() => {
+				const value = signal(1);
+
+				const s = computedAsync(() => of(value()), { requireSync: true });
+
+				expect(s()).toEqual(1); // initial value
+			});
+		}));
+	});
+
 	describe('works with promises', () => {
 		it('waits for them to resolve', fakeAsync(() => {
 			TestBed.runInInjectionContext(() => {
@@ -369,7 +381,7 @@ describe(computedAsync.name, () => {
 					{ initialValue: '' },
 				);
 
-        // : Signal<string | undefined>
+				// : Signal<string | undefined>
 				const e = computedAsync(
 					() => {
 						return '';
