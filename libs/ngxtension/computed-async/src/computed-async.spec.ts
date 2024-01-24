@@ -112,25 +112,38 @@ describe(computedAsync.name, () => {
 				expect(s()).toEqual(undefined); // initial value
 			});
 		}));
-		it('returns correct value and doesnt throw error', fakeAsync(() => {
+		it('returns correct value and doesnt throw error if enabled', fakeAsync(() => {
 			TestBed.runInInjectionContext(() => {
 				const value = signal(1);
-
 				const s = computedAsync(() => of(value()), { requireSync: true });
-
 				expect(s()).toEqual(1); // initial value
 			});
 		}));
-		it('throws error for promises', fakeAsync(() => {
+		it('returns correct value and doesnt throw error with initial value provided', () => {
 			TestBed.runInInjectionContext(() => {
-				const value = signal(1);
-				expect(
-					computedAsync(() => Promise.resolve(value()), {
-						requireSync: true,
-					}),
-				).toThrowError(/Promises cannot be used with requireSync/i);
+				const s = computedAsync(() => of(1), { initialValue: 2 });
+				expect(s()).toEqual(2); // initial value
+				TestBed.flushEffects();
+				expect(s()).toEqual(1);
+			});
+		});
+		it('returns correct value and doesnt throw error with normal variable when enabled', fakeAsync(() => {
+			TestBed.runInInjectionContext(() => {
+				const s = computedAsync(() => 1, { requireSync: true });
+				expect(s()).toEqual(1); // initial value
 			});
 		}));
+		it('throws error for promises', () => {
+			TestBed.runInInjectionContext(() => {
+				const value = signal(1);
+				expect(() => {
+					const s: never = computedAsync(() => promise(value()), {
+						requireSync: true,
+					});
+					s;
+				}).toThrow(/Promises cannot be used with requireSync/i);
+			});
+		});
 	});
 
 	describe('works with promises', () => {
@@ -140,7 +153,10 @@ describe(computedAsync.name, () => {
 				const value = signal(1);
 
 				const s = computedAsync(() => {
-					return promise(value(), 100).then((v) => logs.push(v));
+					return promise(value(), 100).then((v) => {
+						logs.push(v);
+						return v;
+					});
 				});
 				expect(s()).toEqual(undefined); // initial value
 				TestBed.flushEffects();

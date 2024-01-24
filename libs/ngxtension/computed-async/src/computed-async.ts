@@ -18,27 +18,16 @@ import {
 	exhaustAll,
 	isObservable,
 	mergeAll,
+	skip,
 	switchAll,
 } from 'rxjs';
 
 type ComputedAsyncBehavior = 'switch' | 'merge' | 'concat' | 'exhaust';
 
-type ComputationResult<T> = Promise<T> | Observable<T> | T | undefined;
-
 interface ComputedAsyncOptions<T> extends CreateComputedOptions<T> {
 	initialValue?: T;
 	injector?: Injector;
 	behavior?: ComputedAsyncBehavior;
-
-	/**
-	 * Whether to require that the observable emits synchronously when `computedAsync` subscribes.
-	 *
-	 * If this is `true`, `computedAsync` will assert that the observable produces a value immediately upon
-	 * subscription. Setting this option removes the need to either deal with `undefined` in the
-	 * signal type or provide an `initialValue`, at the cost of a runtime error if this requirement is
-	 * not met.
-	 */
-	requireSync?: boolean;
 }
 
 /**
@@ -96,12 +85,51 @@ interface ComputedAsyncOptions<T> extends CreateComputedOptions<T> {
 
 // Base case: no options -> `undefined` in the result type
 export function computedAsync<T>(
-	computation: (previousValue?: T | undefined) => ComputationResult<T>,
+	computation: (
+		previousValue?: T | undefined,
+	) => Promise<T> | Observable<T> | T | undefined,
 ): Signal<T | undefined>;
+
+/*
+ * Promise Types
+ */
+
+// Options with `undefined` initial value -> result includes `undefined`.
+export function computedAsync<T>(
+	computation: (previousValue?: T | undefined) => Promise<T> | T | undefined,
+	options: { initialValue?: undefined } & ComputedAsyncOptions<T>,
+): Signal<T | undefined>;
+
+// Options with `null` initial value -> `null`.
+export function computedAsync<T>(
+	computation: (previousValue?: T | undefined) => Promise<T> | T,
+	options: { initialValue?: null } & ComputedAsyncOptions<T>,
+): Signal<T | null>;
+
+// Options with a more specific initial value type.
+export function computedAsync<T>(
+	computation: (previousValue?: T | undefined) => Promise<T> | T,
+	options: { initialValue: T } & ComputedAsyncOptions<T>,
+): Signal<T>;
+
+export function computedAsync<T>(
+	computation: (previousValue?: T | undefined) => Promise<T>,
+	options: {
+		initialValue?: T | undefined | null;
+		/**
+		 * @throws Because the promise will not resolve synchronously.
+		 */
+		requireSync: true;
+	} & ComputedAsyncOptions<T>,
+): never;
+
+/*
+ * Observable Types
+ */
 
 // Options with `undefined` initial value and no `requireSync` -> `undefined`.
 export function computedAsync<T>(
-	computation: (previousValue?: T | undefined) => ComputationResult<T>,
+	computation: (previousValue?: T | undefined) => Observable<T> | T | undefined,
 	options: {
 		initialValue?: undefined;
 		requireSync?: false;
@@ -110,7 +138,7 @@ export function computedAsync<T>(
 
 // Options with `null` initial value -> `null`.
 export function computedAsync<T>(
-	computation: (previousValue?: T | undefined) => ComputationResult<T>,
+	computation: (previousValue?: T | undefined) => Observable<T> | T,
 	options: {
 		initialValue?: null;
 		requireSync?: false;
@@ -119,37 +147,34 @@ export function computedAsync<T>(
 
 // Options with `undefined` initial value and `requireSync` -> strict result type.
 export function computedAsync<T>(
-	computation: (previousValue?: T | undefined) => ComputationResult<T>,
+	computation: (previousValue?: T | undefined) => Observable<T> | T,
 	options: {
 		initialValue?: undefined;
 		requireSync: true;
 	} & ComputedAsyncOptions<T>,
 ): Signal<T>;
 
-// We don't support Promises with requireSync
+// Options with `T` initial value and `requireSync` -> strict result type.
 export function computedAsync<T>(
-	computation: (previousValue?: T | undefined) => Promise<T>,
-	options: ComputedAsyncOptions<T> & { requireSync: true },
-): never;
-
-// Options with a more specific initial value type.
-export function computedAsync<T, const U extends T>(
-	computation: (previousValue?: T | undefined) => ComputationResult<T>,
+	computation: (previousValue?: T | undefined) => Observable<T> | T,
 	options: {
-		initialValue: U;
-		requireSync?: false;
+		initialValue: T;
+		requireSync: true;
 	} & ComputedAsyncOptions<T>,
-): Signal<T | U>;
-
-export function computedAsync<T>(
-	computation: (previousValue?: T | undefined) => ComputationResult<T>,
-	options: ComputedAsyncOptions<T>,
 ): Signal<T>;
 
-export function computedAsync<T, U = undefined>(
-	computation: (previousValue?: T | undefined) => ComputationResult<T>,
-	options?: ComputedAsyncOptions<T> & { initialValue?: U },
-): Signal<T | U> {
+// Options with `T` initial value and no `requireSync` -> strict result type.
+export function computedAsync<T>(
+	computation: (previousValue?: T | undefined) => Observable<T> | T,
+	options: { initialValue: T } & ComputedAsyncOptions<T>,
+): Signal<T>;
+
+export function computedAsync<T>(
+	computation: (
+		previousValue?: T | undefined,
+	) => Promise<T> | Observable<T> | T | undefined,
+	options?: any,
+): Signal<T> {
 	return assertInjector(computedAsync, options?.injector, () => {
 		const destroyRef = inject(DestroyRef);
 
@@ -157,42 +182,37 @@ export function computedAsync<T, U = undefined>(
 		const sourceEvent$ = new Subject<Promise<T> | Observable<T>>();
 
 		// sourceValue is a signal that will hold the current value and the state of the value
-		let sourceValue: WritableSignal<State<T | U>>;
+		let sourceValue: WritableSignal<State<T>>;
 
-		if (options?.requireSync) {
-			if (options.initialValue !== undefined) {
-				sourceValue = signal<State<T | U>>({
-					kind: StateKind.Value,
-					value: options.initialValue as U,
-				});
+		if (options?.requireSync && options?.initialValue === undefined) {
+			const initialComputation = computation(undefined);
+
+			// we don't support promises with requireSync and no initialValue
+			if (isPromise(initialComputation))
+				throw new Error(REQUIRE_SYNC_PROMISE_MESSAGE);
+
+			sourceValue = signal<State<T>>({ kind: StateKind.NoValue });
+
+			if (isObservable(initialComputation)) {
+				initialComputation
+					.subscribe({
+						next: (value) => sourceValue.set({ kind: StateKind.Value, value }),
+						error: (error) => sourceValue.set({ kind: StateKind.Error, error }),
+					})
+					.unsubscribe();
+
+				if (sourceValue()!.kind === StateKind.NoValue)
+					throw new Error(REQUIRE_SYNC_ERROR_MESSAGE);
 			} else {
-				const newSource = computation(undefined);
-
-				// we don't support promises with requireSync - fix Types to prevent this
-				if (isPromise(newSource)) throw new Error(REQUIRE_SYNC_PROMISE_MESSAGE);
-
-				sourceValue = signal<State<T | U>>({ kind: StateKind.NoValue });
-
-				if (isObservable(newSource)) {
-					newSource
-						.subscribe({
-							next: (value) =>
-								sourceValue.set({ kind: StateKind.Value, value }),
-							error: (error) =>
-								sourceValue.set({ kind: StateKind.Error, error }),
-						})
-						.unsubscribe();
-					if (sourceValue()!.kind === StateKind.NoValue) {
-						throw new Error(REQUIRE_SYNC_ERROR_MESSAGE);
-					}
-				} else {
-					sourceValue.set({ kind: StateKind.Value, value: newSource as T });
-				}
+				sourceValue.set({
+					kind: StateKind.Value,
+					value: initialComputation as T,
+				});
 			}
 		} else {
-			sourceValue = signal<State<T | U>>({
+			sourceValue = signal<State<T>>({
 				kind: StateKind.Value,
-				value: options?.initialValue as U,
+				value: options?.initialValue,
 			});
 		}
 
@@ -203,19 +223,19 @@ export function computedAsync<T, U = undefined>(
 				const currentState = untracked(() => sourceValue());
 				const currentValue =
 					currentState.kind === StateKind.Value
-						? (currentState.value as T)
+						? currentState.value
 						: undefined;
 
 				const newSource = computation(currentValue);
 
-				if (!isObservable(newSource) && !isPromise(newSource)) {
+				if (isObservable(newSource) || isPromise(newSource)) {
+					// we untrack the source$.next() so that we don't register other signals as dependencies
+					untracked(() => sourceEvent$.next(newSource));
+				} else {
 					// if the new source is not an observable or a promise, we set the value immediately
 					untracked(() =>
 						sourceValue.set({ kind: StateKind.Value, value: newSource as T }),
 					);
-				} else {
-					// we untrack the source$.next() so that we don't register other signals as dependencies
-					untracked(() => sourceEvent$.next(newSource));
 				}
 			},
 			{ injector: options?.injector },
@@ -226,11 +246,14 @@ export function computedAsync<T, U = undefined>(
 			options?.behavior ?? 'switch',
 		);
 
-		const sourceResult = source$.subscribe({
-			next: (value) => sourceValue.set({ kind: StateKind.Value, value }),
-			// NOTE: Error should be handled by the user (using catchError or .catch())
-			error: (error) => sourceValue.set({ kind: StateKind.Error, error }),
-		});
+		const sourceResult = source$
+			// we skip the first value if requireSync is true because we already set the value in the sourceValue
+			.pipe(options?.requireSync ? skip(1) : (x) => x)
+			.subscribe({
+				next: (value) => sourceValue.set({ kind: StateKind.Value, value }),
+				// NOTE: Error should be handled by the user (using catchError or .catch())
+				error: (error) => sourceValue.set({ kind: StateKind.Error, error }),
+			});
 
 		destroyRef.onDestroy(() => {
 			effectRef.destroy();
@@ -248,7 +271,7 @@ export function computedAsync<T, U = undefined>(
 				const state = sourceValue();
 				switch (state.kind) {
 					case StateKind.Value:
-						return state.value as T;
+						return state.value;
 					case StateKind.Error:
 						throw state.error;
 					case StateKind.NoValue:
