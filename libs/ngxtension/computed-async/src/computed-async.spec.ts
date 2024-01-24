@@ -105,6 +105,13 @@ describe(computedAsync.name, () => {
 	});
 
 	describe('works with requireSync', () => {
+		it('returns undefined for sync observables if not enabled', fakeAsync(() => {
+			TestBed.runInInjectionContext(() => {
+				const value = signal(1);
+				const s = computedAsync(() => of(value()));
+				expect(s()).toEqual(undefined); // initial value
+			});
+		}));
 		it('returns correct value and doesnt throw error', fakeAsync(() => {
 			TestBed.runInInjectionContext(() => {
 				const value = signal(1);
@@ -112,6 +119,16 @@ describe(computedAsync.name, () => {
 				const s = computedAsync(() => of(value()), { requireSync: true });
 
 				expect(s()).toEqual(1); // initial value
+			});
+		}));
+		it('throws error for promises', fakeAsync(() => {
+			TestBed.runInInjectionContext(() => {
+				const value = signal(1);
+				expect(
+					computedAsync(() => Promise.resolve(value()), {
+						requireSync: true,
+					}),
+				).toThrowError(/Promises cannot be used with requireSync/i);
 			});
 		}));
 	});

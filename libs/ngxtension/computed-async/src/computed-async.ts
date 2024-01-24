@@ -126,6 +126,12 @@ export function computedAsync<T>(
 	} & ComputedAsyncOptions<T>,
 ): Signal<T>;
 
+// We don't support Promises with requireSync
+export function computedAsync<T>(
+	computation: (previousValue?: T | undefined) => Promise<T>,
+	options: ComputedAsyncOptions<T> & { requireSync: true },
+): never;
+
 // Options with a more specific initial value type.
 export function computedAsync<T, const U extends T>(
 	computation: (previousValue?: T | undefined) => ComputationResult<T>,
@@ -152,8 +158,37 @@ export function computedAsync<T, U = undefined>(
 
 		// sourceValue is a signal that will hold the current value and the state of the value
 		let sourceValue: WritableSignal<State<T | U>>;
+
 		if (options?.requireSync) {
-			sourceValue = signal<State<T | U>>({ kind: StateKind.NoValue });
+			if (options.initialValue !== undefined) {
+				sourceValue = signal<State<T | U>>({
+					kind: StateKind.Value,
+					value: options.initialValue as U,
+				});
+			} else {
+				const newSource = computation(undefined);
+
+				// we don't support promises with requireSync - fix Types to prevent this
+				if (isPromise(newSource)) throw new Error(REQUIRE_SYNC_PROMISE_MESSAGE);
+
+				sourceValue = signal<State<T | U>>({ kind: StateKind.NoValue });
+
+				if (isObservable(newSource)) {
+					newSource
+						.subscribe({
+							next: (value) =>
+								sourceValue.set({ kind: StateKind.Value, value }),
+							error: (error) =>
+								sourceValue.set({ kind: StateKind.Error, error }),
+						})
+						.unsubscribe();
+					if (sourceValue()!.kind === StateKind.NoValue) {
+						throw new Error(REQUIRE_SYNC_ERROR_MESSAGE);
+					}
+				} else {
+					sourceValue.set({ kind: StateKind.Value, value: newSource as T });
+				}
+			}
 		} else {
 			sourceValue = signal<State<T | U>>({
 				kind: StateKind.Value,
@@ -192,18 +227,9 @@ export function computedAsync<T, U = undefined>(
 		);
 
 		const sourceResult = source$.subscribe({
-			next: (value) =>
-				sourceValue.set({
-					kind: StateKind.Value,
-					value,
-				}),
-			error: (error) => {
-				// NOTE: Error should be handled by the user (using catchError or .catch())
-				sourceValue.set({
-					kind: StateKind.Error,
-					error,
-				});
-			},
+			next: (value) => sourceValue.set({ kind: StateKind.Value, value }),
+			// NOTE: Error should be handled by the user (using catchError or .catch())
+			error: (error) => sourceValue.set({ kind: StateKind.Error, error }),
 		});
 
 		destroyRef.onDestroy(() => {
@@ -234,6 +260,7 @@ export function computedAsync<T, U = undefined>(
 	});
 }
 
+const REQUIRE_SYNC_PROMISE_MESSAGE = `Promises cannot be used with requireSync. Pass an initialValue or set requireSync to false.`;
 const REQUIRE_SYNC_ERROR_MESSAGE = `The observable passed to computedAsync() did not emit synchronously. Pass an initialValue or set requireSync to false.`;
 
 function createFlattenObservable<T>(
