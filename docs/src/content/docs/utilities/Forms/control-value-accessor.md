@@ -8,6 +8,12 @@ contributors: ['robby-rabbitman']
 
 `NgxControlValueAccessor` is a directive to reduce boilerplate when building components, which implement the [ControlValueAccessor](https://angular.io/api/forms/ControlValueAccessor) interface.
 
+## Import
+
+```typescript
+import { NgxControlValueAccessor } from 'ngxtension/control-value-accessor';
+```
+
 ## Usage
 
 `NgxControlValueAccessor` implements the [ControlValueAccessor](https://angular.io/api/forms/ControlValueAccessor) interface and exposes a _simpler_ api. Declare `NgxControlValueAccessor` in the `hostDirectives` section of your component and inject the instance in order to wire up your template:
