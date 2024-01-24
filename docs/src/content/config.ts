@@ -14,7 +14,9 @@ const contributors = defineCollection({
 const docs = defineCollection({
 	schema: (ctx) =>
 		docsSchema()(ctx).extend({
-			badge: z.enum(['stable', 'unstable', 'experimental']).optional(),
+			badge: z
+				.enum(['stable', 'unstable', 'experimental', 'deprecated'])
+				.optional(),
 			entryPoint: z.string().optional(),
 			contributors: z.array(reference('contributors')).optional(),
 		}),
