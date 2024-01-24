@@ -241,6 +241,7 @@ function parseArgs(
 		return [args[0] as Observable<unknown>, null, null, false, null];
 	}
 
+	// to connect signals to other signals, we need to use a callback that includes a signal call
 	if (typeof args[0] === 'function') {
 		return [null, null, null, false, args[0] as () => unknown];
 	}

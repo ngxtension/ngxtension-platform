@@ -3,7 +3,7 @@ title: connect
 description: ngxtension/connect
 entryPoint: connect
 badge: stable
-contributors: ['enea-jahollari']
+contributors: ['enea-jahollari', 'josh-morony', 'chau-tran']
 ---
 
 `connect` is a utility function that connects a signal to an observable and returns a subscription. The subscription is automatically unsubscribed when the component is destroyed. If it's not called in an injection context, it must be called with an injector or DestroyRef.
@@ -15,6 +15,8 @@ import { connect } from 'ngxtension/connect';
 ## Usage
 
 It can be helpful when you want to have a writable signal, but you want to set its value based on an observable.
+
+#### Connect with observables
 
 For example, you might want to have a signal that represents the current page number, but you want to set its value based on an observable that represents the current page number from a data service.
 
@@ -30,6 +32,8 @@ export class AppComponent implements OnDestroy {
 	}
 }
 ```
+
+#### Connect with observables not in an injection context
 
 You can also use it not in an injection context, but you must provide an injector or DestroyRef.
 
@@ -50,6 +54,24 @@ export class AppComponent implements OnDestroy {
 		// or
 
 		connect(this.pageNumber, this.dataService.pageNumber$, this.destroyRef);
+	}
+}
+```
+
+#### Connect with other signals
+
+This is useful when you want to have a writable signal, but you want to update its value based on another signal that represents the current state of that value.
+For this to work, the second argument must be a callback function that includes a signal call inside of it.
+
+```ts
+@Component()
+export class AppComponent implements OnDestroy {
+	private dataService = inject(DataService);
+
+	pageNumber = signal(1);
+
+	constructor() {
+		connect(this.pageNumber, () => this.dataService.state().pageNumber);
 	}
 }
 ```
