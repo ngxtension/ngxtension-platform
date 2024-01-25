@@ -104,6 +104,48 @@ describe(computedAsync.name, () => {
 		}));
 	});
 
+	describe('works with requireSync', () => {
+		it('returns undefined for sync observables if not enabled', fakeAsync(() => {
+			TestBed.runInInjectionContext(() => {
+				const value = signal(1);
+				const s = computedAsync(() => of(value()));
+				expect(s()).toEqual(undefined); // initial value
+			});
+		}));
+		it('returns correct value and doesnt throw error if enabled', fakeAsync(() => {
+			TestBed.runInInjectionContext(() => {
+				const value = signal(1);
+				const s = computedAsync(() => of(value()), { requireSync: true });
+				expect(s()).toEqual(1); // initial value
+			});
+		}));
+		it('returns correct value and doesnt throw error with initial value provided', () => {
+			TestBed.runInInjectionContext(() => {
+				const s = computedAsync(() => of(1), { initialValue: 2 });
+				expect(s()).toEqual(2); // initial value
+				TestBed.flushEffects();
+				expect(s()).toEqual(1);
+			});
+		});
+		it('returns correct value and doesnt throw error with normal variable when enabled', fakeAsync(() => {
+			TestBed.runInInjectionContext(() => {
+				const s = computedAsync(() => 1, { requireSync: true });
+				expect(s()).toEqual(1); // initial value
+			});
+		}));
+		it('throws error for promises', () => {
+			TestBed.runInInjectionContext(() => {
+				const value = signal(1);
+				expect(() => {
+					const s: never = computedAsync(() => promise(value()), {
+						requireSync: true,
+					});
+					s;
+				}).toThrow(/Promises cannot be used with requireSync/i);
+			});
+		});
+	});
+
 	describe('works with promises', () => {
 		it('waits for them to resolve', fakeAsync(() => {
 			TestBed.runInInjectionContext(() => {
@@ -111,7 +153,10 @@ describe(computedAsync.name, () => {
 				const value = signal(1);
 
 				const s = computedAsync(() => {
-					return promise(value(), 100).then((v) => logs.push(v));
+					return promise(value(), 100).then((v) => {
+						logs.push(v);
+						return v;
+					});
 				});
 				expect(s()).toEqual(undefined); // initial value
 				TestBed.flushEffects();
@@ -353,7 +398,7 @@ describe(computedAsync.name, () => {
 					return of(1);
 				});
 
-				// : Signal<number | null>
+				// : Signal<number | null | undefined>
 				const c = computedAsync(
 					() => {
 						return 1;
@@ -361,7 +406,7 @@ describe(computedAsync.name, () => {
 					{ initialValue: null },
 				);
 
-				// : Signal<string>
+				// : Signal<string | undefined>
 				const d = computedAsync(
 					() => {
 						return '';
@@ -369,7 +414,15 @@ describe(computedAsync.name, () => {
 					{ initialValue: '' },
 				);
 
-        // : Signal<string | undefined>
+				// : Signal<string>
+				const d1 = computedAsync(
+					() => {
+						return '';
+					},
+					{ initialValue: '', requireSync: true },
+				);
+
+				// : Signal<string | undefined>
 				const e = computedAsync(
 					() => {
 						return '';
@@ -381,6 +434,7 @@ describe(computedAsync.name, () => {
 				expect(b).toBeTruthy();
 				expect(c).toBeTruthy();
 				expect(d).toBeTruthy();
+				expect(d1).toBeTruthy();
 				expect(e).toBeTruthy();
 			});
 		});
