@@ -1,6 +1,6 @@
-import { signal } from '@angular/core';
+import { Signal, signal } from '@angular/core';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { delay, of } from 'rxjs';
+import { Observable, catchError, delay, map, of, startWith } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { computedAsync } from './computed-async';
 
@@ -383,6 +383,91 @@ describe(computedAsync.name, () => {
 		}));
 	});
 
+	describe('works with contextual observables + requireSync', () => {
+		it('and recovers from errors', fakeAsync(() => {
+			TestBed.runInInjectionContext(() => {
+				const loadAsyncDataLogs: number[] = [];
+				function loadAsyncData(
+					number: number,
+					throwError = false,
+				): Observable<number[]> {
+					if (throwError) {
+						loadAsyncDataLogs.push(number);
+						return of([]).pipe(
+							delay(1000),
+							tap(() => {
+								throw new Error('error-message');
+							}),
+						);
+					}
+
+					const array = Array.from({ length: number }, (_, i) => i);
+					return of(array).pipe(
+						tap(() => loadAsyncDataLogs.push(number)), // log the number of the request
+						delay(1000), // simulate async
+					);
+				}
+
+				const id = signal(1);
+				let throwErrorFlag = false;
+
+				const data: Signal<ApiCallState<number[]>> = computedAsync(
+					() =>
+						loadAsyncData(id(), throwErrorFlag).pipe(
+							map((res) => ({ status: 'loaded' as const, result: res })),
+							startWith({ status: 'loading' as const, result: [] }),
+							catchError((err) => of({ status: 'error' as const, error: err })),
+						),
+					{ requireSync: true },
+				);
+
+				expect(data()).toEqual({ status: 'loading', result: [] });
+				expect(loadAsyncDataLogs).toEqual([1]);
+				tick(500);
+				expect(data()).toEqual({ status: 'loading', result: [] });
+				expect(loadAsyncDataLogs).toEqual([1]);
+				tick(500);
+				expect(data()).toEqual({ status: 'loaded', result: [0] });
+
+				// if we don't flush effects, the effect won't run
+				TestBed.flushEffects();
+
+				id.set(2);
+				TestBed.flushEffects();
+				expect(loadAsyncDataLogs.length).toEqual(2);
+				expect(data().status).toEqual('loading');
+				tick(500);
+				expect(data().status).toEqual('loading');
+				tick(500);
+				expect(data()).toEqual({ status: 'loaded', result: [0, 1] });
+				expect(loadAsyncDataLogs).toEqual([1, 2]);
+
+				id.set(3);
+				throwErrorFlag = true;
+				TestBed.flushEffects();
+				expect(loadAsyncDataLogs).toEqual([1, 2, 3]);
+				expect(data().status).toEqual('loading');
+				tick(500);
+				expect(data().status).toEqual('loading');
+				tick(500);
+				expect(data()).toEqual({
+					status: 'error',
+					error: new Error('error-message'),
+				});
+
+				id.set(4);
+				throwErrorFlag = false; // should recover from error
+				TestBed.flushEffects();
+				expect(loadAsyncDataLogs).toEqual([1, 2, 3, 4]);
+				expect(data().status).toEqual('loading');
+				tick(500);
+				expect(data().status).toEqual('loading');
+				tick(500);
+				expect(data()).toEqual({ status: 'loaded', result: [0, 1, 2, 3] });
+			});
+		}));
+	});
+
 	describe('is typesafe', () => {
 		it('initial value', () => {
 			TestBed.runInInjectionContext(() => {
@@ -440,3 +525,23 @@ describe(computedAsync.name, () => {
 		});
 	});
 });
+
+interface ApiCallLoading<TResult> {
+	status: 'loading';
+	result: TResult;
+}
+
+interface ApiCallLoaded<TResult> {
+	status: 'loaded';
+	result: TResult;
+}
+
+interface ApiCallError<TError> {
+	status: 'error';
+	error: TError;
+}
+
+export type ApiCallState<TResult, TError = string> =
+	| ApiCallLoading<TResult>
+	| ApiCallLoaded<TResult>
+	| ApiCallError<TError>;

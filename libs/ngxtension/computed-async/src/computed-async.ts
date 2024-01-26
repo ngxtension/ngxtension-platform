@@ -18,7 +18,6 @@ import {
 	exhaustAll,
 	isObservable,
 	mergeAll,
-	skip,
 	switchAll,
 } from 'rxjs';
 
@@ -189,37 +188,38 @@ export function computedAsync<T>(
 		// source$ is a Subject that will emit the new source value
 		const sourceEvent$ = new Subject<Promise<T> | Observable<T>>();
 
+		// enhance the sourceEvent$ with the behavior
+		const source$: Observable<T> = createFlattenObservable(
+			sourceEvent$,
+			options?.behavior ?? 'switch',
+		);
+
+		const sourceResult = source$.subscribe({
+			next: (value) => sourceValue.set({ kind: StateKind.Value, value }),
+			// NOTE: Error should be handled by the user (using catchError or .catch())
+			error: (error) => sourceValue.set({ kind: StateKind.Error, error }),
+		});
+
+		// we need to unsubscribe the sourceResult when the context gets destroyed
+		destroyRef.onDestroy(() => sourceResult.unsubscribe());
+
 		// sourceValue is a signal that will hold the current value and the state of the value
 		let sourceValue: WritableSignal<State<T>>;
 
 		if (options?.requireSync && options?.initialValue === undefined) {
-			const initialComputation = computation(undefined);
+			const initialCmp = computation(undefined);
 
-			// we don't support promises with requireSync and no initialValue
-			// also the typings don't allow this case
-			if (isPromise(initialComputation)) {
+			// we don't support promises with requireSync and no initialValue also the typings don't allow this case
+			if (isPromise(initialCmp)) {
 				throw new Error(REQUIRE_SYNC_PROMISE_MESSAGE);
 			}
 
 			sourceValue = signal<State<T>>({ kind: StateKind.NoValue });
 
-			if (isObservable(initialComputation)) {
-				initialComputation
-					.subscribe({
-						next: (value) => sourceValue.set({ kind: StateKind.Value, value }),
-						error: (error) => sourceValue.set({ kind: StateKind.Error, error }),
-					})
-					// we need to unsubscribe because we don't want to keep the subscription
-					// we only care about the initial value
-					.unsubscribe();
-
-				if (sourceValue().kind === StateKind.NoValue)
-					throw new Error(REQUIRE_SYNC_ERROR_MESSAGE);
+			if (isObservable(initialCmp)) {
+				sourceEvent$.next(initialCmp);
 			} else {
-				sourceValue.set({
-					kind: StateKind.Value,
-					value: initialComputation as T,
-				});
+				sourceValue.set({ kind: StateKind.Value, value: initialCmp as T });
 			}
 		} else {
 			sourceValue = signal<State<T>>({
@@ -228,10 +228,17 @@ export function computedAsync<T>(
 			});
 		}
 
+		if (options?.requireSync && sourceValue().kind === StateKind.NoValue) {
+			throw new Error(REQUIRE_SYNC_ERROR_MESSAGE);
+		}
+
+		let skipFirstComputation = options?.requireSync === true;
+
 		// effect runs inside injection context, so it will be cleanup up when context gets destroyed
 		effect(() => {
 			// we need to have an untracked() here because we don't want to register the sourceValue as a dependency
-			// otherwise, we would have an infinite loop
+			// otherwise, we would have an infinite loop.
+			// this is needed for previousValue feature to work
 			const currentValue = untracked(() => {
 				const currentSourceValue = sourceValue();
 				return currentSourceValue.kind === StateKind.Value
@@ -240,6 +247,13 @@ export function computedAsync<T>(
 			});
 
 			const newSource = computation(currentValue);
+
+			// we need to skip the first computation if requireSync is true
+			// because we already computed the value in the previous step
+			if (skipFirstComputation) {
+				skipFirstComputation = false;
+				return;
+			}
 
 			if (isObservable(newSource) || isPromise(newSource)) {
 				// we untrack the source$.next() so that we don't register other signals as dependencies
@@ -251,26 +265,6 @@ export function computedAsync<T>(
 				);
 			}
 		});
-
-		const source$: Observable<T> = createFlattenObservable(
-			sourceEvent$,
-			options?.behavior ?? 'switch',
-		);
-
-		const sourceResult = source$
-			// we skip the first value if requireSync is true because we already set the value in the sourceValue
-			.pipe(options?.requireSync ? skip(1) : (x) => x)
-			.subscribe({
-				next: (value) => sourceValue.set({ kind: StateKind.Value, value }),
-				// NOTE: Error should be handled by the user (using catchError or .catch())
-				error: (error) => sourceValue.set({ kind: StateKind.Error, error }),
-			});
-
-		destroyRef.onDestroy(() => sourceResult.unsubscribe());
-
-		if (options?.requireSync && sourceValue().kind === StateKind.NoValue) {
-			throw new Error(REQUIRE_SYNC_ERROR_MESSAGE);
-		}
 
 		// we return a computed value that will return the current value
 		// in order to support the same API as computed()
