@@ -88,6 +88,7 @@
 			"ngxtension/map-skip-undefined": [
 				"libs/ngxtension/map-skip-undefined/src/index.ts"
 			],
+			"ngxtension/merge-from": ["libs/ngxtension/merge-from/src/index.ts"],
 			"ngxtension/navigation-end": [
 				"libs/ngxtension/navigation-end/src/index.ts"
 			],
