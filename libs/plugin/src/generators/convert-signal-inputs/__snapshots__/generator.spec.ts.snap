@@ -27,6 +27,12 @@ import { input } from "@angular/core";
     <app-test [acceptsString]="withoutDefaultAlias() || withDefaultAlias()" />
   </ng-container>
 </ng-container>
+
+<test [normalInput]="normalInput()" />
+<test-normalInput />
+<normalInput />
+<another-component something="blah-normalInput" />
+
   \`
 })
 export class MyCmp {
@@ -211,5 +217,11 @@ exports[`convertSignalInputsGenerator should convert properly for templateUrl 2`
   <ng-container *ngIf="withoutDefaultAlias()">
     <app-test [acceptsString]="withoutDefaultAlias() || withDefaultAlias()" />
   </ng-container>
-</ng-container>"
+</ng-container>
+
+<test [normalInput]="normalInput()" />
+<test-normalInput />
+<normalInput />
+<another-component something="blah-normalInput" />
+"
 `;
