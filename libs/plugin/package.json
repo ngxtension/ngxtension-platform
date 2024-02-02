@@ -8,6 +8,7 @@
 		"migrations": "./migrations.json"
 	},
 	"dependencies": {
-		"@nx/devkit": "17.2.0"
+		"@nx/devkit": "17.2.0",
+		"ts-morph": "21.0.1"
 	}
 }
