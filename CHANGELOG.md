@@ -1,5 +1,34 @@
 
 
+## [2.0.0](https://github.com/nartc/ngxtension-platform/compare/1.12.0...2.0.0) (2024-02-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* second argument, `injector`, is replaced by an object with fields `injector` and `retryOnError`.
+
+### Features
+
+* add requireSync to computedAsync for better typings ([#255](https://github.com/nartc/ngxtension-platform/issues/255)) ([5e428be](https://github.com/nartc/ngxtension-platform/commit/5e428be7b11a2924e44e740abf7449dceba3b387))
+* **merge-from:** add mergeFrom ([#259](https://github.com/nartc/ngxtension-platform/issues/259)) ([9ed73cf](https://github.com/nartc/ngxtension-platform/commit/9ed73cf28d1334e2cd103fa1d9f8125b24cef659)), closes [#221](https://github.com/nartc/ngxtension-platform/issues/221)
+
+
+### Bug Fixes
+
+* contextual observables + requireSync ([#257](https://github.com/nartc/ngxtension-platform/issues/257)) ([8dcc78d](https://github.com/nartc/ngxtension-platform/commit/8dcc78df0a5f3428ab35fd619dce26e80cadadba))
+* **convert-signal-inputs:** handle input name overlap in template ([#263](https://github.com/nartc/ngxtension-platform/issues/263)) ([d076b48](https://github.com/nartc/ngxtension-platform/commit/d076b4871bcd20e38a276c3e9cdda671065488b4))
+
+
+### Documentations
+
+* **NgxControlValueAccessor:** add import section ([#249](https://github.com/nartc/ngxtension-platform/issues/249)) ([12b9bae](https://github.com/nartc/ngxtension-platform/commit/12b9bae956ae12399226251ef5537adde6b2e33f))
+* update connect function docs to include connecting to other signals ([#251](https://github.com/nartc/ngxtension-platform/issues/251)) ([d6c5fbc](https://github.com/nartc/ngxtension-platform/commit/d6c5fbcd4bd8df7b9cc98ae3e06f48d1e95b07b2))
+
+
+### Refactor
+
+* createEffect() ! ([#253](https://github.com/nartc/ngxtension-platform/issues/253)) ([acc55ac](https://github.com/nartc/ngxtension-platform/commit/acc55ac2286801ade3965cf62d1ad97277a7fee7))
+
 ## [1.12.0](https://github.com/nartc/ngxtension-platform/compare/1.11.0...1.12.0) (2024-01-24)
 
 
