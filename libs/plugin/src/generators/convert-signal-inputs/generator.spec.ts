@@ -22,7 +22,13 @@ const template = `<div>{{ inputWithoutType }}</div>
   <ng-container *ngIf="withoutDefaultAlias">
     <app-test [acceptsString]="withoutDefaultAlias || withDefaultAlias" />
   </ng-container>
-</ng-container>`;
+</ng-container>
+
+<test [normalInput]="normalInput" />
+<test-normalInput />
+<normalInput />
+<another-component something="blah-normalInput" />
+`;
 
 const filesMap = {
 	notComponentNorDirective: `

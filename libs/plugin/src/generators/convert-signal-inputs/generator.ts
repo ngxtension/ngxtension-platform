@@ -339,7 +339,7 @@ export async function convertSignalInputsGenerator(
 								convertedInputs.forEach((convertedInput) => {
 									originalText = originalText.replaceAll(
 										new RegExp(
-											`\\b\(?!\\[\)${convertedInput}\\b\(?!\\]\)`,
+											`(?<!<)(?<!\\[)(?<![\\w-])\\b${convertedInput}\\b(?!\\])(?!>)(?![\\w-])`,
 											'gm',
 										),
 										`${convertedInput}()`,
@@ -365,7 +365,10 @@ export async function convertSignalInputsGenerator(
 								if (templateText) {
 									convertedInputs.forEach((convertedInput) => {
 										templateText = templateText.replaceAll(
-											new RegExp(`\\b${convertedInput}\\b`, 'gm'),
+											new RegExp(
+												`(?<!<)(?<!\\[)(?<![\\w-])\\b${convertedInput}\\b(?!\\])(?!>)(?![\\w-])`,
+												'gm',
+											),
 											`${convertedInput}()`,
 										);
 									});
