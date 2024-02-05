@@ -24,14 +24,13 @@ import {
 type ComputedAsyncBehavior = 'switch' | 'merge' | 'concat' | 'exhaust';
 
 interface ComputedAsyncOptions<T> extends CreateComputedOptions<T> {
-	initialValue?: T;
 	injector?: Injector;
 	behavior?: ComputedAsyncBehavior;
 }
 
 type OptionsWithInitialValue<T> = { initialValue: T } & ComputedAsyncOptions<T>;
 type OptionsWithOptionalInitialValue<T> = {
-	initialValue?: T | undefined | null;
+	initialValue?: undefined;
 } & ComputedAsyncOptions<T>;
 type OptionsWithRequireSync<T> = {
 	requireSync: true;
@@ -109,7 +108,9 @@ export function computedAsync<T>(
 
 // Initial Value: undefined  ->  T | undefined
 export function computedAsync<T>(
-	computation: (previousValue?: T | undefined) => Promise<T> | T | undefined,
+	computation: (
+		previousValue?: T | undefined,
+	) => Observable<T> | Promise<T> | T | undefined,
 	options: OptionsWithOptionalInitialValue<T>,
 ): Signal<T | undefined>;
 
@@ -129,6 +130,16 @@ export function computedAsync<T>(
 export function computedAsync<T>(
 	computation: (previousValue?: T | undefined) => Promise<T>,
 	options: OptionsWithOptionalInitialValue<T> & {
+		/**
+		 * @throws Because the promise will not resolve synchronously.
+		 */
+		requireSync: true;
+	},
+): never;
+
+export function computedAsync<T>(
+	computation: (previousValue?: T | undefined) => Promise<T>,
+	options: OptionsWithInitialValue<T> & {
 		/**
 		 * @throws Because the promise will not resolve synchronously.
 		 */
