@@ -241,3 +241,7 @@ export class UserTasks {
 	);
 }
 ```
+
+### How to test computedAsync
+
+`computedAsync` is tested heavily, so look at the tests for examples on how to test it. [Github Repo computedAsync tests](https://github.com/nartc/ngxtension-platform/blob/main/libs/ngxtension/computed-async/src/computed-async.spec.ts)
