@@ -26,6 +26,9 @@ type ConnectedSignal<TSignalValue> = {
 		observable: Observable<TObservableValue>,
 		reducer: Reducer<TSignalValue, TObservableValue>,
 	): ConnectedSignal<TSignalValue>;
+	with<TSignalValue>(
+		originSignal: () => TSignalValue,
+	): ConnectedSignal<TSignalValue>;
 	subscription: Subscription;
 };
 
@@ -195,13 +198,23 @@ function parseArgs(
 
 	if (args.length === 3) {
 		if (typeof args[2] === 'boolean') {
-			return [
-				args[0] as Observable<unknown>,
-				null,
-				args[1] as Injector | DestroyRef,
-				args[2],
-				null,
-			];
+			if (isObservable(args[0])) {
+				return [
+					args[0] as Observable<unknown>,
+					null,
+					args[1] as Injector | DestroyRef,
+					args[2],
+					null,
+				];
+			} else {
+				return [
+					null,
+					null,
+					args[1] as Injector | DestroyRef,
+					args[2],
+					args[0] as () => unknown,
+				];
+			}
 		}
 
 		return [

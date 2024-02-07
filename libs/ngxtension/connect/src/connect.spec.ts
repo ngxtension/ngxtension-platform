@@ -54,6 +54,31 @@ describe(connect.name, () => {
 				});
 			});
 		});
+
+		it.only('should allow connecting with a signal', () => {
+			const state = signal({
+				user: {
+					firstName: 'chau',
+					lastName: 'tran',
+				},
+				age: 30,
+				likes: ['angular', 'typescript'],
+			});
+
+			TestBed.runInInjectionContext(() => {
+				const testSignal = signal<any>({
+					user: { firstName: 'Chau', lastName: 'Tran' },
+				});
+				const connectedSignal = connect(state).with(() => testSignal());
+				TestBed.flushEffects();
+				expect(state().user).toEqual({ firstName: 'Chau', lastName: 'Tran' });
+
+				testSignal.set({ age: 32 });
+				connectedSignal.with(() => testSignal());
+				TestBed.flushEffects();
+				expect(state().age).toEqual(32);
+			});
+		});
 	});
 
 	describe('connects an observable to a signal in injection context', () => {
