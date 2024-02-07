@@ -26,8 +26,8 @@ type ConnectedSignal<TSignalValue> = {
 		observable: Observable<TObservableValue>,
 		reducer: Reducer<TSignalValue, TObservableValue>,
 	): ConnectedSignal<TSignalValue>;
-	with<TSignalValue>(
-		originSignal: () => TSignalValue,
+	with<TOriginSignalValue extends PartialOrValue<TSignalValue>>(
+		originSignal: () => TOriginSignalValue,
 	): ConnectedSignal<TSignalValue>;
 	subscription: Subscription;
 };
@@ -148,10 +148,21 @@ export function connect(signal: WritableSignal<unknown>, ...args: any[]) {
 				? assertInjector(connect, injectorOrDestroyRef)
 				: undefined;
 
-		return effect(() => signal.set(originSignal()), {
-			allowSignalWrites: true,
-			injector,
-		});
+		return effect(
+			() => {
+				signal.update((prev) => {
+					if (!isObject(prev)) {
+						return originSignal();
+					}
+
+					return { ...prev, ...(originSignal() as object) };
+				});
+			},
+			{
+				allowSignalWrites: true,
+				injector,
+			},
+		);
 	}
 
 	return {

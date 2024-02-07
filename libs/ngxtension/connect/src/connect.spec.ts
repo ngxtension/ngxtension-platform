@@ -55,7 +55,7 @@ describe(connect.name, () => {
 			});
 		});
 
-		it.only('should allow connecting with a signal', () => {
+		it('should allow connecting with a partial value from signal', () => {
 			const state = signal({
 				user: {
 					firstName: 'chau',
@@ -66,17 +66,43 @@ describe(connect.name, () => {
 			});
 
 			TestBed.runInInjectionContext(() => {
-				const testSignal = signal<any>({
+				const sourceSignalOne = signal({
 					user: { firstName: 'Chau', lastName: 'Tran' },
 				});
-				const connectedSignal = connect(state).with(() => testSignal());
+				const expectedOne = {
+					...state(),
+					user: { firstName: 'Chau', lastName: 'Tran' },
+				};
+				const connectedSignal = connect(state).with(() => sourceSignalOne());
 				TestBed.flushEffects();
-				expect(state().user).toEqual({ firstName: 'Chau', lastName: 'Tran' });
+				expect(state()).toEqual(expectedOne);
 
-				testSignal.set({ age: 32 });
-				connectedSignal.with(() => testSignal());
+				const sourceSignalTwo = signal({ age: 32 });
+				const expectedTwo = { ...expectedOne, age: 32 };
+				connectedSignal.with(() => sourceSignalTwo());
 				TestBed.flushEffects();
-				expect(state().age).toEqual(32);
+				expect(state()).toEqual(expectedTwo);
+
+				sourceSignalOne.set({
+					user: { firstName: 'Josh', lastName: 'Morony' },
+				});
+				const expectedThree = {
+					...expectedTwo,
+					user: { firstName: 'Josh', lastName: 'Morony' },
+				};
+				TestBed.flushEffects();
+				expect(state()).toEqual(expectedThree);
+			});
+		});
+
+		it('should allow connecting primitive value', () => {
+			const state = signal(4);
+
+			TestBed.runInInjectionContext(() => {
+				const sourceSignalOne = signal(5);
+				connect(state).with(() => sourceSignalOne());
+				TestBed.flushEffects();
+				expect(state()).toEqual(5);
 			});
 		});
 	});
