@@ -26,6 +26,9 @@ type ConnectedSignal<TSignalValue> = {
 		observable: Observable<TObservableValue>,
 		reducer: Reducer<TSignalValue, TObservableValue>,
 	): ConnectedSignal<TSignalValue>;
+	with<TOriginSignalValue extends PartialOrValue<TSignalValue>>(
+		originSignal: () => TOriginSignalValue,
+	): ConnectedSignal<TSignalValue>;
 	subscription: Subscription;
 };
 
@@ -145,10 +148,21 @@ export function connect(signal: WritableSignal<unknown>, ...args: any[]) {
 				? assertInjector(connect, injectorOrDestroyRef)
 				: undefined;
 
-		return effect(() => signal.set(originSignal()), {
-			allowSignalWrites: true,
-			injector,
-		});
+		return effect(
+			() => {
+				signal.update((prev) => {
+					if (!isObject(prev)) {
+						return originSignal();
+					}
+
+					return { ...prev, ...(originSignal() as object) };
+				});
+			},
+			{
+				allowSignalWrites: true,
+				injector,
+			},
+		);
 	}
 
 	return {
@@ -195,13 +209,23 @@ function parseArgs(
 
 	if (args.length === 3) {
 		if (typeof args[2] === 'boolean') {
-			return [
-				args[0] as Observable<unknown>,
-				null,
-				args[1] as Injector | DestroyRef,
-				args[2],
-				null,
-			];
+			if (isObservable(args[0])) {
+				return [
+					args[0] as Observable<unknown>,
+					null,
+					args[1] as Injector | DestroyRef,
+					args[2],
+					null,
+				];
+			} else {
+				return [
+					null,
+					null,
+					args[1] as Injector | DestroyRef,
+					args[2],
+					args[0] as () => unknown,
+				];
+			}
 		}
 
 		return [
