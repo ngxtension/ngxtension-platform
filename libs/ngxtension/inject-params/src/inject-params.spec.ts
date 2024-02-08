@@ -23,6 +23,12 @@ describe(injectParams.name, () => {
 		expect(instance.params()).toEqual({ id: 'angular' });
 		expect(instance.userId()).toEqual('angular');
 		expect(instance.paramKeysList()).toEqual(['id']);
+
+		await harness.navigateByUrl('/user/test', UserProfileComponent);
+
+		expect(instance.params()).toEqual({ id: 'test' });
+		expect(instance.userId()).toEqual('test');
+		expect(instance.paramKeysList()).toEqual(['id']);
 	});
 });
 
