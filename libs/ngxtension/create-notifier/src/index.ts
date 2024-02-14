@@ -1,1 +1,1 @@
-export const greeting = 'Hello World!';
+export * from './create-notifier';
