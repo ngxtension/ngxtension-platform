@@ -28,6 +28,8 @@ const template = `<div>{{ inputWithoutType }}</div>
 <test-normalInput />
 <normalInput />
 <another-component something="blah-normalInput" />
+
+<p>{{ data().normalInput }}</p>
 `;
 
 const filesMap = {
