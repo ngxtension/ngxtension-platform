@@ -55,6 +55,9 @@
 			"ngxtension/create-injection-token": [
 				"libs/ngxtension/create-injection-token/src/index.ts"
 			],
+			"ngxtension/create-resource": [
+				"libs/ngxtension/create-resource/src/index.ts"
+			],
 			"ngxtension/create-signal": [
 				"libs/ngxtension/create-signal/src/index.ts"
 			],
