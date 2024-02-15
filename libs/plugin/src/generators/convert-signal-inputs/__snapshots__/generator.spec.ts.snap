@@ -38,8 +38,8 @@ import { input } from "@angular/core";
 export class MyCmp {
   inputWithoutType = input();
   normalInput = input('');
-  withoutDefault = input<string | undefined>();
-  withoutDefaultUnion = input<string | undefined>();
+  withoutDefault = input<string>();
+  withoutDefaultUnion = input<string>();
   withDefaultAlias = input(123, { alias: 'defaultAlias' });
   withoutDefaultAlias = input<number | undefined>(undefined, { alias: 'noDefaultAlias' });
   justAStringAlias = input('', { alias: 'stringAlias' });
@@ -146,8 +146,8 @@ import { input } from "@angular/core";
 export class MyCmp {
   inputWithoutType = input();
   normalInput = input('');
-  withoutDefault = input<string | undefined>();
-  withoutDefaultUnion = input<string | undefined>();
+  withoutDefault = input<string>();
+  withoutDefaultUnion = input<string>();
   withDefaultAlias = input(123, { alias: 'defaultAlias' });
   withoutDefaultAlias = input<number | undefined>(undefined, { alias: 'noDefaultAlias' });
   justAStringAlias = input('', { alias: 'stringAlias' });

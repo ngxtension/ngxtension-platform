@@ -96,14 +96,15 @@ function getSignalInputInitializer(
 				types.push(transformType, ',');
 			}
 
-			types.push(typeNode);
-
 			if (
-				!isRequired &&
-				!typeNode.includes('undefined') &&
-				(property.hasQuestionToken() || !propertyInitializer)
+				propertyInitializer?.getType() === undefined &&
+				Node.isObjectLiteralExpression(decoratorArg) &&
+				property.hasQuestionToken()
 			) {
+				types.push(typeNode);
 				types.push('| undefined');
+			} else {
+				types.push(typeNode.replace('| undefined', ''));
 			}
 
 			writer.write(types.concat('>').join(''));
