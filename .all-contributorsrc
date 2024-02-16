@@ -308,6 +308,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "isthatME",
+      "name": "isthatME",
+      "avatar_url": "https://avatars.githubusercontent.com/u/37561224?v=4",
+      "profile": "https://github.com/isthatME",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

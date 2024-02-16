@@ -4,7 +4,7 @@
 </p>
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-33-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-34-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A collection of utilities for [Angular](https://angular.dev).
@@ -95,6 +95,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/RobbyRabbitman"><img src="https://avatars.githubusercontent.com/u/54601487?v=4?s=100" width="100px;" alt="Robby Rabbitman"/><br /><sub><b>Robby Rabbitman</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=RobbyRabbitman" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://www.rainerhahnekamp.com"><img src="https://avatars.githubusercontent.com/u/5721205?v=4?s=100" width="100px;" alt="Rainer Hahnekamp"/><br /><sub><b>Rainer Hahnekamp</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=rainerhahnekamp" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://riegler.fr"><img src="https://avatars.githubusercontent.com/u/1300985?v=4?s=100" width="100px;" alt="Matthieu Riegler"/><br /><sub><b>Matthieu Riegler</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=JeanMeche" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/isthatME"><img src="https://avatars.githubusercontent.com/u/37561224?v=4?s=100" width="100px;" alt="isthatME"/><br /><sub><b>isthatME</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=isthatME" title="Documentation">📖</a></td>
     </tr>
   </tbody>
   <tfoot>
