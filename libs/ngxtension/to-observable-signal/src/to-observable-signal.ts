@@ -33,7 +33,7 @@ export function toObservableSignal<T>(
 
 	return new Proxy(s, {
 		get(_, prop) {
-			if ((s as any)[prop]) {
+			if (prop in s) {
 				return (s as any)[prop];
 			}
 			return (obs as any)[prop];
