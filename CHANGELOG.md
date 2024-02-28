@@ -1,5 +1,28 @@
 
 
+## [2.1.0](https://github.com/nartc/ngxtension-platform/compare/2.0.0...2.1.0) (2024-02-27)
+
+
+### Features
+
+* **connect:** allow updating partial values with signal through ConnectedSignal ([#269](https://github.com/nartc/ngxtension-platform/issues/269)) ([e11f2cd](https://github.com/nartc/ngxtension-platform/commit/e11f2cd17cb7fb0f1e8faedb78ad2eecc60c968e))
+* **create-notifier:** add createNotifier + docs ([#277](https://github.com/nartc/ngxtension-platform/issues/277)) ([b1eff83](https://github.com/nartc/ngxtension-platform/commit/b1eff8332b3846e33c204db3ad3d5cbf4236ce6c))
+
+
+### Bug Fixes
+
+* add more computedAsync tests and docs ([#268](https://github.com/nartc/ngxtension-platform/issues/268)) ([a86375b](https://github.com/nartc/ngxtension-platform/commit/a86375bf5b6343df3d6f4b0fa78a94f407133606))
+* **convert-signal-inputs:** don't convert when input name used as property ([#279](https://github.com/nartc/ngxtension-platform/issues/279)) ([69efec4](https://github.com/nartc/ngxtension-platform/commit/69efec47b24007e9f94a333b91a8c9cb7a21b18f))
+* **convert-signal-inputs:** remove unnecessary undefined ([#280](https://github.com/nartc/ngxtension-platform/issues/280)) ([0356be0](https://github.com/nartc/ngxtension-platform/commit/0356be0072a1533e171602e715b6c5f76949417b))
+* remove snapshot as route.params emits synchronously ([#272](https://github.com/nartc/ngxtension-platform/issues/272)) ([1ec0098](https://github.com/nartc/ngxtension-platform/commit/1ec0098f541cdae72b01589f772dcffd5d5bc771))
+
+
+### Documentations
+
+* add isthatME as a contributor for doc ([#284](https://github.com/nartc/ngxtension-platform/issues/284)) ([660d791](https://github.com/nartc/ngxtension-platform/commit/660d791b0de66add1c88236389d06bf24d013702))
+* add links to e-oz profile ([#289](https://github.com/nartc/ngxtension-platform/issues/289)) ([9f90045](https://github.com/nartc/ngxtension-platform/commit/9f90045127821f0d922f2677bbd9f16aa4b60f8e))
+* **merge-from:** add documentation for merge from ([#283](https://github.com/nartc/ngxtension-platform/issues/283)) ([c34a8d0](https://github.com/nartc/ngxtension-platform/commit/c34a8d0aaff38095c4afc3fc14a53304c354d104))
+
 ## [2.0.0](https://github.com/nartc/ngxtension-platform/compare/1.12.0...2.0.0) (2024-02-02)
 
 

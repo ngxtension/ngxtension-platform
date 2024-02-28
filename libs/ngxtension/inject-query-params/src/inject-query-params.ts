@@ -40,11 +40,10 @@ export function injectQueryParams<T>(
 ): Signal<T | Params | string | null> {
 	assertInInjectionContext(injectQueryParams);
 	const route = inject(ActivatedRoute);
-	const queryParams = route.snapshot.queryParams || {};
 
 	if (typeof keyOrTransform === 'function') {
 		return toSignal(route.queryParams.pipe(map(keyOrTransform)), {
-			initialValue: keyOrTransform(queryParams),
+			requireSync: true,
 		});
 	}
 
@@ -52,6 +51,6 @@ export function injectQueryParams<T>(
 		keyOrTransform ? params?.[keyOrTransform] ?? null : params;
 
 	return toSignal(route.queryParams.pipe(map(getParam)), {
-		initialValue: getParam(queryParams),
+		requireSync: true,
 	});
 }
