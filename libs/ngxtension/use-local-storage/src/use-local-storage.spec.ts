@@ -21,7 +21,7 @@ describe('useLocalStorage', () => {
 	describe('with primitive', () => {
 		it('should set a value in localStorage', () => {
 			TestBed.runInInjectionContext(() => {
-				let { set } = useLocalStorage<string>(key);
+				const { set } = useLocalStorage<string>(key);
 				const testValue = 'value';
 				set(testValue);
 				expect(setItemSpy).toHaveBeenCalledWith(key, JSON.stringify(testValue));
@@ -79,7 +79,7 @@ describe('useLocalStorage', () => {
 		it('should set a value in localStorage', () => {
 			TestBed.runInInjectionContext(() => {
 				const testValue = { house: { rooms: 3, bathrooms: 2 } };
-				let { set } = useLocalStorage<typeof testValue>(key);
+				const { set } = useLocalStorage<typeof testValue>(key);
 				set(testValue);
 				expect(setItemSpy).toHaveBeenCalledWith(key, JSON.stringify(testValue));
 			});
