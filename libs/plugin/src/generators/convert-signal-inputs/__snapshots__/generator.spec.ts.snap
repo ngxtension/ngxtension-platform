@@ -229,3 +229,17 @@ exports[`convertSignalInputsGenerator should convert properly for templateUrl 2`
 <p>{{ data().normalInput }}</p>
 "
 `;
+
+exports[`convertSignalInputsGenerator should fail gracefully for issue #290 1`] = `
+"
+import { Component } from '@angular/core';
+import { input } from "@angular/core";
+
+@Component({})
+export class MyCmp {
+  inputWithoutType = input();
+  noColon = true
+    inputWithoutType = input();;
+}
+"
+`;
