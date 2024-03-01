@@ -286,39 +286,40 @@ export async function convertSignalInputsGenerator(
 
 			targetClass.forEachChild((node) => {
 				if (Node.isPropertyDeclaration(node)) {
-					// fail gracefully for nodes not terminated with a semi-colon
-					try {
-						const inputDecorator = node.getDecorator('Input');
-						if (inputDecorator) {
-							const { name, isReadonly, docs, scope, hasOverrideKeyword } =
-								node.getStructure();
+					const inputDecorator = node.getDecorator('Input');
+					if (inputDecorator) {
+						const { name, isReadonly, docs, scope, hasOverrideKeyword } =
+							node.getStructure();
 
-							const newProperty = targetClass.addProperty({
-								name,
-								isReadonly,
-								docs,
-								scope,
-								hasOverrideKeyword,
-								initializer: getSignalInputInitializer(
-									contentsStore,
-									targetClass.getName(),
-									inputDecorator,
-									node,
-								),
-							});
+						const newProperty = targetClass.addProperty({
+							name,
+							isReadonly,
+							docs,
+							scope,
+							hasOverrideKeyword,
+							initializer: getSignalInputInitializer(
+								contentsStore,
+								targetClass.getName(),
+								inputDecorator,
+								node,
+							),
+						});
 
-							node.replaceWithText(newProperty.print());
+						node.replaceWithText(newProperty.print());
 
+						// fail gracefully for nodes not terminated with a semi-colon
+						try {
 							// remove old class property Input
 							newProperty.remove();
-
-							// track converted inputs
-							convertedInputs.add(name);
+						} catch (err) {
+							logger.warn(
+								`[ngxtension] "${path}" Failed to parse node, check that declarations are terminated with a semicolon and try again`,
+							);
+							throw err;
 						}
-					} catch (err) {
-						logger.warn(
-							`[ngxtension] "${path}" Failed to parse node, consider formatting with prettier and trying again`,
-						);
+
+						// track converted inputs
+						convertedInputs.add(name);
 					}
 				}
 			});
