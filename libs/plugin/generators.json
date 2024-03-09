@@ -10,6 +10,12 @@
 			"aliases": ["signal-inputs"],
 			"schema": "./src/generators/convert-signal-inputs/schema.json",
 			"description": "libs/plugin/src/generators/convert-signal-inputs/ generator"
+		},
+		"convert-outputs": {
+			"factory": "./src/generators/convert-outputs/generator",
+			"aliases": ["signal-outputs"],
+			"schema": "./src/generators/convert-outputs/schema.json",
+			"description": "libs/plugin/src/generators/convert-outputs/ generator"
 		}
 	},
 	"schematics": {
@@ -23,6 +29,12 @@
 			"aliases": ["signal-inputs"],
 			"schema": "./src/generators/convert-signal-inputs/schema.json",
 			"description": "libs/plugin/src/generators/convert-signal-inputs/ generator"
+		},
+		"convert-outputs": {
+			"factory": "./src/generators/convert-outputs/generator",
+			"aliases": ["signal-outputs"],
+			"schema": "./src/generators/convert-outputs/schema.json",
+			"description": "libs/plugin/src/generators/convert-outputs/ generator"
 		}
 	}
 }
