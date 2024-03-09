@@ -1,18 +1,18 @@
 ---
-title: computedFrom
+title: derivedFrom
 description: ngxtension/computed-from
 entryPoint: computed-from
 badge: stable
 contributors: ['enea-jahollari']
 ---
 
-`computedFrom` is a helper function that combines the values of `Observable`s or `Signal`s and emits the combined value.
+`derivedFrom` is a helper function that combines the values of `Observable`s or `Signal`s and emits the combined value.
 It also gives us the possibility to change the combined value before emitting it using rxjs operators.
 
 It is similar to `combineLatest`, but it also takes `Signals` into consideration.
 
 ```ts
-import { computedFrom } from 'ngxtension/computed-from';
+import { derivedFrom } from 'ngxtension/computed-from';
 ```
 
 :::tip[Inside story of the function]
@@ -21,7 +21,7 @@ Read more here: [A sweet spot between signals and observables 🍬](https://itne
 
 ## Usage
 
-`computedFrom` accepts an array or object of `Observable`s or `Signal`s and returns a `Signal` that emits the combined value of the `Observable`s or `Signal`s.
+`derivedFrom` accepts an array or object of `Observable`s or `Signal`s and returns a `Signal` that emits the combined value of the `Observable`s or `Signal`s.
 By default, it needs to be called in an injection context, but it can also be called outside of it by passing the `Injector` in the third argument `options` object.
 If your Observable doesn't emit synchronously, you can use the `startWith` operator to change the starting value, or pass an `initialValue` in the third argument `options` object.
 
@@ -30,11 +30,11 @@ const a = signal(1);
 const b$ = new BehaviorSubject(2);
 
 // array type
-const combined = computedFrom([a, b$]);
+const combined = derivedFrom([a, b$]);
 console.log(combined()); // [1, 2]
 
 // object type
-const combined = computedFrom({ a, b: b$ });
+const combined = derivedFrom({ a, b: b$ });
 console.log(combined()); // { a: 1, b: 2 }
 ```
 
@@ -48,28 +48,28 @@ It can be used in multiple ways:
 
 ### 1. Combine multiple `Signal`s
 
-We can use `computedFrom` to combine multiple `Signal`s into one `Signal`, which will emit the combined value of the `Signal`s.
+We can use `derivedFrom` to combine multiple `Signal`s into one `Signal`, which will emit the combined value of the `Signal`s.
 
 ```ts
 const page = signal(1);
 const filters = signal({ name: 'John' });
 
-const combined = computedFrom([page, filters]);
+const combined = derivedFrom([page, filters]);
 
 console.log(combined()); // [1, { name: 'John' }]
 ```
 
-At this point we still don't get any benefit from using `computedFrom` because we can already combine multiple `Signal`s using `computed` function.
-But, what's better is that `computedFrom` allows us to change the combined value before emitting it using rxjs operators (applying asynchronous operations), which is not possible with `computed`.
+At this point we still don't get any benefit from using `derivedFrom` because we can already combine multiple `Signal`s using `computed` function.
+But, what's better is that `derivedFrom` allows us to change the combined value before emitting it using rxjs operators (applying asynchronous operations), which is not possible with `computed`.
 
 ```ts
-import { computedFrom } from 'ngxtension/computed-from';
+import { derivedFrom } from 'ngxtension/computed-from';
 import { delay, of, pipe, switchMap } from 'rxjs';
 
 let a = signal(1);
 let b = signal(2);
 
-let c = computedFrom(
+let c = derivedFrom(
 	[a, b],
 	pipe(
 		switchMap(
@@ -94,7 +94,7 @@ This will _throw an error_ because the operation pipeline will produce an observ
 You can solve this by using the `initialValue` param in the third argument `options` object, to define the starting value of the resulting Signal and _prevent throwing an error_ in case of _real async_ observable.
 
 ```ts
-let c = computedFrom(
+let c = derivedFrom(
 	[a, b],
 	pipe(
 		switchMap(
@@ -116,7 +116,7 @@ This works, and you can copy the above example inside a component constructor an
 Another way to solve this problem is using the `startWith` rxjs operator in the pipe to force the observable to have a starting value like below.
 
 ```ts
-let c = computedFrom(
+let c = derivedFrom(
 	[a, b],
 	pipe(
 		switchMap(([a, b]) => of(a + b).pipe(delay(1000))),
@@ -135,13 +135,13 @@ The console log will be:
 
 ### 2. Combine multiple `Observable`s
 
-We can use `computedFrom` to combine multiple `Observable`s into one `Signal`, which will emit the combined value of the `Observable`s.
+We can use `derivedFrom` to combine multiple `Observable`s into one `Signal`, which will emit the combined value of the `Observable`s.
 
 ```ts
 const page$ = new BehaviorSubject(1);
 const filters$ = new BehaviorSubject({ name: 'John' });
 
-const combined = computedFrom([page$, filters$]);
+const combined = derivedFrom([page$, filters$]);
 
 console.log(combined()); // [1, { name: 'John' }]
 ```
@@ -156,34 +156,34 @@ And it can be used in the same way as in the previous example with rxjs operator
 
 ### 3. Combine multiple `Signal`s and `Observable`s
 
-This is where `computedFrom` shines. We can use it to combine multiple `Signal`s and `Observable`s into one `Signal`.
+This is where `derivedFrom` shines. We can use it to combine multiple `Signal`s and `Observable`s into one `Signal`.
 
 ```ts
 const page = signal(1);
 const filters$ = new BehaviorSubject({ name: 'John' });
 
-const combined = computedFrom([page, filters$]);
+const combined = derivedFrom([page, filters$]);
 console.log(combined()); // [1, { name: 'John' }]
 
 // or using the object notation
-const combinedObject = computedFrom({ page, filters: filters$ });
+const combinedObject = derivedFrom({ page, filters: filters$ });
 console.log(combinedObject()); // { page: 1, filters: { name: 'John' } }
 ```
 
 :::note[Tricky part]
-For `Observable`s that don't emit synchronously `computedFrom` will **throw an error** forcing you to fix this situation either by passing an `initialValue` in the third argument, or using `startWith` operator to force observable to have a sync starting value.
+For `Observable`s that don't emit synchronously `derivedFrom` will **throw an error** forcing you to fix this situation either by passing an `initialValue` in the third argument, or using `startWith` operator to force observable to have a sync starting value.
 :::
 
 ```ts
 const page$ = new Subject<number>(); // Subject doesn't have an initial value
 const filters$ = new BehaviorSubject({ name: 'John' });
-const combined = computedFrom([page$, filters$]); // 👈 will throw an error!! 💥
+const combined = derivedFrom([page$, filters$]); // 👈 will throw an error!! 💥
 ```
 
 But, we can always use the `startWith` operator to change the initial value.
 
 ```ts
-const combined = computedFrom([
+const combined = derivedFrom([
 	page$.pipe(startWith(0)), // change the initial value to 0
 	filters$,
 ]);
@@ -193,10 +193,10 @@ console.log(combined()); // [0, { name: 'John' }]
 
 ### 4. Using initialValue param
 
-Or you can pass `initialValue` to `computedFrom` in the third argument `options` object, to define the starting value of the resulting Signal and **prevent throwing error** in case of observables that emit later.
+Or you can pass `initialValue` to `derivedFrom` in the third argument `options` object, to define the starting value of the resulting Signal and **prevent throwing error** in case of observables that emit later.
 
 ```ts
-const combined = computedFrom(
+const combined = derivedFrom(
 	[page$, filters$],
 	switchMap(([page, filters]) => this.dataService.getArrInfo$(page, filters)),
 	{ initialValue: [] as Info[] }, // define the initial value of resulting signal
@@ -205,7 +205,7 @@ const combined = computedFrom(
 
 ### 5. Use it outside of an injection context
 
-By default, `computedFrom` needs to be called in an injection context, but it can also be called outside of it by passing the `Injector` in the third argument `options` object.
+By default, `derivedFrom` needs to be called in an injection context, but it can also be called outside of it by passing the `Injector` in the third argument `options` object.
 
 ```ts
 @Component()
@@ -223,7 +223,7 @@ export class MyComponent {
 		const page = signal(1);
 		const filters$ = new BehaviorSubject({ name: 'John' });
 
-		this.data = computedFrom(
+		this.data = derivedFrom(
 			[page, filters$],
 			pipe(
 				switchMap(([page, filters]) =>

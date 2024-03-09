@@ -14,7 +14,7 @@ import {
 	type OnInit,
 } from '@angular/core';
 import { injectAutoEffect } from 'ngxtension/auto-effect';
-import { computedFrom } from 'ngxtension/computed-from';
+import { derivedFrom } from 'ngxtension/computed-from';
 import {
 	defer,
 	map,
@@ -418,7 +418,7 @@ export class NgxSvgSpriteFragment implements OnInit {
 	/**
 	 * @ignore
 	 */
-	private readonly svg$ = computedFrom(
+	private readonly svg$ = derivedFrom(
 		{ sprite: this.spriteConfig$ },
 		pipe(switchMap(({ sprite }) => sprite?.svg$ ?? of(undefined))),
 	);

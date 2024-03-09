@@ -43,7 +43,7 @@ Si queremos obtener el valor de un parámetro específico, podemos pasar el nomb
 class TestComponent {
 	userId = injectParams('id'); // devuelve una signal con el valor del parámetro de ruta id
 
-	user = computedFrom(
+	user = derivedFrom(
 		[this.userId],
 		switchMap((id) => this.userService.getUser(id).pipe(startWith(null))),
 	);
