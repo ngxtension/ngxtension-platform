@@ -20,7 +20,7 @@ import {
 } from 'rxjs';
 
 export type ObservableSignalInput<T> = ObservableInput<T> | Signal<T>;
-export type derivedFromOptions<T> = {
+export type DerivedFromOptions<T> = {
 	readonly injector?: Injector;
 	readonly initialValue?: T | null;
 }; //Pick<ToSignalOptions<T>,'injector' | 'initialValue'>;
@@ -41,7 +41,7 @@ type ObservableSignalInputTuple<T> = {
 export function derivedFrom<Input extends readonly unknown[], Output = Input>(
 	sources: readonly [...ObservableSignalInputTuple<Input>],
 	operator?: OperatorFunction<Input, Output>,
-	options?: derivedFromOptions<Output>,
+	options?: DerivedFromOptions<Output>,
 ): Signal<Output>;
 
 export function derivedFrom<
@@ -49,13 +49,13 @@ export function derivedFrom<
 	Output = Input, //InferObservableSignalOutput<Input>
 >(
 	sources: readonly [...ObservableSignalInputTuple<Input>],
-	options?: derivedFromOptions<Input>,
+	options?: DerivedFromOptions<Input>,
 ): Signal<Output>;
 
 export function derivedFrom<Input extends object, Output = Input>(
 	sources: ObservableSignalInputTuple<Input>,
 	operator?: OperatorFunction<Input, Output>,
-	options?: derivedFromOptions<Output>,
+	options?: DerivedFromOptions<Output>,
 ): Signal<Output>;
 
 export function derivedFrom<
@@ -63,7 +63,7 @@ export function derivedFrom<
 	Output = Input, //InferObservableSignalOutput<Input>
 >(
 	sources: ObservableSignalInputTuple<Input>,
-	options?: derivedFromOptions<Input>,
+	options?: DerivedFromOptions<Input>,
 ): Signal<Output>;
 
 /**
@@ -73,7 +73,7 @@ export function derivedFrom<
  *
  * @param {ObservableSignalInputTuple} sources - array/object of `Observable` or `Signal` values
  * @param {OperatorFunction} [operator] - operator to apply to the `Observable` or `Signal` values
- * @param {derivedFromOptions} [options] - options to pass initialValue and/or injector to use to inject the `Observable` or `Signal` values
+ * @param {DerivedFromOptions} [options] - options to pass initialValue and/or injector to use to inject the `Observable` or `Signal` values
  * @returns {Signal} - `Signal` that emits the values of the `Observable` or `Signal` values
  *
  * @example
@@ -120,7 +120,7 @@ function _normalizeArgs<Input, Output>(
 	normalizedSources: ObservableInputTuple<Input>;
 	operator: OperatorFunction<Input, Output>;
 	hasInitValue: boolean;
-	options: derivedFromOptions<Output> | undefined;
+	options: DerivedFromOptions<Output> | undefined;
 } {
 	if (!args || !args.length || typeof args[0] !== 'object')
 		//valid even for Array
@@ -139,7 +139,9 @@ function _normalizeArgs<Input, Output>(
 				acc[keyOrIndex] = toObservable(source, {
 					injector: options?.injector,
 				}).pipe(
-					startWith(untracked(source)), // this is done because toObservable doesn't immediatly emit initialValue of the signal
+					startWith(
+						untracked(source),
+					) /* this is done because toObservable doesn't immediatly emit initialValue of the signal */,
 				);
 			} else if (isObservable(source)) {
 				acc[keyOrIndex] = source.pipe(distinctUntilChanged());

@@ -2,17 +2,17 @@ import { Signal, signal } from '@angular/core';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { Observable, catchError, delay, map, of, startWith } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { computedAsync } from './computed-async';
+import { derivedAsync } from './derived-async';
 
 const promise = <T>(value: T, time = 0): Promise<T> =>
 	new Promise((resolve) => setTimeout(() => resolve(value), time));
 
-describe(computedAsync.name, () => {
+describe(derivedAsync.name, () => {
 	describe('works with raw values', () => {
 		it('null & undefined', fakeAsync(() => {
 			TestBed.runInInjectionContext(() => {
 				const value = signal<null | undefined>(null);
-				const result = computedAsync(() => value());
+				const result = derivedAsync(() => value());
 				expect(result()).toEqual(undefined); // initial value
 				value.set(null);
 				TestBed.flushEffects();
@@ -24,7 +24,7 @@ describe(computedAsync.name, () => {
 				const value = signal(0);
 				const data = signal([1, 2, 3]);
 
-				const result = computedAsync(() => {
+				const result = derivedAsync(() => {
 					return data().map((v) => v + value());
 				});
 
@@ -41,7 +41,7 @@ describe(computedAsync.name, () => {
 				const value = signal(0);
 				const data = signal([1, 2, 3]);
 
-				const result = computedAsync(
+				const result = derivedAsync(
 					() => {
 						return data().map((v) => v + value());
 					},
@@ -65,7 +65,7 @@ describe(computedAsync.name, () => {
 				const value = signal(1);
 
 				// TODO(enea): the prev param has unknown type for some reason
-				const s = computedAsync((previousValue: number | undefined) => {
+				const s = derivedAsync((previousValue: number | undefined) => {
 					const v = value();
 					if (previousValue !== undefined) {
 						logs.push(previousValue * 1000);
@@ -108,20 +108,20 @@ describe(computedAsync.name, () => {
 		it('returns undefined for sync observables if not enabled', fakeAsync(() => {
 			TestBed.runInInjectionContext(() => {
 				const value = signal(1);
-				const s = computedAsync(() => of(value()));
+				const s = derivedAsync(() => of(value()));
 				expect(s()).toEqual(undefined); // initial value
 			});
 		}));
 		it('returns correct value and doesnt throw error if enabled', fakeAsync(() => {
 			TestBed.runInInjectionContext(() => {
 				const value = signal(1);
-				const s = computedAsync(() => of(value()), { requireSync: true });
+				const s = derivedAsync(() => of(value()), { requireSync: true });
 				expect(s()).toEqual(1); // initial value
 			});
 		}));
 		it('returns correct value and doesnt throw error with initial value provided', () => {
 			TestBed.runInInjectionContext(() => {
-				const s = computedAsync(() => of(1), { initialValue: 2 });
+				const s = derivedAsync(() => of(1), { initialValue: 2 });
 				expect(s()).toEqual(2); // initial value
 				TestBed.flushEffects();
 				expect(s()).toEqual(1);
@@ -129,7 +129,7 @@ describe(computedAsync.name, () => {
 		});
 		it('returns correct value and doesnt throw error with normal variable when enabled', fakeAsync(() => {
 			TestBed.runInInjectionContext(() => {
-				const s = computedAsync(() => 1, { requireSync: true });
+				const s = derivedAsync(() => 1, { requireSync: true });
 				expect(s()).toEqual(1); // initial value
 			});
 		}));
@@ -137,7 +137,7 @@ describe(computedAsync.name, () => {
 			TestBed.runInInjectionContext(() => {
 				const value = signal(1);
 				expect(() => {
-					const s: never = computedAsync(() => promise(value()), {
+					const s: never = derivedAsync(() => promise(value()), {
 						requireSync: true,
 					});
 					s;
@@ -152,7 +152,7 @@ describe(computedAsync.name, () => {
 				const logs: number[] = [];
 				const value = signal(1);
 
-				const s = computedAsync(() => {
+				const s = derivedAsync(() => {
 					return promise(value(), 100).then((v) => {
 						logs.push(v);
 						return v;
@@ -181,7 +181,7 @@ describe(computedAsync.name, () => {
 				const logs: number[] = [];
 				const value = signal(1);
 
-				const s = computedAsync(() => {
+				const s = derivedAsync(() => {
 					return of(value()).pipe(
 						delay(100),
 						tap((v) => logs.push(v)),
@@ -208,7 +208,7 @@ describe(computedAsync.name, () => {
 				const logs: number[] = [];
 				const value = signal(1);
 
-				const s = computedAsync(
+				const s = derivedAsync(
 					() => {
 						return of(value()).pipe(
 							delay(100),
@@ -253,7 +253,7 @@ describe(computedAsync.name, () => {
 				const logs: number[] = [];
 				const value = signal(1);
 
-				const s = computedAsync(
+				const s = derivedAsync(
 					() => {
 						return of(value()).pipe(
 							delay(100),
@@ -298,7 +298,7 @@ describe(computedAsync.name, () => {
 				const logs: number[] = [];
 				const value = signal(1);
 
-				const s = computedAsync(
+				const s = derivedAsync(
 					() => {
 						return of(value()).pipe(
 							delay(100),
@@ -340,7 +340,7 @@ describe(computedAsync.name, () => {
 				const logs: number[] = [];
 				const value = signal(1);
 
-				const s = computedAsync(
+				const s = derivedAsync(
 					() => {
 						return of(value()).pipe(
 							delay(100),
@@ -411,7 +411,7 @@ describe(computedAsync.name, () => {
 				const id = signal(1);
 				let throwErrorFlag = false;
 
-				const data: Signal<ApiCallState<number[]>> = computedAsync(
+				const data: Signal<ApiCallState<number[]>> = derivedAsync(
 					() =>
 						loadAsyncData(id(), throwErrorFlag).pipe(
 							map((res) => ({ status: 'loaded' as const, result: res })),
@@ -472,47 +472,43 @@ describe(computedAsync.name, () => {
 		it('initial value', () => {
 			TestBed.runInInjectionContext(() => {
 				// promise
-				const onePromise: Signal<number | undefined> = computedAsync(() =>
+				const onePromise: Signal<number | undefined> = derivedAsync(() =>
 					promise(1),
 				);
-				const onlyPromises: Signal<number | undefined> = computedAsync(() => {
+				const onlyPromises: Signal<number | undefined> = derivedAsync(() => {
 					if (Math.random() > 0.5) return Promise.resolve(1);
 					return Promise.resolve(1);
 				});
 
 				// observable
-				const oneObservable: Signal<number | undefined> = computedAsync(() =>
+				const oneObservable: Signal<number | undefined> = derivedAsync(() =>
 					of(1),
 				);
-				const onlyObservables: Signal<number | undefined> = computedAsync(
-					() => {
-						if (Math.random() > 0.5) return of(1);
-						return of(1);
-					},
-				);
+				const onlyObservables: Signal<number | undefined> = derivedAsync(() => {
+					if (Math.random() > 0.5) return of(1);
+					return of(1);
+				});
 
 				// normal value
-				const normalValue: Signal<number | undefined> = computedAsync(() => 1);
-				const normalValue2: Signal<1 | '1' | undefined> = computedAsync(() => {
+				const normalValue: Signal<number | undefined> = derivedAsync(() => 1);
+				const normalValue2: Signal<1 | '1' | undefined> = derivedAsync(() => {
 					if (Math.random() > 0.5) return 1;
 					return '1';
 				});
 
 				// undefined or null
-				const undefinedValue: Signal<undefined> = computedAsync(
-					() => undefined,
-				);
+				const undefinedValue: Signal<undefined> = derivedAsync(() => undefined);
 				// TODO: should we allow this?
-				const nullValue: Signal<null | undefined> = computedAsync(() => null);
+				const nullValue: Signal<null | undefined> = derivedAsync(() => null);
 
-				const numberOrUndefined: Signal<number | undefined> = computedAsync(
+				const numberOrUndefined: Signal<number | undefined> = derivedAsync(
 					() => {
 						if (Math.random() > 0.5) return 1;
 						return undefined;
 					},
 				);
 
-				const numberOrNull: Signal<number | null | undefined> = computedAsync(
+				const numberOrNull: Signal<number | null | undefined> = derivedAsync(
 					() => {
 						if (Math.random() > 0.5) return 1;
 						return null;
@@ -520,61 +516,61 @@ describe(computedAsync.name, () => {
 				);
 
 				// initialValue + normal value
-				const withInitialValue: Signal<number | undefined> = computedAsync(
+				const withInitialValue: Signal<number | undefined> = derivedAsync(
 					() => 1,
 					{ initialValue: undefined },
 				);
 
-				const withNullInitialValue: Signal<number | null> = computedAsync(
+				const withNullInitialValue: Signal<number | null> = derivedAsync(
 					() => 1,
 					{ initialValue: null },
 				);
 
-				const withInitialValue2: Signal<number> = computedAsync(() => 1, {
+				const withInitialValue2: Signal<number> = derivedAsync(() => 1, {
 					initialValue: 0,
 				});
-				const withInitialValue3: Signal<number[]> = computedAsync(
+				const withInitialValue3: Signal<number[]> = derivedAsync(
 					() => [1, 2, 3],
 					{ initialValue: [] },
 				);
 
 				// initialValue + promise
 				const promiseWithInitialValue: Signal<number | undefined> =
-					computedAsync(() => promise(1), { initialValue: undefined });
-				const promiseWithInitialValue2: Signal<number> = computedAsync(
+					derivedAsync(() => promise(1), { initialValue: undefined });
+				const promiseWithInitialValue2: Signal<number> = derivedAsync(
 					() => promise(1),
 					{ initialValue: 1 },
 				);
-				const promiseWithInitialValue3: Signal<number[]> = computedAsync(
+				const promiseWithInitialValue3: Signal<number[]> = derivedAsync(
 					() => promise([1, 2, 3]),
 					{ initialValue: [] },
 				);
 
 				// initialValue + observable
-				const observableWithInitialValue = computedAsync(() => of(1), {
+				const observableWithInitialValue = derivedAsync(() => of(1), {
 					initialValue: undefined,
 				});
 
-				const observableWithInitialValue2: Signal<number> = computedAsync(
+				const observableWithInitialValue2: Signal<number> = derivedAsync(
 					() => of(1),
 					{ initialValue: 1 },
 				);
-				const observableWithInitialValue3: Signal<number[]> = computedAsync(
+				const observableWithInitialValue3: Signal<number[]> = derivedAsync(
 					() => of([1, 2, 3]),
 					{ initialValue: [] },
 				);
 
 				// initialValue + undefined
-				const initialValueUndefined: Signal<number | undefined> = computedAsync(
+				const initialValueUndefined: Signal<number | undefined> = derivedAsync(
 					() => 1,
 					{ initialValue: undefined },
 				);
 				// initialValue + null
-				const initialValueNull: Signal<number | null> = computedAsync(() => 1, {
+				const initialValueNull: Signal<number | null> = derivedAsync(() => 1, {
 					initialValue: null,
 				});
 				// initialValue + promise + observable -> Not supported
-				const initialValuePromiseObservable = computedAsync(
+				const initialValuePromiseObservable = derivedAsync(
 					// @ts-expect-error initialValue + promise + observable -> Not supported
 					() => {
 						if (Math.random() > 0.5) return promise(1);
@@ -584,13 +580,13 @@ describe(computedAsync.name, () => {
 				);
 
 				// requireSync + normal value
-				const requireSyncNormalValue: Signal<number> = computedAsync(() => 1, {
+				const requireSyncNormalValue: Signal<number> = derivedAsync(() => 1, {
 					requireSync: true,
 				});
 
 				expect(requireSyncNormalValue()).toEqual(1);
 
-				const requireSyncNormalValue2: Signal<1 | '1'> = computedAsync(
+				const requireSyncNormalValue2: Signal<1 | '1'> = derivedAsync(
 					() => {
 						const value = 1;
 						if (value > 0.5) return 1;
@@ -601,7 +597,7 @@ describe(computedAsync.name, () => {
 
 				expect(requireSyncNormalValue2()).toEqual(1);
 
-				const requireSyncNormalValue3: Signal<number[]> = computedAsync(
+				const requireSyncNormalValue3: Signal<number[]> = derivedAsync(
 					() => [1, 2, 3],
 					{ requireSync: true },
 				);
@@ -610,14 +606,14 @@ describe(computedAsync.name, () => {
 
 				// requireSync + promise -> Not supported
 				expect(() => {
-					const requireSyncPromise: never = computedAsync(() => promise(1), {
+					const requireSyncPromise: never = derivedAsync(() => promise(1), {
 						requireSync: true,
 					});
 					requireSyncPromise;
 				}).toThrow(/Promises cannot be used with requireSync/i);
 
 				// requireSync + observable
-				const requireSyncObservable: Signal<number> = computedAsync(
+				const requireSyncObservable: Signal<number> = derivedAsync(
 					() => of(1),
 					{ requireSync: true },
 				);
@@ -625,14 +621,14 @@ describe(computedAsync.name, () => {
 				expect(requireSyncObservable()).toEqual(1);
 
 				// requireSync + initialValue
-				const requireSyncNormalValue4: Signal<number> = computedAsync(() => 1, {
+				const requireSyncNormalValue4: Signal<number> = derivedAsync(() => 1, {
 					requireSync: true,
 					initialValue: 0,
 				});
 
 				expect(requireSyncNormalValue4()).toEqual(0);
 
-				const requireSyncNormalValue5: Signal<number[]> = computedAsync(
+				const requireSyncNormalValue5: Signal<number[]> = derivedAsync(
 					() => [1, 2, 3],
 					{ requireSync: true, initialValue: [] },
 				);
@@ -640,7 +636,7 @@ describe(computedAsync.name, () => {
 				expect(requireSyncNormalValue5()).toEqual([]);
 
 				// requireSync + undefined
-				const requireSyncUndefined: Signal<number | undefined> = computedAsync(
+				const requireSyncUndefined: Signal<number | undefined> = derivedAsync(
 					() => 1,
 					{ requireSync: true, initialValue: undefined },
 				);
@@ -648,7 +644,7 @@ describe(computedAsync.name, () => {
 				expect(requireSyncUndefined()).toEqual(1);
 
 				// requireSync + null
-				const requireSyncNull: Signal<number | null> = computedAsync(() => 1, {
+				const requireSyncNull: Signal<number | null> = derivedAsync(() => 1, {
 					requireSync: true,
 					initialValue: null,
 				});
@@ -656,7 +652,7 @@ describe(computedAsync.name, () => {
 				expect(requireSyncNull()).toEqual(null);
 
 				// requireSync + initialValue + promise -> Works but Types are changed to not support it
-				const requireSyncPromiseWithInitialValue: never = computedAsync(
+				const requireSyncPromiseWithInitialValue: never = derivedAsync(
 					() => promise(1),
 					{ requireSync: true, initialValue: 0 },
 				);
@@ -665,13 +661,13 @@ describe(computedAsync.name, () => {
 
 				// requireSync + initialValue + observable
 				const requireSyncObservableWithInitialValue: Signal<number> =
-					computedAsync(() => of(1), { requireSync: true, initialValue: 0 });
+					derivedAsync(() => of(1), { requireSync: true, initialValue: 0 });
 
 				expect(requireSyncObservableWithInitialValue()).toEqual(0);
 
 				// requireSync + initialValue + undefined
 				const requireSyncUndefinedWithInitialValue: Signal<number> =
-					computedAsync(() => 1, {
+					derivedAsync(() => 1, {
 						requireSync: true,
 						initialValue: undefined,
 					});
@@ -680,7 +676,7 @@ describe(computedAsync.name, () => {
 
 				// requireSync + initialValue + null
 				const requireSyncNullWithInitialValue: Signal<number | null> =
-					computedAsync(() => 1, { requireSync: true, initialValue: null });
+					derivedAsync(() => 1, { requireSync: true, initialValue: null });
 
 				expect(requireSyncNullWithInitialValue()).toEqual(null);
 

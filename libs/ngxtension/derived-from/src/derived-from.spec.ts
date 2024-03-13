@@ -24,7 +24,7 @@ import {
 	startWith,
 	switchMap,
 } from 'rxjs';
-import { derivedFrom } from './computed-from';
+import { derivedFrom } from './derived-from';
 
 describe(derivedFrom.name, () => {
 	describe('works with signals', () => {

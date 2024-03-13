@@ -34,7 +34,7 @@ refreshNotifier.notify();
 ```
 
 Then you can trigger a re-computation of any `computed` or `effect` (or
-`computedAsync` from `ngxtension`) by referencing the signal returned on
+`derivedAsync` from `ngxtension`) by referencing the signal returned on
 `listen`:
 
 ```ts

@@ -49,7 +49,7 @@
 
 ### Bug Fixes
 
-* add more computedAsync tests and docs ([#268](https://github.com/nartc/ngxtension-platform/issues/268)) ([a86375b](https://github.com/nartc/ngxtension-platform/commit/a86375bf5b6343df3d6f4b0fa78a94f407133606))
+* add more derivedAsync tests and docs ([#268](https://github.com/nartc/ngxtension-platform/issues/268)) ([a86375b](https://github.com/nartc/ngxtension-platform/commit/a86375bf5b6343df3d6f4b0fa78a94f407133606))
 * **convert-signal-inputs:** don't convert when input name used as property ([#279](https://github.com/nartc/ngxtension-platform/issues/279)) ([69efec4](https://github.com/nartc/ngxtension-platform/commit/69efec47b24007e9f94a333b91a8c9cb7a21b18f))
 * **convert-signal-inputs:** remove unnecessary undefined ([#280](https://github.com/nartc/ngxtension-platform/issues/280)) ([0356be0](https://github.com/nartc/ngxtension-platform/commit/0356be0072a1533e171602e715b6c5f76949417b))
 * remove snapshot as route.params emits synchronously ([#272](https://github.com/nartc/ngxtension-platform/issues/272)) ([1ec0098](https://github.com/nartc/ngxtension-platform/commit/1ec0098f541cdae72b01589f772dcffd5d5bc771))
@@ -70,7 +70,7 @@
 
 ### Features
 
-* add requireSync to computedAsync for better typings ([#255](https://github.com/nartc/ngxtension-platform/issues/255)) ([5e428be](https://github.com/nartc/ngxtension-platform/commit/5e428be7b11a2924e44e740abf7449dceba3b387))
+* add requireSync to derivedAsync for better typings ([#255](https://github.com/nartc/ngxtension-platform/issues/255)) ([5e428be](https://github.com/nartc/ngxtension-platform/commit/5e428be7b11a2924e44e740abf7449dceba3b387))
 * **merge-from:** add mergeFrom ([#259](https://github.com/nartc/ngxtension-platform/issues/259)) ([9ed73cf](https://github.com/nartc/ngxtension-platform/commit/9ed73cf28d1334e2cd103fa1d9f8125b24cef659)), closes [#221](https://github.com/nartc/ngxtension-platform/issues/221)
 
 
@@ -100,7 +100,7 @@
 
 ### Bug Fixes
 
-* **computedAsync:** typings should return a union of undefined when no initial value. ([#247](https://github.com/nartc/ngxtension-platform/issues/247)) ([5cd496a](https://github.com/nartc/ngxtension-platform/commit/5cd496a3a1084f1ee6e80410030c173f9a74a3cb)), closes [#243](https://github.com/nartc/ngxtension-platform/issues/243)
+* **derivedAsync:** typings should return a union of undefined when no initial value. ([#247](https://github.com/nartc/ngxtension-platform/issues/247)) ([5cd496a](https://github.com/nartc/ngxtension-platform/commit/5cd496a3a1084f1ee6e80410030c173f9a74a3cb)), closes [#243](https://github.com/nartc/ngxtension-platform/issues/243)
 
 
 ### Documentations
@@ -149,7 +149,7 @@
 ### Features
 
 * add toObservableSignal() ([#230](https://github.com/nartc/ngxtension-platform/issues/230)) ([2c7e42c](https://github.com/nartc/ngxtension-platform/commit/2c7e42c21e2412c0249ce68851a5827ca6386200))
-* added computed-async impl ([#229](https://github.com/nartc/ngxtension-platform/issues/229)) ([debe8ee](https://github.com/nartc/ngxtension-platform/commit/debe8eeabc61570688f6d4b1c75e36c874650fec))
+* added derived-async impl ([#229](https://github.com/nartc/ngxtension-platform/issues/229)) ([debe8ee](https://github.com/nartc/ngxtension-platform/commit/debe8eeabc61570688f6d4b1c75e36c874650fec))
 * **NgxControlValueAccessor:** Add NgxControlValueAccessor ([#227](https://github.com/nartc/ngxtension-platform/issues/227)) ([7692c46](https://github.com/nartc/ngxtension-platform/commit/7692c46eb2078270da6cf0d7f4d6c98ed98f8682))
 
 

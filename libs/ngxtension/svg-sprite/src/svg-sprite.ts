@@ -14,7 +14,7 @@ import {
 	type OnInit,
 } from '@angular/core';
 import { injectAutoEffect } from 'ngxtension/auto-effect';
-import { derivedFrom } from 'ngxtension/computed-from';
+import { derivedFrom } from 'ngxtension/derived-from';
 import {
 	defer,
 	map,
