@@ -6,7 +6,7 @@ badge: stable
 contributors: ['enea-jahollari']
 ---
 
-In Angular v17.3, new output() were released. The new output() function aligns better with the new input() and pave the road for signal components. This is the reason why `ngxtension` publishes schematics that handles the code migration for you.
+In Angular v17.3, the new `output()` was released. The new `output()` function aligns better with the new `input()` and pave the road for signal components. This is the reason why `ngxtension` publishes schematics that handles the code migration for you.
 
 ### How it works?
 
@@ -16,6 +16,66 @@ The moment you run the schematics, it will look for all the decorators that have
 - It will keep the same types.
 - It will keep the same alias if it's present.
 - It will also convert Outputs that are used with observables and not with EventEmitter.
+
+### Example:
+
+#### Normal output:
+
+Before:
+
+```ts
+@Output() change = new EventEmitter<string>();
+```
+
+After:
+
+```ts
+change = output<string>();
+```
+
+#### Output with alias:
+
+Before:
+
+```ts
+@Output('change') changeAlias = new EventEmitter<string>();
+```
+
+After:
+
+```ts
+change = output<string>({ alias: 'change' });
+```
+
+#### Output with observable:
+
+Before:
+
+```ts
+someObservable$ = of('test');
+@Output() change = this.someObservable$;
+```
+
+After:
+
+```ts
+change = outputFromObservable(this.someObservable$);
+```
+
+#### Output with Subject or BehaviorSubject:
+
+Before:
+
+```ts
+@Output() someSubject = new Subject<string>();
+```
+
+After:
+
+```ts
+someSubject = new Subject<string>();
+_someSubject = outputFromObservable(this.someSubject, { alias: 'someSubject' });
+```
 
 ### Usage
 

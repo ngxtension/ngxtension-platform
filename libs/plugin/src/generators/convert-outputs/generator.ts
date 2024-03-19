@@ -65,10 +65,13 @@ function trackContents(
 }
 
 function getOutputInitializer(
+	propertyName: string,
 	decorator: Decorator,
 	initializer: string,
 ): {
+	outputName?: string;
 	needsOutputFromObservableImport: boolean;
+	removeOnlyDecorator?: boolean;
 	writerFn: WriterFunction;
 } {
 	const decoratorArg = decorator.getArguments()[0];
@@ -81,18 +84,39 @@ function getOutputInitializer(
 
 	// check if the initializer is not an EventEmitter -> means its an observable
 	if (!initializer.includes('EventEmitter')) {
-		return {
-			writerFn: (writer: CodeBlockWriter) => {
-				writer.write(`outputFromObservable`);
-				writer.write(`(${initializer}`);
-				writer.write(`${alias ? `, { alias: ${alias} }` : ''}`);
-				writer.write(`);`);
-			},
-			needsOutputFromObservableImport: true,
-		};
+		// if the initializer is a Subject or BehaviorSubject
+		if (
+			initializer.includes('Subject') ||
+			initializer.includes('BehaviorSubject')
+		) {
+			// Before: @Output() outputFromSubject = new Subject();
+			// After: _outputFromSubject = outputFromObservable(this.outputFromSubject, { alias: 'outputFromSubject' });
+
+			return {
+				writerFn: (writer: CodeBlockWriter) => {
+					writer.write(`outputFromObservable`);
+					writer.write(`(this.${propertyName}`);
+					writer.write(`, { alias: ${alias ?? `'${propertyName}'`} }`);
+					writer.write(`);`);
+				},
+				outputName: `_${propertyName}`,
+				removeOnlyDecorator: true,
+				needsOutputFromObservableImport: true,
+			};
+		} else {
+			return {
+				writerFn: (writer: CodeBlockWriter) => {
+					writer.write(`outputFromObservable`);
+					writer.write(`(${initializer}`);
+					writer.write(`${alias ? `, { alias: ${alias} }` : ''}`);
+					writer.write(`);`);
+				},
+				needsOutputFromObservableImport: true,
+			};
+		}
 	} else {
 		let type = '';
-		if (initializer.includes('new EventEmitter()')) {
+		if (initializer.includes('EventEmitter()')) {
 			// there is no type
 		} else {
 			const genericTypeOnEmitter = initializer.match(/EventEmitter<(.+)>/);
@@ -210,7 +234,7 @@ export async function convertOutputsGenerator(
 
 			const convertedOutputs = new Set<string>();
 
-			const outputFromObservableImportAdded = false;
+			let outputFromObservableImportAdded = false;
 
 			targetClass.forEachChild((node) => {
 				if (Node.isPropertyDeclaration(node)) {
@@ -225,8 +249,16 @@ export async function convertOutputsGenerator(
 							initializer,
 						} = node.getStructure();
 
-						const { needsOutputFromObservableImport, writerFn } =
-							getOutputInitializer(outputDecorator, initializer as string);
+						const {
+							needsOutputFromObservableImport,
+							removeOnlyDecorator,
+							outputName,
+							writerFn,
+						} = getOutputInitializer(
+							name,
+							outputDecorator,
+							initializer as string,
+						);
 
 						if (
 							needsOutputFromObservableImport &&
@@ -236,10 +268,11 @@ export async function convertOutputsGenerator(
 								namedImports: ['outputFromObservable'],
 								moduleSpecifier: '@angular/core/rxjs-interop',
 							});
+							outputFromObservableImportAdded = true;
 						}
 
 						const newProperty = targetClass.addProperty({
-							name,
+							name: outputName ?? name,
 							isReadonly,
 							docs,
 							scope,
@@ -247,10 +280,19 @@ export async function convertOutputsGenerator(
 							initializer: writerFn,
 						});
 
-						node.replaceWithText(newProperty.print());
+						if (removeOnlyDecorator) {
+							outputDecorator.remove();
 
-						// remove old class property Output
-						newProperty.remove();
+							newProperty.setHasExclamationToken(false);
+
+							newProperty.addJsDoc(
+								'TODO(migration): you may want to convert this to a normal output',
+							);
+						} else {
+							node.replaceWithText(newProperty.print());
+							// remove old class property Output
+							newProperty.remove();
+						}
 
 						// track converted outputs
 						convertedOutputs.add(name);
