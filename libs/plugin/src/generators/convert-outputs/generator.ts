@@ -120,7 +120,7 @@ function getOutputInitializer(
 			// there is no type
 		} else {
 			const genericTypeOnEmitter = initializer.match(/EventEmitter<(.+)>/);
-			if (genericTypeOnEmitter.length) {
+			if (genericTypeOnEmitter?.length) {
 				type = genericTypeOnEmitter[1];
 			}
 		}
