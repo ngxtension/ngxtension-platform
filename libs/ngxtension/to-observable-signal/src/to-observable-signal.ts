@@ -30,8 +30,13 @@ export function toObservableSignal<T>(
 	}
 
 	const obs = toObservable(s, options);
-	for (const obsKey in obs) {
-		(s as any)[obsKey] = (obs as any)[obsKey];
-	}
-	return s;
+
+	return new Proxy(s, {
+		get(_, prop) {
+			if (prop in s) {
+				return (s as any)[prop];
+			}
+			return (obs as any)[prop];
+		},
+	});
 }

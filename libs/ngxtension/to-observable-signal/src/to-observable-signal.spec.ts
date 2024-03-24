@@ -9,7 +9,6 @@ describe('toObservableSignal()', () => {
 		const injector = TestBed.inject(Injector);
 		const observableSignal = toObservableSignal(s, { injector });
 
-		expect(observableSignal).toEqual(s);
 		expect(observableSignal.subscribe).toBeDefined();
 		expect(observableSignal.pipe).toBeDefined();
 		expect(observableSignal.set).toBeDefined();
@@ -25,7 +24,6 @@ describe('toObservableSignal()', () => {
 		const injector = TestBed.inject(Injector);
 		const observableSignal = toObservableSignal(s, { injector });
 
-		expect(observableSignal).toEqual(s);
 		expect(observableSignal.subscribe).toBeDefined();
 		expect(observableSignal.pipe).toBeDefined();
 		expect((observableSignal as any)['set']).toBeUndefined();
