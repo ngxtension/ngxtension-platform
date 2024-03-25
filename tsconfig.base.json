@@ -86,6 +86,9 @@
 			"ngxtension/inject-query-params": [
 				"libs/ngxtension/inject-query-params/src/index.ts"
 			],
+			"ngxtension/inject-route-data": [
+				"libs/ngxtension/inject-route-data/src/index.ts"
+			],
 			"ngxtension/intl": ["libs/ngxtension/intl/src/index.ts"],
 			"ngxtension/map-array": ["libs/ngxtension/map-array/src/index.ts"],
 			"ngxtension/map-skip-undefined": [

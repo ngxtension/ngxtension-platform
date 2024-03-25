@@ -317,6 +317,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "kkachniarz220",
+      "name": "kkachniarz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/50884231?v=4",
+      "profile": "https://github.com/kkachniarz220",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
