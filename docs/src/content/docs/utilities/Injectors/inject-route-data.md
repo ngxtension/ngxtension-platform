@@ -1,6 +1,8 @@
 ---
 title: injectRouteData
 description: ngxtension/inject-route-data
+entryPoint: inject-route-data
+contributors: ['krzysztof-kachniarz']
 ---
 
 `injectRouteData` is a helper function that allows us to inject data from the current route as a signal.
