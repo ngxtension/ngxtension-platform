@@ -1,5 +1,35 @@
 
 
+## [2.2.0](https://github.com/nartc/ngxtension-platform/compare/2.1.0...2.2.0) (2024-03-28)
+
+
+### Features
+
+* **convert-outputs:** add migrations for new output() function ([#301](https://github.com/nartc/ngxtension-platform/issues/301)) ([432c290](https://github.com/nartc/ngxtension-platform/commit/432c290daadc89ba6d7b746d65cb21577e060c28))
+* inject route data added ([#286](https://github.com/nartc/ngxtension-platform/issues/286)) ([f06b1e4](https://github.com/nartc/ngxtension-platform/commit/f06b1e4359a6955b4a349a935795661cfe009395))
+
+
+### Bug Fixes
+
+* **convert-signal-inputs:** handle automatic semicolon insertion issues ([#294](https://github.com/nartc/ngxtension-platform/issues/294)) ([09f075d](https://github.com/nartc/ngxtension-platform/commit/09f075db2b99f221232bde7acb8efec8d2de0333))
+* **if-validator:** exclude individual validators from composition to allow presence checks ([#273](https://github.com/nartc/ngxtension-platform/issues/273)) ([92a614c](https://github.com/nartc/ngxtension-platform/commit/92a614c9590a216cbba37787b52dce46941cf0c2))
+* prevent memory leaks in injectNavigationEnd ([#305](https://github.com/nartc/ngxtension-platform/issues/305)) ([2341717](https://github.com/nartc/ngxtension-platform/commit/23417170b02223cbbe6df98e9cbe7cd52380a50d))
+
+
+### Documentations
+
+* add Dafnik as a contributor for doc ([#309](https://github.com/nartc/ngxtension-platform/issues/309)) ([110dffb](https://github.com/nartc/ngxtension-platform/commit/110dffb5dfee7c729e32a3decd5a353b420e98ad))
+* add kkachniarz220 as a contributor for code ([#291](https://github.com/nartc/ngxtension-platform/issues/291)) ([afbcec0](https://github.com/nartc/ngxtension-platform/commit/afbcec00a592b1a9349298c00e89753c9d865626))
+* remember sidebar scroll state ([#307](https://github.com/nartc/ngxtension-platform/issues/307)) ([78163b3](https://github.com/nartc/ngxtension-platform/commit/78163b33eb0e007ff86e1ffe944a7e8e8bbcc53e))
+* **signal-slice:** add docs for experimental actionEffects ([#296](https://github.com/nartc/ngxtension-platform/issues/296)) ([6141e44](https://github.com/nartc/ngxtension-platform/commit/6141e444dcd04a4821d5f79236399ecbe1584e40))
+* update code of conduct link ([2916103](https://github.com/nartc/ngxtension-platform/commit/29161030a4fc2465b00b6f9ba6861101dfdba9c9))
+
+
+### Refactor
+
+* **docs:** add contributor info to injectRouteData ([#306](https://github.com/nartc/ngxtension-platform/issues/306)) ([51afab6](https://github.com/nartc/ngxtension-platform/commit/51afab68470d6529c6b2de20c90940862088cf87))
+* use Proxy in toObservableSignal() instead of methods linking, to be compatible with RxJS v8 ([#288](https://github.com/nartc/ngxtension-platform/issues/288)) ([ae2d9ef](https://github.com/nartc/ngxtension-platform/commit/ae2d9ef3f193a6e38e9a2b23df7c764be3a501d0))
+
 ## [2.1.0](https://github.com/nartc/ngxtension-platform/compare/2.0.0...2.1.0) (2024-02-27)
 
 
