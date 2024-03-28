@@ -62,6 +62,6 @@ jobs:
       # - run: git branch --track main origin/main
 
       - run: pnpm nx-cloud record -- nx format:check
-      - run: pnpm nx affected --target=lint --parallel=3 --base=90e42398e5a68cf31b89e1bce4d766c00eb8a8c1
-      - run: pnpm nx affected --target=test --parallel=3 --base=90e42398e5a68cf31b89e1bce4d766c00eb8a8c1
-      - run: pnpm nx affected --target=build --parallel=3 --exclude=docs --base=90e42398e5a68cf31b89e1bce4d766c00eb8a8c1
+      - run: pnpm nx affected --target=lint --parallel=3
+      - run: pnpm nx affected --target=test --parallel=3
+      - run: pnpm nx affected --target=build --parallel=3 --exclude=docs
