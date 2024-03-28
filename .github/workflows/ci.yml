@@ -58,13 +58,13 @@ jobs:
       - run: git branch --track main origin/main
 
       - name: Check format
-        run: NX_VERBOSE_LOGGING=true pnpm exec nx-cloud record -- pnpm exec nx format:check
+        run: NX_VERBOSE_LOGGING=true pnpm exec nx-cloud record -- nx format:check
 
       - name: Lint
-        run: pnpm exec nx affected --target=lint --parallel=3
+        run: nx affected --target=lint --parallel=3
 
       - name: Test
-        run: pnpm exec nx affected --target=test --parallel=3
+        run: nx affected --target=test --parallel=3
 
       - name: Build
-        run: pnpm exec nx affected --target=build --parallel=3 --exclude=docs
+        run: nx affected --target=build --parallel=3 --exclude=docs
