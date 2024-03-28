@@ -34,37 +34,34 @@ jobs:
           version: 8
           run_install: false
 
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - uses: actions/cache@v4
-        name: Setup pnpm cache
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
       - name: Start CI run
-        run: 'npx nx-cloud start-ci-run --distribute-on="8 linux-medium-js"'
+        run: pnpm nx-cloud start-ci-run --distribute-on="8 linux-medium-js"
 
-      - name: Install dependencies
-        run: pnpm install
+      - name: Restore cached npm dependencies
+        id: cache-dependencies-restore
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            node_modules
+            ~/.cache/Cypress # needed for the Cypress binary
+          key: npm-dependencies-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Cache npm dependencies
+        id: cache-dependencies-save
+        uses: actions/cache/save@v3
+        with:
+          path: |
+            node_modules
+            ~/.cache/Cypress # needed for the Cypress binary
+          key: ${{ steps.cache-dependencies-restore.outputs.cache-primary-key }}
 
       - uses: nrwl/nx-set-shas@v3
       # This line is needed for nx affected to work when CI is running on a PR
       - run: git branch --track main origin/main
 
-      - name: Check format
-        run: pnpm exec nx-cloud record -- nx format:check
-
-      - name: Lint
-        run: pnpm exec nx affected --target=lint --parallel=3
-
-      - name: Test
-        run: pnpm exec nx affected --target=test --parallel=3
-
-      - name: Build
-        run: pnpm exec nx affected --target=build --parallel=3 --exclude=docs
+      - run: pnpm nx-cloud record -- nx format:check
+      - run: pnpm nx affected --target=lint --parallel=3
+      - run: pnpm nx affected --target=test --parallel=3
+      - run: pnpm nx affected --target=build --parallel=3 --exclude=docs
