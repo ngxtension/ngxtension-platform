@@ -4,7 +4,7 @@ import { Observable, catchError, delay, map, of, startWith } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { computedAsync } from './computed-async';
 
-const promise = <T>(value: T, time: number = 0): Promise<T> =>
+const promise = <T>(value: T, time = 0): Promise<T> =>
 	new Promise((resolve) => setTimeout(() => resolve(value), time));
 
 describe(computedAsync.name, () => {
