@@ -4,7 +4,7 @@
 </p>
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-35-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-36-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A collection of utilities for [Angular](https://angular.dev).
@@ -97,6 +97,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="http://riegler.fr"><img src="https://avatars.githubusercontent.com/u/1300985?v=4?s=100" width="100px;" alt="Matthieu Riegler"/><br /><sub><b>Matthieu Riegler</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=JeanMeche" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/isthatME"><img src="https://avatars.githubusercontent.com/u/37561224?v=4?s=100" width="100px;" alt="isthatME"/><br /><sub><b>isthatME</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=isthatME" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/kkachniarz220"><img src="https://avatars.githubusercontent.com/u/50884231?v=4?s=100" width="100px;" alt="kkachniarz"/><br /><sub><b>kkachniarz</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=kkachniarz220" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://dafnik.me"><img src="https://avatars.githubusercontent.com/u/16242839?v=4?s=100" width="100px;" alt="Dominik"/><br /><sub><b>Dominik</b></sub></a><br /><a href="https://github.com/nartc/ngxtension-platform/commits?author=Dafnik" title="Documentation">📖</a></td>
     </tr>
   </tbody>
   <tfoot>
