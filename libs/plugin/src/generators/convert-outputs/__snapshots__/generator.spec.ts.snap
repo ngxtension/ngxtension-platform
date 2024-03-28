@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`convertOutputsGenerator should convert properly 1`] = `
+"
+import { Component, Output, EventEmitter } from '@angular/core';
+import { output } from "@angular/core";
+import { outputFromObservable } from "@angular/core/rxjs-interop";
+
+@Component({
+  template: \` \`
+})
+export class MyCmp {
+  someObservable$ = of('test');
+
+  outputWithoutType = output();
+  normalOutput = output<string>();
+
+  outputFromSubject = new Subject();
+  outputFromBehaviorSubject = new BehaviorSubject<number>();
+
+  withObservable = outputFromObservable(this.someObservable$);
+  aliasOutput = output<string>({ alias: 'withAlias' });
+
+  ngOnInit() {
+    let imABoolean = false;
+    console.log(this.outputWithoutType);
+
+    if (this.withTransform) {
+      this.normalOutput.emit('test');
+    }
+  }
+
+  handleClick() {
+    if (true) {
+      let test = this.outputWithoutType + this.normalOutput;
+    }
+  }
+
+    /** TODO(migration): you may want to convert this to a normal output */
+    _outputFromSubject = outputFromObservable(this.outputFromSubject, { alias: 'outputFromSubject' });
+    /** TODO(migration): you may want to convert this to a normal output */
+    _outputFromBehaviorSubject = outputFromObservable(this.outputFromBehaviorSubject, { alias: 'outputFromBehaviorSubject' });
+;
+;
+;
+;
+;
+;
+}
+"
+`;
+
+exports[`convertOutputsGenerator should not add outputFromObservable import if not needed 1`] = `
+"
+import { Component, Output, EventEmitter } from '@angular/core';
+import { output } from "@angular/core";
+
+@Component({
+  template: \` \`
+})
+export class MyCmp {
+  outputWithoutType = output();
+  normalOutput = output<string>();
+;
+;
+}
+"
+`;
