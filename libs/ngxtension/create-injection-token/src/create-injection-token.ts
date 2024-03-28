@@ -259,6 +259,6 @@ export function createNoopInjectionToken<
 			(options || {}) as CreateProvideFnOptions<() => void, []>,
 		) as CreateInjectionTokenReturn<TReturn, true>[1],
 		token,
-		() => {},
+		() => [],
 	] as CreateInjectionTokenReturn<TReturn, true>;
 }
