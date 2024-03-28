@@ -46,9 +46,8 @@ type Effects<TEffects extends NamedEffects> = {
 	[K in keyof TEffects]: EffectRef;
 };
 
-type InferPayload<T> = T extends ActionSourceFn<any, infer TPayload>
-	? TPayload
-	: never;
+type InferPayload<T> =
+	T extends ActionSourceFn<any, infer TPayload> ? TPayload : never;
 
 type ActionSourcePayloadType<TActionSource> = InferPayload<TActionSource>;
 
