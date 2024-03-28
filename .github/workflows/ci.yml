@@ -9,26 +9,62 @@ on:
 env:
   NX_VERBOSE_LOGGING: true
 
+# Needed for nx-set-shas when run on the main branch
+permissions:
+  actions: read
+  contents: read
+
 jobs:
   main:
-    name: Nx Cloud - Main Job
-    uses: nrwl/ci/.github/workflows/nx-cloud-main.yml@v0.13.0
-    with:
-      main-branch-name: main
-      number-of-agents: 3
-      init-commands: |
-        # pnpm install cypress
-        pnpm exec nx-cloud start-ci-run --stop-agents-after="build" --agent-count=3
-      #      parallel-commands: |
-      #        NX_VERBOSE_LOGGING=true pnpm exec nx-cloud record -- pnpm exec nx format:check
-      parallel-commands-on-agents: |
-        pnpm exec nx affected --target=lint --parallel=3
-        pnpm exec nx affected --target=test --parallel=3 --ci --code-coverage
-        # pnpm exec nx affected --target=e2e --parallel=3 --ci
-        pnpm exec nx affected --target=build --parallel=3 --exclude=docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-  agents:
-    name: Nx Cloud - Agents
-    uses: nrwl/ci/.github/workflows/nx-cloud-agents.yml@v0.13.0
-    with:
-      number-of-agents: 3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - uses: pnpm/action-setup@v3
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Start CI run
+        run: 'npx nx-cloud start-ci-run --distribute-on="8 linux-medium-js"'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - uses: nrwl/nx-set-shas@v3
+      # This line is needed for nx affected to work when CI is running on a PR
+      - run: git branch --track main origin/main
+
+      - name: Check format
+        run: NX_VERBOSE_LOGGING=true pnpm exec nx-cloud record -- pnpm exec nx format:check
+
+      - name: Lint
+        run: pnpm exec nx affected --target=lint --parallel=3
+
+      - name: Test
+        run: pnpm exec nx affected --target=test --parallel=3
+
+      - name: Build
+        run: pnpm exec nx affected --target=build --parallel=3 --exclude=docs
