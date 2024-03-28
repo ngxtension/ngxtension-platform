@@ -1,5 +1,13 @@
 
 
+## [2.2.1](https://github.com/nartc/ngxtension-platform/compare/2.2.0...2.2.1) (2024-03-28)
+
+
+### Bug Fixes
+
+* **create-injection-token:** empty function ([aa41390](https://github.com/nartc/ngxtension-platform/commit/aa413901c5c38891c734a01b3be5e02afa986d71))
+* fix output migrations issue ([#311](https://github.com/nartc/ngxtension-platform/issues/311)) ([3f7c0bb](https://github.com/nartc/ngxtension-platform/commit/3f7c0bb92e65bf3d9c903898144cc995a4620368))
+
 ## [2.2.0](https://github.com/nartc/ngxtension-platform/compare/2.1.0...2.2.0) (2024-03-28)
 
 
