@@ -1,12 +1,5 @@
 {
 	"$schema": "./node_modules/nx/schemas/nx-schema.json",
-	"tasksRunnerOptions": {
-		"default": {
-			"options": {
-				"useLightClient": true
-			}
-		}
-	},
 	"workspaceLayout": {
 		"projectNameAndRootFormat": "as-provided"
 	},
@@ -77,6 +70,5 @@
 		"@nx/workspace:move": {
 			"projectNameAndRootFormat": "as-provided"
 		}
-	},
-	"nxCloudAccessToken": "ZjZjZjhkOGUtNWQ5MS00NGM0LThmMDQtNDNlNzhkYjJjMmZmfHJlYWQtd3JpdGU="
+	}
 }
