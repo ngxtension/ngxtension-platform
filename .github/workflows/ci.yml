@@ -35,7 +35,7 @@ jobs:
           run_install: false
 
       - name: Start CI run
-        run: pnpm nx-cloud start-ci-run --distribute-on="8 linux-medium-js"
+        run: pnpm exec nx-cloud start-ci-run --distribute-on="8 linux-medium-js"
 
       - name: Restore cached npm dependencies
         id: cache-dependencies-restore
