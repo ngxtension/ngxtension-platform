@@ -31,7 +31,7 @@
 			"description": "libs/plugin/src/generators/convert-signal-inputs/ generator"
 		},
 		"convert-outputs": {
-			"factory": "./src/generators/convert-outputs/generator",
+			"factory": "./src/generators/convert-outputs/compat",
 			"aliases": ["signal-outputs"],
 			"schema": "./src/generators/convert-outputs/schema.json",
 			"description": "libs/plugin/src/generators/convert-outputs/ generator"

@@ -55,10 +55,7 @@ function trackContents(
 			return;
 		}
 
-		if (
-			fileContent.includes('@Output') &&
-			fileContent.includes('EventEmitter')
-		) {
+		if (fileContent.includes('@Output')) {
 			contentsStore.track(fullPath, fileContent);
 		}
 	}
@@ -206,7 +203,7 @@ export async function convertOutputsGenerator(
 	}
 
 	for (const { path: sourcePath } of contentsStore.collection) {
-		const sourceFile = contentsStore.project.getSourceFile(sourcePath);
+		const sourceFile = contentsStore.project.getSourceFile(sourcePath)!;
 
 		const hasOutputImport = sourceFile.getImportDeclaration(
 			(importDecl) =>

@@ -40,6 +40,8 @@ export class MyCmp {
   @Output() outputWithoutType = new EventEmitter();
   @Output() normalOutput = new EventEmitter<string>();
 
+  @Output() normalOutput2: EventEmitter<string> = new EventEmitter<string>();
+
   @Output() outputFromSubject = new Subject();
   @Output() outputFromBehaviorSubject = new BehaviorSubject<number>();
 
