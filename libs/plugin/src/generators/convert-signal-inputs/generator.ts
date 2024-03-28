@@ -256,7 +256,7 @@ export async function convertSignalInputsGenerator(
 	}
 
 	for (const { path: sourcePath } of contentsStore.collection) {
-		const sourceFile = contentsStore.project.getSourceFile(sourcePath);
+		const sourceFile = contentsStore.project.getSourceFile(sourcePath)!;
 
 		const hasSignalInputImport = sourceFile.getImportDeclaration(
 			(importDecl) =>

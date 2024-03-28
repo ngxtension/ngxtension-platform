@@ -15,6 +15,8 @@ export class MyCmp {
   outputWithoutType = output();
   normalOutput = output<string>();
 
+  normalOutput2 = output<string>();
+
   outputFromSubject = new Subject();
   outputFromBehaviorSubject = new BehaviorSubject<number>();
 
@@ -40,6 +42,7 @@ export class MyCmp {
     _outputFromSubject = outputFromObservable(this.outputFromSubject, { alias: 'outputFromSubject' });
     /** TODO(migration): you may want to convert this to a normal output */
     _outputFromBehaviorSubject = outputFromObservable(this.outputFromBehaviorSubject, { alias: 'outputFromBehaviorSubject' });
+;
 ;
 ;
 ;

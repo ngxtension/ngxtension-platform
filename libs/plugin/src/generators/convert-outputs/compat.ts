@@ -1,4 +1,4 @@
 import { convertNxGenerator } from '@nx/devkit';
-import convertSignalInputsGenerator from './generator';
+import convertOutputsGenerator from './generator';
 
-export default convertNxGenerator(convertSignalInputsGenerator);
+export default convertNxGenerator(convertOutputsGenerator);
