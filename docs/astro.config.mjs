@@ -47,6 +47,7 @@ export default defineConfig({
 			components: {
 				PageTitle: './src/components/PageTitle.astro',
 				MarkdownContent: './src/components/Content.astro',
+				Sidebar: './src/components/Sidebar.astro',
 			},
 			defaultLocale: 'root',
 			locales,
