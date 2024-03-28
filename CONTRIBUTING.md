@@ -16,7 +16,7 @@ Thank you for considering contributing to ngxtension! We welcome your contributi
 
 ## Code of Conduct
 
-Before we start, please note that this project and its contributors are expected to follow the [Angular Community Code of Conduct](https://angular.io/community-code-of-conduct). Please be respectful and considerate when interacting with other contributors.
+Before we start, please note that this project and its contributors are expected to follow the [Angular Community Code of Conduct](https://github.com/angular/code-of-conduct/blob/main/CODE_OF_CONDUCT.md). Please be respectful and considerate when interacting with other contributors.
 
 ## How to Contribute
 
