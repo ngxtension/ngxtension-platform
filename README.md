@@ -3,6 +3,9 @@
 <img src="/docs/public/logo.svg" width="100px" height="100px">
 </p>
 
+[![NPM Version](https://img.shields.io/npm/v/ngxtension?style=flat-square)](https://npmjs.org/package/ngxtension)
+[![NPM](https://img.shields.io/npm/dw/ngxtension?logo=npm&style=flat-square)](https://npmjs.org/package/ngxtension)
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-36-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
