@@ -1,4 +1,5 @@
 import { Injector, inject, runInInjectionContext } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, type Event } from '@angular/router';
 import { assertInjector } from 'ngxtension/assert-injector';
 import { filter, type Observable } from 'rxjs';
@@ -17,6 +18,7 @@ export function injectNavigationEnd(
 				(event: Event): event is NavigationEnd =>
 					event instanceof NavigationEnd,
 			),
+			takeUntilDestroyed(),
 		);
 	});
 }

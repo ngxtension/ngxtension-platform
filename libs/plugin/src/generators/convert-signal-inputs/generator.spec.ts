@@ -180,6 +180,15 @@ export class RequestInfoComponent implements OnInit {
     this.submitter$.next();
   }
 }`,
+	issue290: `
+import { Component } from '@angular/core';
+
+@Component({})
+export class MyCmp {
+  @Input() inputWithoutType;
+  noColon = true
+}
+`,
 } as const;
 
 describe('convertSignalInputsGenerator', () => {
@@ -244,5 +253,13 @@ describe('convertSignalInputsGenerator', () => {
 		await convertSignalInputsGenerator(tree, options);
 		const [updated] = readContent();
 		expect(updated).toMatchSnapshot();
+	});
+
+	it('should fail for issue #290', async () => {
+		const readContent = setup('issue290');
+		await expect(async () => {
+			await convertSignalInputsGenerator(tree, options);
+			readContent();
+		}).rejects.toThrow();
 	});
 });

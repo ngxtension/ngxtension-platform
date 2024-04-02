@@ -15,13 +15,24 @@ export function ifValidator(
 	validatorFn: ValidatorFn | ValidatorFn[],
 ): ValidatorFn {
 	return (control: AbstractControl) => {
-		if (!validatorFn || !condition(<FormControl>control)) {
+		if (!condition(<FormControl>control)) {
 			return null;
 		}
-		const validatorFns = Array.isArray(validatorFn)
-			? (validatorFn as ValidatorFn[])
-			: [validatorFn];
-		return Validators.compose(validatorFns)?.(control) ?? null;
+
+		if (!Array.isArray(validatorFn)) {
+			return validatorFn(control);
+		}
+
+		if (validatorFn.length === 0) {
+			return null;
+		}
+
+		if (validatorFn.length === 1) {
+			return validatorFn[0](control);
+		}
+
+		const composed = Validators.compose(validatorFn);
+		return composed ? composed(control) : null;
 	};
 }
 
@@ -33,7 +44,7 @@ export function ifAsyncValidator(
 	validatorFn: AsyncValidatorFn,
 ): AsyncValidatorFn {
 	return (control: AbstractControl) => {
-		if (!validatorFn || !condition(<FormControl>control)) {
+		if (!condition(<FormControl>control)) {
 			return of(null);
 		}
 

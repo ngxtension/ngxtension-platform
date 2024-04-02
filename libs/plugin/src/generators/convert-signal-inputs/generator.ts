@@ -256,7 +256,7 @@ export async function convertSignalInputsGenerator(
 	}
 
 	for (const { path: sourcePath } of contentsStore.collection) {
-		const sourceFile = contentsStore.project.getSourceFile(sourcePath);
+		const sourceFile = contentsStore.project.getSourceFile(sourcePath)!;
 
 		const hasSignalInputImport = sourceFile.getImportDeclaration(
 			(importDecl) =>
@@ -307,8 +307,16 @@ export async function convertSignalInputsGenerator(
 
 						node.replaceWithText(newProperty.print());
 
-						// remove old class property Input
-						newProperty.remove();
+						// fail gracefully for nodes not terminated with a semi-colon
+						try {
+							// remove old class property Input
+							newProperty.remove();
+						} catch (err) {
+							logger.warn(
+								`[ngxtension] "${path}" Failed to parse node, check that declarations are terminated with a semicolon and try again`,
+							);
+							throw err;
+						}
 
 						// track converted inputs
 						convertedInputs.add(name);

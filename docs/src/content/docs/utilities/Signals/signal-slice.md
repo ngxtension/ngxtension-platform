@@ -262,3 +262,51 @@ The `effects` are available on the `SignalSlice` as `EffectRef` so you can termi
 state.saveChecklists.destroy();
 //      👆 EffectRef
 ```
+
+## Action Effects
+
+:::caution
+Action Effects are currently experimental, the API may be changed or removed entirely. Please feel free to reach out to `joshuamorony` with feedback or open an issue.
+:::
+
+An `actionEffect` can be used to trigger some imperative action in response to
+an `actionSource` emitting. If you have an `actionSource` named `login`, then
+you can create an `actionEffect` for this `actionSource` by giving the
+`actionEffect` the same name.
+
+For example, you might have a `login` `actionSource` and when that login
+completes you might want to trigger some imperative side effect like navigating
+to another route:
+
+```ts
+state = signalSlice({
+	initialState: this.initialState,
+	sources: [this.sources$],
+	actionSources: {
+		login: (state, action$: Observable<string>) =>
+			action$.pipe(
+				switchMap(() => this.getTemporalUser()),
+				map(() => ({})),
+			),
+	},
+	actionEffects: () => ({
+		login: (action) => {
+			console.log(action.name); // the name of the action triggered
+			console.log(action.payload); // the value the action was called with
+			console.log(action.value); // the value the source emitted with (if successful, undefined otherwise)
+			console.log(action.err); // the error the source emitted (if errored, undefined otherwise)
+		},
+	}),
+});
+```
+
+Action Effects can also be passed the signal slice object, which can be used to
+trigger other actions from within an `actionEffect`:
+
+```ts
+    actionEffects: (state) => ({
+      someAction: (action) => {
+        state.someOtherAction();
+      },
+    }),
+```

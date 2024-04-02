@@ -1,5 +1,66 @@
 
 
+## [2.2.1](https://github.com/nartc/ngxtension-platform/compare/2.2.0...2.2.1) (2024-03-28)
+
+
+### Bug Fixes
+
+* **create-injection-token:** empty function ([aa41390](https://github.com/nartc/ngxtension-platform/commit/aa413901c5c38891c734a01b3be5e02afa986d71))
+* fix output migrations issue ([#311](https://github.com/nartc/ngxtension-platform/issues/311)) ([3f7c0bb](https://github.com/nartc/ngxtension-platform/commit/3f7c0bb92e65bf3d9c903898144cc995a4620368))
+
+## [2.2.0](https://github.com/nartc/ngxtension-platform/compare/2.1.0...2.2.0) (2024-03-28)
+
+
+### Features
+
+* **convert-outputs:** add migrations for new output() function ([#301](https://github.com/nartc/ngxtension-platform/issues/301)) ([432c290](https://github.com/nartc/ngxtension-platform/commit/432c290daadc89ba6d7b746d65cb21577e060c28))
+* inject route data added ([#286](https://github.com/nartc/ngxtension-platform/issues/286)) ([f06b1e4](https://github.com/nartc/ngxtension-platform/commit/f06b1e4359a6955b4a349a935795661cfe009395))
+
+
+### Bug Fixes
+
+* **convert-signal-inputs:** handle automatic semicolon insertion issues ([#294](https://github.com/nartc/ngxtension-platform/issues/294)) ([09f075d](https://github.com/nartc/ngxtension-platform/commit/09f075db2b99f221232bde7acb8efec8d2de0333))
+* **if-validator:** exclude individual validators from composition to allow presence checks ([#273](https://github.com/nartc/ngxtension-platform/issues/273)) ([92a614c](https://github.com/nartc/ngxtension-platform/commit/92a614c9590a216cbba37787b52dce46941cf0c2))
+* prevent memory leaks in injectNavigationEnd ([#305](https://github.com/nartc/ngxtension-platform/issues/305)) ([2341717](https://github.com/nartc/ngxtension-platform/commit/23417170b02223cbbe6df98e9cbe7cd52380a50d))
+
+
+### Documentations
+
+* add Dafnik as a contributor for doc ([#309](https://github.com/nartc/ngxtension-platform/issues/309)) ([110dffb](https://github.com/nartc/ngxtension-platform/commit/110dffb5dfee7c729e32a3decd5a353b420e98ad))
+* add kkachniarz220 as a contributor for code ([#291](https://github.com/nartc/ngxtension-platform/issues/291)) ([afbcec0](https://github.com/nartc/ngxtension-platform/commit/afbcec00a592b1a9349298c00e89753c9d865626))
+* remember sidebar scroll state ([#307](https://github.com/nartc/ngxtension-platform/issues/307)) ([78163b3](https://github.com/nartc/ngxtension-platform/commit/78163b33eb0e007ff86e1ffe944a7e8e8bbcc53e))
+* **signal-slice:** add docs for experimental actionEffects ([#296](https://github.com/nartc/ngxtension-platform/issues/296)) ([6141e44](https://github.com/nartc/ngxtension-platform/commit/6141e444dcd04a4821d5f79236399ecbe1584e40))
+* update code of conduct link ([2916103](https://github.com/nartc/ngxtension-platform/commit/29161030a4fc2465b00b6f9ba6861101dfdba9c9))
+
+
+### Refactor
+
+* **docs:** add contributor info to injectRouteData ([#306](https://github.com/nartc/ngxtension-platform/issues/306)) ([51afab6](https://github.com/nartc/ngxtension-platform/commit/51afab68470d6529c6b2de20c90940862088cf87))
+* use Proxy in toObservableSignal() instead of methods linking, to be compatible with RxJS v8 ([#288](https://github.com/nartc/ngxtension-platform/issues/288)) ([ae2d9ef](https://github.com/nartc/ngxtension-platform/commit/ae2d9ef3f193a6e38e9a2b23df7c764be3a501d0))
+
+## [2.1.0](https://github.com/nartc/ngxtension-platform/compare/2.0.0...2.1.0) (2024-02-27)
+
+
+### Features
+
+* **connect:** allow updating partial values with signal through ConnectedSignal ([#269](https://github.com/nartc/ngxtension-platform/issues/269)) ([e11f2cd](https://github.com/nartc/ngxtension-platform/commit/e11f2cd17cb7fb0f1e8faedb78ad2eecc60c968e))
+* **create-notifier:** add createNotifier + docs ([#277](https://github.com/nartc/ngxtension-platform/issues/277)) ([b1eff83](https://github.com/nartc/ngxtension-platform/commit/b1eff8332b3846e33c204db3ad3d5cbf4236ce6c))
+
+
+### Bug Fixes
+
+* add more computedAsync tests and docs ([#268](https://github.com/nartc/ngxtension-platform/issues/268)) ([a86375b](https://github.com/nartc/ngxtension-platform/commit/a86375bf5b6343df3d6f4b0fa78a94f407133606))
+* **convert-signal-inputs:** don't convert when input name used as property ([#279](https://github.com/nartc/ngxtension-platform/issues/279)) ([69efec4](https://github.com/nartc/ngxtension-platform/commit/69efec47b24007e9f94a333b91a8c9cb7a21b18f))
+* **convert-signal-inputs:** remove unnecessary undefined ([#280](https://github.com/nartc/ngxtension-platform/issues/280)) ([0356be0](https://github.com/nartc/ngxtension-platform/commit/0356be0072a1533e171602e715b6c5f76949417b))
+* remove snapshot as route.params emits synchronously ([#272](https://github.com/nartc/ngxtension-platform/issues/272)) ([1ec0098](https://github.com/nartc/ngxtension-platform/commit/1ec0098f541cdae72b01589f772dcffd5d5bc771))
+
+
+### Documentations
+
+* add isthatME as a contributor for doc ([#284](https://github.com/nartc/ngxtension-platform/issues/284)) ([660d791](https://github.com/nartc/ngxtension-platform/commit/660d791b0de66add1c88236389d06bf24d013702))
+* add links to e-oz profile ([#289](https://github.com/nartc/ngxtension-platform/issues/289)) ([9f90045](https://github.com/nartc/ngxtension-platform/commit/9f90045127821f0d922f2677bbd9f16aa4b60f8e))
+* **merge-from:** add documentation for merge from ([#283](https://github.com/nartc/ngxtension-platform/issues/283)) ([c34a8d0](https://github.com/nartc/ngxtension-platform/commit/c34a8d0aaff38095c4afc3fc14a53304c354d104))
+
 ## [2.0.0](https://github.com/nartc/ngxtension-platform/compare/1.12.0...2.0.0) (2024-02-02)
 
 
