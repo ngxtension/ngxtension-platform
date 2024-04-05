@@ -8,9 +8,9 @@ import {
 	NgZone,
 	Output,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { createInjectionToken } from 'ngxtension/create-injection-token';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { filter, fromEvent, Subject, takeUntil } from 'rxjs';
+import { filter, fromEvent, Subject } from 'rxjs';
 
 /*
  * This function is used to detect clicks in the document.
@@ -21,10 +21,10 @@ const [injectDocumentClick] = createInjectionToken(() => {
 	const [ngZone, document] = [inject(NgZone), inject(DOCUMENT)];
 
 	ngZone.runOutsideAngular(() => {
-		fromEvent(document, 'click').subscribe(click$);
+		fromEvent(document, 'click').pipe(takeUntilDestroyed()).subscribe(click$);
 	});
 
-	return click$;
+	return click$.asObservable();
 });
 
 /*
@@ -40,8 +40,6 @@ export class ClickOutside implements OnInit {
 	private elementRef = inject(ElementRef);
 	private documentClick$ = injectDocumentClick();
 
-	private destroy$ = injectDestroy();
-
 	/*
 	 * This event is emitted when a click occurs outside the element.
 	 */
@@ -50,13 +48,11 @@ export class ClickOutside implements OnInit {
 	ngOnInit() {
 		this.documentClick$
 			.pipe(
-				takeUntil(this.destroy$),
 				filter(
 					(event: Event) =>
 						!this.elementRef.nativeElement.contains(event.target),
 				),
 			)
-
 			.subscribe((event: Event) => {
 				this.ngZone.run(() => this.clickOutside.emit(event));
 			});
