@@ -24,26 +24,28 @@ const { contributors } = Astro.props;
 			({ data: { name, twitter, linkedin, github, website } }) => (
 				<span class="contributor">
 					{name}
-					{twitter && (
-						<a href={twitter}>
-							<Icon class="icon" name="twitter" size="0.75rem" />
-						</a>
-					)}
-					{linkedin && (
-						<a href={linkedin}>
-							<Icon class="icon" name="linkedin" size="0.75rem" />
-						</a>
-					)}
-					{github && (
-						<a href={github}>
-							<Icon class="icon" name="github" size="0.75rem" />
-						</a>
-					)}
-					{website && (
-						<a href={website}>
-							<Icon class="icon" name="external" size="0.75rem" />
-						</a>
-					)}
+					<span class="icons">
+						{twitter && (
+							<a href={twitter} aria-label="Open {name}'s Twitter account">
+								<Icon class="icon" name="twitter" size="0.75rem" />
+							</a>
+						)}
+						{linkedin && (
+							<a href={linkedin} aria-label="Open {name}'s LinkedIn account">
+								<Icon class="icon" name="linkedin" size="0.75rem" />
+							</a>
+						)}
+						{github && (
+							<a href={github} aria-label="Open {name}'s GitHub account">
+								<Icon class="icon" name="github" size="0.75rem" />
+							</a>
+						)}
+						{website && (
+							<a href={website} aria-label="Open {name}'s website">
+								<Icon class="icon" name="external" size="0.75rem" />
+							</a>
+						)}
+					</span>
 				</span>
 			),
 		)
@@ -58,6 +60,7 @@ const { contributors } = Astro.props;
 	.contributors {
 		display: flex;
 		gap: 0.3rem;
+		flex-wrap: wrap;
 		align-items: center;
 		margin-top: -1rem;
 		font-size: var(--sl-text-xs);
@@ -68,9 +71,17 @@ const { contributors } = Astro.props;
 		background-color: var(--sl-color-gray-6);
 		border-radius: 6px;
 		padding: 2px 8px;
+		display: flex;
+		gap: 0.475rem;
+	}
+
+	.icons {
+		display: flex;
+		gap: 0.25rem;
 	}
 
 	.icon {
+		margin-top: -2px;
 		vertical-align: middle;
 		color: var(--sl-color-gray-3);
 
