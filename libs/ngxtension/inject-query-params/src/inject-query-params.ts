@@ -119,13 +119,13 @@ export function injectQueryParams<ReadT>(
 
 	if (!keyOrParamsTransform) {
 		return toSignal(route.queryParams, {
-      requireSync: true,
+			requireSync: true,
 		});
 	}
 
 	if (typeof keyOrParamsTransform === 'function') {
 		return toSignal(route.queryParams.pipe(map(keyOrParamsTransform)), {
-      requireSync: true,
+			requireSync: true,
 		});
 	}
 
@@ -150,7 +150,7 @@ export function injectQueryParams<ReadT>(
 	};
 
 	return toSignal(route.queryParams.pipe(map(getParam)), {
-    requireSync: true,
+		requireSync: true,
 	});
 }
 
@@ -239,7 +239,7 @@ export namespace injectQueryParams {
 		};
 
 		return toSignal(route.queryParams.pipe(map(getParam)), {
-      requireSync: true
+			requireSync: true,
 		});
 	}
 }

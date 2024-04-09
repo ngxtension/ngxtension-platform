@@ -10,6 +10,8 @@ contributors: ['enea-jahollari']
 
 Having query params as a signal helps in a modern angular signals based architecture.
 
+## Import
+
 ```ts
 import { injectQueryParams } from 'ngxtension/inject-query-params';
 ```
@@ -21,8 +23,9 @@ import { injectQueryParams } from 'ngxtension/inject-query-params';
 `injectQueryParams` when it's called, returns a signal with the current query params.
 
 ```ts
+import { injectQueryParams } from 'ngxtension/inject-query-params';
+
 @Component({
-	standalone: true,
 	template: '<div>{{queryParams() | json}}</div>',
 })
 class TestComponent {
@@ -33,9 +36,11 @@ class TestComponent {
 Or, if we want to transform the query params, we can pass a function to `injectQueryParams`.
 
 ```ts
+import { injectQueryParams } from 'ngxtension/inject-query-params';
+
 @Component()
 class TestComponent {
-	queryParamsKeys = injectQueryParams((params) => Object.keys(params)); // returns a signal with the keys of the query params
+	queryParamsKeys = injectQueryParams((params) => Object.keys(params)); // returns a signal with all keys of the query params
 
 	allQueryParamsArePassed = computed(() => {
 		const keys = this.queryParamsKeys();
@@ -49,6 +54,10 @@ class TestComponent {
 If we want to get the value for a specific query param, we can pass the name of the query param to `injectQueryParams`.
 
 ```ts
+// Example url: /users?search=nartc
+
+import { injectQueryParams } from 'ngxtension/inject-query-params';
+
 @Component({
 	template: `
 		Search results for: {{ searchParam() }}
@@ -64,7 +73,7 @@ class TestComponent {
 	searchParam = injectQueryParams('search'); // returns a signal with the value of the search query param
 
 	filteredUsers = computedAsync(
-		() => this.userService.getUsers(searchQuery ?? ''),
+		() => this.userService.getUsers(this.searchParam() ?? ''),
 		{ initialValue: [] },
 	);
 }
@@ -73,21 +82,29 @@ class TestComponent {
 If we want to additional transform the value into any shape, we can pass a `transform` function.
 
 ```ts
+// Example url: /users?pageNumber=1
+
+import { injectQueryParams } from 'ngxtension/inject-query-params';
+
 @Component({
 	template: `
-		Number: {{ number1() }} New number: {{ newNumber() }}
+		Page number: {{ pageNumber() }} Multiplied number: {{ multipliedNumber() }}
 	`,
 })
 class TestComponent {
-	number1 = injectQueryParams('id', { transform: numberAttribute }); // returns a signal with the value of the search query param
+	pageNumber = injectQueryParams('pageNumber', { transform: numberAttribute });
 
-	newNumber = computed(() => this.number1() * 2);
+	multipliedNumber = computed(() => this.pageNumber() * 2);
 }
 ```
 
 If we want to use a default value if there is no value, we can pass a `initialValue`.
 
 ```ts
+// Example urls producing the same output: "/users?search=nartc", "/users"
+
+import { injectQueryParams } from 'ngxtension/inject-query-params';
+
 @Component({
 	template: `
 		Search results for: {{ searchParam() }}
@@ -101,11 +118,14 @@ If we want to use a default value if there is no value, we can pass a `initialVa
 })
 class TestComponent {
 	// returns a signal with the value of the search query param or '' if not provided.
-	searchParam = injectQueryParams('search', { initialValue: '' });
+	searchParam = injectQueryParams('search', { initialValue: 'nartc' });
 
-	filteredUsers = computedAsync(() => this.userService.getUsers(searchQuery), {
-		initialValue: [],
-	});
+	filteredUsers = computedAsync(
+		() => this.userService.getUsers(this.searchParam()),
+		{
+			initialValue: [],
+		},
+	);
 }
 ```
 
@@ -115,6 +135,8 @@ If we want to get the values for a specific query param, we can pass the name of
 
 ```ts
 // Example url: /search?products=Angular&products=Analog
+
+import { injectQueryParams } from 'ngxtension/inject-query-params';
 
 @Component({
 	template: `
@@ -144,6 +166,8 @@ If we want to additional transform the values into any shape, we can pass a `tra
 ```ts
 // Example url: /search?productIds=Angular&productIds=Analog
 
+import { injectQueryParams } from 'ngxtension/inject-query-params';
+
 @Component({
 	template: `
 		Selected products: {{ productIds() }}
@@ -172,6 +196,10 @@ class TestComponent {
 If we want to use a default value if there are no values, we can pass a `initialValue`.
 
 ```ts
+// Example urls producing the same output: "/search?products=Angular", "/search"
+
+import { injectQueryParams } from 'ngxtension/inject-query-params';
+
 @Component({
 	template: `
 		Selected products: {{ productNames() }}
