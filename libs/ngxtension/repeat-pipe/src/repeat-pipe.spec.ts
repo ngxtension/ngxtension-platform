@@ -125,6 +125,18 @@ describe(`${RepeatPipe.name} configuration`, () => {
 		expect(items).toHaveLength(0);
 	});
 
+	it('given -10 startAt, when render, then render 10 items starting at -10', () => {
+		component.startAt = -10;
+
+		fixture.detectChanges();
+
+		const items = fixture.debugElement.queryAll(By.css('p'));
+		expect(items).toHaveLength(10);
+		items.forEach((item, i) => {
+			expect(item.nativeElement.textContent).toContain((i - 10).toString());
+		});
+	});
+
 	it('given 1.5 startAt, when render, then render 0 items', () => {
 		component.startAt = 1.5;
 
