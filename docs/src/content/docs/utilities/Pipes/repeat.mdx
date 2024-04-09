@@ -1,0 +1,133 @@
+---
+title: RepeatPipe
+description: Standalone Angular pipe for easily repeating for loops in the template
+entryPoint: repeat-pipe
+badge: stable
+contributors: ['dafnik']
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+## Import
+
+```ts
+import { RepeatPipe } from 'ngxtension/repeat-pipe';
+```
+
+## Usage
+
+### Basic
+
+Use the `repeat` pipe as an easy way to loop over a number of iterations.
+
+```ts
+import { Component } from '@angular/core';
+import { RepeatPipe } from 'ngxtension/repeat-pipe';
+
+@Component({
+	imports: [RepeatPipe],
+	template: `
+		<ul>
+			@for (i of 3 | repeat; track i) {
+				<li>{{ i }}</li>
+			}
+		</ul>
+	`,
+})
+export class App {}
+```
+
+This will produce the following output:
+
+```html
+<!-- Output -->
+<!-- <li>0</li> -->
+<!-- <li>1</li> -->
+<!-- <li>2</li> -->
+```
+
+### With `NgFor`
+
+The pipe can also be utilized with the `ngFor` directive.
+
+<Aside type="tip">
+The  [`TrackByFunction`](https://angular.io/api/core/TrackByFunction) **is not** automatically set.
+Checkout the [Repeat Directive](/utilities/directives/repeat) as an alternative.
+
+```ts
+import { Component } from '@angular/core';
+import { Repeat } from 'ngxtension/repeat';
+
+@Component({
+	imports: [Repeat],
+	template: `
+		<ul>
+			<li *ngFor="let i; repeat: 3">{{ i }}</li>
+		</ul>
+	`,
+})
+export class App {}
+```
+
+This will produce the same output as the directive variant.
+</Aside>
+
+```ts
+import { Component } from '@angular/core';
+import { NgFor } from '@angular/common';
+import { RepeatPipe } from 'ngxtension/repeat-pipe';
+
+@Component({
+	imports: [NgFor, RepeatPipe],
+	template: `
+		<ul>
+			<li *ngFor="let i of 3 | repeat">{{ i }}</li>
+		</ul>
+	`,
+})
+export class App {}
+```
+
+This will produce the same output as above.
+
+### Change start point
+
+You can specify a `startAt` value as the second argument passed into the pipe.
+
+```ts
+import { Component } from '@angular/core';
+import { RepeatPipe } from 'ngxtension/repeat-pipe';
+
+@Component({
+	imports: [RepeatPipe],
+	template: `
+		<ul>
+			@for (i of 3 | repeat: 10; track i) {
+				<li>{{ i }}</li>
+			}
+		</ul>
+	`,
+})
+export class App {}
+```
+
+This will produce the following output:
+
+```html
+<!-- Output -->
+<!-- <li>10</li> -->
+<!-- <li>11</li> -->
+<!-- <li>12</li> -->
+```
+
+## API
+
+### Inputs
+
+- `length: number` - A non-negative integer, specifying the number of iterations.
+- `startAt: number` - A integer, specifying the start point of iterations.
+
+### Validation
+
+- An error is thrown if `length` is either negative or not an integer.
+- An error is thrown if `startAt` is not an integer.
