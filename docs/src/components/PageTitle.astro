@@ -1,10 +1,12 @@
 ---
 import Default from '@astrojs/starlight/components/PageTitle.astro';
 import type { Props } from '@astrojs/starlight/props';
+import { Icon } from '@astrojs/starlight/components';
 
 const badge = Astro.props.entry.data.badge;
 const entryPoint = Astro.props.entry.data.entryPoint;
 const bundleJsUrl = `https://deno.bundlejs.com?q=ngxtension/${entryPoint}&treeshake=[*]&config={%22esbuild%22:{%22external%22:[%22rxjs%22,%22@angular/core%22,%22@angular/common%22,%22@angular/forms%22,%22@angular/router%22]}}`;
+const sourceCodeUrl = `https://github.com/nartc/ngxtension-platform/tree/main/libs/ngxtension/${entryPoint}`;
 
 const { size } = await fetch(bundleJsUrl)
 	.then((res) => {
@@ -22,14 +24,22 @@ const { size } = await fetch(bundleJsUrl)
 		{badge && <div class="chip">{badge}</div>}
 		{
 			entryPoint && (
-				<div
-					class="chip"
-					title="This is the compressed bundled size that includes all entry points this entry point depends on."
-				>
-					<a href={bundleJsUrl} target="_blank" rel="noreferrer noreferrer">
-						{size}
-					</a>
-				</div>
+				<>
+					<div
+						class="chip"
+						title="This is the compressed bundled size that includes all entry points this entry point depends on."
+					>
+						<a href={bundleJsUrl} target="_blank" rel="noreferrer noreferrer">
+							{size}
+						</a>
+					</div>
+					<div class="chip">
+						<a href={sourceCodeUrl} target="_blank" rel="noreferrer noreferrer">
+							<Icon class="icon" name="github" size="1rem" />
+							Code
+						</a>
+					</div>
+				</>
 			)
 		}
 	</div>
@@ -69,5 +79,10 @@ const { size } = await fetch(bundleJsUrl)
 	.chip a {
 		text-decoration: none;
 		color: var(--sl-color-text);
+	}
+
+	.icon {
+		margin-top: -3px;
+		vertical-align: middle;
 	}
 </style>
