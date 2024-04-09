@@ -8,6 +8,7 @@ const contributors = defineCollection({
 		twitter: z.string().url().optional(),
 		linkedin: z.string().url().optional(),
 		github: z.string().url().optional(),
+		website: z.string().url().optional(),
 	}),
 });
 
