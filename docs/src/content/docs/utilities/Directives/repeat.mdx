@@ -6,6 +6,8 @@ badge: stable
 contributors: ['chau-tran']
 ---
 
+import { Aside } from '@astrojs/starlight/components';
+
 ## Import
 
 ```ts
@@ -13,6 +15,30 @@ import { Repeat } from 'ngxtension/repeat';
 ```
 
 ## Usage
+
+<Aside type="tip">
+
+If you wish to use the Angular built-in control flow, check out the [`Repeat Pipe`](/utilities/pipes/repeat) as an alternative.
+
+```ts
+import { Component } from '@angular/core';
+import { RepeatPipe } from 'ngxtension/repeat-pipe';
+
+@Component({
+	imports: [RepeatPipe],
+	template: `
+		<ul>
+			@for (i of 3 | repeat: 10; track i) {
+				<li>{{ i }}</li>
+			}
+		</ul>
+	`,
+})
+export class App {}
+```
+
+This will produce the same output as the directive variant.
+</Aside>
 
 ### Basic
 
