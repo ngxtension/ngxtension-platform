@@ -16,16 +16,19 @@ import { filter, fromEvent, Subject } from 'rxjs';
  * This function is used to detect clicks in the document.
  * It is used by the clickOutside directive.
  */
-const [injectDocumentClick] = createInjectionToken(() => {
-	const click$ = new Subject<Event>();
-	const [ngZone, document] = [inject(NgZone), inject(DOCUMENT)];
+const [injectDocumentClick, provideDocumentClick] = createInjectionToken(
+	() => {
+		const click$ = new Subject<Event>();
+		const [ngZone, document] = [inject(NgZone), inject(DOCUMENT)];
 
-	ngZone.runOutsideAngular(() => {
-		fromEvent(document, 'click').pipe(takeUntilDestroyed()).subscribe(click$);
-	});
+		ngZone.runOutsideAngular(() => {
+			fromEvent(document, 'click').pipe(takeUntilDestroyed()).subscribe(click$);
+		});
 
-	return click$.asObservable();
-});
+		return click$.asObservable();
+	},
+	{ isRoot: false },
+);
 
 /*
  * This directive is used to detect clicks outside the element.
@@ -34,7 +37,11 @@ const [injectDocumentClick] = createInjectionToken(() => {
  * <div (clickOutside)="close()"></div>
  *
  */
-@Directive({ selector: '[clickOutside]', standalone: true })
+@Directive({
+	selector: '[clickOutside]',
+	standalone: true,
+	providers: [provideDocumentClick()],
+})
 export class ClickOutside implements OnInit {
 	private ngZone = inject(NgZone);
 	private elementRef = inject(ElementRef);
