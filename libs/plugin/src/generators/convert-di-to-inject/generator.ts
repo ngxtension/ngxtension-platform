@@ -162,7 +162,6 @@ export async function convertDiToInjectGenerator(
 								flags.push('host');
 							}
 						});
-						console.log('decorators', decorators);
 					}
 
 					// if type is (ElementRef or TemplateRef) or should use type, add it as inject generic
