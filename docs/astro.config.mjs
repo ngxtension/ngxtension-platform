@@ -20,6 +20,7 @@ export default defineConfig({
 				github: 'https://github.com/nartc/ngxtension-platform',
 				twitter: 'https://twitter.com/Nartc1410',
 			},
+			customCss: ['./src/styles/custom.css'],
 			lastUpdated: true,
 			sidebar: [
 				{

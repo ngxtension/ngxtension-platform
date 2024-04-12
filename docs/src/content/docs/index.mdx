@@ -17,4 +17,44 @@ hero:
       icon: external
 ---
 
-Documentation powered by [Starlight Astro](https://starlight.astro.build/).
+import { Card, CardGrid, Steps } from '@astrojs/starlight/components';
+
+## What does **ngxtension** offer 🔨?
+
+<CardGrid>
+  <Card title="Signal utilities" icon="rocket">
+    <div class="home-links">
+      - [<strong>computedAsync</strong> - Safely derive data asynchronously](/utilities/signals/computed-async/)
+      - [<strong>computedFrom</strong> - combineLatest with signals support](/utilities/signals/computed-from/)
+      - [<strong>connect</strong> - connect everything to everything](/utilities/signals/connect/)
+      - [<strong>createNotifier</strong> - the tick you're missing](/utilities/signals/create-notifier/)
+      - [<strong>signalSlice</strong> - tasty sliced state management](/utilities/signals/signal-slice/)
+
+      TODO
+    </div>
+
+  </Card>
+  <Card title="Injector utilities" icon="moon">
+    <div class="home-links">
+      - [<strong>injectLazy</strong> - Lazy inject your lazy services](/utilities/injectors/inject-lazy/)
+      - [<strong>injectParams</strong> - inject signal route params](/utilities/injectors/inject-params/)
+      - [<strong>injectQueryParams</strong> - inject signal route query params](/utilities/injectors/inject-query-params/)
+      - [<strong>createInjectionToken</strong> - cool InjectionToken creation](/utilities/injectors/create-injection-token/)
+      - [<strong>injectDestroy</strong> - destroy$ you don't have to unsub](/utilities/injectors/inject-destroy/)
+      
+      TODO
+    </div>
+  </Card>
+  <Card title="Code migrations" icon="moon">
+    TODO
+  </Card>
+  <Card title="RxJs operators" icon="moon">
+    TODO
+  </Card>
+  <Card title="Directives" icon="moon">
+    TODO
+  </Card>
+  <Card title="And more..." icon="moon">
+    TODO
+  </Card>
+</CardGrid>
