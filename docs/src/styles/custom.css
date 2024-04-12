@@ -1,0 +1,12 @@
+.home-links ul {
+	list-style-type: disc;
+	padding-left: 25px;
+}
+
+.home-links a {
+	text-decoration: none;
+}
+
+.home-links a::after {
+	content: ' → ';
+}

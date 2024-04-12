@@ -49,7 +49,7 @@ function trackContents(
 			!fileContent.includes('@Component') &&
 			!fileContent.includes('@Directive')
 		) {
-			logger.error(
+			logger.log(
 				`[ngxtension] "${fullPath}" is not a Component nor a Directive`,
 			);
 			return;

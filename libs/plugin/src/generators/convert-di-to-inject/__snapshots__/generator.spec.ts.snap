@@ -1,0 +1,138 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`convertDiToInjectGenerator should convert properly 1`] = `
+"  import { inject } from "@angular/core";
+    import { Component } from '@angular/core';
+    @Component({
+      template: ''
+    })
+    export class MyComponent {
+      private service = inject(MyService);
+      private service2 = inject<ElementRef<HtmlImageElement>>(ElementRef<HtmlImageElement>);
+    }
+  "
+`;
+
+exports[`convertDiToInjectGenerator should convert properly with @Inject decorator 1`] = `
+"  import { inject } from "@angular/core";
+    import { Component, Inject } from '@angular/core';
+    @Component({
+      template: ''
+    })
+    export class MyComponent {
+      private service = inject<MyService>('my-service');
+      private service4 = inject(MyService4);
+      private service5 = inject<MyService5>('my-service2', { optional: true });
+      private service2 = inject(MyService2);
+      service3 = inject(MyService3);
+    }
+"
+`;
+
+exports[`convertDiToInjectGenerator should convert properly with @Inject decorator and options 1`] = `
+"  import { inject } from "@angular/core";
+    import { Component, Inject } from '@angular/core';
+    @Component({
+      template: ''
+    })
+    export class MyComponent {
+      private myService = inject(MyService);
+      private elRef = inject<ElementRef<HtmlImageElement>>(ElementRef<HtmlImageElement>);
+      private tplRef = inject<TemplateRef<any>>(TemplateRef<any>);
+      private viewContainerRef = inject(ViewContainerRef);
+      service2 = inject(MyService2);
+      private service = inject<MyService>('my-service');
+      private service4 = inject(MyService4);
+      private service5 = inject<MyService5>('my-service2', { optional: true });
+      private service6 = inject(MyService6, { self: true, optional: true });
+
+      constructor(
+) {
+        this.myService.doSomething()
+
+        this.service2.doSomethingElse();
+
+        this.service2.doSomething()
+
+        someList.forEach(() => {
+                    // nested scope
+                    this.myService.doSomething();
+                  })
+
+        // use service in a function call
+        someFunction(this.service2).test(this.myService)
+      }
+    }
+"
+`;
+
+exports[`convertDiToInjectGenerator should convert properly with usage 1`] = `
+"  import { inject } from "@angular/core";
+    import { Component } from '@angular/core';
+    @Component({
+      template: ''
+    })
+    export class MyComponent {
+      private service = inject(MyService);
+      private service1 = inject<MyService1<string>>(MyService1<string>);
+
+      constructor(
+) {
+        this.service.doSomething();
+      }
+    }
+  "
+`;
+
+exports[`convertDiToInjectGenerator should convert properly with usage local 1`] = `
+"  import { inject } from "@angular/core";
+    import { Component } from '@angular/core';
+    @Component({
+      template: ''
+    })
+    export class MyComponent {
+      private service = inject(MyService);
+
+      constructor() {
+        this.service.doSomething()
+      }
+    }
+  "
+`;
+
+exports[`convertDiToInjectGenerator should convert properly with usage local no scope 1`] = `
+"  import { inject } from "@angular/core";
+    import { Component } from '@angular/core';
+    @Component({
+      template: ''
+    })
+    export class MyComponent {
+      service = inject(MyService);
+
+      constructor() {
+        this.service.doSomething()
+
+        someList.forEach(() => {
+                    // nested scope
+                    this.service.doSomething();
+                  })
+
+        // use service in a function call
+        someFunction(this.service)
+      }
+    }
+  "
+`;
+
+exports[`convertDiToInjectGenerator should not do anything if no dep 1`] = `
+"
+    import { Component } from '@angular/core';
+    @Component({
+      template: ''
+    })
+    export class MyComponent {
+      constructor() {
+        console.log('hello');
+      }
+    }"
+`;

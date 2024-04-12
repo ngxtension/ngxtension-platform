@@ -16,6 +16,11 @@
 			"aliases": ["signal-outputs"],
 			"schema": "./src/generators/convert-outputs/schema.json",
 			"description": "libs/plugin/src/generators/convert-outputs/ generator"
+		},
+		"convert-di-to-inject": {
+			"factory": "./src/generators/convert-di-to-inject/generator",
+			"schema": "./src/generators/convert-di-to-inject/schema.json",
+			"description": "libs/plugin/src/generators/convert-di-to-inject/ generator"
 		}
 	},
 	"schematics": {
@@ -35,6 +40,11 @@
 			"aliases": ["signal-outputs"],
 			"schema": "./src/generators/convert-outputs/schema.json",
 			"description": "libs/plugin/src/generators/convert-outputs/ generator"
+		},
+		"convert-di-to-inject": {
+			"factory": "./src/generators/convert-di-to-inject/compat",
+			"schema": "./src/generators/convert-di-to-inject/schema.json",
+			"description": "libs/plugin/src/generators/convert-di-to-inject/ generator"
 		}
 	}
 }

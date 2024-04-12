@@ -17,4 +17,78 @@ hero:
       icon: external
 ---
 
-Documentation powered by [Starlight Astro](https://starlight.astro.build/).
+import { Card, CardGrid, Steps } from '@astrojs/starlight/components';
+
+## What does **ngxtension** offer 🔨?
+
+<CardGrid stagger>
+  <Card title="Signal utilities" icon="rocket">
+    <div class="home-links">
+      - [<strong>computedAsync</strong> - Safely derive data asynchronously](/utilities/signals/computed-async/)
+      - [<strong>computedFrom</strong> - combineLatest with signals support](/utilities/signals/computed-from/)
+      - [<strong>connect</strong> - connect everything to everything](/utilities/signals/connect/)
+      - [<strong>createNotifier</strong> - the tick you're missing](/utilities/signals/create-notifier/)
+      - [<strong>signalSlice</strong> - tasty sliced state management](/utilities/signals/signal-slice/)
+      - [<strong>toLazySignal</strong> - defer signal's eager execution](/utilities/signals/to-lazy-signal/)
+      - [<strong>toObservableSignal</strong> - a Signal/Observable at a time](/utilities/signals/to-observable-signal/)
+      - [<strong>mergeFrom</strong> - merge operator with signals support](/utilities/signals/merge-from/)
+      - [<strong>createSignal/createComputed</strong> - vue style signals](/utilities/signals/create-signal/)
+      - [<strong>computedPrevious</strong> - track previously emitted values](/utilities/signals/computed-previous/)
+      - [<strong>computed/extendedComputed</strong> - enhanced computed with previously derived value](/utilities/signals/computed/)
+    </div>
+  </Card>
+  <Card title="Injector utilities" icon="star" >
+    <div class="home-links">
+      - [<strong>injectLazy</strong> - Lazy inject your lazy services](/utilities/injectors/inject-lazy/)
+      - [<strong>injectParams</strong> - inject signal route params](/utilities/injectors/inject-params/)
+      - [<strong>injectQueryParams</strong> - inject signal route query params](/utilities/injectors/inject-query-params/)
+      - [<strong>createInjectionToken</strong> - cool InjectionToken creation](/utilities/injectors/create-injection-token/)
+      - [<strong>injectDestroy</strong> - destroy$ you don't have to unsub](/utilities/injectors/inject-destroy/)
+      - [<strong>injectRouteData</strong> - inject data from the current route](/utilities/injectors/inject-route-data/)
+      - [<strong>injectNavigationEnd</strong> - listen to navigation end events](/utilities/injectors/navigation-end/)
+      - [<strong>injectNetwork</strong> - track the current network state](/utilities/injectors/inject-network/)
+      - [<strong>injectIsIntersecting</strong> - listen when element intersects](/utilities/injectors/inject-is-intersecting/)
+      - [<strong>createInjectable</strong> - cool Service creation](/utilities/injectors/create-injectable/)
+      - [<strong>injectAutoEffect</strong> - injection-context aware Effect](/utilities/injectors/auto-effect/)
+      - [<strong>assertInjector</strong> - extension of assertInInjectionContext](/utilities/injectors/assert-injector/)
+      - [<strong>injectActiveElement</strong> - track when the active, focused element changes](/utilities/injectors/active-element/)
+      - [<strong>injectDocumentVisibility</strong> - track the current visibility state of the document](/utilities/injectors/inject-document-visibility/)
+    </div>
+  </Card>
+  <Card title="RxJs operators" icon="right-arrow">
+    <div class="home-links">
+      - [<strong>debug</strong> - log stream inputs and transformed outputs](/utilities/operators/debug/)
+      - [<strong>filterArray</strong> - filter array emitted by the stream](/utilities/operators/filter-array/)
+      - [<strong>filterNil</strong> - filter out null and undefined values](/utilities/operators/filter-nil/)
+      - [<strong>mapArray</strong> - map array emitted by the stream](/utilities/operators/map-array/)
+      - [<strong>mapSkipUndefined</strong> - skip undefined on map](/utilities/operators/map-skip-undefined/)
+      - [<strong>reduceArray</strong> - reduce array emitted by the stream](/utilities/operators/reduce-array/)
+      - [<strong>rxEffect</strong> - utility to create a side effect with rxjs](/utilities/operators/rx-effect/)
+    </div>
+  </Card>
+  <Card title="Code migrations" icon="document">
+    <div class="home-links">
+      - [<strong>input() Migration</strong> - migrate to the signal-based inputs](/utilities/migrations/signal-inputs-migration/)
+      - [<strong>output() Migration</strong> - migrate to the new output()](/utilities/migrations/new-outputs-migration/)
+      - [<strong>inject() Migration</strong> - migrate to inject() based DI](/utilities/migrations/inject-migration/)
+    </div>
+  </Card>
+
+  <Card title="Directives" icon="puzzle">
+    <div class="home-links">
+      - [<strong>clickOutside</strong> - track when clicked outside an element](/utilities/directives/click-outside/)
+      - [<strong>repeat</strong> - extension for an effective NgFor iteration](/utilities/directives/repeat/)
+      - [<strong>resize</strong> - track element/host resizing](/utilities/directives/resize/)
+      - [<strong>TrackById / TrackByProp</strong> - efficient iteration with trackby id or prop](/utilities/directives/trackby-id-prop/)
+    </div>
+  </Card>
+  <Card title="And more..." icon="open-book">
+    <div class="home-links">
+      - [<strong>hostBinding</strong> - signal counterpart of @HostBinding API](/utilities/components/host-binding/)
+      - [<strong>createEffect</strong> - standalone version of NgRx ComponentStore Effect](/utilities/stores/create-effect/)
+      - [<strong>createSingletonProxy</strong> - lazy create singleton instance of a given class](/utilities/miscellaneous/singleton-proxy/)
+      - [<strong>ifValidator / ifAsyncValidator</strong> - apply sync/async conditional form validation](/utilities/forms/if-validator/)
+      - [<strong>Gesture</strong> - collection of Gestures to bind mouse and touch events](/utilities/gesture/intro/)
+    </div>
+  </Card>
+</CardGrid>
