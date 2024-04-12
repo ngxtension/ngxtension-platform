@@ -29,10 +29,13 @@ import { Card, CardGrid, Steps } from '@astrojs/starlight/components';
       - [<strong>connect</strong> - connect everything to everything](/utilities/signals/connect/)
       - [<strong>createNotifier</strong> - the tick you're missing](/utilities/signals/create-notifier/)
       - [<strong>signalSlice</strong> - tasty sliced state management](/utilities/signals/signal-slice/)
-
-      TODO
+      - [<strong>toLazySignal</strong> - defer signal's eager execution](/utilities/signals/to-lazy-signal/)
+      - [<strong>toObservableSignal</strong> - a Signal and Observable at a time](/utilities/signals/to-observable-signal/)
+      - [<strong>mergeFrom</strong> - merge operator with signals support](/utilities/signals/merge-from/)
+      - [<strong>createSignal/createComputed</strong> - signal/computed factory function](/utilities/signals/create-signal/)
+      - [<strong>computedPrevious</strong> - track previously emitted values](/utilities/signals/computed-previous/)
+      - [<strong>computed/extendedComputed</strong> - enhanced computed with previously derived value](/utilities/signals/computed/)
     </div>
-
   </Card>
   <Card title="Injector utilities" icon="moon">
     <div class="home-links">
@@ -41,20 +44,48 @@ import { Card, CardGrid, Steps } from '@astrojs/starlight/components';
       - [<strong>injectQueryParams</strong> - inject signal route query params](/utilities/injectors/inject-query-params/)
       - [<strong>createInjectionToken</strong> - cool InjectionToken creation](/utilities/injectors/create-injection-token/)
       - [<strong>injectDestroy</strong> - destroy$ you don't have to unsub](/utilities/injectors/inject-destroy/)
-      
-      TODO
+      - [<strong>injectRouteData</strong> - inject data from the current route](/utilities/injectors/inject-route-data/)
+      - [<strong>injectNavigationEnd</strong> - listen to navigation end events](/utilities/injectors/navigation-end/)
+      - [<strong>injectNetwork</strong> - track the current network state](/utilities/injectors/inject-network/)
+      - [<strong>injectIsIntersecting</strong> - listen when element intersects](/utilities/injectors/inject-is-intersecting/)
+      - [<strong>injectDocumentVisibility</strong> - track the current visibility state of the document](/utilities/injectors/inject-document-visibility/)
+      - [<strong>createInjectable</strong> - cool Service creation](/utilities/injectors/create-injectable/)
+      - [<strong>injectAutoEffect</strong> - injection-context aware Effect](/utilities/injectors/auto-effect/)
+      - [<strong>assertInjector</strong> - extension of assertInInjectionContext](/utilities/injectors/assert-injector/)
+      - [<strong>injectActiveElement</strong> - track when the active, focused element changes](/utilities/injectors/active-element/)
     </div>
   </Card>
   <Card title="Code migrations" icon="moon">
-    TODO
+    - [<strong>New output() Migration</strong> - migrate to the new output() function](/utilities/migrations/new-outputs-migration/)
+    - [<strong>Signal Inputs Migration</strong> - migrate to the signal-based inputs](/utilities/migrations/signal-inputs-migration/)
+    - [<strong>inject() Migration</strong> - migrate to inject()-based DI](/utilities/migrations/inject-migration/)
   </Card>
   <Card title="RxJs operators" icon="moon">
-    TODO
+    - [<strong>debug</strong> - log stream inputs and transformed outputs](/utilities/operators/debug/)
+    - [<strong>filterArray</strong> - apply filter fn to array emitted by the stream](/utilities/operators/filter-array/)
+    - [<strong>filterNil</strong> - filter out null and undefined values](/utilities/operators/filter-nil/)
+    - [<strong>mapArray</strong> - apply map fn to array emitted by the stream](/utilities/operators/map-array/)
+    - [<strong>mapSkipUndefined</strong> - skip undefined when applying map fn](/utilities/operators/map-skip-undefined/)
+    - [<strong>reduceArray</strong> - apply reduce fn to array emitted by the stream](/utilities/operators/reduce-array/)
+    - [<strong>rxEffect</strong> - utility to create a side effect with rxjs](/utilities/operators/rx-effect/)
   </Card>
   <Card title="Directives" icon="moon">
-    TODO
+    - [<strong>clickOutside</strong> - track when clicked outside an element](/utilities/directives/click-outside/)
+    - [<strong>repeat</strong> - extension for an effective NgFor iteration](/utilities/directives/repeat/)
+    - [<strong>resize</strong> - track element/host resizing](/utilities/directives/resize/)
+    - [<strong>TrackById / TrackByProp</strong> - efficient iteration with trackby id or prop](/utilities/directives/trackby-id-prop/)
   </Card>
   <Card title="And more..." icon="moon">
-    TODO
+    - [<strong>Gesture</strong> - collection of Gestures to bind mouse and touch events](/utilities/gesture/intro/)
+    - [<strong>hostBinding</strong> - signal counterpart of @HostBinding API](/utilities/components/host-binding/)
+    - [<strong>Svg Sprites</strong> - directive for rendering symbols of svg sprites](/utilities/assets/svg-sprites/)
+    - [<strong>Intl</strong> - collection of pipes that leverage the Intl API](/utilities/intl/intl/)
+    - [<strong>createSingletonProxy</strong> - lazy create singleton instance of a given class](/utilities/miscellaneous/singleton-proxy/)
+    - [<strong>CallPipe / ApplyPipe</strong> - memoized function call in templates](/utilities/pipes/call-apply/)
+    - [<strong>RepeatPipe</strong> - easy way to loop over a number of iterations](/utilities/pipes/repeat/)
+    - [<strong>createEffect</strong> - standalone version of NgRx ComponentStore Effect](/utilities/stores/create-effect/)
+    - [<strong>NgxControlError</strong> - display form control errors consistently](/utilities/forms/control-error/)
+    - [<strong>NgxControlValueAccessor</strong> - reduce boilerplate when building form components](/utilities/forms/control-value-accessor/)
+    - [<strong>ifValidator / ifAsyncValidator</strong> - apply sync/async conditional form validation](/utilities/forms/if-validator/)
   </Card>
 </CardGrid>
