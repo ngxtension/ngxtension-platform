@@ -13,6 +13,7 @@
 				"@angular-eslint/component-class-suffix": 0,
 				"@angular-eslint/no-input-rename": 0,
 				"@typescript-eslint/no-explicit-any": 0,
+				"@typescript-eslint/no-namespace": 0,
 				"@typescript-eslint/ban-types": [
 					"error",
 					{
