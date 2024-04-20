@@ -25,7 +25,8 @@ const filesMap = {
     export class MyComponent {
       constructor(
         private service: MyService,
-        private readonly service2: ElementRef<HtmlImageElement>
+        private readonly service2: ElementRef<HtmlImageElement>,
+        @Optional() @Attribute('type') type: string,
       ) {}
     }
   `,
@@ -90,6 +91,7 @@ const filesMap = {
     })
     export class MyComponent {
       constructor(
+        @Attribute('type') type: string,
         @Inject('my-service') private service: MyService,
         @Inject(MyService4) private service4: MyService4,
         @Optional() @Inject('my-service2') private service5: MyService5,

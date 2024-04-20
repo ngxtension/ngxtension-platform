@@ -125,6 +125,16 @@ export async function convertDiToInjectGenerator(
 					.some((namedImport) => namedImport.getName() === 'inject'),
 		);
 
+		const hasHostAttributeTokenImport = sourceFile.getImportDeclaration(
+			(importDecl) =>
+				importDecl.getModuleSpecifierValue() === '@angular/core' &&
+				importDecl
+					.getNamedImports()
+					.some(
+						(namedImport) => namedImport.getName() === 'HostAttributeToken',
+					),
+		);
+
 		const classes = sourceFile.getClasses();
 
 		for (const targetClass of classes) {
@@ -136,6 +146,7 @@ export async function convertDiToInjectGenerator(
 			if (!applicableDecorator) continue;
 
 			const convertedDeps = new Set<string>();
+			let includeHostAttributeToken = false;
 
 			targetClass.getConstructors().forEach((constructor) => {
 				constructor.getParameters().forEach((param, index) => {
@@ -145,6 +156,7 @@ export async function convertDiToInjectGenerator(
 					let shouldUseType = false;
 					let toBeInjected = type; // default to type
 					let tokenToBeInjectedIsString = false;
+					let isAttributeToken = false;
 					const flags = [];
 
 					if (decorators.length > 0) {
@@ -159,6 +171,15 @@ export async function convertDiToInjectGenerator(
 									tokenToBeInjectedIsString = true;
 								}
 							}
+
+							if (decorator.name === 'Attribute') {
+								// ex: @Attribute('type') type: string
+								toBeInjected = decorator.arguments[0];
+								isAttributeToken = true;
+								includeHostAttributeToken = true;
+								shouldUseType = true;
+							}
+
 							if (decorator.name === 'Optional') {
 								flags.push('optional');
 							}
@@ -184,7 +205,14 @@ export async function convertDiToInjectGenerator(
 						injection += `<${type}>`;
 					}
 
-					const initializer = `${injection}(${toBeInjected}${tokenToBeInjectedIsString ? ' as any /* TODO(inject-migration): Please check if the type is correct */' : ''}${flags.length > 0 ? `, { ${flags.map((flag) => flag + ': true').join(', ')} }` : ''})`;
+					let initializer = '';
+
+					if (isAttributeToken) {
+						// inject(new HostAttributeToken('some-attr'));
+						initializer = `${injection}(new HostAttributeToken(${toBeInjected})${flags.length > 0 ? `, { ${flags.map((flag) => flag + ': true').join(', ')} }` : ''})`;
+					} else {
+						initializer = `${injection}(${toBeInjected}${tokenToBeInjectedIsString ? ' as any /* TODO(inject-migration): Please check if the type is correct */' : ''}${flags.length > 0 ? `, { ${flags.map((flag) => flag + ': true').join(', ')} }` : ''})`;
+					}
 
 					targetClass.insertProperty(index, {
 						name,
@@ -219,8 +247,14 @@ export async function convertDiToInjectGenerator(
 				});
 
 				if (convertedDeps.size > 0 && !hasInjectImport) {
+					const namedImports = ['inject'];
+
+					if (includeHostAttributeToken) {
+						namedImports.push('HostAttributeToken');
+					}
+
 					sourceFile.insertImportDeclaration(0, {
-						namedImports: ['inject'],
+						namedImports,
 						moduleSpecifier: '@angular/core',
 						leadingTrivia: '  ',
 					});

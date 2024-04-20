@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`convertDiToInjectGenerator should convert properly 1`] = `
-"  import { inject } from "@angular/core";
+"  import { inject, HostAttributeToken } from "@angular/core";
     import { Component } from '@angular/core';
     @Component({
       template: ''
@@ -9,17 +9,19 @@ exports[`convertDiToInjectGenerator should convert properly 1`] = `
     export class MyComponent {
       private service = inject(MyService);
       private readonly service2 = inject<ElementRef<HtmlImageElement>>(ElementRef<HtmlImageElement>);
+      type = inject<string>(new HostAttributeToken('type'), { optional: true });
     }
   "
 `;
 
 exports[`convertDiToInjectGenerator should convert properly with @Inject decorator 1`] = `
-"  import { inject } from "@angular/core";
+"  import { inject, HostAttributeToken } from "@angular/core";
     import { Component, Inject } from '@angular/core';
     @Component({
       template: ''
     })
     export class MyComponent {
+      type = inject<string>(new HostAttributeToken('type'));
       private service = inject<MyService>('my-service' as any /* TODO(inject-migration): Please check if the type is correct */);
       private service4 = inject(MyService4);
       private service5 = inject<MyService5>('my-service2' as any /* TODO(inject-migration): Please check if the type is correct */, { optional: true });
