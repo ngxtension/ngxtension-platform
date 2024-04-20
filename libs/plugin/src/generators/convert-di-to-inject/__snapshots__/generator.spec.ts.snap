@@ -20,9 +20,9 @@ exports[`convertDiToInjectGenerator should convert properly with @Inject decorat
       template: ''
     })
     export class MyComponent {
-      private service = inject<MyService>('my-service');
+      private service = inject<MyService>('my-service' as any /* TODO(inject-migration): Please check if the type is correct */);
       private service4 = inject(MyService4);
-      private service5 = inject<MyService5>('my-service2', { optional: true });
+      private service5 = inject<MyService5>('my-service2' as any /* TODO(inject-migration): Please check if the type is correct */, { optional: true });
       private service2 = inject(MyService2);
       service3 = inject(MyService3);
     }
@@ -41,9 +41,9 @@ exports[`convertDiToInjectGenerator should convert properly with @Inject decorat
       private tplRef = inject<TemplateRef<any>>(TemplateRef<any>);
       private viewContainerRef = inject(ViewContainerRef);
       service2 = inject(MyService2);
-      private service = inject<MyService>('my-service');
+      private service = inject<MyService>('my-service' as any /* TODO(inject-migration): Please check if the type is correct */);
       private service4 = inject(MyService4);
-      private service5 = inject<MyService5>('my-service2', { optional: true });
+      private service5 = inject<MyService5>('my-service2' as any /* TODO(inject-migration): Please check if the type is correct */, { optional: true });
       private service6 = inject(MyService6, { self: true, optional: true });
 
       constructor(

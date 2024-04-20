@@ -56,6 +56,11 @@ function trackContents(
 	}
 }
 
+function tokenIsTypeString(token: any) {
+	// example: 'my-service' or "my-service"
+	return token.includes("'") || token.includes('"');
+}
+
 export async function convertDiToInjectGenerator(
 	tree: Tree,
 	options: ConvertDiToInjectGeneratorSchema,
@@ -139,6 +144,7 @@ export async function convertDiToInjectGenerator(
 
 					let shouldUseType = false;
 					let toBeInjected = type; // default to type
+					let tokenToBeInjectedIsString = false;
 					const flags = [];
 
 					if (decorators.length > 0) {
@@ -147,6 +153,10 @@ export async function convertDiToInjectGenerator(
 								toBeInjected = decorator.arguments[0]; // use the argument of the @Inject decorator
 								if (toBeInjected !== type) {
 									shouldUseType = true;
+								}
+
+								if (tokenIsTypeString(toBeInjected)) {
+									tokenToBeInjectedIsString = true;
 								}
 							}
 							if (decorator.name === 'Optional') {
@@ -174,9 +184,11 @@ export async function convertDiToInjectGenerator(
 						injection += `<${type}>`;
 					}
 
+					const initializer = `${injection}(${toBeInjected}${tokenToBeInjectedIsString ? ' as any /* TODO(inject-migration): Please check if the type is correct */' : ''}${flags.length > 0 ? `, { ${flags.map((flag) => flag + ': true').join(', ')} }` : ''})`;
+
 					targetClass.insertProperty(index, {
 						name,
-						initializer: `${injection}(${toBeInjected}${flags.length > 0 ? `, { ${flags.map((flag) => flag + ': true').join(', ')} }` : ''})`,
+						initializer,
 						scope,
 						isReadonly,
 						leadingTrivia: '  ',
