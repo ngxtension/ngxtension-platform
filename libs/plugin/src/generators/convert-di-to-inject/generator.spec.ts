@@ -25,7 +25,7 @@ const filesMap = {
     export class MyComponent {
       constructor(
         private service: MyService,
-        private service2: ElementRef<HtmlImageElement>
+        private readonly service2: ElementRef<HtmlImageElement>
       ) {}
     }
   `,
@@ -37,7 +37,7 @@ const filesMap = {
     export class MyComponent {
       constructor(
         private service: MyService
-        private service1: MyService1<string>
+        private readonly service1: MyService1<string>
       ) {
         this.service.doSomething();
       }

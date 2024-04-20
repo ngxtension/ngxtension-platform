@@ -8,7 +8,7 @@ exports[`convertDiToInjectGenerator should convert properly 1`] = `
     })
     export class MyComponent {
       private service = inject(MyService);
-      private service2 = inject<ElementRef<HtmlImageElement>>(ElementRef<HtmlImageElement>);
+      private readonly service2 = inject<ElementRef<HtmlImageElement>>(ElementRef<HtmlImageElement>);
     }
   "
 `;
@@ -74,7 +74,7 @@ exports[`convertDiToInjectGenerator should convert properly with usage 1`] = `
     })
     export class MyComponent {
       private service = inject(MyService);
-      private service1 = inject<MyService1<string>>(MyService1<string>);
+      private readonly service1 = inject<MyService1<string>>(MyService1<string>);
 
       constructor(
 ) {
