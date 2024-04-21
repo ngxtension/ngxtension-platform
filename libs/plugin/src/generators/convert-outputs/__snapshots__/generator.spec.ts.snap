@@ -13,6 +13,11 @@ export class MyCmp {
   someObservable$ = of('test');
 
   outputWithoutType = output();
+
+  protected outputWithPrivateScope = output();
+  protected outputWithProtectedScope = output();
+  public outputWithPublicScope = output();
+
   normalOutput = output<string>();
 
   someOutput = output<DataInterface>();
@@ -44,6 +49,9 @@ export class MyCmp {
     _outputFromSubject = outputFromObservable(this.outputFromSubject, { alias: 'outputFromSubject' });
     /** TODO(migration): you may want to convert this to a normal output */
     _outputFromBehaviorSubject = outputFromObservable(this.outputFromBehaviorSubject, { alias: 'outputFromBehaviorSubject' });
+;
+;
+;
 ;
 ;
 ;
