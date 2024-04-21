@@ -1,6 +1,7 @@
 import { assertInInjectionContext, inject, type Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, type Params } from '@angular/router';
+import { NGXTENSION_SIGNAL_ROUTE_INJECTION_TOKEN } from 'ngxtension/route-injection-token';
 import { map } from 'rxjs';
 
 type QueryParamsTransformFn<ReadT> = (params: Params) => ReadT;
@@ -115,18 +116,33 @@ export function injectQueryParams<ReadT>(
 	assertInInjectionContext(injectQueryParams);
 	const route = inject(ActivatedRoute);
 
+	const globalOptions = inject(NGXTENSION_SIGNAL_ROUTE_INJECTION_TOKEN);
+	const requireSync = globalOptions.requireSync;
+
 	const { transform, initialValue } = options;
 
 	if (!keyOrParamsTransform) {
-		return toSignal(route.queryParams, {
-			requireSync: true,
-		});
+		if (requireSync === false) {
+			return toSignal(route.queryParams, {
+				initialValue: null,
+				requireSync: false,
+			});
+		} else {
+			return toSignal(route.queryParams, { requireSync: true });
+		}
 	}
 
 	if (typeof keyOrParamsTransform === 'function') {
-		return toSignal(route.queryParams.pipe(map(keyOrParamsTransform)), {
-			requireSync: true,
-		});
+		if (requireSync === false) {
+			return toSignal(route.queryParams.pipe(map(keyOrParamsTransform)), {
+				initialValue: null,
+				requireSync: false,
+			});
+		} else {
+			return toSignal(route.queryParams.pipe(map(keyOrParamsTransform)), {
+				requireSync: true,
+			});
+		}
 	}
 
 	const getParam = (params: Params) => {
@@ -149,9 +165,16 @@ export function injectQueryParams<ReadT>(
 		return transform ? transform(param) : param;
 	};
 
-	return toSignal(route.queryParams.pipe(map(getParam)), {
-		requireSync: true,
-	});
+	if (requireSync === false) {
+		return toSignal(route.queryParams.pipe(map(getParam)), {
+			initialValue: null,
+			requireSync: false,
+		});
+	} else {
+		return toSignal(route.queryParams.pipe(map(getParam)), {
+			requireSync: true,
+		});
+	}
 }
 
 /**
@@ -209,6 +232,9 @@ export namespace injectQueryParams {
 		assertInInjectionContext(injectQueryParams.array);
 		const route = inject(ActivatedRoute);
 
+		const globalOptions = inject(NGXTENSION_SIGNAL_ROUTE_INJECTION_TOKEN);
+		const requireSync = globalOptions.requireSync;
+
 		const { transform, initialValue } = options;
 
 		const transformParam = (
@@ -238,8 +264,15 @@ export namespace injectQueryParams {
 			return transformParam(param);
 		};
 
-		return toSignal(route.queryParams.pipe(map(getParam)), {
-			requireSync: true,
-		});
+		if (requireSync === false) {
+			return toSignal(route.queryParams.pipe(map(getParam)), {
+				initialValue: null,
+				requireSync: false,
+			});
+		} else {
+			return toSignal(route.queryParams.pipe(map(getParam)), {
+				requireSync: true,
+			});
+		}
 	}
 }

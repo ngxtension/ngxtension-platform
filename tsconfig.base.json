@@ -104,6 +104,9 @@
 			"ngxtension/repeat": ["libs/ngxtension/repeat/src/index.ts"],
 			"ngxtension/repeat-pipe": ["libs/ngxtension/repeat-pipe/src/index.ts"],
 			"ngxtension/resize": ["libs/ngxtension/resize/src/index.ts"],
+			"ngxtension/route-injection-token": [
+				"libs/ngxtension/route-injection-token/src/index.ts"
+			],
 			"ngxtension/rx-effect": ["libs/ngxtension/rx-effect/src/index.ts"],
 			"ngxtension/signal-slice": ["libs/ngxtension/signal-slice/src/index.ts"],
 			"ngxtension/singleton-proxy": [
