@@ -30,6 +30,7 @@ export class MyCmp {
 `,
 	component: `
 import { Component, Output, EventEmitter } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   template: \` \`

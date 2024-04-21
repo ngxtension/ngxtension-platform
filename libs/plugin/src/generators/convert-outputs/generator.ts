@@ -230,10 +230,19 @@ export async function convertOutputsGenerator(
 
 		// NOTE: only add hasOutputImport import if we don't have it and we find the first Output decorator
 		if (!hasOutputImport) {
-			sourceFile.addImportDeclaration({
-				namedImports: ['output'],
-				moduleSpecifier: '@angular/core',
-			});
+			const angularCoreImports = sourceFile.getImportDeclaration(
+				(importDecl) => {
+					return importDecl.getModuleSpecifierValue() === '@angular/core';
+				},
+			);
+			if (angularCoreImports) {
+				angularCoreImports.addNamedImport('output');
+			} else {
+				sourceFile.addImportDeclaration({
+					namedImports: ['output'],
+					moduleSpecifier: '@angular/core',
+				});
+			}
 		}
 
 		const classes = sourceFile.getClasses();
@@ -278,10 +287,25 @@ export async function convertOutputsGenerator(
 							needsOutputFromObservableImport &&
 							!outputFromObservableImportAdded
 						) {
-							sourceFile.addImportDeclaration({
-								namedImports: ['outputFromObservable'],
-								moduleSpecifier: '@angular/core/rxjs-interop',
-							});
+							const angularRxjsInteropImports = sourceFile.getImportDeclaration(
+								(importDecl) => {
+									return (
+										importDecl.getModuleSpecifierValue() ===
+										'@angular/core/rxjs-interop'
+									);
+								},
+							);
+							if (angularRxjsInteropImports) {
+								angularRxjsInteropImports.addNamedImport(
+									'outputFromObservable',
+								);
+							} else {
+								sourceFile.addImportDeclaration({
+									namedImports: ['outputFromObservable'],
+									moduleSpecifier: '@angular/core/rxjs-interop',
+								});
+							}
+
 							outputFromObservableImportAdded = true;
 						}
 
