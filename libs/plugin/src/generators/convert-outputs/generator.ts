@@ -142,6 +142,12 @@ function getOutputInitializer(
 	}
 }
 
+function stringIsUsedMoreThanOnce(key: string, fileFullText: string): boolean {
+	const regExp = new RegExp(key, 'g');
+	const matches = fileFullText.match(regExp);
+	return matches && matches.length > 1;
+}
+
 export async function convertOutputsGenerator(
 	tree: Tree,
 	options: ConvertOutputsGeneratorSchema,
@@ -306,6 +312,48 @@ export async function convertOutputsGenerator(
 					}
 				}
 			});
+		}
+
+		// if @Output is not used anymore, remove the import
+		const hasOutputDecoratorUsage = sourceFile
+			.getFullText()
+			.includes('@Output');
+		if (!hasOutputDecoratorUsage) {
+			const outputImport = sourceFile.getImportDeclaration(
+				(importDecl) =>
+					importDecl.getModuleSpecifierValue() === '@angular/core' &&
+					importDecl
+						.getNamedImports()
+						.some((namedImport) => namedImport.getName() === 'Output'),
+			);
+
+			if (outputImport) {
+				const classToRemove = outputImport
+					.getNamedImports()
+					.find((namedImport) => namedImport.getName() === 'Output');
+				classToRemove.remove();
+			}
+		}
+
+		// // if EventEmitter is not used anymore, remove the import
+		const eventEmitterIsUsedMoreThanOnce = stringIsUsedMoreThanOnce(
+			'EventEmitter',
+			sourceFile.getFullText(),
+		);
+		if (!eventEmitterIsUsedMoreThanOnce) {
+			const eventEmitterImport = sourceFile.getImportDeclaration(
+				(importDecl) =>
+					importDecl.getModuleSpecifierValue() === '@angular/core' &&
+					importDecl
+						.getNamedImports()
+						.some((namedImport) => namedImport.getName() === 'EventEmitter'),
+			);
+			if (eventEmitterImport) {
+				const classToRemove = eventEmitterImport
+					.getNamedImports()
+					.find((namedImport) => namedImport.getName() === 'EventEmitter');
+				classToRemove.remove();
+			}
 		}
 
 		tree.write(sourcePath, sourceFile.getFullText());

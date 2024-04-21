@@ -2,7 +2,7 @@
 
 exports[`convertOutputsGenerator should convert properly 1`] = `
 "
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component } from '@angular/core';
 import { output } from "@angular/core";
 import { outputFromObservable } from "@angular/core/rxjs-interop";
 
@@ -14,6 +14,8 @@ export class MyCmp {
 
   outputWithoutType = output();
   normalOutput = output<string>();
+
+  someOutput = output<DataInterface>();
 
   normalOutput2 = output<string>();
 
@@ -49,13 +51,14 @@ export class MyCmp {
 ;
 ;
 ;
+;
 }
 "
 `;
 
 exports[`convertOutputsGenerator should not add outputFromObservable import if not needed 1`] = `
 "
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component } from '@angular/core';
 import { output } from "@angular/core";
 
 @Component({
