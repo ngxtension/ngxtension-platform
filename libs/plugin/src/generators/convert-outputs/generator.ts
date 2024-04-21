@@ -63,6 +63,7 @@ function trackContents(
 
 function getOutputInitializer(
 	propertyName: string,
+	currentType: string | WriterFunction,
 	decorator: Decorator,
 	initializer: string,
 ): {
@@ -119,6 +120,13 @@ function getOutputInitializer(
 			const genericTypeOnEmitter = initializer.match(/EventEmitter<(.+)>/);
 			if (genericTypeOnEmitter?.length) {
 				type = genericTypeOnEmitter[1];
+			}
+		}
+
+		if (typeof currentType === 'string') {
+			const genericTypeOnType = currentType.match(/EventEmitter<(.+)>/);
+			if (genericTypeOnType?.length) {
+				type = genericTypeOnType[1];
 			}
 		}
 
@@ -242,6 +250,7 @@ export async function convertOutputsGenerator(
 							isReadonly,
 							docs,
 							scope,
+							type,
 							hasOverrideKeyword,
 							initializer,
 						} = node.getStructure();
@@ -253,6 +262,7 @@ export async function convertOutputsGenerator(
 							writerFn,
 						} = getOutputInitializer(
 							name,
+							type,
 							outputDecorator,
 							initializer as string,
 						);

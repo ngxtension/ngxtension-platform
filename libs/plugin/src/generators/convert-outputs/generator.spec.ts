@@ -40,6 +40,8 @@ export class MyCmp {
   @Output() outputWithoutType = new EventEmitter();
   @Output() normalOutput = new EventEmitter<string>();
 
+  @Output() someOutput: EventEmitter<DataInterface> = new EventEmitter();
+
   @Output() normalOutput2: EventEmitter<string> = new EventEmitter<string>();
 
   @Output() outputFromSubject = new Subject();
@@ -66,7 +68,7 @@ export class MyCmp {
 `,
 } as const;
 
-fdescribe('convertOutputsGenerator', () => {
+describe('convertOutputsGenerator', () => {
 	let tree: Tree;
 	const options: ConvertOutputsGeneratorSchema = {
 		path: 'libs/my-file.ts',
