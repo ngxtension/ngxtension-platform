@@ -50,7 +50,7 @@ const filesMap = {
       template: ''
     })
     export class MyComponent {
-      constructor(private service: MyService) {
+      constructor(service: MyService) {
         service.doSomething();
       }
     }
@@ -90,14 +90,18 @@ const filesMap = {
       template: ''
     })
     export class MyComponent {
+      service3: MyService3;
+
       constructor(
-        @Attribute('type') type: string,
+        @Attribute('type') private type: string,
         @Inject('my-service') private service: MyService,
         @Inject(MyService4) private service4: MyService4,
         @Optional() @Inject('my-service2') private service5: MyService5,
         private service2: MyService2,
         service3: MyService3
-      ) {}
+      ) {
+        this.service3 = service3;
+      }
     }
 `,
 	componentWithDepAndInjectAndOptions: `

@@ -1,15 +1,15 @@
 import {
-	Tree,
 	formatFiles,
 	getProjects,
 	logger,
 	readJson,
 	readProjectConfiguration,
+	Tree,
 	visitNotIgnoredFiles,
 } from '@nx/devkit';
 import { readFileSync } from 'node:fs';
 import { exit } from 'node:process';
-import { Node, Project } from 'ts-morph';
+import { Project, VariableDeclarationKind } from 'ts-morph';
 import { ConvertDiToInjectGeneratorSchema } from './schema';
 
 class ContentsStore {
@@ -214,36 +214,48 @@ export async function convertDiToInjectGenerator(
 						initializer = `${injection}(${toBeInjected}${tokenToBeInjectedIsString ? ' as any /* TODO(inject-migration): Please check if the type is correct */' : ''}${flags.length > 0 ? `, { ${flags.map((flag) => flag + ': true').join(', ')} }` : ''})`;
 					}
 
-					targetClass.insertProperty(index, {
-						name,
-						initializer,
-						scope,
-						isReadonly,
-						leadingTrivia: '  ',
-					});
+					if (!scope) {
+						// create the variable inside the constructor instead of creating it as a class property
+						constructor.insertVariableStatement(0, {
+							declarationKind: VariableDeclarationKind.Const,
+							declarations: [{ name, initializer }],
+						});
+					} else {
+						targetClass.insertProperty(index, {
+							name,
+							initializer,
+							scope,
+							isReadonly:
+								isReadonly || options.includeReadonlyByDefault || false,
+							leadingTrivia: '  ',
+						});
+					}
 
 					convertedDeps.add(name);
 
 					// check if service was used inside the constructor without 'this.' prefix
 					// if so, add 'this.' prefix to the service
-					constructor.getStatements().forEach((statement) => {
-						if (Node.isExpressionStatement(statement)) {
-							const expression = statement.getExpression();
-							if (Node.isCallExpression(expression)) {
-								const expressionText = expression.getText();
-								if (
-									expressionText.includes(name.toString()) &&
-									!expressionText.includes(`this.${name.toString()}`)
-								) {
-									const newExpression = expressionText.replace(
-										name.toString(),
-										`this.${name}`,
-									);
-									statement.replaceWithText(newExpression);
-								}
-							}
-						}
-					});
+
+					// THIS IS NOT NEEDED as we don't convert the service to a class property
+					// Leaving it here as it may be used in the future in other migrations
+					// 	constructor.getStatements().forEach((statement) => {
+					// 		if (Node.isExpressionStatement(statement)) {
+					// 			const expression = statement.getExpression();
+					// 			if (Node.isCallExpression(expression)) {
+					// 				const expressionText = expression.getText();
+					// 				if (
+					// 					expressionText.includes(name.toString()) &&
+					// 					!expressionText.includes(`this.${name.toString()}`)
+					// 				) {
+					// 					const newExpression = expressionText.replace(
+					// 						name.toString(),
+					// 						`this.${name}`,
+					// 					);
+					// 					statement.replaceWithText(newExpression);
+					// 				}
+					// 			}
+					// 		}
+					// 	});
 				});
 
 				if (convertedDeps.size > 0 && !hasInjectImport) {
