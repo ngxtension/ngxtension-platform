@@ -1,10 +1,10 @@
 import {
-	Tree,
 	formatFiles,
 	getProjects,
 	logger,
 	readJson,
 	readProjectConfiguration,
+	Tree,
 	visitNotIgnoredFiles,
 } from '@nx/devkit';
 import { readFileSync } from 'node:fs';
@@ -14,6 +14,7 @@ import {
 	Decorator,
 	Node,
 	Project,
+	Scope,
 	WriterFunction,
 } from 'ts-morph';
 import { ConvertOutputsGeneratorSchema } from './schema';
@@ -288,7 +289,8 @@ export async function convertOutputsGenerator(
 							name: outputName ?? name,
 							isReadonly,
 							docs,
-							scope,
+							// we want to keep the scope as protected if it was private in order to avoid breaking changes
+							scope: scope === Scope.Private ? Scope.Protected : scope,
 							hasOverrideKeyword,
 							initializer: writerFn,
 						});

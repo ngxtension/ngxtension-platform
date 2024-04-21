@@ -38,6 +38,11 @@ export class MyCmp {
   someObservable$ = of('test');
 
   @Output() outputWithoutType = new EventEmitter();
+
+  @Output() private outputWithPrivateScope = new EventEmitter();
+  @Output() protected outputWithProtectedScope = new EventEmitter();
+  @Output() public outputWithPublicScope = new EventEmitter();
+
   @Output() normalOutput = new EventEmitter<string>();
 
   @Output() someOutput: EventEmitter<DataInterface> = new EventEmitter();
