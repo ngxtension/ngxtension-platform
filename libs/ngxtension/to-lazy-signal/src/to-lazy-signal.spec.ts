@@ -1,5 +1,5 @@
 import { Component, signal, type Signal } from '@angular/core';
-import { fakeAsync, TestBed } from '@angular/core/testing';
+import { TestBed, fakeAsync } from '@angular/core/testing';
 import { createEffect } from 'ngxtension/create-effect';
 import { Observable } from 'rxjs';
 import { toLazySignal } from './to-lazy-signal';

@@ -1,5 +1,35 @@
 
 
+## [2.3.0](https://github.com/nartc/ngxtension-platform/compare/2.2.1...2.3.0) (2024-04-23)
+
+
+### Features
+
+* add homepage blocks to showcase everything the library offers ([#327](https://github.com/nartc/ngxtension-platform/issues/327)) ([74064d5](https://github.com/nartc/ngxtension-platform/commit/74064d5f70887cab3aa84bd89322806213f026e7)), closes [#329](https://github.com/nartc/ngxtension-platform/issues/329)
+* added inject migration ([#326](https://github.com/nartc/ngxtension-platform/issues/326)) ([a46fdcd](https://github.com/nartc/ngxtension-platform/commit/a46fdcd13c767a8ed2daf9a849332551debaa81d))
+* **computed-from:** rename computedFrom and computedAsync to derivedFrom and derivedAsync and added migration schematics ([#303](https://github.com/nartc/ngxtension-platform/issues/303)) ([05d994f](https://github.com/nartc/ngxtension-platform/commit/05d994f51b55c3c5271a6b4b7a476a3a53fb38c5))
+* **inject-route-fragment:** implementation of injectRouteFragment ([#318](https://github.com/nartc/ngxtension-platform/issues/318)) ([2bf2546](https://github.com/nartc/ngxtension-platform/commit/2bf254626954cf82994b39ecff4750d2d62cca0c))
+* **injectLocalStorage:** initial implementation of injectLocalStorage  ([#295](https://github.com/nartc/ngxtension-platform/issues/295)) ([e995dcb](https://github.com/nartc/ngxtension-platform/commit/e995dcb3a215d3b85a0c03bac70166215572e16a))
+* **output-migration:** enhancements ([#337](https://github.com/nartc/ngxtension-platform/issues/337)) ([5542a8c](https://github.com/nartc/ngxtension-platform/commit/5542a8cd7ab38d573de897a50054004b5c84e9d5))
+* **repeat-pipe:** initial version ([#320](https://github.com/nartc/ngxtension-platform/issues/320)) ([70abad3](https://github.com/nartc/ngxtension-platform/commit/70abad3a5e1549c79390cfe509c7255f4b15aaa5))
+
+
+### Bug Fixes
+
+* **click-outside:** remove memory leak ([#319](https://github.com/nartc/ngxtension-platform/issues/319)) ([49bff56](https://github.com/nartc/ngxtension-platform/commit/49bff569ce0ab171928a912ad66acd6c58140443))
+* **create-injection-token:** only inject the actual dep ([1299f80](https://github.com/nartc/ngxtension-platform/commit/1299f80354270d8cd95ae59955e3baa71ada002c))
+* **plugin:** bump deps ([7185c79](https://github.com/nartc/ngxtension-platform/commit/7185c7989d48ab0b78af0955e9c331a2a671662c))
+* use snapshot instead of requireSync for route injections ([#339](https://github.com/nartc/ngxtension-platform/issues/339)) ([c40187e](https://github.com/nartc/ngxtension-platform/commit/c40187e9ff4da7743f2051481f5f6dba348b0899))
+
+
+### Documentations
+
+* add a code to source code button to the content with entryPoints ([#323](https://github.com/nartc/ngxtension-platform/issues/323)) ([8570f68](https://github.com/nartc/ngxtension-platform/commit/8570f6837e6ce735dd2cd1e5ae0163dd40919b9b))
+* add bun add command to install section ([#324](https://github.com/nartc/ngxtension-platform/issues/324)) ([b068d19](https://github.com/nartc/ngxtension-platform/commit/b068d198aafc02525e28faba5518858bcbe3355e))
+* add npm downloads and version badges to README.md ([#314](https://github.com/nartc/ngxtension-platform/issues/314)) ([4fdfaf3](https://github.com/nartc/ngxtension-platform/commit/4fdfaf36242bc3d7781250201b57eba893943b25))
+* contributor badges fixes ([#322](https://github.com/nartc/ngxtension-platform/issues/322)) ([20479f4](https://github.com/nartc/ngxtension-platform/commit/20479f40181dab6d7558f170c83125accab473b8))
+* update astro ([dd8da83](https://github.com/nartc/ngxtension-platform/commit/dd8da8379e3bb42ba239dbc545216a6b2f7ef5ca))
+
 ## [2.2.1](https://github.com/nartc/ngxtension-platform/compare/2.2.0...2.2.1) (2024-03-28)
 
 

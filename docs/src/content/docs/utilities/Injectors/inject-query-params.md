@@ -72,7 +72,7 @@ import { injectQueryParams } from 'ngxtension/inject-query-params';
 class TestComponent {
 	searchParam = injectQueryParams('search'); // returns a signal with the value of the search query param
 
-	filteredUsers = computedAsync(
+	filteredUsers = derivedAsync(
 		() => this.userService.getUsers(this.searchParam() ?? ''),
 		{ initialValue: [] },
 	);
@@ -120,11 +120,9 @@ class TestComponent {
 	// returns a signal with the value of the search query param or '' if not provided.
 	searchParam = injectQueryParams('search', { initialValue: 'nartc' });
 
-	filteredUsers = computedAsync(
+	filteredUsers = derivedAsync(
 		() => this.userService.getUsers(this.searchParam()),
-		{
-			initialValue: [],
-		},
+		{ initialValue: [] },
 	);
 }
 ```
@@ -154,7 +152,7 @@ class TestComponent {
 	// returns a signal with the array values of the product query param
 	productNames = injectQueryParams.array('products');
 
-	products = computedAsync(
+	products = derivedAsync(
 		() => this.productService.getByNames(this.productNames()),
 		{ initialValue: [] },
 	);
@@ -186,7 +184,7 @@ class TestComponent {
 		transform: numberAttribute,
 	});
 
-	products = computedAsync(
+	products = derivedAsync(
 		() => this.productService.getByIds(this.productIds()),
 		{ initialValue: [] },
 	);
@@ -218,7 +216,7 @@ class TestComponent {
 		initialValue: ['Angular'],
 	});
 
-	products = computedAsync(
+	products = derivedAsync(
 		() => this.productService.getByNames(this.productNames()),
 		{ initialValue: [] },
 	);

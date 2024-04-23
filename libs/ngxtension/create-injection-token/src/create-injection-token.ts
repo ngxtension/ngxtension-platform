@@ -197,7 +197,14 @@ createInjectionToken is creating a root InjectionToken but an external token is 
 		const token = new InjectionToken<TFactoryReturn>(`Token for ${tokenName}`, {
 			factory: () => {
 				if (opts.deps && Array.isArray(opts.deps)) {
-					return factory(...opts.deps.map((dep) => inject(dep)));
+					return factory(
+						...opts.deps.map((dep) => {
+							dep = (
+								Array.isArray(dep) ? dep.at(-1) : dep
+							) as CreateInjectionTokenDep<any>;
+							return inject(dep);
+						}),
+					);
 				}
 				return factory();
 			},

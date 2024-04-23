@@ -4,6 +4,11 @@
 			"version": "1.7.0",
 			"description": "Rename 'injectDocumentVisibility' import",
 			"implementation": "./src/migrations/rename-document-visibility/rename-document-visibility"
+		},
+		"rename-computed": {
+			"version": "2.3.0",
+			"description": "Rename 'computedFrom' and 'computedAsync' to 'derivedFrom' and 'derivedAsync'",
+			"implementation": "./src/migrations/rename-computeds/rename-computeds"
 		}
 	},
 	"schematics": {
@@ -11,6 +16,11 @@
 			"version": "1.7.0",
 			"description": "Rename 'injectDocumentVisibility' import",
 			"factory": "./src/migrations/rename-document-visibility/compat"
+		},
+		"rename-computed": {
+			"version": "2.3.0",
+			"description": "Rename 'computedFrom' and 'computedAsync' to 'derivedFrom' and 'derivedAsync'",
+			"implementation": "./src/migrations/rename-computeds/rename-computeds/compat"
 		}
 	}
 }
