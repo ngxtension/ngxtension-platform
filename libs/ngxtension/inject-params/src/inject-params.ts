@@ -38,15 +38,18 @@ export function injectParams<T>(
 ): Signal<T | Params | string | null> {
 	assertInInjectionContext(injectParams);
 	const route = inject(ActivatedRoute);
+	const params = route.snapshot.params;
 
 	if (typeof keyOrTransform === 'function') {
 		return toSignal(route.params.pipe(map(keyOrTransform)), {
-			requireSync: true,
+			initialValue: keyOrTransform(params),
 		});
 	}
 
 	const getParam = (params: Params) =>
 		keyOrTransform ? params?.[keyOrTransform] ?? null : params;
 
-	return toSignal(route.params.pipe(map(getParam)), { requireSync: true });
+	return toSignal(route.params.pipe(map(getParam)), {
+		initialValue: getParam(params),
+	});
 }

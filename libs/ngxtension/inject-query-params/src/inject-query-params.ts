@@ -114,18 +114,17 @@ export function injectQueryParams<ReadT>(
 ): Signal<ReadT | Params | string | boolean | number | null> {
 	assertInInjectionContext(injectQueryParams);
 	const route = inject(ActivatedRoute);
+	const queryParams = route.snapshot.queryParams || {};
 
 	const { transform, initialValue } = options;
 
 	if (!keyOrParamsTransform) {
-		return toSignal(route.queryParams, {
-			requireSync: true,
-		});
+		return toSignal(route.queryParams, { initialValue: queryParams });
 	}
 
 	if (typeof keyOrParamsTransform === 'function') {
 		return toSignal(route.queryParams.pipe(map(keyOrParamsTransform)), {
-			requireSync: true,
+			initialValue: keyOrParamsTransform(queryParams),
 		});
 	}
 
@@ -150,7 +149,7 @@ export function injectQueryParams<ReadT>(
 	};
 
 	return toSignal(route.queryParams.pipe(map(getParam)), {
-		requireSync: true,
+		initialValue: getParam(queryParams),
 	});
 }
 
@@ -208,6 +207,7 @@ export namespace injectQueryParams {
 	): Signal<(ReadT | string)[] | null> {
 		assertInInjectionContext(injectQueryParams.array);
 		const route = inject(ActivatedRoute);
+		const queryParams = route.snapshot.queryParams || {};
 
 		const { transform, initialValue } = options;
 
@@ -239,7 +239,7 @@ export namespace injectQueryParams {
 		};
 
 		return toSignal(route.queryParams.pipe(map(getParam)), {
-			requireSync: true,
+			initialValue: getParam(queryParams),
 		});
 	}
 }
