@@ -1,4 +1,25 @@
-import { effect, signal, type WritableSignal } from '@angular/core';
+import {
+	effect,
+	inject,
+	InjectionToken,
+	signal,
+	type WritableSignal,
+} from '@angular/core';
+
+export const NGXTENSION_LOCAL_STORAGE = new InjectionToken(
+	'NGXTENSION_LOCAL_STORAGE',
+	{
+		providedIn: 'root',
+		factory: () => localStorage, // this would be the default
+	},
+);
+
+export function provideLocalStorageImpl(impl: typeof globalThis.localStorage) {
+	return {
+		provide: NGXTENSION_LOCAL_STORAGE,
+		useValue: impl,
+	};
+}
 
 /**
  * Options to override the default behavior of the local storage signal.
@@ -56,6 +77,9 @@ export const injectLocalStorage = <T>(
 	const parse = isFunction(options?.parse) ? options?.parse : parseJSON;
 
 	const storageSync = options?.storageSync ?? true;
+
+	const localStorage = inject(NGXTENSION_LOCAL_STORAGE);
+
 	const initialStoredValue = goodTry(() => localStorage.getItem(key));
 	const initialValue = initialStoredValue
 		? goodTry(() => parse(initialStoredValue) as T)
