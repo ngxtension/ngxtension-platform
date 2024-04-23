@@ -6,7 +6,7 @@
 			"implementation": "./src/migrations/rename-document-visibility/rename-document-visibility"
 		},
 		"rename-computed": {
-			"version": "2.2.0",
+			"version": "2.2.2",
 			"description": "Rename 'computedFrom' and 'computedAsync' to 'derivedFrom' and 'derivedAsync'",
 			"implementation": "./src/migrations/rename-computeds/rename-computeds"
 		}
@@ -18,7 +18,7 @@
 			"factory": "./src/migrations/rename-document-visibility/compat"
 		},
 		"rename-computed": {
-			"version": "2.2.0",
+			"version": "2.2.2",
 			"description": "Rename 'computedFrom' and 'computedAsync' to 'derivedFrom' and 'derivedAsync'",
 			"implementation": "./src/migrations/rename-computeds/rename-computeds/compat"
 		}
