@@ -49,7 +49,7 @@
 
 ### Bug Fixes
 
-* add more derivedAsync tests and docs ([#268](https://github.com/nartc/ngxtension-platform/issues/268)) ([a86375b](https://github.com/nartc/ngxtension-platform/commit/a86375bf5b6343df3d6f4b0fa78a94f407133606))
+* add more computedAsync tests and docs ([#268](https://github.com/nartc/ngxtension-platform/issues/268)) ([a86375b](https://github.com/nartc/ngxtension-platform/commit/a86375bf5b6343df3d6f4b0fa78a94f407133606))
 * **convert-signal-inputs:** don't convert when input name used as property ([#279](https://github.com/nartc/ngxtension-platform/issues/279)) ([69efec4](https://github.com/nartc/ngxtension-platform/commit/69efec47b24007e9f94a333b91a8c9cb7a21b18f))
 * **convert-signal-inputs:** remove unnecessary undefined ([#280](https://github.com/nartc/ngxtension-platform/issues/280)) ([0356be0](https://github.com/nartc/ngxtension-platform/commit/0356be0072a1533e171602e715b6c5f76949417b))
 * remove snapshot as route.params emits synchronously ([#272](https://github.com/nartc/ngxtension-platform/issues/272)) ([1ec0098](https://github.com/nartc/ngxtension-platform/commit/1ec0098f541cdae72b01589f772dcffd5d5bc771))
@@ -70,7 +70,7 @@
 
 ### Features
 
-* add requireSync to derivedAsync for better typings ([#255](https://github.com/nartc/ngxtension-platform/issues/255)) ([5e428be](https://github.com/nartc/ngxtension-platform/commit/5e428be7b11a2924e44e740abf7449dceba3b387))
+* add requireSync to computedAsync for better typings ([#255](https://github.com/nartc/ngxtension-platform/issues/255)) ([5e428be](https://github.com/nartc/ngxtension-platform/commit/5e428be7b11a2924e44e740abf7449dceba3b387))
 * **merge-from:** add mergeFrom ([#259](https://github.com/nartc/ngxtension-platform/issues/259)) ([9ed73cf](https://github.com/nartc/ngxtension-platform/commit/9ed73cf28d1334e2cd103fa1d9f8125b24cef659)), closes [#221](https://github.com/nartc/ngxtension-platform/issues/221)
 
 
@@ -100,7 +100,7 @@
 
 ### Bug Fixes
 
-* **derivedAsync:** typings should return a union of undefined when no initial value. ([#247](https://github.com/nartc/ngxtension-platform/issues/247)) ([5cd496a](https://github.com/nartc/ngxtension-platform/commit/5cd496a3a1084f1ee6e80410030c173f9a74a3cb)), closes [#243](https://github.com/nartc/ngxtension-platform/issues/243)
+* **computedAsync:** typings should return a union of undefined when no initial value. ([#247](https://github.com/nartc/ngxtension-platform/issues/247)) ([5cd496a](https://github.com/nartc/ngxtension-platform/commit/5cd496a3a1084f1ee6e80410030c173f9a74a3cb)), closes [#243](https://github.com/nartc/ngxtension-platform/issues/243)
 
 
 ### Documentations
@@ -149,7 +149,7 @@
 ### Features
 
 * add toObservableSignal() ([#230](https://github.com/nartc/ngxtension-platform/issues/230)) ([2c7e42c](https://github.com/nartc/ngxtension-platform/commit/2c7e42c21e2412c0249ce68851a5827ca6386200))
-* added derived-async impl ([#229](https://github.com/nartc/ngxtension-platform/issues/229)) ([debe8ee](https://github.com/nartc/ngxtension-platform/commit/debe8eeabc61570688f6d4b1c75e36c874650fec))
+* added computed-async impl ([#229](https://github.com/nartc/ngxtension-platform/issues/229)) ([debe8ee](https://github.com/nartc/ngxtension-platform/commit/debe8eeabc61570688f6d4b1c75e36c874650fec))
 * **NgxControlValueAccessor:** Add NgxControlValueAccessor ([#227](https://github.com/nartc/ngxtension-platform/issues/227)) ([7692c46](https://github.com/nartc/ngxtension-platform/commit/7692c46eb2078270da6cf0d7f4d6c98ed98f8682))
 
 
@@ -278,7 +278,7 @@
 ### Documentations
 
 * renamed documentVisibilityState to injectDocumentVisibility ([#211](https://github.com/nartc/ngxtension-platform/issues/211)) ([230cf4b](https://github.com/nartc/ngxtension-platform/commit/230cf4b1cdfe88e6ba3b02df0153ca5db6ca7ca4)), closes [#210](https://github.com/nartc/ngxtension-platform/issues/210)
-* third arg is the options-obj for derivedFrom ([#210](https://github.com/nartc/ngxtension-platform/issues/210)) ([344c3fe](https://github.com/nartc/ngxtension-platform/commit/344c3fe043087bb2d29995d4a301cb59a4de69a2))
+* third arg is the options-obj for computedFrom ([#210](https://github.com/nartc/ngxtension-platform/issues/210)) ([344c3fe](https://github.com/nartc/ngxtension-platform/commit/344c3fe043087bb2d29995d4a301cb59a4de69a2))
 
 ## [1.6.2](https://github.com/nartc/ngxtension-platform/compare/1.6.1...1.6.2) (2023-12-14)
 
@@ -372,7 +372,7 @@
 * add e-oz as a contributor for code ([#167](https://github.com/nartc/ngxtension-platform/issues/167)) ([21e2cd2](https://github.com/nartc/ngxtension-platform/commit/21e2cd2b6707cfc216d3d94a102e7816bcbaed7d))
 * add gianmarcogiummarra as a contributor for doc ([#165](https://github.com/nartc/ngxtension-platform/issues/165)) ([87d6ea4](https://github.com/nartc/ngxtension-platform/commit/87d6ea44122552d9855c77530f7e5139fad6fc54))
 * fix allcontributors file ([9cae021](https://github.com/nartc/ngxtension-platform/commit/9cae021c609604f255eec23c1ec888599df08914))
-* fix derivedFrom example with injector ([#160](https://github.com/nartc/ngxtension-platform/issues/160)) ([2b6b5b9](https://github.com/nartc/ngxtension-platform/commit/2b6b5b9c93c98b45c1ae51bfaf9efe499f16ceb9))
+* fix computedFrom example with injector ([#160](https://github.com/nartc/ngxtension-platform/issues/160)) ([2b6b5b9](https://github.com/nartc/ngxtension-platform/commit/2b6b5b9c93c98b45c1ae51bfaf9efe499f16ceb9))
 * update starlight ([2b8405b](https://github.com/nartc/ngxtension-platform/commit/2b8405bb3b0512eb718ffbe2450f582b4e568937))
 
 
@@ -470,7 +470,7 @@
 
 ### Bug Fixes
 
-* **derivedFrom:** add initialValue + throw Error in case of not sync emit ([#122](https://github.com/nartc/ngxtension-platform/issues/122)) ([285aa59](https://github.com/nartc/ngxtension-platform/commit/285aa598b99598eb07d7b237f39711c89f969b12))
+* **computedFrom:** add initialValue + throw Error in case of not sync emit ([#122](https://github.com/nartc/ngxtension-platform/issues/122)) ([285aa59](https://github.com/nartc/ngxtension-platform/commit/285aa598b99598eb07d7b237f39711c89f969b12))
 
 
 ### Documentations
@@ -774,7 +774,7 @@
 
 * **ngxtension:** init library ([5e493a8](https://github.com/nartc/ngxtension-platform/commit/5e493a842a858c654c18016a9dcf4c173db99e54))
 * **resize:** resize ([#5](https://github.com/nartc/ngxtension-platform/issues/5)) ([31bd35e](https://github.com/nartc/ngxtension-platform/commit/31bd35e95f07ba029d1a7a593348603215d5e664))
-* added injector to derivedFrom ([9f97b5b](https://github.com/nartc/ngxtension-platform/commit/9f97b5b8eff841d8d145a6d4d75d2a30204288c1))
+* added injector to computedFrom ([9f97b5b](https://github.com/nartc/ngxtension-platform/commit/9f97b5b8eff841d8d145a6d4d75d2a30204288c1))
 * **assert-injector:** add `assertInjector` ([#17](https://github.com/nartc/ngxtension-platform/issues/17)) ([e1570a6](https://github.com/nartc/ngxtension-platform/commit/e1570a678cdaad3821bbd0ab455d1b639c675986)), closes [#15](https://github.com/nartc/ngxtension-platform/issues/15)
 * **create-injection-token:** add createInjectionToken ([9d7a8ff](https://github.com/nartc/ngxtension-platform/commit/9d7a8ff3f934d72841286f2fa80ff777c323ca29))
 * **repeat:** add Repeat directive ([#19](https://github.com/nartc/ngxtension-platform/issues/19)) ([1db2f48](https://github.com/nartc/ngxtension-platform/commit/1db2f48155166aca7d6278b7f702f99ff10e53d1)), closes [#14](https://github.com/nartc/ngxtension-platform/issues/14)
@@ -794,12 +794,12 @@
 
 * add [@nartc](https://github.com/nartc) as a contributor ([4c66122](https://github.com/nartc/ngxtension-platform/commit/4c66122153919787ab9098d90b580bc4cb0ee7b6))
 * add eneajaho as a contributor for code ([#12](https://github.com/nartc/ngxtension-platform/issues/12)) ([ab046c0](https://github.com/nartc/ngxtension-platform/commit/ab046c093227618eec01ac5f194c6261a122a8ac))
-* add jsdocs comments for all functions (except `derivedFrom`) ([#24](https://github.com/nartc/ngxtension-platform/issues/24)) ([70ecb59](https://github.com/nartc/ngxtension-platform/commit/70ecb59f0c18a5f77e0956317ca909a6d58012c4)), closes [#18](https://github.com/nartc/ngxtension-platform/issues/18)
+* add jsdocs comments for all functions (except `computedFrom`) ([#24](https://github.com/nartc/ngxtension-platform/issues/24)) ([70ecb59](https://github.com/nartc/ngxtension-platform/commit/70ecb59f0c18a5f77e0956317ca909a6d58012c4)), closes [#18](https://github.com/nartc/ngxtension-platform/issues/18)
 * update README ([3f57a63](https://github.com/nartc/ngxtension-platform/commit/3f57a63c3bdea474522ab7ebcc828c4949a9e8b3)), closes [#9](https://github.com/nartc/ngxtension-platform/issues/9)
 * **repo:** add CONTRIBUTING guide ([#28](https://github.com/nartc/ngxtension-platform/issues/28)) ([82f3cce](https://github.com/nartc/ngxtension-platform/commit/82f3cce47464efada686ae22207cddf45fd216d7)), closes [#8](https://github.com/nartc/ngxtension-platform/issues/8)
 * add documentation site by astro ([#29](https://github.com/nartc/ngxtension-platform/issues/29)) ([13aee69](https://github.com/nartc/ngxtension-platform/commit/13aee698b9fb9606487a93ed28d1bf60e41496bc)), closes [#10](https://github.com/nartc/ngxtension-platform/issues/10) [#10](https://github.com/nartc/ngxtension-platform/issues/10)
 * add lastUpdated to starlight config ([7586e70](https://github.com/nartc/ngxtension-platform/commit/7586e70e4b16c2d0fad65d48075e483a9e2fd47a))
-* added derivedFrom docs ([#30](https://github.com/nartc/ngxtension-platform/issues/30)) ([765777f](https://github.com/nartc/ngxtension-platform/commit/765777ff054355652d29eb6c3258cba5d82f6e34))
+* added computedFrom docs ([#30](https://github.com/nartc/ngxtension-platform/issues/30)) ([765777f](https://github.com/nartc/ngxtension-platform/commit/765777ff054355652d29eb6c3258cba5d82f6e34))
 * dummy ([d8ff6ab](https://github.com/nartc/ngxtension-platform/commit/d8ff6ab2c344011af0c45442bbfcfa86934605b8))
 
 ## [0.1.0-beta.3](https://github.com/nartc/ngxtension-platform/compare/0.1.0-beta.2...0.1.0-beta.3) (2023-09-13)
@@ -832,7 +832,7 @@
 
 ### Documentations
 
-* add jsdocs comments for all functions (except `derivedFrom`) ([#24](https://github.com/nartc/ngxtension-platform/issues/24)) ([70ecb59](https://github.com/nartc/ngxtension-platform/commit/70ecb59f0c18a5f77e0956317ca909a6d58012c4)), closes [#18](https://github.com/nartc/ngxtension-platform/issues/18)
+* add jsdocs comments for all functions (except `computedFrom`) ([#24](https://github.com/nartc/ngxtension-platform/issues/24)) ([70ecb59](https://github.com/nartc/ngxtension-platform/commit/70ecb59f0c18a5f77e0956317ca909a6d58012c4)), closes [#18](https://github.com/nartc/ngxtension-platform/issues/18)
 * update README ([3f57a63](https://github.com/nartc/ngxtension-platform/commit/3f57a63c3bdea474522ab7ebcc828c4949a9e8b3)), closes [#9](https://github.com/nartc/ngxtension-platform/issues/9)
 
 ## [0.1.0-beta.1](https://github.com/nartc/ngxtension-platform/compare/0.1.0-beta.0...0.1.0-beta.1) (2023-09-11)
@@ -840,7 +840,7 @@
 
 ### Features
 
-* added injector to derivedFrom ([9f97b5b](https://github.com/nartc/ngxtension-platform/commit/9f97b5b8eff841d8d145a6d4d75d2a30204288c1))
+* added injector to computedFrom ([9f97b5b](https://github.com/nartc/ngxtension-platform/commit/9f97b5b8eff841d8d145a6d4d75d2a30204288c1))
 * **assert-injector:** add `assertInjector` ([#17](https://github.com/nartc/ngxtension-platform/issues/17)) ([e1570a6](https://github.com/nartc/ngxtension-platform/commit/e1570a678cdaad3821bbd0ab455d1b639c675986)), closes [#15](https://github.com/nartc/ngxtension-platform/issues/15)
 * **create-injection-token:** add createInjectionToken ([9d7a8ff](https://github.com/nartc/ngxtension-platform/commit/9d7a8ff3f934d72841286f2fa80ff777c323ca29))
 * **repeat:** add Repeat directive ([#19](https://github.com/nartc/ngxtension-platform/issues/19)) ([1db2f48](https://github.com/nartc/ngxtension-platform/commit/1db2f48155166aca7d6278b7f702f99ff10e53d1)), closes [#14](https://github.com/nartc/ngxtension-platform/issues/14)
