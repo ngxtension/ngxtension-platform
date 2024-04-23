@@ -117,6 +117,9 @@
 			"ngxtension/trackby-id-prop": [
 				"libs/ngxtension/trackby-id-prop/src/index.ts"
 			],
+			"ngxtension/inject-local-storage": [
+				"libs/ngxtension/inject-local-storage/src/index.ts"
+			],
 			"plugin": ["libs/plugin/src/index.ts"]
 		}
 	},
