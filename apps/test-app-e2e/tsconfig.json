@@ -10,7 +10,7 @@
 		"noImplicitOverride": true,
 		"noPropertyAccessFromIndexSignature": true,
 		"noImplicitReturns": true,
-		"noFallthroughCasesInSwitch": true,
+		"noFallthroughCasesInSwitch": true
 	},
-	"include": ["src/**/*.ts", "src/**/*.js", "cypress.config.ts"],
+	"include": ["src/**/*.ts", "src/**/*.js", "cypress.config.ts"]
 }

@@ -30,10 +30,6 @@
 				"libs/ngxtension/click-outside/src/index.ts"
 			],
 			"ngxtension/computed": ["libs/ngxtension/computed/src/index.ts"],
-			"ngxtension/derived-async": [
-				"libs/ngxtension/derived-async/src/index.ts"
-			],
-			"ngxtension/derived-from": ["libs/ngxtension/derived-from/src/index.ts"],
 			"ngxtension/computed-previous": [
 				"libs/ngxtension/computed-previous/src/index.ts"
 			],
@@ -60,6 +56,10 @@
 				"libs/ngxtension/create-signal/src/index.ts"
 			],
 			"ngxtension/debug": ["libs/ngxtension/debug/src/index.ts"],
+			"ngxtension/derived-async": [
+				"libs/ngxtension/derived-async/src/index.ts"
+			],
+			"ngxtension/derived-from": ["libs/ngxtension/derived-from/src/index.ts"],
 			"ngxtension/filter-array": ["libs/ngxtension/filter-array/src/index.ts"],
 			"ngxtension/filter-nil": ["libs/ngxtension/filter-nil/src/index.ts"],
 			"ngxtension/gestures": ["libs/ngxtension/gestures/src/index.ts"],
@@ -75,6 +75,9 @@
 				"libs/ngxtension/inject-is-intersecting/src/index.ts"
 			],
 			"ngxtension/inject-lazy": ["libs/ngxtension/inject-lazy/src/index.ts"],
+			"ngxtension/inject-local-storage": [
+				"libs/ngxtension/inject-local-storage/src/index.ts"
+			],
 			"ngxtension/inject-network": [
 				"libs/ngxtension/inject-network/src/index.ts"
 			],
@@ -116,9 +119,6 @@
 			],
 			"ngxtension/trackby-id-prop": [
 				"libs/ngxtension/trackby-id-prop/src/index.ts"
-			],
-			"ngxtension/inject-local-storage": [
-				"libs/ngxtension/inject-local-storage/src/index.ts"
 			],
 			"plugin": ["libs/plugin/src/index.ts"]
 		}

@@ -7,8 +7,8 @@ import {
 } from '@angular/core';
 import type { Vector2 } from '@use-gesture/vanilla';
 import {
-	injectDrag,
 	NgxDrag,
+	injectDrag,
 	provideZonelessGesture,
 	type NgxInjectDrag,
 } from 'ngxtension/gestures';
