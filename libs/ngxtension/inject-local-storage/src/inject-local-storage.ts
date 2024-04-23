@@ -1,10 +1,13 @@
 import {
+	DestroyRef,
+	InjectionToken,
 	effect,
 	inject,
-	InjectionToken,
 	signal,
+	type Injector,
 	type WritableSignal,
 } from '@angular/core';
+import { assertInjector } from 'ngxtension/assert-injector';
 
 export const NGXTENSION_LOCAL_STORAGE = new InjectionToken(
 	'NGXTENSION_LOCAL_STORAGE',
@@ -46,6 +49,11 @@ export type LocalStorageOptions<T> = {
 	 * @param value
 	 */
 	parse?: (value: string) => unknown;
+
+	/**
+	 * Injector for the Injection Context
+	 */
+	injector?: Injector;
 };
 
 function isFunction(value: unknown): value is (...args: unknown[]) => unknown {
@@ -66,48 +74,51 @@ function parseJSON(value: string): unknown {
 
 export const injectLocalStorage = <T>(
 	key: string,
-	options?: LocalStorageOptions<T>,
+	options: LocalStorageOptions<T> = {},
 ): WritableSignal<T | undefined> => {
-	const defaultValue = isFunction(options?.defaultValue)
+	const defaultValue = isFunction(options.defaultValue)
 		? options.defaultValue()
-		: options?.defaultValue;
-	const stringify = isFunction(options?.stringify)
-		? options?.stringify
+		: options.defaultValue;
+	const stringify = isFunction(options.stringify)
+		? options.stringify
 		: JSON.stringify;
-	const parse = isFunction(options?.parse) ? options?.parse : parseJSON;
+	const parse = isFunction(options.parse) ? options.parse : parseJSON;
+	const storageSync = options.storageSync ?? true;
 
-	const storageSync = options?.storageSync ?? true;
+	return assertInjector(injectLocalStorage, options.injector, () => {
+		const localStorage = inject(NGXTENSION_LOCAL_STORAGE);
+		const destroyRef = inject(DestroyRef);
 
-	const localStorage = inject(NGXTENSION_LOCAL_STORAGE);
+		const initialStoredValue = goodTry(() => localStorage.getItem(key));
+		const initialValue = initialStoredValue
+			? goodTry(() => parse(initialStoredValue) as T)
+			: defaultValue;
+		const internalSignal = signal<T | undefined>(initialValue);
 
-	const initialStoredValue = goodTry(() => localStorage.getItem(key));
-	const initialValue = initialStoredValue
-		? goodTry(() => parse(initialStoredValue) as T)
-		: defaultValue;
-	const internalSignal = signal<T | undefined>(initialValue);
-
-	effect(() => {
-		const value = internalSignal();
-		if (value === undefined) {
-			goodTry(() => localStorage.removeItem(key));
-		} else {
-			goodTry(() => localStorage.setItem(key, stringify(value)));
-		}
-	});
-
-	if (storageSync) {
-		const onStorage = (event: StorageEvent) => {
-			if (event.storageArea === localStorage && event.key === key) {
-				const newValue =
-					event.newValue !== null ? (parse(event.newValue) as T) : undefined;
-				internalSignal.set(newValue);
+		effect(() => {
+			const value = internalSignal();
+			if (value === undefined) {
+				goodTry(() => localStorage.removeItem(key));
+			} else {
+				goodTry(() => localStorage.setItem(key, stringify(value)));
 			}
-		};
-		window.addEventListener('storage', onStorage);
-		effect((onCleanup) => {
-			onCleanup(() => window.removeEventListener('storage', onStorage));
 		});
-	}
 
-	return internalSignal;
+		if (storageSync) {
+			const onStorage = (event: StorageEvent) => {
+				if (event.storageArea === localStorage && event.key === key) {
+					const newValue =
+						event.newValue !== null ? (parse(event.newValue) as T) : undefined;
+					internalSignal.set(newValue);
+				}
+			};
+
+			window.addEventListener('storage', onStorage);
+			destroyRef.onDestroy(() => {
+				window.removeEventListener('storage', onStorage);
+			});
+		}
+
+		return internalSignal;
+	});
 };
