@@ -21,20 +21,20 @@ import {
 	switchAll,
 } from 'rxjs';
 
-type ComputedAsyncBehavior = 'switch' | 'merge' | 'concat' | 'exhaust';
+type derivedAsyncBehavior = 'switch' | 'merge' | 'concat' | 'exhaust';
 
-interface ComputedAsyncOptions<T> extends CreateComputedOptions<T> {
+interface derivedAsyncOptions<T> extends CreateComputedOptions<T> {
 	injector?: Injector;
-	behavior?: ComputedAsyncBehavior;
+	behavior?: derivedAsyncBehavior;
 }
 
-type OptionsWithInitialValue<T> = { initialValue: T } & ComputedAsyncOptions<T>;
+type OptionsWithInitialValue<T> = { initialValue: T } & derivedAsyncOptions<T>;
 type OptionsWithOptionalInitialValue<T> = {
 	initialValue?: undefined;
-} & ComputedAsyncOptions<T>;
+} & derivedAsyncOptions<T>;
 type OptionsWithRequireSync<T> = {
 	requireSync: true;
-} & ComputedAsyncOptions<T>;
+} & derivedAsyncOptions<T>;
 
 type ObservableComputation<T> = (
 	previousValue?: T | undefined,
@@ -47,7 +47,7 @@ type PromiseComputation<T> = (previousValue?: T | undefined) => Promise<T> | T;
  *
  * @example
  * ```ts
- * const value = computedAsync(() =>
+ * const value = derivedAsync(() =>
  *   fetch(`https://localhost/api/people/${this.userId()}`).then(r => r.json())
  * );
  * ```
@@ -59,7 +59,7 @@ type PromiseComputation<T> = (previousValue?: T | undefined) => Promise<T> | T;
  * It can also be used with Observables:
  *
  * ```ts
- * const value = computedAsync(() =>
+ * const value = derivedAsync(() =>
  *  this.http.get(`https://localhost/api/people/${this.userId()}`)
  * );
  * ```
@@ -67,16 +67,16 @@ type PromiseComputation<T> = (previousValue?: T | undefined) => Promise<T> | T;
  * You can also pass an `initialValue` option to set the initial value of the computed value.
  *
  * ```ts
- * const userTasks = computedAsync(() =>
+ * const userTasks = derivedAsync(() =>
  *   this.http.get(`https://localhost/api/tasks?userId=${this.userId()}`),
  *   { initialValue: [] }
  * );
  * ```
  *
- * If you want to require that the observable emits synchronously when `computedAsync` subscribes, you can set the `requireSync` option to `true`.
+ * If you want to require that the observable emits synchronously when `derivedAsync` subscribes, you can set the `requireSync` option to `true`.
  *
  * ```ts
- * const userTasks = computedAsync(() =>
+ * const userTasks = derivedAsync(() =>
  *   this.http.get(`https://localhost/api/tasks?userId=${this.userId()}`).pipe(
  * 	   startWith([]),
  *   ),
@@ -96,7 +96,7 @@ type PromiseComputation<T> = (previousValue?: T | undefined) => Promise<T> | T;
  */
 
 // Base Case -> Initial Value: undefined | Require Sync: undefined  ->  T | undefined
-export function computedAsync<T>(
+export function derivedAsync<T>(
 	computation: (
 		previousValue?: T | undefined,
 	) => Promise<T> | Observable<T> | T | undefined,
@@ -107,7 +107,7 @@ export function computedAsync<T>(
  */
 
 // Initial Value: undefined  ->  T | undefined
-export function computedAsync<T>(
+export function derivedAsync<T>(
 	computation: (
 		previousValue?: T | undefined,
 	) => Observable<T> | Promise<T> | T | undefined,
@@ -115,19 +115,19 @@ export function computedAsync<T>(
 ): Signal<T | undefined>;
 
 // Initial Value: T | null  ->  T | null
-export function computedAsync<T>(
+export function derivedAsync<T>(
 	computation: PromiseComputation<T>,
-	options: { initialValue?: null } & ComputedAsyncOptions<T>,
+	options: { initialValue?: null } & derivedAsyncOptions<T>,
 ): Signal<T | null>;
 
 // Initial Value: T  ->  T
-export function computedAsync<T>(
+export function derivedAsync<T>(
 	computation: PromiseComputation<T>,
 	options: OptionsWithInitialValue<T>,
 ): Signal<T>;
 
 // Require Sync: true  ->  never
-export function computedAsync<T>(
+export function derivedAsync<T>(
 	computation: (previousValue?: T | undefined) => Promise<T>,
 	options: OptionsWithOptionalInitialValue<T> & {
 		/**
@@ -137,7 +137,7 @@ export function computedAsync<T>(
 	},
 ): never;
 
-export function computedAsync<T>(
+export function derivedAsync<T>(
 	computation: (previousValue?: T | undefined) => Promise<T>,
 	options: OptionsWithInitialValue<T> & {
 		/**
@@ -152,48 +152,48 @@ export function computedAsync<T>(
  */
 
 // Initial Value: undefined | Require Sync: false  ->  T | undefined
-export function computedAsync<T>(
+export function derivedAsync<T>(
 	computation: (previousValue?: T | undefined) => Observable<T> | T | undefined,
 	options: {
 		initialValue?: undefined;
 		requireSync?: false;
-	} & ComputedAsyncOptions<T>,
+	} & derivedAsyncOptions<T>,
 ): Signal<T | undefined>;
 
 // Initial Value: null | Require Sync: false  ->  T | null
-export function computedAsync<T>(
+export function derivedAsync<T>(
 	computation: ObservableComputation<T>,
 	options: {
 		initialValue?: null;
 		requireSync?: false;
-	} & ComputedAsyncOptions<T>,
+	} & derivedAsyncOptions<T>,
 ): Signal<T | null>;
 
 // Initial Value: undefined | Require Sync: true  ->  T
-export function computedAsync<T>(
+export function derivedAsync<T>(
 	computation: ObservableComputation<T>,
 	options: OptionsWithRequireSync<T> & { initialValue?: undefined },
 ): Signal<T>;
 
 // Initial Value: T | Require Sync: true  ->  T
-export function computedAsync<T>(
+export function derivedAsync<T>(
 	computation: ObservableComputation<T>,
 	options: OptionsWithRequireSync<T> & { initialValue: T },
 ): Signal<T>;
 
 // Initial Value: T | Require Sync: false | undefined  ->  T
-export function computedAsync<T>(
+export function derivedAsync<T>(
 	computation: ObservableComputation<T>,
 	options: OptionsWithInitialValue<T>,
 ): Signal<T>;
 
-export function computedAsync<T>(
+export function derivedAsync<T>(
 	computation: (
 		previousValue?: T | undefined,
 	) => Promise<T> | Observable<T> | T | undefined,
 	options: any = {},
 ): Signal<T | undefined> {
-	return assertInjector(computedAsync, options?.injector, () => {
+	return assertInjector(derivedAsync, options?.injector, () => {
 		const destroyRef = inject(DestroyRef);
 
 		// source$ is a Subject that will emit the new source value
@@ -302,11 +302,11 @@ export function computedAsync<T>(
 }
 
 const REQUIRE_SYNC_PROMISE_MESSAGE = `Promises cannot be used with requireSync. Pass an initialValue or set requireSync to false.`;
-const REQUIRE_SYNC_ERROR_MESSAGE = `The observable passed to computedAsync() did not emit synchronously. Pass an initialValue or set requireSync to false.`;
+const REQUIRE_SYNC_ERROR_MESSAGE = `The observable passed to derivedAsync() did not emit synchronously. Pass an initialValue or set requireSync to false.`;
 
 function createFlattenObservable<T>(
 	source: Subject<Promise<T> | Observable<T>>,
-	behavior: ComputedAsyncBehavior,
+	behavior: derivedAsyncBehavior,
 ): Observable<T> {
 	const KEY_OPERATOR_MAP = {
 		merge: mergeAll,

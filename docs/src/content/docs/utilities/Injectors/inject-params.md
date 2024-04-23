@@ -43,7 +43,7 @@ If we want to get the value for a specific param, we can pass the name of the pa
 class TestComponent {
 	userId = injectParams('id'); // returns a signal with the value of the id param
 
-	user = computedFrom(
+	user = derivedFrom(
 		[this.userId],
 		switchMap((id) => this.userService.getUser(id).pipe(startWith(null))),
 	);

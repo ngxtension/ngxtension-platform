@@ -30,12 +30,10 @@
 				"libs/ngxtension/click-outside/src/index.ts"
 			],
 			"ngxtension/computed": ["libs/ngxtension/computed/src/index.ts"],
-			"ngxtension/computed-async": [
-				"libs/ngxtension/computed-async/src/index.ts"
+			"ngxtension/derived-async": [
+				"libs/ngxtension/derived-async/src/index.ts"
 			],
-			"ngxtension/computed-from": [
-				"libs/ngxtension/computed-from/src/index.ts"
-			],
+			"ngxtension/derived-from": ["libs/ngxtension/derived-from/src/index.ts"],
 			"ngxtension/computed-previous": [
 				"libs/ngxtension/computed-previous/src/index.ts"
 			],

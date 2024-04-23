@@ -45,7 +45,7 @@ Si queremos obtener el valor de un query param específico, podemos pasar el nom
 class TestComponent {
 	searchParam = injectQueryParams('search'); // devuelve una signal con el valor del query param search
 
-	filteredUsers = computedFrom(
+	filteredUsers = derivedFrom(
 		[this.searchParam],
 		switchMap((searchQuery) =>
 			this.userService.getUsers(searchQuery).pipe(startWith([])),
