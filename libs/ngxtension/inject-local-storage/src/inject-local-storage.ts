@@ -1,9 +1,29 @@
 import { effect, signal, type WritableSignal } from '@angular/core';
 
+/**
+ * Options to override the default behavior of the local storage signal.
+ */
 export type LocalStorageOptions<T> = {
+	/**
+	 * The default value to use when the key is not present in local storage.
+	 */
 	defaultValue?: T | (() => T);
+	/**
+	 *
+	 * Determines if local storage syncs with the signal.
+	 * When true, updates in one tab reflect in others, ideal for shared-state apps.
+	 * Defaults to true.
+	 */
 	storageSync?: boolean;
+	/**
+	 * Override the default JSON.stringify function for custom serialization.
+	 * @param value
+	 */
 	stringify?: (value: unknown) => string;
+	/**
+	 * Override the default JSON.parse function for custom deserialization.
+	 * @param value
+	 */
 	parse?: (value: string) => unknown;
 };
 
