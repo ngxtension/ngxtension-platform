@@ -1,30 +1,43 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`convertDiToInjectGenerator should convert properly 1`] = `
-"  import { inject } from "@angular/core";
+"  import { inject, HostAttributeToken } from "@angular/core";
     import { Component } from '@angular/core';
     @Component({
       template: ''
     })
     export class MyComponent {
       private service = inject(MyService);
-      private service2 = inject<ElementRef<HtmlImageElement>>(ElementRef<HtmlImageElement>);
+      private readonly service2 = inject<ElementRef<HtmlImageElement>>(ElementRef<HtmlImageElement>);
+
+      constructor(
+) {
+            const type = inject<string>(new HostAttributeToken('type'), { optional: true });
+}
     }
   "
 `;
 
 exports[`convertDiToInjectGenerator should convert properly with @Inject decorator 1`] = `
-"  import { inject } from "@angular/core";
+"  import { inject, HostAttributeToken } from "@angular/core";
     import { Component, Inject } from '@angular/core';
     @Component({
       template: ''
     })
     export class MyComponent {
-      private service = inject<MyService>('my-service');
+      private type = inject<string>(new HostAttributeToken('type'));
+      private service = inject<MyService>('my-service' as any /* TODO(inject-migration): Please check if the type is correct */);
       private service4 = inject(MyService4);
-      private service5 = inject<MyService5>('my-service2', { optional: true });
+      private service5 = inject<MyService5>('my-service2' as any /* TODO(inject-migration): Please check if the type is correct */, { optional: true });
       private service2 = inject(MyService2);
-      service3 = inject(MyService3);
+      service3: MyService3;
+
+      constructor(
+) {
+            const service3 = inject(MyService3);
+
+        this.service3 = service3;
+      }
     }
 "
 `;
@@ -40,28 +53,30 @@ exports[`convertDiToInjectGenerator should convert properly with @Inject decorat
       private elRef = inject<ElementRef<HtmlImageElement>>(ElementRef<HtmlImageElement>);
       private tplRef = inject<TemplateRef<any>>(TemplateRef<any>);
       private viewContainerRef = inject(ViewContainerRef);
-      service2 = inject(MyService2);
-      private service = inject<MyService>('my-service');
-      private service4 = inject(MyService4);
-      private service5 = inject<MyService5>('my-service2', { optional: true });
-      private service6 = inject(MyService6, { self: true, optional: true });
 
       constructor(
 ) {
-        this.myService.doSomething()
+            const service2 = inject(MyService2);
+
+        myService.doSomething();
 
         this.service2.doSomethingElse();
 
-        this.service2.doSomething()
+        service2.doSomething();
 
         someList.forEach(() => {
-                    // nested scope
-                    this.myService.doSomething();
-                  })
+          // nested scope
+          myService.doSomething();
+        });
 
         // use service in a function call
-        someFunction(this.service2).test(this.myService)
+        someFunction(service2).test(myService);
       }
+
+      private service = inject<MyService>('my-service' as any /* TODO(inject-migration): Please check if the type is correct */);
+      private service4 = inject(MyService4);
+      private service5 = inject<MyService5>('my-service2' as any /* TODO(inject-migration): Please check if the type is correct */, { optional: true });
+      private service6 = inject(MyService6, { self: true, optional: true });
     }
 "
 `;
@@ -74,7 +89,7 @@ exports[`convertDiToInjectGenerator should convert properly with usage 1`] = `
     })
     export class MyComponent {
       private service = inject(MyService);
-      private service1 = inject<MyService1<string>>(MyService1<string>);
+      private readonly service1 = inject<MyService1<string>>(MyService1<string>);
 
       constructor(
 ) {
@@ -91,10 +106,10 @@ exports[`convertDiToInjectGenerator should convert properly with usage local 1`]
       template: ''
     })
     export class MyComponent {
-      private service = inject(MyService);
-
       constructor() {
-        this.service.doSomething()
+            const service = inject(MyService);
+
+        service.doSomething();
       }
     }
   "
@@ -107,18 +122,18 @@ exports[`convertDiToInjectGenerator should convert properly with usage local no 
       template: ''
     })
     export class MyComponent {
-      service = inject(MyService);
-
       constructor() {
-        this.service.doSomething()
+            const service = inject(MyService);
+
+        service.doSomething();
 
         someList.forEach(() => {
-                    // nested scope
-                    this.service.doSomething();
-                  })
+          // nested scope
+          service.doSomething();
+        });
 
         // use service in a function call
-        someFunction(this.service)
+        someFunction(service);
       }
     }
   "

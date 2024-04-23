@@ -1,15 +1,15 @@
 import {
-	Tree,
 	formatFiles,
 	getProjects,
 	logger,
 	readJson,
 	readProjectConfiguration,
+	Tree,
 	visitNotIgnoredFiles,
 } from '@nx/devkit';
 import { readFileSync } from 'node:fs';
 import { exit } from 'node:process';
-import { Node, Project } from 'ts-morph';
+import { Project, VariableDeclarationKind } from 'ts-morph';
 import { ConvertDiToInjectGeneratorSchema } from './schema';
 
 class ContentsStore {
@@ -54,6 +54,11 @@ function trackContents(
 			contentsStore.track(fullPath, fileContent);
 		}
 	}
+}
+
+function tokenIsTypeString(token: any) {
+	// example: 'my-service' or "my-service"
+	return token.includes("'") || token.includes('"');
 }
 
 export async function convertDiToInjectGenerator(
@@ -120,6 +125,16 @@ export async function convertDiToInjectGenerator(
 					.some((namedImport) => namedImport.getName() === 'inject'),
 		);
 
+		const hasHostAttributeTokenImport = sourceFile.getImportDeclaration(
+			(importDecl) =>
+				importDecl.getModuleSpecifierValue() === '@angular/core' &&
+				importDecl
+					.getNamedImports()
+					.some(
+						(namedImport) => namedImport.getName() === 'HostAttributeToken',
+					),
+		);
+
 		const classes = sourceFile.getClasses();
 
 		for (const targetClass of classes) {
@@ -131,6 +146,7 @@ export async function convertDiToInjectGenerator(
 			if (!applicableDecorator) continue;
 
 			const convertedDeps = new Set<string>();
+			let includeHostAttributeToken = false;
 
 			targetClass.getConstructors().forEach((constructor) => {
 				constructor.getParameters().forEach((param, index) => {
@@ -139,6 +155,8 @@ export async function convertDiToInjectGenerator(
 
 					let shouldUseType = false;
 					let toBeInjected = type; // default to type
+					let tokenToBeInjectedIsString = false;
+					let isAttributeToken = false;
 					const flags = [];
 
 					if (decorators.length > 0) {
@@ -148,7 +166,20 @@ export async function convertDiToInjectGenerator(
 								if (toBeInjected !== type) {
 									shouldUseType = true;
 								}
+
+								if (tokenIsTypeString(toBeInjected)) {
+									tokenToBeInjectedIsString = true;
+								}
 							}
+
+							if (decorator.name === 'Attribute') {
+								// ex: @Attribute('type') type: string
+								toBeInjected = decorator.arguments[0];
+								isAttributeToken = true;
+								includeHostAttributeToken = true;
+								shouldUseType = true;
+							}
+
 							if (decorator.name === 'Optional') {
 								flags.push('optional');
 							}
@@ -174,41 +205,68 @@ export async function convertDiToInjectGenerator(
 						injection += `<${type}>`;
 					}
 
-					targetClass.insertProperty(index, {
-						name,
-						initializer: `${injection}(${toBeInjected}${flags.length > 0 ? `, { ${flags.map((flag) => flag + ': true').join(', ')} }` : ''})`,
-						scope,
-						isReadonly,
-						leadingTrivia: '  ',
-					});
+					let initializer = '';
+
+					if (isAttributeToken) {
+						// inject(new HostAttributeToken('some-attr'));
+						initializer = `${injection}(new HostAttributeToken(${toBeInjected})${flags.length > 0 ? `, { ${flags.map((flag) => flag + ': true').join(', ')} }` : ''})`;
+					} else {
+						initializer = `${injection}(${toBeInjected}${tokenToBeInjectedIsString ? ' as any /* TODO(inject-migration): Please check if the type is correct */' : ''}${flags.length > 0 ? `, { ${flags.map((flag) => flag + ': true').join(', ')} }` : ''})`;
+					}
+
+					if (!scope) {
+						// create the variable inside the constructor instead of creating it as a class property
+						constructor.insertVariableStatement(0, {
+							declarationKind: VariableDeclarationKind.Const,
+							declarations: [{ name, initializer }],
+						});
+					} else {
+						targetClass.insertProperty(index, {
+							name,
+							initializer,
+							scope,
+							isReadonly:
+								isReadonly || options.includeReadonlyByDefault || false,
+							leadingTrivia: '  ',
+						});
+					}
 
 					convertedDeps.add(name);
 
 					// check if service was used inside the constructor without 'this.' prefix
 					// if so, add 'this.' prefix to the service
-					constructor.getStatements().forEach((statement) => {
-						if (Node.isExpressionStatement(statement)) {
-							const expression = statement.getExpression();
-							if (Node.isCallExpression(expression)) {
-								const expressionText = expression.getText();
-								if (
-									expressionText.includes(name.toString()) &&
-									!expressionText.includes(`this.${name.toString()}`)
-								) {
-									const newExpression = expressionText.replace(
-										name.toString(),
-										`this.${name}`,
-									);
-									statement.replaceWithText(newExpression);
-								}
-							}
-						}
-					});
+
+					// THIS IS NOT NEEDED as we don't convert the service to a class property
+					// Leaving it here as it may be used in the future in other migrations
+					// 	constructor.getStatements().forEach((statement) => {
+					// 		if (Node.isExpressionStatement(statement)) {
+					// 			const expression = statement.getExpression();
+					// 			if (Node.isCallExpression(expression)) {
+					// 				const expressionText = expression.getText();
+					// 				if (
+					// 					expressionText.includes(name.toString()) &&
+					// 					!expressionText.includes(`this.${name.toString()}`)
+					// 				) {
+					// 					const newExpression = expressionText.replace(
+					// 						name.toString(),
+					// 						`this.${name}`,
+					// 					);
+					// 					statement.replaceWithText(newExpression);
+					// 				}
+					// 			}
+					// 		}
+					// 	});
 				});
 
 				if (convertedDeps.size > 0 && !hasInjectImport) {
+					const namedImports = ['inject'];
+
+					if (includeHostAttributeToken) {
+						namedImports.push('HostAttributeToken');
+					}
+
 					sourceFile.insertImportDeclaration(0, {
-						namedImports: ['inject'],
+						namedImports,
 						moduleSpecifier: '@angular/core',
 						leadingTrivia: '  ',
 					});

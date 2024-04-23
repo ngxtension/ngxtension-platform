@@ -25,7 +25,8 @@ const filesMap = {
     export class MyComponent {
       constructor(
         private service: MyService,
-        private service2: ElementRef<HtmlImageElement>
+        private readonly service2: ElementRef<HtmlImageElement>,
+        @Optional() @Attribute('type') type: string,
       ) {}
     }
   `,
@@ -37,7 +38,7 @@ const filesMap = {
     export class MyComponent {
       constructor(
         private service: MyService
-        private service1: MyService1<string>
+        private readonly service1: MyService1<string>
       ) {
         this.service.doSomething();
       }
@@ -49,7 +50,7 @@ const filesMap = {
       template: ''
     })
     export class MyComponent {
-      constructor(private service: MyService) {
+      constructor(service: MyService) {
         service.doSomething();
       }
     }
@@ -89,13 +90,18 @@ const filesMap = {
       template: ''
     })
     export class MyComponent {
+      service3: MyService3;
+
       constructor(
+        @Attribute('type') private type: string,
         @Inject('my-service') private service: MyService,
         @Inject(MyService4) private service4: MyService4,
         @Optional() @Inject('my-service2') private service5: MyService5,
         private service2: MyService2,
         service3: MyService3
-      ) {}
+      ) {
+        this.service3 = service3;
+      }
     }
 `,
 	componentWithDepAndInjectAndOptions: `
