@@ -30,6 +30,7 @@ export class MyCmp {
 `,
 	component: `
 import { Component, Output, EventEmitter } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   template: \` \`
@@ -38,7 +39,14 @@ export class MyCmp {
   someObservable$ = of('test');
 
   @Output() outputWithoutType = new EventEmitter();
+
+  @Output() private outputWithPrivateScope = new EventEmitter();
+  @Output() protected outputWithProtectedScope = new EventEmitter();
+  @Output() public outputWithPublicScope = new EventEmitter();
+
   @Output() normalOutput = new EventEmitter<string>();
+
+  @Output() someOutput: EventEmitter<DataInterface> = new EventEmitter();
 
   @Output() normalOutput2: EventEmitter<string> = new EventEmitter<string>();
 
@@ -66,7 +74,7 @@ export class MyCmp {
 `,
 } as const;
 
-fdescribe('convertOutputsGenerator', () => {
+describe('convertOutputsGenerator', () => {
 	let tree: Tree;
 	const options: ConvertOutputsGeneratorSchema = {
 		path: 'libs/my-file.ts',

@@ -1,10 +1,10 @@
 import {
-	Tree,
 	formatFiles,
 	getProjects,
 	logger,
 	readJson,
 	readProjectConfiguration,
+	Tree,
 	visitNotIgnoredFiles,
 } from '@nx/devkit';
 import { readFileSync } from 'node:fs';
@@ -14,6 +14,7 @@ import {
 	Decorator,
 	Node,
 	Project,
+	Scope,
 	WriterFunction,
 } from 'ts-morph';
 import { ConvertOutputsGeneratorSchema } from './schema';
@@ -63,6 +64,7 @@ function trackContents(
 
 function getOutputInitializer(
 	propertyName: string,
+	currentType: string | WriterFunction,
 	decorator: Decorator,
 	initializer: string,
 ): {
@@ -122,6 +124,13 @@ function getOutputInitializer(
 			}
 		}
 
+		if (typeof currentType === 'string') {
+			const genericTypeOnType = currentType.match(/EventEmitter<(.+)>/);
+			if (genericTypeOnType?.length) {
+				type = genericTypeOnType[1];
+			}
+		}
+
 		return {
 			writerFn: (writer: CodeBlockWriter) => {
 				writer.write(`output`);
@@ -132,6 +141,12 @@ function getOutputInitializer(
 			needsOutputFromObservableImport: false,
 		};
 	}
+}
+
+function stringIsUsedMoreThanOnce(key: string, fileFullText: string): boolean {
+	const regExp = new RegExp(key, 'g');
+	const matches = fileFullText.match(regExp);
+	return matches && matches.length > 1;
 }
 
 export async function convertOutputsGenerator(
@@ -215,10 +230,19 @@ export async function convertOutputsGenerator(
 
 		// NOTE: only add hasOutputImport import if we don't have it and we find the first Output decorator
 		if (!hasOutputImport) {
-			sourceFile.addImportDeclaration({
-				namedImports: ['output'],
-				moduleSpecifier: '@angular/core',
-			});
+			const angularCoreImports = sourceFile.getImportDeclaration(
+				(importDecl) => {
+					return importDecl.getModuleSpecifierValue() === '@angular/core';
+				},
+			);
+			if (angularCoreImports) {
+				angularCoreImports.addNamedImport('output');
+			} else {
+				sourceFile.addImportDeclaration({
+					namedImports: ['output'],
+					moduleSpecifier: '@angular/core',
+				});
+			}
 		}
 
 		const classes = sourceFile.getClasses();
@@ -242,6 +266,7 @@ export async function convertOutputsGenerator(
 							isReadonly,
 							docs,
 							scope,
+							type,
 							hasOverrideKeyword,
 							initializer,
 						} = node.getStructure();
@@ -253,6 +278,7 @@ export async function convertOutputsGenerator(
 							writerFn,
 						} = getOutputInitializer(
 							name,
+							type,
 							outputDecorator,
 							initializer as string,
 						);
@@ -261,10 +287,25 @@ export async function convertOutputsGenerator(
 							needsOutputFromObservableImport &&
 							!outputFromObservableImportAdded
 						) {
-							sourceFile.addImportDeclaration({
-								namedImports: ['outputFromObservable'],
-								moduleSpecifier: '@angular/core/rxjs-interop',
-							});
+							const angularRxjsInteropImports = sourceFile.getImportDeclaration(
+								(importDecl) => {
+									return (
+										importDecl.getModuleSpecifierValue() ===
+										'@angular/core/rxjs-interop'
+									);
+								},
+							);
+							if (angularRxjsInteropImports) {
+								angularRxjsInteropImports.addNamedImport(
+									'outputFromObservable',
+								);
+							} else {
+								sourceFile.addImportDeclaration({
+									namedImports: ['outputFromObservable'],
+									moduleSpecifier: '@angular/core/rxjs-interop',
+								});
+							}
+
 							outputFromObservableImportAdded = true;
 						}
 
@@ -272,7 +313,8 @@ export async function convertOutputsGenerator(
 							name: outputName ?? name,
 							isReadonly,
 							docs,
-							scope,
+							// we want to keep the scope as protected if it was private in order to avoid breaking changes
+							scope: scope === Scope.Private ? Scope.Protected : scope,
 							hasOverrideKeyword,
 							initializer: writerFn,
 						});
@@ -296,6 +338,48 @@ export async function convertOutputsGenerator(
 					}
 				}
 			});
+		}
+
+		// if @Output is not used anymore, remove the import
+		const hasOutputDecoratorUsage = sourceFile
+			.getFullText()
+			.includes('@Output');
+		if (!hasOutputDecoratorUsage) {
+			const outputImport = sourceFile.getImportDeclaration(
+				(importDecl) =>
+					importDecl.getModuleSpecifierValue() === '@angular/core' &&
+					importDecl
+						.getNamedImports()
+						.some((namedImport) => namedImport.getName() === 'Output'),
+			);
+
+			if (outputImport) {
+				const classToRemove = outputImport
+					.getNamedImports()
+					.find((namedImport) => namedImport.getName() === 'Output');
+				classToRemove.remove();
+			}
+		}
+
+		// // if EventEmitter is not used anymore, remove the import
+		const eventEmitterIsUsedMoreThanOnce = stringIsUsedMoreThanOnce(
+			'EventEmitter',
+			sourceFile.getFullText(),
+		);
+		if (!eventEmitterIsUsedMoreThanOnce) {
+			const eventEmitterImport = sourceFile.getImportDeclaration(
+				(importDecl) =>
+					importDecl.getModuleSpecifierValue() === '@angular/core' &&
+					importDecl
+						.getNamedImports()
+						.some((namedImport) => namedImport.getName() === 'EventEmitter'),
+			);
+			if (eventEmitterImport) {
+				const classToRemove = eventEmitterImport
+					.getNamedImports()
+					.find((namedImport) => namedImport.getName() === 'EventEmitter');
+				classToRemove.remove();
+			}
 		}
 
 		tree.write(sourcePath, sourceFile.getFullText());
