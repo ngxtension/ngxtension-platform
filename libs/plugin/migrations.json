@@ -20,7 +20,7 @@
 		"rename-computed": {
 			"version": "2.3.0",
 			"description": "Rename 'computedFrom' and 'computedAsync' to 'derivedFrom' and 'derivedAsync'",
-			"implementation": "./src/migrations/rename-computeds/rename-computeds/compat"
+			"implementation": "./src/migrations/rename-computeds/compat"
 		}
 	}
 }
