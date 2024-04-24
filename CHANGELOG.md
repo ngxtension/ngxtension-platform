@@ -1,5 +1,14 @@
 
 
+## [2.3.1](https://github.com/ngxtension/ngxtension-platform/compare/2.3.0...2.3.1) (2024-04-24)
+
+
+### Bug Fixes
+
+* ng update wasn't working because of broken path ([#345](https://github.com/ngxtension/ngxtension-platform/issues/345)) ([f3225a0](https://github.com/ngxtension/ngxtension-platform/commit/f3225a0d14fb1b71ff38e20aaa16a77b483fd95c))
+* reintroduce computedAsync which reexports and shows a deprecation notice ([#342](https://github.com/ngxtension/ngxtension-platform/issues/342)) ([3de9e09](https://github.com/ngxtension/ngxtension-platform/commit/3de9e093a421ae4efccf9c86d6c8b08b3e0292e8))
+* update docs for inject migration ([#340](https://github.com/ngxtension/ngxtension-platform/issues/340)) ([f3670b9](https://github.com/ngxtension/ngxtension-platform/commit/f3670b97ac465dbb587cbebd09cc9ea9339aac8b))
+
 ## [2.3.0](https://github.com/nartc/ngxtension-platform/compare/2.2.1...2.3.0) (2024-04-23)
 
 
