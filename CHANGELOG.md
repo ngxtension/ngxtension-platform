@@ -1,5 +1,17 @@
 
 
+## [3.0.0](https://github.com/ngxtension/ngxtension-platform/compare/2.3.1...3.0.0) (2024-04-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* computedFrom and computedAsync are removed, ng update ngxtension should update all usages to use derivedFrom and derivedAsync
+
+### Features
+
+* enhancements for inject() migration ([#344](https://github.com/ngxtension/ngxtension-platform/issues/344)) ([1d16488](https://github.com/ngxtension/ngxtension-platform/commit/1d16488f8870e62b9c18d487d378a93399053b92))
+* remove deprecated computedFrom and computedAsync  ([#343](https://github.com/ngxtension/ngxtension-platform/issues/343)) ([5f18b72](https://github.com/ngxtension/ngxtension-platform/commit/5f18b724b6f43968b4127f3e6df0636464560818))
+
 ## [2.3.1](https://github.com/ngxtension/ngxtension-platform/compare/2.3.0...2.3.1) (2024-04-24)
 
 
