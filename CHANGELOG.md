@@ -1,5 +1,12 @@
 
 
+## [3.0.1](https://github.com/ngxtension/ngxtension-platform/compare/3.0.0...3.0.1) (2024-04-24)
+
+
+### Bug Fixes
+
+* typo in migrations.json file ([b42cd21](https://github.com/ngxtension/ngxtension-platform/commit/b42cd21138165baedd9274889da4cca95ffbf633))
+
 ## [3.0.0](https://github.com/ngxtension/ngxtension-platform/compare/2.3.1...3.0.0) (2024-04-24)
 
 
