@@ -18,7 +18,7 @@ const filesMap = {
     export class MyComponent {}
   `,
 	componentWithDep: `
-    import { Component } from '@angular/core';
+    import { Component, Optional, Attribute, ElementRef } from '@angular/core';
     @Component({
       template: ''
     })
@@ -85,7 +85,7 @@ const filesMap = {
       }
     }`,
 	componentWithDepAndInject: `
-    import { Component, Inject } from '@angular/core';
+    import { Component, Inject, Attribute, Optional } from '@angular/core';
     @Component({
       template: ''
     })
@@ -105,7 +105,7 @@ const filesMap = {
     }
 `,
 	componentWithDepAndInjectAndOptions: `
-    import { Component, Inject } from '@angular/core';
+    import { Component, Inject, Optional, Self } from '@angular/core';
     @Component({
       template: ''
     })

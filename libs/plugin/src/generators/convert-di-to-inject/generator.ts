@@ -125,16 +125,6 @@ export async function convertDiToInjectGenerator(
 					.some((namedImport) => namedImport.getName() === 'inject'),
 		);
 
-		const hasHostAttributeTokenImport = sourceFile.getImportDeclaration(
-			(importDecl) =>
-				importDecl.getModuleSpecifierValue() === '@angular/core' &&
-				importDecl
-					.getNamedImports()
-					.some(
-						(namedImport) => namedImport.getName() === 'HostAttributeToken',
-					),
-		);
-
 		const classes = sourceFile.getClasses();
 
 		for (const targetClass of classes) {
@@ -265,11 +255,20 @@ export async function convertDiToInjectGenerator(
 						namedImports.push('HostAttributeToken');
 					}
 
-					sourceFile.insertImportDeclaration(0, {
-						namedImports,
-						moduleSpecifier: '@angular/core',
-						leadingTrivia: '  ',
-					});
+					const angularCoreImports = sourceFile.getImportDeclaration(
+						(importDecl) => {
+							return importDecl.getModuleSpecifierValue() === '@angular/core';
+						},
+					);
+					if (angularCoreImports) {
+						angularCoreImports.addNamedImports(namedImports);
+					} else {
+						sourceFile.insertImportDeclaration(0, {
+							namedImports,
+							moduleSpecifier: '@angular/core',
+							leadingTrivia: '  ',
+						});
+					}
 				}
 
 				constructor.getParameters().forEach((param) => {
@@ -283,6 +282,36 @@ export async function convertDiToInjectGenerator(
 					constructor.getBodyText().trim() === ''
 				) {
 					constructor.remove();
+				}
+
+				for (const decorator of [
+					'Inject',
+					'Attribute',
+					'Optional',
+					'Self',
+					'SkipSelf',
+					'Host',
+				]) {
+					// if @${Decorator} is not used anymore, remove the import
+					const hasDecoratorUsage = sourceFile
+						.getFullText()
+						.includes(`@${decorator}`);
+					if (!hasDecoratorUsage) {
+						const foundImport = sourceFile.getImportDeclaration(
+							(importDecl) =>
+								importDecl.getModuleSpecifierValue() === '@angular/core' &&
+								importDecl
+									.getNamedImports()
+									.some((namedImport) => namedImport.getName() === decorator),
+						);
+
+						if (foundImport) {
+							const classToRemove = foundImport
+								.getNamedImports()
+								.find((namedImport) => namedImport.getName() === decorator);
+							classToRemove.remove();
+						}
+					}
 				}
 			});
 		}

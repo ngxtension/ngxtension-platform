@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`convertDiToInjectGenerator should convert properly 1`] = `
-"  import { inject, HostAttributeToken } from "@angular/core";
-    import { Component } from '@angular/core';
+"
+    import { Component, Optional, Attribute, ElementRef, inject, HostAttributeToken } from '@angular/core';
     @Component({
       template: ''
     })
@@ -19,8 +19,8 @@ exports[`convertDiToInjectGenerator should convert properly 1`] = `
 `;
 
 exports[`convertDiToInjectGenerator should convert properly with @Inject decorator 1`] = `
-"  import { inject, HostAttributeToken } from "@angular/core";
-    import { Component, Inject } from '@angular/core';
+"
+    import { Component, Inject, Attribute, Optional, inject, HostAttributeToken } from '@angular/core';
     @Component({
       template: ''
     })
@@ -43,8 +43,8 @@ exports[`convertDiToInjectGenerator should convert properly with @Inject decorat
 `;
 
 exports[`convertDiToInjectGenerator should convert properly with @Inject decorator and options 1`] = `
-"  import { inject } from "@angular/core";
-    import { Component, Inject } from '@angular/core';
+"
+    import { Component, Inject, Optional, Self, inject } from '@angular/core';
     @Component({
       template: ''
     })
@@ -82,8 +82,8 @@ exports[`convertDiToInjectGenerator should convert properly with @Inject decorat
 `;
 
 exports[`convertDiToInjectGenerator should convert properly with usage 1`] = `
-"  import { inject } from "@angular/core";
-    import { Component } from '@angular/core';
+"
+    import { Component, inject } from '@angular/core';
     @Component({
       template: ''
     })
@@ -100,8 +100,8 @@ exports[`convertDiToInjectGenerator should convert properly with usage 1`] = `
 `;
 
 exports[`convertDiToInjectGenerator should convert properly with usage local 1`] = `
-"  import { inject } from "@angular/core";
-    import { Component } from '@angular/core';
+"
+    import { Component, inject } from '@angular/core';
     @Component({
       template: ''
     })
@@ -116,8 +116,8 @@ exports[`convertDiToInjectGenerator should convert properly with usage local 1`]
 `;
 
 exports[`convertDiToInjectGenerator should convert properly with usage local no scope 1`] = `
-"  import { inject } from "@angular/core";
-    import { Component } from '@angular/core';
+"
+    import { Component, inject } from '@angular/core';
     @Component({
       template: ''
     })
