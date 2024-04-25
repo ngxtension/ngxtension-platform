@@ -23,6 +23,11 @@
 		"@use-gesture/vanilla": "^10.0.0",
 		"rxjs": "^6.0.0 || ^7.0.0"
 	},
+	"peerDependenciesMeta": {
+		"@use-gesture/vanilla": {
+			"optional": true
+		}
+	},
 	"dependencies": {
 		"@nx/devkit": "^17.0.0",
 		"nx": "^17.0.0",
