@@ -2,7 +2,7 @@
 
 exports[`convertDiToInjectGenerator should convert properly 1`] = `
 "
-    import { Component, Optional, Attribute, ElementRef, inject, HostAttributeToken } from '@angular/core';
+    import { Component, ElementRef, inject, HostAttributeToken } from '@angular/core';
     @Component({
       template: ''
     })
@@ -20,7 +20,7 @@ exports[`convertDiToInjectGenerator should convert properly 1`] = `
 
 exports[`convertDiToInjectGenerator should convert properly with @Inject decorator 1`] = `
 "
-    import { Component, Inject, Attribute, Optional, inject, HostAttributeToken } from '@angular/core';
+    import { Component, inject, HostAttributeToken } from '@angular/core';
     @Component({
       template: ''
     })
@@ -29,6 +29,7 @@ exports[`convertDiToInjectGenerator should convert properly with @Inject decorat
       private service = inject<MyService>('my-service' as any /* TODO(inject-migration): Please check if the type is correct */);
       private service4 = inject(MyService4);
       private service5 = inject<MyService5>('my-service2' as any /* TODO(inject-migration): Please check if the type is correct */, { optional: true });
+      private someToken = inject(SOME_TOKEN);
       private service2 = inject(MyService2);
       service3: MyService3;
 
@@ -44,7 +45,7 @@ exports[`convertDiToInjectGenerator should convert properly with @Inject decorat
 
 exports[`convertDiToInjectGenerator should convert properly with @Inject decorator and options 1`] = `
 "
-    import { Component, Inject, Optional, Self, inject } from '@angular/core';
+    import { Component, inject } from '@angular/core';
     @Component({
       template: ''
     })

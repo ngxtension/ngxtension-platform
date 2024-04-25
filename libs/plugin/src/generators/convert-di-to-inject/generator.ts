@@ -189,9 +189,9 @@ export async function convertDiToInjectGenerator(
 
 					let injection = 'inject';
 
-					const typeHasGenerics = type.toString().includes('<');
+					const typeHasGenerics = type?.toString().includes('<') ?? false;
 
-					if (shouldUseType || typeHasGenerics) {
+					if (type && (shouldUseType || typeHasGenerics)) {
 						injection += `<${type}>`;
 					}
 

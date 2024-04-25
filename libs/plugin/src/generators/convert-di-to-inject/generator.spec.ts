@@ -97,6 +97,7 @@ const filesMap = {
         @Inject('my-service') private service: MyService,
         @Inject(MyService4) private service4: MyService4,
         @Optional() @Inject('my-service2') private service5: MyService5,
+        @Inject(SOME_TOKEN) private someToken,
         private service2: MyService2,
         service3: MyService3
       ) {
