@@ -2,8 +2,7 @@
 
 exports[`convertSignalInputsGenerator should convert properly 1`] = `
 "
-import { Component, Input } from '@angular/core';
-import { input } from "@angular/core";
+import { Component, Input, input } from '@angular/core';
 
 @Component({
   
@@ -139,8 +138,7 @@ export class RequestInfoComponent implements OnInit {
 
 exports[`convertSignalInputsGenerator should convert properly for templateUrl 1`] = `
 "
-import { Component, Input } from '@angular/core';
-import { input } from "@angular/core";
+import { Component, Input, input } from '@angular/core';
 
 @Component({
   templateUrl: './my-file.html'
