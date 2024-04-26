@@ -15,9 +15,11 @@ import {
 	CallExpression,
 	CodeBlockWriter,
 	Decorator,
+	ImportDeclaration,
 	Node,
 	Project,
 	PropertyDeclaration,
+	SourceFile,
 	SyntaxKind,
 	WriterFunction,
 } from 'ts-morph';
@@ -56,9 +58,6 @@ function trackContents(
 			!fileContent.includes('@Component') &&
 			!fileContent.includes('@Directive')
 		) {
-			logger.error(
-				`[ngxtension] "${fullPath}" is not a Component nor a Directive`,
-			);
 			return;
 		}
 
@@ -266,12 +265,18 @@ export async function convertSignalInputsGenerator(
 					.some((namedImport) => namedImport.getName() === 'input'),
 		);
 
+		const angularCoreImports = getAngularCoreImports(sourceFile);
+
 		// NOTE: only add input import if we don't have it and we find the first Input decorator
 		if (!hasSignalInputImport) {
-			sourceFile.addImportDeclaration({
-				namedImports: ['input'],
-				moduleSpecifier: '@angular/core',
-			});
+			if (angularCoreImports) {
+				angularCoreImports.addNamedImport('input');
+			} else {
+				sourceFile.addImportDeclaration({
+					namedImports: ['input'],
+					moduleSpecifier: '@angular/core',
+				});
+			}
 		}
 
 		const classes = sourceFile.getClasses();
@@ -433,6 +438,25 @@ export async function convertSignalInputsGenerator(
 			}
 		}
 
+		// if @Input is not used anymore, remove the import
+		const hasInputDecoratorUsage = sourceFile.getFullText().includes('@Input');
+		if (!hasInputDecoratorUsage) {
+			const inputImport = sourceFile.getImportDeclaration(
+				(importDecl) =>
+					importDecl.getModuleSpecifierValue() === '@angular/core' &&
+					importDecl
+						.getNamedImports()
+						.some((namedImport) => namedImport.getName() === 'Input'),
+			);
+
+			if (inputImport) {
+				const classToRemove = inputImport
+					.getNamedImports()
+					.find((namedImport) => namedImport.getName() === 'Input');
+				classToRemove.remove();
+			}
+		}
+
 		tree.write(sourcePath, sourceFile.getFullText());
 	}
 
@@ -454,6 +478,12 @@ export async function convertSignalInputsGenerator(
 [ngxtension] Conversion completed. Please check the content and run your formatter as needed.
 `,
 	);
+}
+
+function getAngularCoreImports(sourceFile: SourceFile): ImportDeclaration {
+	return sourceFile.getImportDeclaration((importDecl) => {
+		return importDecl.getModuleSpecifierValue() === '@angular/core';
+	});
 }
 
 export default convertSignalInputsGenerator;

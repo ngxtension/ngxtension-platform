@@ -45,6 +45,14 @@ import { Component } from '@angular/core';
 @Component({})
 export class MyCmp {}
 `,
+	shouldRemoveOldImportAndAppendNewOne: `
+import { Component, Input } from '@angular/core';
+
+@Component({})
+export class MyCmp {
+  @Input() hello: string;
+}
+`,
 	component: `
 import { Component, Input } from '@angular/core';
 
@@ -181,7 +189,7 @@ export class RequestInfoComponent implements OnInit {
   }
 }`,
 	issue290: `
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({})
 export class MyCmp {
@@ -242,6 +250,14 @@ describe('convertSignalInputsGenerator', () => {
 
 	it('should convert properly for templateUrl', async () => {
 		const readContent = setup('componentWithTemplateUrl');
+		await convertSignalInputsGenerator(tree, options);
+		const [updated, , updatedHtml] = readContent();
+		expect(updated).toMatchSnapshot();
+		expect(updatedHtml).toMatchSnapshot();
+	});
+
+	it('should remove old import and append new one', async () => {
+		const readContent = setup('shouldRemoveOldImportAndAppendNewOne');
 		await convertSignalInputsGenerator(tree, options);
 		const [updated, , updatedHtml] = readContent();
 		expect(updated).toMatchSnapshot();

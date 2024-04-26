@@ -229,3 +229,17 @@ exports[`convertSignalInputsGenerator should convert properly for templateUrl 2`
 <p>{{ data().normalInput }}</p>
 "
 `;
+
+exports[`convertSignalInputsGenerator should remove old import and append new one 1`] = `
+"
+import { Component, input } from '@angular/core';
+
+@Component({})
+export class MyCmp {
+  hello = input<string>();
+;
+}
+"
+`;
+
+exports[`convertSignalInputsGenerator should remove old import and append new one 2`] = `undefined`;
