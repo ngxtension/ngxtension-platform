@@ -1,5 +1,17 @@
 
 
+## [3.1.1](https://github.com/ngxtension/ngxtension-platform/compare/3.1.0...3.1.1) (2024-05-01)
+
+
+### Bug Fixes
+
+* fix forgotten node ([#358](https://github.com/ngxtension/ngxtension-platform/issues/358)) ([9954cf8](https://github.com/ngxtension/ngxtension-platform/commit/9954cf8514ae1e3900e22650f11da18638784e9b))
+
+
+### Documentations
+
+* update homepage ([#357](https://github.com/ngxtension/ngxtension-platform/issues/357)) ([fb36f8b](https://github.com/ngxtension/ngxtension-platform/commit/fb36f8b7e39341f59454b3a6d1b7059ebb4c65b0))
+
 ## [3.1.0](https://github.com/ngxtension/ngxtension-platform/compare/3.0.1...3.1.0) (2024-05-01)
 
 
