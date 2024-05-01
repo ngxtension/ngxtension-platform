@@ -8,13 +8,13 @@ import {
 	visitAll,
 } from '@angular-eslint/bundled-angular-compiler';
 import {
+	Tree,
 	formatFiles,
 	getProjects,
 	joinPathFragments,
 	logger,
 	readJson,
 	readProjectConfiguration,
-	Tree,
 	visitNotIgnoredFiles,
 } from '@nx/devkit';
 import { readFileSync } from 'node:fs';
