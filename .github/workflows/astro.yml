@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'docs/**'
+      - '.github/workflows/astro.yml'
 
 jobs:
   build-docs:
