@@ -9,37 +9,13 @@ import {
 } from '@nx/devkit';
 import { readFileSync } from 'node:fs';
 import { exit } from 'node:process';
-import {
-	CodeBlockWriter,
-	Decorator,
-	Node,
-	Project,
-	WriterFunction,
-} from 'ts-morph';
+import { CodeBlockWriter, Decorator, Node, WriterFunction } from 'ts-morph';
+import { ContentsStore } from '../shared-utils/contents-store';
 import {
 	getAngularCoreImports,
 	migrateSignalsInClassOrDecorator,
 } from '../shared-utils/migrate-signals-in-ts';
 import { ConvertContentQueriesGeneratorSchema } from './schema';
-
-class ContentsStore {
-	private _project: Project = null!;
-
-	collection: Array<{ path: string; content: string }> = [];
-
-	get project() {
-		if (!this._project) {
-			this._project = new Project({ useInMemoryFileSystem: true });
-		}
-
-		return this._project;
-	}
-
-	track(path: string, content: string) {
-		this.collection.push({ path, content });
-		this.project.createSourceFile(path, content, { overwrite: true });
-	}
-}
 
 const CONTENT_QUERIES = [
 	'ContentChild',

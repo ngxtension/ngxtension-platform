@@ -16,37 +16,17 @@ import {
 	CodeBlockWriter,
 	Decorator,
 	Node,
-	Project,
 	PropertyDeclaration,
 	SyntaxKind,
 	WriterFunction,
 } from 'ts-morph';
+import { ContentsStore } from '../shared-utils/contents-store';
 import { migrateTemplateVariablesToSignals } from '../shared-utils/migrate-signals-in-template';
 import {
 	getAngularCoreImports,
 	getStartLineInfo,
 } from '../shared-utils/migrate-signals-in-ts';
 import { ConvertSignalInputsGeneratorSchema } from './schema';
-
-class ContentsStore {
-	private _project: Project = null!;
-
-	collection: Array<{ path: string; content: string }> = [];
-	withTransforms = new Set<string>();
-
-	get project() {
-		if (!this._project) {
-			this._project = new Project({ useInMemoryFileSystem: true });
-		}
-
-		return this._project;
-	}
-
-	track(path: string, content: string) {
-		this.collection.push({ path, content });
-		this.project.createSourceFile(path, content, { overwrite: true });
-	}
-}
 
 function trackContents(
 	tree: Tree,

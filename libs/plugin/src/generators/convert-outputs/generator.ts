@@ -13,30 +13,11 @@ import {
 	CodeBlockWriter,
 	Decorator,
 	Node,
-	Project,
 	Scope,
 	WriterFunction,
 } from 'ts-morph';
+import { ContentsStore } from '../shared-utils/contents-store';
 import { ConvertOutputsGeneratorSchema } from './schema';
-
-class ContentsStore {
-	private _project: Project = null!;
-
-	collection: Array<{ path: string; content: string }> = [];
-
-	get project() {
-		if (!this._project) {
-			this._project = new Project({ useInMemoryFileSystem: true });
-		}
-
-		return this._project;
-	}
-
-	track(path: string, content: string) {
-		this.collection.push({ path, content });
-		this.project.createSourceFile(path, content, { overwrite: true });
-	}
-}
 
 function trackContents(
 	tree: Tree,
