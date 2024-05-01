@@ -5,7 +5,7 @@ exports[`convertSignalInputsGenerator should convert properly 1`] = `
 import { Component, Input, input } from '@angular/core';
 
 @Component({
-  
+
       template: \`
     <div>{{ inputWithoutType() }}</div>
 
