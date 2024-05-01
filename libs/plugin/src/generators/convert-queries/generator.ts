@@ -262,6 +262,9 @@ export async function convertQueriesGenerator(
 							if (name) {
 								convertedQueries.add({ name, type: query });
 							}
+
+							// After the first query is converted, break the loop to avoid checking the same node again
+							break;
 						}
 					}
 				}
