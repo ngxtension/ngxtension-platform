@@ -41,9 +41,7 @@ import {
 export class AppComponent {
 	@ContentChild('my-content-child')
 	myContentChild: ElementRef<HTMLImageElement>;
-	@ContentChildren('my-content-children') myContentChildren: QueryList<
-		ElementRef<HTMLImageElement>
-	>;
+	@ContentChildren('my-content-children') myContentChildren: QueryList<ElementRef<HTMLImageElement>>;
 	@ViewChild('my-view-child') myViewChild: ElementRef<HTMLImageElement>;
 	@ViewChildren('my-view-children') myViewChildren: QueryList<
 		ElementRef<HTMLImageElement>
