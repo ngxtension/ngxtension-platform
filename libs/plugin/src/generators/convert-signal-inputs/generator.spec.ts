@@ -24,6 +24,12 @@ const template = `<div>{{ inputWithoutType }}</div>
   </ng-container>
 </ng-container>
 
+<div>
+  @for (item of normalInput; track item.id) {
+     <app-test [normalInput]="item.name" />
+  }
+</div>
+
 <test [normalInput]="normalInput" />
 <test-normalInput />
 <normalInput />
@@ -31,6 +37,10 @@ const template = `<div>{{ inputWithoutType }}</div>
 
 <a normalInput [routerLink]="['test-normalInput', '/normalInput' , normalInput, 'normalInput']">
  normalInput - {{ normalInput }}
+ {{ normalInput }}  normalInput
+ {{ 'normalInput' }} - normalInput
+ {{ normalInput + 'normalInput' }} - normalInput
+ <span>{{ 'normalInput' + normalInput }}</span>
 </a>
 
 <button (click)="normalInput = 123"></button>
@@ -48,6 +58,7 @@ const template = `<div>{{ inputWithoutType }}</div>
  {{ 'normalInput' | translate: normalInput }}
 </a>
 
+<input [(ngModel)]="normalInput" />
 <cmp name="normalInput"></cmp>
 <cmp [name]="normalInput"></cmp>
 <cmp name="withnormalInput"></cmp>

@@ -5,7 +5,7 @@ exports[`convertSignalInputsGenerator should convert properly 1`] = `
 import { Component, Input, input } from '@angular/core';
 
 @Component({
-
+  
       template: \`
     <div>{{ inputWithoutType() }}</div>
 
@@ -27,6 +27,12 @@ import { Component, Input, input } from '@angular/core';
   </ng-container>
 </ng-container>
 
+<div>
+  @for (item of normalInput(); track item.id) {
+     <app-test [normalInput]="item.name" />
+  }
+</div>
+
 <test [normalInput]="normalInput()" />
 <test-normalInput />
 <normalInput />
@@ -34,6 +40,10 @@ import { Component, Input, input } from '@angular/core';
 
 <a normalInput [routerLink]="['test-normalInput', '/normalInput' , normalInput(), 'normalInput']">
  normalInput - {{ normalInput() }}
+ {{ normalInput() }}  normalInput
+ {{ 'normalInput' }} - normalInput
+ {{ normalInput() + 'normalInput' }} - normalInput
+ <span>{{ 'normalInput' + normalInput() }}</span>
 </a>
 
 <button (click)="normalInput() = 123"></button>
@@ -51,8 +61,8 @@ import { Component, Input, input } from '@angular/core';
  {{ 'normalInput' | translate: normalInput() }}
 </a>
 
-<input name="normalInput" [(ngModel)]="normalInput" />
-<cmp name="normalInput" [(ngModel)]="normalInput"></cmp>
+<input [(ngModel)]="normalInput()" />
+<cmp name="normalInput"></cmp>
 <cmp [name]="normalInput()"></cmp>
 <cmp name="withnormalInput"></cmp>
 <cmp normalInput="normalInput"></cmp>
@@ -244,6 +254,12 @@ exports[`convertSignalInputsGenerator should convert properly for templateUrl 2`
   </ng-container>
 </ng-container>
 
+<div>
+  @for (item of normalInput(); track item.id) {
+     <app-test [normalInput]="item.name" />
+  }
+</div>
+
 <test [normalInput]="normalInput()" />
 <test-normalInput />
 <normalInput />
@@ -251,6 +267,10 @@ exports[`convertSignalInputsGenerator should convert properly for templateUrl 2`
 
 <a normalInput [routerLink]="['test-normalInput', '/normalInput' , normalInput(), 'normalInput']">
  normalInput - {{ normalInput() }}
+ {{ normalInput() }}  normalInput
+ {{ 'normalInput' }} - normalInput
+ {{ normalInput() + 'normalInput' }} - normalInput
+ <span>{{ 'normalInput' + normalInput() }}</span>
 </a>
 
 <button (click)="normalInput() = 123"></button>
@@ -268,6 +288,7 @@ exports[`convertSignalInputsGenerator should convert properly for templateUrl 2`
  {{ 'normalInput' | translate: normalInput() }}
 </a>
 
+<input [(ngModel)]="normalInput()" />
 <cmp name="normalInput"></cmp>
 <cmp [name]="normalInput()"></cmp>
 <cmp name="withnormalInput"></cmp>
