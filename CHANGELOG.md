@@ -1,5 +1,25 @@
 
 
+## [3.1.0](https://github.com/ngxtension/ngxtension-platform/compare/3.0.1...3.1.0) (2024-05-01)
+
+
+### Features
+
+* **convert-queries:** initial implementation for content queries migration to signals ([#355](https://github.com/ngxtension/ngxtension-platform/issues/355)) ([a5f003f](https://github.com/ngxtension/ngxtension-platform/commit/a5f003fc7ee7bfae40adbbaa88e374b73b16513c))
+* input migration enhancements ([#353](https://github.com/ngxtension/ngxtension-platform/issues/353)) ([2def810](https://github.com/ngxtension/ngxtension-platform/commit/2def8106df65f8b2d6d161af21e922282fcd1dba))
+
+
+### Bug Fixes
+
+* **create-injectable:** allow returning proxies from factory function ([#352](https://github.com/ngxtension/ngxtension-platform/issues/352)) ([8e22eeb](https://github.com/ngxtension/ngxtension-platform/commit/8e22eeb47ddbc159299f6c70b7ab171ca855de98))
+* inject migration should take into account missing types for tokens ([#351](https://github.com/ngxtension/ngxtension-platform/issues/351)) ([56f8bdb](https://github.com/ngxtension/ngxtension-platform/commit/56f8bdb6ae1cf17f180b18c64b9b48443319b102))
+* make @use-gesture/vanilla optional dependency ([#349](https://github.com/ngxtension/ngxtension-platform/issues/349)) ([7291426](https://github.com/ngxtension/ngxtension-platform/commit/729142659bd370c9132a797e93012419129daf2a))
+
+
+### Documentations
+
+* convert queries ([#356](https://github.com/ngxtension/ngxtension-platform/issues/356)) ([a0a4f33](https://github.com/ngxtension/ngxtension-platform/commit/a0a4f330fdb885bd18672ee90a40e65c0c4e4869))
+
 ## [3.0.1](https://github.com/ngxtension/ngxtension-platform/compare/3.0.0...3.0.1) (2024-04-24)
 
 
