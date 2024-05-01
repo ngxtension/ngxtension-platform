@@ -15,6 +15,7 @@
 		},
 		"includeReadonlyByDefault": {
 			"type": "boolean",
+			"aliases": ["includeReadonly", "includeReadonlyByDefault"],
 			"description": "Whether to include readonly for injections by default. Default is false."
 		}
 	}
