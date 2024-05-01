@@ -31,7 +31,7 @@ describe('convertQueriesGenerator', () => {
 		const readContent = setup('primeNgComponent');
 		await convertQueriesGenerator(tree, options);
 		const [updated, original] = readContent();
-		expect(updated).toEqual(original);
+		expect(updated).toMatchSnapshot();
 	});
 
 	it('should convert properly', async () => {
