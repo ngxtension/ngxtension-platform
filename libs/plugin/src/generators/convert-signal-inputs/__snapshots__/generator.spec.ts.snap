@@ -5,7 +5,7 @@ exports[`convertSignalInputsGenerator should convert properly 1`] = `
 import { Component, Input, input } from '@angular/core';
 
 @Component({
-  
+
       template: \`
     <div>{{ inputWithoutType() }}</div>
 
@@ -31,6 +31,31 @@ import { Component, Input, input } from '@angular/core';
 <test-normalInput />
 <normalInput />
 <another-component something="blah-normalInput" />
+
+<a normalInput [routerLink]="['test-normalInput', '/normalInput' , normalInput(), 'normalInput']">
+ normalInput - {{ normalInput() }}
+</a>
+
+<button (click)="normalInput() = 123"></button>
+<button (click)="normalInput() = 'normalInput'"></button>
+<button (click)="someFunctionWithnormalInput('normalInput', normalInput())"></button>
+<button (normalInput)="someFunctionWithnormalInput(normalInput(), 'normalInput')"></button>
+<button (eventWithnormalInput)="test = 'normalInput' + normalInput()"></button>
+
+<a>
+ {{ 'someNormalTextnormalInput' | translate: 'normalInput' }}
+
+ {{ normalInput() | translate: normalInput() }}
+ {{ normalInput() | translate: 'normalInput' }}
+ {{ 'normalInput' | translate: 'normalInput' }}
+ {{ 'normalInput' | translate: normalInput() }}
+</a>
+
+<input name="normalInput" [(ngModel)]="normalInput" />
+<cmp name="normalInput" [(ngModel)]="normalInput"></cmp>
+<cmp [name]="normalInput()"></cmp>
+<cmp name="withnormalInput"></cmp>
+<cmp normalInput="normalInput"></cmp>
 
 <p>{{ data().normalInput }}</p>
 
@@ -223,6 +248,30 @@ exports[`convertSignalInputsGenerator should convert properly for templateUrl 2`
 <test-normalInput />
 <normalInput />
 <another-component something="blah-normalInput" />
+
+<a normalInput [routerLink]="['test-normalInput', '/normalInput' , normalInput(), 'normalInput']">
+ normalInput - {{ normalInput() }}
+</a>
+
+<button (click)="normalInput() = 123"></button>
+<button (click)="normalInput() = 'normalInput'"></button>
+<button (click)="someFunctionWithnormalInput('normalInput', normalInput())"></button>
+<button (normalInput)="someFunctionWithnormalInput(normalInput(), 'normalInput')"></button>
+<button (eventWithnormalInput)="test = 'normalInput' + normalInput()"></button>
+
+<a>
+ {{ 'someNormalTextnormalInput' | translate: 'normalInput' }}
+
+ {{ normalInput() | translate: normalInput() }}
+ {{ normalInput() | translate: 'normalInput' }}
+ {{ 'normalInput' | translate: 'normalInput' }}
+ {{ 'normalInput' | translate: normalInput() }}
+</a>
+
+<cmp name="normalInput"></cmp>
+<cmp [name]="normalInput()"></cmp>
+<cmp name="withnormalInput"></cmp>
+<cmp normalInput="normalInput"></cmp>
 
 <p>{{ data().normalInput }}</p>
 "

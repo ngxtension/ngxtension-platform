@@ -29,6 +29,30 @@ const template = `<div>{{ inputWithoutType }}</div>
 <normalInput />
 <another-component something="blah-normalInput" />
 
+<a normalInput [routerLink]="['test-normalInput', '/normalInput' , normalInput, 'normalInput']">
+ normalInput - {{ normalInput }}
+</a>
+
+<button (click)="normalInput = 123"></button>
+<button (click)="normalInput = 'normalInput'"></button>
+<button (click)="someFunctionWithnormalInput('normalInput', normalInput)"></button>
+<button (normalInput)="someFunctionWithnormalInput(normalInput, 'normalInput')"></button>
+<button (eventWithnormalInput)="test = 'normalInput' + normalInput"></button>
+
+<a>
+ {{ 'someNormalTextnormalInput' | translate: 'normalInput' }}
+
+ {{ normalInput | translate: normalInput }}
+ {{ normalInput | translate: 'normalInput' }}
+ {{ 'normalInput' | translate: 'normalInput' }}
+ {{ 'normalInput' | translate: normalInput }}
+</a>
+
+<cmp name="normalInput"></cmp>
+<cmp [name]="normalInput"></cmp>
+<cmp name="withnormalInput"></cmp>
+<cmp normalInput="normalInput"></cmp>
+
 <p>{{ data().normalInput }}</p>
 `;
 
