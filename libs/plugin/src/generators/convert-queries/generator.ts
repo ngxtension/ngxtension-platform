@@ -77,12 +77,12 @@ function getQueryInitializer(
 				// add type if exists
 
 				if (type.includes('QueryList')) {
-					// for example: QueryList<PrimeTemplate> => PrimeTemplate[]
-					// ex: Nullable<QueryList<PrimeTemplate>> => Nullable<PrimeTemplate[]>
+					// for example: QueryList<PrimeTemplate> => PrimeTemplate
+					// ex: Nullable<QueryList<PrimeTemplate>> => Nullable<PrimeTemplate>
 					// Regular expression pattern to match QueryList<T>
 					const pattern = /QueryList<([^>]+)>/g;
-					// Replace QueryList<T> with T[]
-					type = type.replace(pattern, '$1[]');
+					// Replace QueryList<T> with T
+					type = type.replace(pattern, '$1');
 				}
 
 				let addGeneric = true;
