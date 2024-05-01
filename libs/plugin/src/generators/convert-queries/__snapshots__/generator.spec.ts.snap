@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`convertQueriesGenerator should convert properly 1`] = `
+"
+import { Component, ContentChild, ContentChildren, ViewChild, ViewChildren QueryList } from '@angular/core';
+
+@Component({
+  template: \`
+    <ng-content></ng-content>
+
+    <div>
+        @for (item of templates; trackBy: trackByFn) {
+          <ng-container *ngTemplateOutlet="footerFacet; context: { $implicit: item }"></ng-container>
+        }
+    </div>
+
+   <ng-container
+        *ngTemplateOutlet="headerTemplate; context: { $implicit: item }">
+    />
+
+    <ng-container
+        *ngTemplateOutlet="headerTemplate; context: { $implicit: item }">
+    />
+
+
+    <some-component [bodyTemplate]="bodyTemplate" />
+
+   \`
+})
+export class MyCmp {
+
+    bodyTemplate = contentChild();
+    loginButton = contentChild<MxButton>();
+    headerTemplate = contentChild<TemplateRef<any>>();
+    footerFacet = contentChild<Nullable<TemplateRef<any>>>();
+    templates = contentChildren<Nullable<QueryList<PrimeTemplate>>>();
+
+    headerFacet = contentChildren<QueryList<Header>>();
+    templates1 = contentChildren<QueryList<PrimeTemplate>>();
+
+
+    containerViewChild = viewChild<Nullable<ElementRef>>();
+    resizeHelperViewChild = viewChild<Nullable<ElementRef>>();
+    reorderIndicatorUpViewChild = viewChild<Nullable<ElementRef>>();
+    reorderIndicatorDownViewChild = viewChild<Nullable<ElementRef>>();
+    tableViewChild = viewChild<Nullable<ElementRef>>();
+    scrollableViewChild = viewChild<Nullable<ElementRef>>();
+    scrollableFrozenViewChild = viewChild<Nullable<ElementRef>>();
+
+
+    ngAfterContentInit() {
+        (this.templates as QueryList<PrimeTemplate>).forEach((item) => {
+            switch (item.getType()) {
+                case 'header':
+                    this.headerTemplate = item.template;
+                    break;
+            }
+        });
+
+       this.templates1.forEach((item) => {
+            switch (item.getType()) {
+                case 'content':
+                    this.contentTemplate = item.template;
+                    break;
+
+                case 'header':
+                    this.headerTemplate = item.template;
+                    break;
+            }
+        });
+
+        doSomethingWithThisButton(this.loginButton);
+    }
+
+    ngOnDestroy() {
+        this.templates1.forEach((item) => {
+          item.destroy();
+        });
+    }
+}
+"
+`;
+
+exports[`convertQueriesGenerator should not add outputFromObservable import if not needed 1`] = `
+"
+import { Component } from '@angular/core';
+
+@Component({})
+export class MyCmp {}
+"
+`;
