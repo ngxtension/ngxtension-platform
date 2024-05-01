@@ -4,5 +4,10 @@
 	"lib": {
 		"entryFile": "src/index.ts"
 	},
-	"allowedNonPeerDependencies": ["@nx/devkit", "nx", "ts-morph"]
+	"allowedNonPeerDependencies": [
+		"@nx/devkit",
+		"nx",
+		"ts-morph",
+		"@angular-eslint/bundled-angular-compiler"
+	]
 }
