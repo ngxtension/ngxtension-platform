@@ -34,7 +34,7 @@ class ContentsStore {
 
 	track(path: string, content: string) {
 		this.collection.push({ path, content });
-		this.project.createSourceFile(path, content);
+		this.project.createSourceFile(path, content, { overwrite: true });
 	}
 }
 

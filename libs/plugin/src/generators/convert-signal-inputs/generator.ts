@@ -15,16 +15,17 @@ import {
 	CallExpression,
 	CodeBlockWriter,
 	Decorator,
-	ImportDeclaration,
 	Node,
 	Project,
 	PropertyDeclaration,
-	SourceFile,
 	SyntaxKind,
 	WriterFunction,
 } from 'ts-morph';
 import { migrateTemplateVariablesToSignals } from '../shared-utils/migrate-signals-in-template';
-import { getStartLineInfo } from '../shared-utils/migrate-signals-in-ts';
+import {
+	getAngularCoreImports,
+	getStartLineInfo,
+} from '../shared-utils/migrate-signals-in-ts';
 import { ConvertSignalInputsGeneratorSchema } from './schema';
 
 class ContentsStore {
@@ -43,7 +44,7 @@ class ContentsStore {
 
 	track(path: string, content: string) {
 		this.collection.push({ path, content });
-		this.project.createSourceFile(path, content);
+		this.project.createSourceFile(path, content, { overwrite: true });
 	}
 }
 
@@ -464,12 +465,6 @@ export async function convertSignalInputsGenerator(
 [ngxtension] Conversion completed. Please check the content and run your formatter as needed.
 `,
 	);
-}
-
-function getAngularCoreImports(sourceFile: SourceFile): ImportDeclaration {
-	return sourceFile.getImportDeclaration((importDecl) => {
-		return importDecl.getModuleSpecifierValue() === '@angular/core';
-	});
 }
 
 export default convertSignalInputsGenerator;

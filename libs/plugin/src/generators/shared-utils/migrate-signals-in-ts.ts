@@ -1,6 +1,13 @@
 import { Tree, joinPathFragments } from '@nx/devkit';
 import { dirname } from 'node:path';
-import { CallExpression, Decorator, Node, SyntaxKind } from 'ts-morph';
+import {
+	CallExpression,
+	Decorator,
+	ImportDeclaration,
+	Node,
+	SourceFile,
+	SyntaxKind,
+} from 'ts-morph';
 import { migrateTemplateVariablesToSignals } from './migrate-signals-in-template';
 
 export function migrateSignalsInClassOrDecorator(
@@ -103,4 +110,12 @@ export function migrateSignalsInClassOrDecorator(
 
 export function getStartLineInfo(node: Node) {
 	return `${node.getStartLineNumber()}:${node.getStartLinePos()}:${node.getFullStart()}:${node.getFullWidth()}`;
+}
+
+export function getAngularCoreImports(
+	sourceFile: SourceFile,
+): ImportDeclaration {
+	return sourceFile.getImportDeclaration((importDecl) => {
+		return importDecl.getModuleSpecifierValue() === '@angular/core';
+	});
 }

@@ -16,7 +16,10 @@ import {
 	Project,
 	WriterFunction,
 } from 'ts-morph';
-import { migrateSignalsInClassOrDecorator } from '../shared-utils/migrate-signals-in-ts';
+import {
+	getAngularCoreImports,
+	migrateSignalsInClassOrDecorator,
+} from '../shared-utils/migrate-signals-in-ts';
 import { ConvertContentQueriesGeneratorSchema } from './schema';
 
 class ContentsStore {
@@ -34,7 +37,7 @@ class ContentsStore {
 
 	track(path: string, content: string) {
 		this.collection.push({ path, content });
-		this.project.createSourceFile(path, content);
+		this.project.createSourceFile(path, content, { overwrite: true });
 	}
 }
 
@@ -43,6 +46,13 @@ const CONTENT_QUERIES = [
 	'ContentChildren',
 	'ViewChild',
 	'ViewChildren',
+];
+
+const SIGNAL_CONTENT_QUERIES = [
+	'contentChild',
+	'contentChildren',
+	'viewChild',
+	'viewChildren',
 ];
 
 function trackContents(
@@ -84,27 +94,36 @@ function getQueryInitializer(
 
 	return {
 		writerFn: (writer: CodeBlockWriter) => {
-			writer.write(decoratorToSignalMap[decorator.getFullName()]);
+			const queryFn = decoratorToSignalMap[decorator.getFullName()];
+			writer.write(queryFn);
 
 			if (typeof type === 'string') {
 				// add type if exists
 
 				if (type.includes('QueryList')) {
-					// ex: Nullable<QueryList<PrimeTemplate>>
-					// replace it to just be a normal array using regex and replace
 					// for example: QueryList<PrimeTemplate> => PrimeTemplate[]
 					// ex: Nullable<QueryList<PrimeTemplate>> => Nullable<PrimeTemplate[]>
-
 					// Regular expression pattern to match QueryList<T>
 					const pattern = /QueryList<([^>]+)>/g;
-
 					// Replace QueryList<T> with T[]
 					type = type.replace(pattern, '$1[]');
 				}
 
+				let addGeneric = true;
+
 				if (type === selectorText) {
 					// don't write the type if it's the same as the selector
-				} else {
+					addGeneric = false;
+				}
+				if (queryFn === 'viewChildren' || queryFn === 'contentChildren') {
+					// don't write the type in viewChildren and contentChildren if it has a pattern like this:
+					// headerElements = viewChildren<HeaderElement[]>(HeaderElement);
+					if (type.replace('[]', '') === selectorText) {
+						addGeneric = false;
+					}
+				}
+
+				if (addGeneric) {
 					writer.write(`<${type}>`);
 				}
 			}
@@ -112,7 +131,25 @@ function getQueryInitializer(
 			writer.write('(');
 			writer.write(selectorText);
 
-			// TODO: add options
+			if (options) {
+				// { read: ElementRef, descendants: true, static: true }
+				if (Node.isObjectLiteralExpression(options)) {
+					const decoratorOptions = options
+						.getProperties()
+						.filter(Node.isPropertyAssignment)
+						.reduce((acc, propertyAssignment) => {
+							if (propertyAssignment.getName() === 'static') {
+								return acc;
+							}
+							acc.push(propertyAssignment.getText());
+							return acc;
+						}, [] as string[]);
+					if (decoratorOptions.length > 0) {
+						writer.write(`, { ${decoratorOptions.join(', ')} }`);
+					}
+				}
+			}
+
 			writer.write(')');
 		},
 	};
@@ -195,31 +232,6 @@ export async function convertQueriesGenerator(
 	for (const { path: sourcePath } of contentsStore.collection) {
 		const sourceFile = contentsStore.project.getSourceFile(sourcePath)!;
 
-		// const hasQueriesImports = sourceFile.getImportDeclaration(
-		// 	(importDecl) =>
-		// 		importDecl.getModuleSpecifierValue() === '@angular/core' &&
-		// 		importDecl
-		// 			.getNamedImports()
-		// 			.some((namedImport) => CONTENT_QUERIES.includes(namedImport.getName())),
-		// );
-
-		// // NOTE: only add hasOutputImport import if we don't have it and we find the first Output decorator
-		// if (!hasOutputImport) {
-		// 	const angularCoreImports = sourceFile.getImportDeclaration(
-		// 		(importDecl) => {
-		// 			return importDecl.getModuleSpecifierValue() === '@angular/core';
-		// 		},
-		// 	);
-		// 	if (angularCoreImports) {
-		// 		angularCoreImports.addNamedImport('output');
-		// 	} else {
-		// 		sourceFile.addImportDeclaration({
-		// 			namedImports: ['output'],
-		// 			moduleSpecifier: '@angular/core',
-		// 		});
-		// 	}
-		// }
-
 		const classes = sourceFile.getClasses();
 
 		for (const targetClass of classes) {
@@ -251,42 +263,13 @@ export async function convertQueriesGenerator(
 								scope,
 								type,
 								hasOverrideKeyword,
-								initializer,
 							} = node.getStructure();
-
-							// TODO: skip if it's a setter
 
 							const { writerFn } = getQueryInitializer(
 								name,
 								type,
 								queryDecorator,
 							);
-
-							// if (
-							//   needsOutputFromObservableImport &&
-							//   !outputFromObservableImportAdded
-							// ) {
-							//   const angularRxjsInteropImports = sourceFile.getImportDeclaration(
-							//     (importDecl) => {
-							//       return (
-							//         importDecl.getModuleSpecifierValue() ===
-							//         '@angular/core/rxjs-interop'
-							//       );
-							//     },
-							//   );
-							//   if (angularRxjsInteropImports) {
-							//     angularRxjsInteropImports.addNamedImport(
-							//       'outputFromObservable',
-							//     );
-							//   } else {
-							//     sourceFile.addImportDeclaration({
-							//       namedImports: ['outputFromObservable'],
-							//       moduleSpecifier: '@angular/core/rxjs-interop',
-							//     });
-							//   }
-							//
-							//   outputFromObservableImportAdded = true;
-							// }
 
 							const newProperty = targetClass.addProperty({
 								name,
@@ -297,21 +280,9 @@ export async function convertQueriesGenerator(
 								initializer: writerFn,
 							});
 
-							// if (removeOnlyDecorator) {
-							//   queryDecorator.remove();
-							//
-							//   newProperty.setHasExclamationToken(false);
-							//
-							//   newProperty.addJsDoc(
-							//     'TODO(migration): you may want to convert this to a normal output',
-							//   );
-							// } else {
 							node.replaceWithText(newProperty.print());
-							// remove old class property Output
 							newProperty.remove();
-							// }
 
-							// track converted outputs
 							if (name) {
 								convertedQueries.add({ name, type: query });
 							}
@@ -336,44 +307,70 @@ export async function convertQueriesGenerator(
 			}
 		}
 
-		// if @Output is not used anymore, remove the import
-		const hasOutputDecoratorUsage = sourceFile
-			.getFullText()
-			.includes('@Output');
-		if (!hasOutputDecoratorUsage) {
-			const outputImport = sourceFile.getImportDeclaration(
-				(importDecl) =>
-					importDecl.getModuleSpecifierValue() === '@angular/core' &&
-					importDecl
-						.getNamedImports()
-						.some((namedImport) => namedImport.getName() === 'Output'),
-			);
+		const importsToAdd: string[] = [];
 
-			if (outputImport) {
-				const classToRemove = outputImport
-					.getNamedImports()
-					.find((namedImport) => namedImport.getName() === 'Output');
-				classToRemove.remove();
+		SIGNAL_CONTENT_QUERIES.forEach((query) => {
+			const sourceText = sourceFile.getFullText();
+			if (
+				sourceText.includes(`${query}<`) ||
+				sourceText.includes(`${query}(`)
+			) {
+				// usages as: contentChild<Test>, contentChild(), viewChild<Test>, viewChild()
+				importsToAdd.push(query);
 			}
-		}
+		});
 
-		// // if EventEmitter is not used anymore, remove the import
-		const eventEmitterIsUsedMoreThanOnce = stringIsUsedMoreThanOnce(
-			'EventEmitter',
+		const angularCoreImports = getAngularCoreImports(sourceFile);
+
+		importsToAdd.forEach((query) => {
+			if (
+				!angularCoreImports
+					.getNamedImports()
+					.find((namedImport) => namedImport.getName() === query)
+			) {
+				angularCoreImports.addNamedImport(query);
+			}
+		});
+
+		// remove the import if the decorator is not used
+		CONTENT_QUERIES.forEach((query) => {
+			const hasDecoratorUsage = sourceFile.getFullText().includes(`@${query}`);
+
+			if (!hasDecoratorUsage) {
+				const queryImport = sourceFile.getImportDeclaration(
+					(importDecl) =>
+						importDecl.getModuleSpecifierValue() === '@angular/core' &&
+						importDecl
+							.getNamedImports()
+							.some((namedImport) => namedImport.getName() === query),
+				);
+
+				if (queryImport) {
+					const classToRemove = queryImport
+						.getNamedImports()
+						.find((namedImport) => namedImport.getName() === query);
+					classToRemove.remove();
+				}
+			}
+		});
+
+		// remove QueryList import if it's not used anymore
+		const queryListIsUsedMoreThanOnce = stringIsUsedMoreThanOnce(
+			'QueryList',
 			sourceFile.getFullText(),
 		);
-		if (!eventEmitterIsUsedMoreThanOnce) {
-			const eventEmitterImport = sourceFile.getImportDeclaration(
+		if (!queryListIsUsedMoreThanOnce) {
+			const queryListImport = sourceFile.getImportDeclaration(
 				(importDecl) =>
 					importDecl.getModuleSpecifierValue() === '@angular/core' &&
 					importDecl
 						.getNamedImports()
-						.some((namedImport) => namedImport.getName() === 'EventEmitter'),
+						.some((namedImport) => namedImport.getName() === 'QueryList'),
 			);
-			if (eventEmitterImport) {
-				const classToRemove = eventEmitterImport
+			if (queryListImport) {
+				const classToRemove = queryListImport
 					.getNamedImports()
-					.find((namedImport) => namedImport.getName() === 'EventEmitter');
+					.find((namedImport) => namedImport.getName() === 'QueryList');
 				classToRemove.remove();
 			}
 		}

@@ -27,7 +27,7 @@ describe('convertQueriesGenerator', () => {
 		expect(updated).toEqual(original);
 	});
 
-	it('should not do anything if no input', async () => {
+	it('should pass primeng component test', async () => {
 		const readContent = setup('primeNgComponent');
 		await convertQueriesGenerator(tree, options);
 		const [updated, original] = readContent();
@@ -41,7 +41,7 @@ describe('convertQueriesGenerator', () => {
 		expect(updated).toMatchSnapshot();
 	});
 
-	it('should not add outputFromObservable import if not needed', async () => {
+	it('should not do anything if not queries', async () => {
 		const readContent = setup('componentNoQueries');
 		await convertQueriesGenerator(tree, options);
 		const [updated] = readContent();
@@ -63,7 +63,7 @@ import { Component } from '@angular/core';
 export class MyCmp {}
 `,
 	primeNgComponent: `
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, ViewChild, ContentChildren } from '@angular/core';
 
 @Component({
   template: \`
@@ -225,9 +225,11 @@ export class MyCmp {
 
     @ViewChild('scrollableView') scrollableViewChild: Nullable<ElementRef>;
 
-    @ViewChild('scrollableFrozenView') scrollableFrozenViewChild: Nullable<ElementRef>;
+    @ViewChild('scrollableFrozenView', { read: ElementRef }) scrollableFrozenViewChild: Nullable<ElementRef>;
 
     @ContentChildren(PrimeTemplate) templates: Nullable<QueryList<PrimeTemplate>>;
+
+    @ContentChildren(PrimeTemplate) templates123: QueryList<PrimeTemplate>;
 
     _value: TreeNode<any>[] | undefined = [];
 
@@ -1701,7 +1703,7 @@ export class MyCmp {
 }
 `,
 	component: `
-import { Component, ContentChild, ContentChildren, ViewChild, ViewChildren QueryList } from '@angular/core';
+import { Component, ContentChild, ContentChildren, ViewChild, ViewChildren, QueryList } from '@angular/core';
 
 @Component({
   template: \`
@@ -1728,17 +1730,22 @@ import { Component, ContentChild, ContentChildren, ViewChild, ViewChildren Query
 })
 export class MyCmp {
 
-    @ContentChild(BODY_TOKEN) bodyTemplate;
+    @ContentChild(BODY_TOKEN, { static: true }) bodyTemplate;
     @ContentChild(MxButton) loginButton: MxButton;
     @ContentChild('header') headerTemplate1: TemplateRef<any>;
-    @ContentChild(Footer) footerFacet: Nullable<TemplateRef<any>>;
+    @ContentChild(Footer, { read: TemplateRef, descendants: true }) footerFacet: TemplateRef<any>;
     @ContentChildren(PrimeTemplate) templates: Nullable<QueryList<PrimeTemplate>>;
 
     @ContentChildren(Header) headerFacet!: QueryList<Header>;
     @ContentChildren(PrimeTemplate) templates1!: QueryList<PrimeTemplate>;
+    @ViewChildren(PrimeTemplate, { read: ElementRef }) templates2!: QueryList<ElementRef>;
 
+    @ViewChildren(PrimeTemplate, { read: ElementRef }) set _templates3(templates2: QueryList<ElementRef>) {
+      console.log('doSomethingWith', templates3);
+    }
+)
 
-    @ViewChild('container') containerViewChild: Nullable<ElementRef>;
+    @ViewChild('container', { read: ElementRef }) containerViewChild: ElementRef;
     @ViewChild('resizeHelper') resizeHelperViewChild: Nullable<ElementRef>;
     @ViewChild('reorderIndicatorUp') reorderIndicatorUpViewChild: Nullable<ElementRef>;
     @ViewChild('reorderIndicatorDown') reorderIndicatorDownViewChild: Nullable<ElementRef>;
