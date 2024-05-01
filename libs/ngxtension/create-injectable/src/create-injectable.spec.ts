@@ -65,7 +65,9 @@ describe(createInjectable.name, () => {
 
 	it('should be able to return proxy from factory function', () => {
 		const MyInjectable = createInjectable(() => {
-			const test = () => {};
+			const test = () => {
+				void 0;
+			};
 
 			Object.defineProperty(test, 'name', {
 				value: 'josh',
