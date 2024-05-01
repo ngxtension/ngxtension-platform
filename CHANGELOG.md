@@ -1,5 +1,12 @@
 
 
+## [3.1.2](https://github.com/ngxtension/ngxtension-platform/compare/3.1.1...3.1.2) (2024-05-01)
+
+
+### Bug Fixes
+
+* add proper typing for contentChildren and viewChildren ([#359](https://github.com/ngxtension/ngxtension-platform/issues/359)) ([f31dd8c](https://github.com/ngxtension/ngxtension-platform/commit/f31dd8c7ea0e57d9f9202b1a5d62498e14b5e16b))
+
 ## [3.1.1](https://github.com/ngxtension/ngxtension-platform/compare/3.1.0...3.1.1) (2024-05-01)
 
 
