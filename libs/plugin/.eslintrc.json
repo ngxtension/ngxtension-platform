@@ -23,6 +23,7 @@
 					{
 						"ignoredDependencies": [
 							"tslib",
+							"@angular-eslint/bundled-angular-compiler",
 							"@nx/devkit",
 							"@nx/dependency-checks"
 						]
