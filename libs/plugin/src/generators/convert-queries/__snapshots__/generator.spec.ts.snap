@@ -34,11 +34,11 @@ export class MyCmp {
     loginButton = contentChild(MxButton);
     headerTemplate1 = contentChild<TemplateRef<any>>('header');
     footerFacet = contentChild<TemplateRef<any>>(Footer, { read: TemplateRef, descendants: true });
-    templates = contentChildren<Nullable<PrimeTemplate[]>>(PrimeTemplate);
+    templates = contentChildren<Nullable<PrimeTemplate>>(PrimeTemplate);
 
     headerFacet = contentChildren(Header);
     templates1 = contentChildren(PrimeTemplate);
-    templates2 = viewChildren<ElementRef[]>(PrimeTemplate, { read: ElementRef });
+    templates2 = viewChildren<ElementRef>(PrimeTemplate, { read: ElementRef });
 
     @ViewChildren(PrimeTemplate, { read: ElementRef }) set _templates3(templates2: QueryList<ElementRef>) {
       console.log('doSomethingWith', templates3);
@@ -84,6 +84,15 @@ export class MyCmp {
         });
     }
 }
+"
+`;
+
+exports[`convertQueriesGenerator should not do anything if not component/directive 1`] = `
+"
+import { Injectable } from '@angular/core';
+
+@Injectable()
+export class MyService {}
 "
 `;
 
@@ -262,7 +271,7 @@ export class MyCmp {
 
     scrollableFrozenViewChild = viewChild<Nullable<ElementRef>>('scrollableFrozenView', { read: ElementRef });
 
-    templates = contentChildren<Nullable<PrimeTemplate[]>>(PrimeTemplate);
+    templates = contentChildren<Nullable<PrimeTemplate>>(PrimeTemplate);
 
     templates123 = contentChildren(PrimeTemplate);
 

@@ -24,7 +24,7 @@ describe('convertQueriesGenerator', () => {
 		const readContent = setup('notComponentNorDirective');
 		await convertQueriesGenerator(tree, options);
 		const [updated, original] = readContent();
-		expect(updated).toEqual(original);
+		expect(updated).toMatchSnapshot();
 	});
 
 	it('should pass primeng component test', async () => {
