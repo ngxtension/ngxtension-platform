@@ -21,6 +21,11 @@
 			"factory": "./src/generators/convert-di-to-inject/generator",
 			"schema": "./src/generators/convert-di-to-inject/schema.json",
 			"description": "libs/plugin/src/generators/convert-di-to-inject/ generator"
+		},
+		"convert-queries": {
+			"factory": "./src/generators/convert-queries/generator",
+			"schema": "./src/generators/convert-queries/schema.json",
+			"description": "libs/plugin/src/generators/convert-queries/ generator"
 		}
 	},
 	"schematics": {
@@ -45,6 +50,11 @@
 			"factory": "./src/generators/convert-di-to-inject/compat",
 			"schema": "./src/generators/convert-di-to-inject/schema.json",
 			"description": "libs/plugin/src/generators/convert-di-to-inject/ generator"
+		},
+		"convert-queries": {
+			"factory": "./src/generators/convert-queries/compat",
+			"schema": "./src/generators/convert-queries/schema.json",
+			"description": "libs/plugin/src/generators/convert-queries/ generator"
 		}
 	}
 }
