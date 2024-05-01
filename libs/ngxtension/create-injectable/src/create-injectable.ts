@@ -7,7 +7,18 @@ export function createInjectable<TFactory extends (...args: any[]) => object>(
 	@Injectable({ providedIn: providedIn === 'scoped' ? null : providedIn })
 	class _Injectable {
 		constructor() {
-			Object.assign(this, factory());
+			const result: any = factory();
+
+			for (const key of Reflect.ownKeys(result)) {
+				Object.defineProperty(this, key, {
+					get: () => result[key],
+					set: (value: any) => {
+						result[key] = value;
+					},
+					enumerable: true,
+					configurable: true,
+				});
+			}
 		}
 	}
 
