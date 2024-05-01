@@ -43,9 +43,7 @@ export class AppComponent {
 	myContentChild: ElementRef<HTMLImageElement>;
 	@ContentChildren('my-content-children') myContentChildren: QueryList<ElementRef<HTMLImageElement>>;
 	@ViewChild('my-view-child') myViewChild: ElementRef<HTMLImageElement>;
-	@ViewChildren('my-view-children') myViewChildren: QueryList<
-		ElementRef<HTMLImageElement>
-	>;
+	@ViewChildren('my-view-children') myViewChildren: QueryList<ElementRef<HTMLImageElement>>;
 
 	@ViewChild('my-input') set myInput(el: ElementRef<HTMLInputElement>) {
 		el.nativeElement.focus();
