@@ -46,7 +46,8 @@
 							"rxjs",
 							"@nx/devkit",
 							"nx",
-							"ts-morph"
+							"ts-morph",
+							"@angular-eslint/bundled-angular-compiler"
 						]
 					}
 				]
