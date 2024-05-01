@@ -6,9 +6,5 @@
 	},
 	"ng-update": {
 		"migrations": "./migrations.json"
-	},
-	"dependencies": {
-		"@nx/devkit": "~18.3.0",
-		"ts-morph": "~22.0.0"
 	}
 }

@@ -2,8 +2,7 @@
 
 exports[`convertSignalInputsGenerator should convert properly 1`] = `
 "
-import { Component, Input } from '@angular/core';
-import { input } from "@angular/core";
+import { Component, Input, input } from '@angular/core';
 
 @Component({
   
@@ -28,10 +27,45 @@ import { input } from "@angular/core";
   </ng-container>
 </ng-container>
 
+<div>
+  @for (item of normalInput(); track item.id) {
+     <app-test [normalInput]="item.name" />
+  }
+</div>
+
 <test [normalInput]="normalInput()" />
 <test-normalInput />
 <normalInput />
 <another-component something="blah-normalInput" />
+
+<a normalInput [routerLink]="['test-normalInput', '/normalInput' , normalInput(), 'normalInput']">
+ normalInput - {{ normalInput() }}
+ {{ normalInput() }}  normalInput
+ {{ 'normalInput' }} - normalInput
+ {{ normalInput() + 'normalInput' }} - normalInput
+ <span>{{ 'normalInput' + normalInput() }}</span>
+</a>
+
+<button (click)="normalInput() = 123"></button>
+<button (click)="normalInput() = 'normalInput'"></button>
+<button (click)="someFunctionWithnormalInput('normalInput', normalInput())"></button>
+<button (normalInput)="someFunctionWithnormalInput(normalInput(), 'normalInput')"></button>
+<button (eventWithnormalInput)="test = 'normalInput' + normalInput()"></button>
+
+<a>
+ {{ 'someNormalTextnormalInput' | translate: 'normalInput' }}
+
+ {{ normalInput() | translate: normalInput() }}
+ {{ normalInput() | translate: 'normalInput' }}
+ {{ 'normalInput' | translate: 'normalInput' }}
+ {{ 'normalInput' | translate: normalInput() }}
+</a>
+
+<input [(ngModel)]="normalInput()" />
+<cmp name="normalInput"></cmp>
+<cmp [name]="normalInput()"></cmp>
+<cmp name="withnormalInput"></cmp>
+<cmp normalInput="normalInput"></cmp>
 
 <p>{{ data().normalInput }}</p>
 
@@ -139,8 +173,7 @@ export class RequestInfoComponent implements OnInit {
 
 exports[`convertSignalInputsGenerator should convert properly for templateUrl 1`] = `
 "
-import { Component, Input } from '@angular/core';
-import { input } from "@angular/core";
+import { Component, Input, input } from '@angular/core';
 
 @Component({
   templateUrl: './my-file.html'
@@ -221,11 +254,60 @@ exports[`convertSignalInputsGenerator should convert properly for templateUrl 2`
   </ng-container>
 </ng-container>
 
+<div>
+  @for (item of normalInput(); track item.id) {
+     <app-test [normalInput]="item.name" />
+  }
+</div>
+
 <test [normalInput]="normalInput()" />
 <test-normalInput />
 <normalInput />
 <another-component something="blah-normalInput" />
 
+<a normalInput [routerLink]="['test-normalInput', '/normalInput' , normalInput(), 'normalInput']">
+ normalInput - {{ normalInput() }}
+ {{ normalInput() }}  normalInput
+ {{ 'normalInput' }} - normalInput
+ {{ normalInput() + 'normalInput' }} - normalInput
+ <span>{{ 'normalInput' + normalInput() }}</span>
+</a>
+
+<button (click)="normalInput() = 123"></button>
+<button (click)="normalInput() = 'normalInput'"></button>
+<button (click)="someFunctionWithnormalInput('normalInput', normalInput())"></button>
+<button (normalInput)="someFunctionWithnormalInput(normalInput(), 'normalInput')"></button>
+<button (eventWithnormalInput)="test = 'normalInput' + normalInput()"></button>
+
+<a>
+ {{ 'someNormalTextnormalInput' | translate: 'normalInput' }}
+
+ {{ normalInput() | translate: normalInput() }}
+ {{ normalInput() | translate: 'normalInput' }}
+ {{ 'normalInput' | translate: 'normalInput' }}
+ {{ 'normalInput' | translate: normalInput() }}
+</a>
+
+<input [(ngModel)]="normalInput()" />
+<cmp name="normalInput"></cmp>
+<cmp [name]="normalInput()"></cmp>
+<cmp name="withnormalInput"></cmp>
+<cmp normalInput="normalInput"></cmp>
+
 <p>{{ data().normalInput }}</p>
 "
 `;
+
+exports[`convertSignalInputsGenerator should remove old import and append new one 1`] = `
+"
+import { Component, input } from '@angular/core';
+
+@Component({})
+export class MyCmp {
+  hello = input<string>();
+;
+}
+"
+`;
+
+exports[`convertSignalInputsGenerator should remove old import and append new one 2`] = `undefined`;

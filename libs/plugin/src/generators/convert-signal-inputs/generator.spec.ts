@@ -24,10 +24,45 @@ const template = `<div>{{ inputWithoutType }}</div>
   </ng-container>
 </ng-container>
 
+<div>
+  @for (item of normalInput; track item.id) {
+     <app-test [normalInput]="item.name" />
+  }
+</div>
+
 <test [normalInput]="normalInput" />
 <test-normalInput />
 <normalInput />
 <another-component something="blah-normalInput" />
+
+<a normalInput [routerLink]="['test-normalInput', '/normalInput' , normalInput, 'normalInput']">
+ normalInput - {{ normalInput }}
+ {{ normalInput }}  normalInput
+ {{ 'normalInput' }} - normalInput
+ {{ normalInput + 'normalInput' }} - normalInput
+ <span>{{ 'normalInput' + normalInput }}</span>
+</a>
+
+<button (click)="normalInput = 123"></button>
+<button (click)="normalInput = 'normalInput'"></button>
+<button (click)="someFunctionWithnormalInput('normalInput', normalInput)"></button>
+<button (normalInput)="someFunctionWithnormalInput(normalInput, 'normalInput')"></button>
+<button (eventWithnormalInput)="test = 'normalInput' + normalInput"></button>
+
+<a>
+ {{ 'someNormalTextnormalInput' | translate: 'normalInput' }}
+
+ {{ normalInput | translate: normalInput }}
+ {{ normalInput | translate: 'normalInput' }}
+ {{ 'normalInput' | translate: 'normalInput' }}
+ {{ 'normalInput' | translate: normalInput }}
+</a>
+
+<input [(ngModel)]="normalInput" />
+<cmp name="normalInput"></cmp>
+<cmp [name]="normalInput"></cmp>
+<cmp name="withnormalInput"></cmp>
+<cmp normalInput="normalInput"></cmp>
 
 <p>{{ data().normalInput }}</p>
 `;
@@ -44,6 +79,14 @@ import { Component } from '@angular/core';
 
 @Component({})
 export class MyCmp {}
+`,
+	shouldRemoveOldImportAndAppendNewOne: `
+import { Component, Input } from '@angular/core';
+
+@Component({})
+export class MyCmp {
+  @Input() hello: string;
+}
 `,
 	component: `
 import { Component, Input } from '@angular/core';
@@ -181,7 +224,7 @@ export class RequestInfoComponent implements OnInit {
   }
 }`,
 	issue290: `
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({})
 export class MyCmp {
@@ -242,6 +285,14 @@ describe('convertSignalInputsGenerator', () => {
 
 	it('should convert properly for templateUrl', async () => {
 		const readContent = setup('componentWithTemplateUrl');
+		await convertSignalInputsGenerator(tree, options);
+		const [updated, , updatedHtml] = readContent();
+		expect(updated).toMatchSnapshot();
+		expect(updatedHtml).toMatchSnapshot();
+	});
+
+	it('should remove old import and append new one', async () => {
+		const readContent = setup('shouldRemoveOldImportAndAppendNewOne');
 		await convertSignalInputsGenerator(tree, options);
 		const [updated, , updatedHtml] = readContent();
 		expect(updated).toMatchSnapshot();

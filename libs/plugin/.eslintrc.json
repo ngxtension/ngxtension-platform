@@ -23,6 +23,8 @@
 					{
 						"ignoredDependencies": [
 							"tslib",
+							"ts-morph",
+							"@angular-eslint/bundled-angular-compiler",
 							"@nx/devkit",
 							"@nx/dependency-checks"
 						]

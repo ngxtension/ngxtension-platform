@@ -1,4 +1,13 @@
 import {
+	Block,
+	Element as Element_2,
+	HtmlParser,
+	ParseTreeResult,
+	RecursiveVisitor,
+	Text as Text_2,
+	visitAll,
+} from '@angular-eslint/bundled-angular-compiler';
+import {
 	Tree,
 	formatFiles,
 	getProjects,
@@ -15,14 +24,15 @@ import {
 	CallExpression,
 	CodeBlockWriter,
 	Decorator,
+	ImportDeclaration,
 	Node,
 	Project,
 	PropertyDeclaration,
+	SourceFile,
 	SyntaxKind,
 	WriterFunction,
 } from 'ts-morph';
 import { ConvertSignalInputsGeneratorSchema } from './schema';
-// import { parseTemplate} from '@angular-eslint/bundled-angular-compiler';
 
 class ContentsStore {
 	private _project: Project = null!;
@@ -56,9 +66,6 @@ function trackContents(
 			!fileContent.includes('@Component') &&
 			!fileContent.includes('@Directive')
 		) {
-			logger.error(
-				`[ngxtension] "${fullPath}" is not a Component nor a Directive`,
-			);
 			return;
 		}
 
@@ -266,12 +273,18 @@ export async function convertSignalInputsGenerator(
 					.some((namedImport) => namedImport.getName() === 'input'),
 		);
 
+		const angularCoreImports = getAngularCoreImports(sourceFile);
+
 		// NOTE: only add input import if we don't have it and we find the first Input decorator
 		if (!hasSignalInputImport) {
-			sourceFile.addImportDeclaration({
-				namedImports: ['input'],
-				moduleSpecifier: '@angular/core',
-			});
+			if (angularCoreImports) {
+				angularCoreImports.addNamedImport('input');
+			} else {
+				sourceFile.addImportDeclaration({
+					namedImports: ['input'],
+					moduleSpecifier: '@angular/core',
+				});
+			}
 		}
 
 		const classes = sourceFile.getClasses();
@@ -345,15 +358,7 @@ export async function convertSignalInputsGenerator(
 								decoratorPropertyName === 'template'
 							) {
 								let originalText = property.getFullText();
-								convertedInputs.forEach((convertedInput) => {
-									originalText = originalText.replaceAll(
-										new RegExp(
-											`(?<!<)(?<!\\[)(?<![\\w-])(?<!\\.\\w*)\\b${convertedInput}\\b(?!\\])(?!>)(?![\\w-])`,
-											'gm',
-										),
-										`${convertedInput}()`,
-									);
-								});
+								originalText = migrateTemplate(originalText, convertedInputs);
 
 								if (originalText !== property.getFullText()) {
 									property.replaceWithText(originalText);
@@ -372,16 +377,7 @@ export async function convertSignalInputsGenerator(
 									: '';
 
 								if (templateText) {
-									convertedInputs.forEach((convertedInput) => {
-										templateText = templateText.replaceAll(
-											new RegExp(
-												`(?<!<)(?<!\\[)(?<![\\w-])(?<!\\.\\w*)\\b${convertedInput}\\b(?!\\])(?!>)(?![\\w-])`,
-												'gm',
-											),
-											`${convertedInput}()`,
-										);
-									});
-
+									templateText = migrateTemplate(templateText, convertedInputs);
 									tree.write(templatePath, templateText);
 								}
 							}
@@ -433,6 +429,25 @@ export async function convertSignalInputsGenerator(
 			}
 		}
 
+		// if @Input is not used anymore, remove the import
+		const hasInputDecoratorUsage = sourceFile.getFullText().includes('@Input');
+		if (!hasInputDecoratorUsage) {
+			const inputImport = sourceFile.getImportDeclaration(
+				(importDecl) =>
+					importDecl.getModuleSpecifierValue() === '@angular/core' &&
+					importDecl
+						.getNamedImports()
+						.some((namedImport) => namedImport.getName() === 'Input'),
+			);
+
+			if (inputImport) {
+				const classToRemove = inputImport
+					.getNamedImports()
+					.find((namedImport) => namedImport.getName() === 'Input');
+				classToRemove.remove();
+			}
+		}
+
 		tree.write(sourcePath, sourceFile.getFullText());
 	}
 
@@ -454,6 +469,297 @@ export async function convertSignalInputsGenerator(
 [ngxtension] Conversion completed. Please check the content and run your formatter as needed.
 `,
 	);
+}
+
+function migrateTemplate(
+	template: string,
+	convertedInputs: Set<string>,
+): string {
+	const parsedTemplate: ParseTreeResult = new HtmlParser().parse(
+		template,
+		'template.html',
+		{
+			tokenizeBlocks: true,
+		},
+	);
+
+	const sortedInputsFromLongest = Array.from(convertedInputs).sort(
+		(a, b) => b.length - a.length,
+	);
+
+	const visitor = new ElementCollector(sortedInputsFromLongest);
+	visitAll(visitor, parsedTemplate.rootNodes);
+
+	let changedOffset = 0;
+	visitor.elements.forEach((element) => {
+		// replace the input with the new input based on start and end
+		const { start, end, value, inputs, type } = element;
+
+		if (type === 'interpolation') {
+			const replacedValue = replaceInputsInsideInterpolation(value, inputs);
+			template = replaceTemplate(
+				template,
+				replacedValue,
+				start,
+				end,
+				changedOffset,
+			);
+			changedOffset += replacedValue.length - value.length;
+		} else if (type === 'property-binding') {
+			const replacedValue = replaceOnlyIfNotWrappedInQuotesOrPropertyAccess(
+				value,
+				inputs,
+			);
+			template = replaceTemplate(
+				template,
+				replacedValue,
+				start,
+				end,
+				changedOffset,
+			);
+			changedOffset += replacedValue.length - value.length;
+		} else if (type === 'event-binding') {
+			const replacedValue = replaceOnlyIfNotWrappedInQuotesOrPropertyAccess(
+				value,
+				inputs,
+			);
+			template = replaceTemplate(
+				template,
+				replacedValue,
+				start,
+				end,
+				changedOffset,
+			);
+			changedOffset += replacedValue.length - value.length;
+		} else if (type === 'structural-directive') {
+			const replacedValue = replaceOnlyIfNotWrappedInQuotesOrPropertyAccess(
+				value,
+				inputs,
+			);
+			template = replaceTemplate(
+				template,
+				replacedValue,
+				start,
+				end,
+				changedOffset,
+			);
+			changedOffset += replacedValue.length - value.length;
+		} else if (type === 'block') {
+			const replacedValue = replaceOnlyIfNotWrappedInQuotesOrPropertyAccess(
+				value,
+				inputs,
+			);
+			template = replaceTemplate(
+				template,
+				replacedValue,
+				start,
+				end,
+				changedOffset,
+			);
+			changedOffset += replacedValue.length - value.length;
+		}
+	});
+
+	return template;
+}
+
+/** Finds all elements that are using my input in some way */
+class ElementCollector extends RecursiveVisitor {
+	readonly elements: ElementToMigrate[] = [];
+
+	constructor(private inputs: string[] = []) {
+		super();
+	}
+
+	// collect all places where we can have dynamic values
+	// 1. interpolation
+	// 2. property binding
+	// 3. event binding
+	// 4. structural directive
+	// 5. animations - not supported yet
+
+	override visitText(ast: Text_2, context: any): any {
+		if (ast.value.includes('{{')) {
+			const usedInputs = collectUsedInputs(ast.value, this.inputs);
+
+			if (usedInputs.length) {
+				this.elements.push({
+					type: 'interpolation',
+					value: ast.value,
+					inputs: usedInputs,
+					start: ast.sourceSpan.start.offset,
+					end: ast.sourceSpan.end.offset,
+				});
+			}
+		}
+		return super.visitText(ast, context);
+	}
+
+	override visitElement(element: Element_2, context: any) {
+		if (element.attrs.length > 0) {
+			for (const attr of element.attrs) {
+				if (attr.name.startsWith('[') && attr.name.endsWith(']')) {
+					// property binding
+					const usedInputs = collectUsedInputs(attr.value, this.inputs);
+
+					if (usedInputs.length) {
+						this.elements.push({
+							type: 'property-binding',
+							value: attr.value,
+							inputs: usedInputs,
+							start: attr.valueSpan.start.offset,
+							end: attr.valueSpan.end.offset,
+						});
+					}
+				}
+
+				if (attr.name.startsWith('(') && attr.name.endsWith(')')) {
+					// event binding
+					const usedInputs = collectUsedInputs(attr.value, this.inputs);
+
+					if (usedInputs.length) {
+						this.elements.push({
+							type: 'event-binding',
+							value: attr.value,
+							inputs: usedInputs,
+							start: attr.valueSpan.start.offset,
+							end: attr.valueSpan.end.offset,
+						});
+					}
+				}
+
+				if (attr.name.startsWith('*')) {
+					// structural directive
+					const usedInputs = collectUsedInputs(attr.value, this.inputs);
+
+					if (usedInputs.length) {
+						this.elements.push({
+							type: 'structural-directive',
+							value: attr.value,
+							inputs: usedInputs,
+							start: attr.valueSpan.start.offset,
+							end: attr.valueSpan.end.offset,
+						});
+					}
+				}
+			}
+		}
+		return super.visitElement(element, context);
+	}
+
+	override visitBlock(block: Block, context: any): any {
+		if (block.parameters.length > 0) {
+			block.parameters.forEach((param) => {
+				const usedInputs = collectUsedInputs(param.expression, this.inputs);
+
+				if (usedInputs.length) {
+					this.elements.push({
+						type: 'block', // if, else if, for, switch, case
+						value: param.expression,
+						inputs: usedInputs,
+						start: param.sourceSpan.start.offset,
+						end: param.sourceSpan.end.offset,
+					});
+				}
+			});
+		}
+		return super.visitBlock(block, context);
+	}
+}
+
+function collectUsedInputs(value: string, inputs: string[]): string[] {
+	const usedInputs = [];
+	for (const input of inputs) {
+		if (value.includes(input)) {
+			usedInputs.push(input);
+		}
+		if (value === input) {
+			break; // if the input is the only thing in the text, we don't need to check further
+		}
+	}
+
+	return usedInputs;
+}
+
+function replaceInputsInsideInterpolation(
+	value: string,
+	inputs: string[],
+): string {
+	// find all interpolations and replace the inputs for each interpolation
+	value = value.replaceAll(/{{(.*?)}}/g, (match) => {
+		const usedInputs = [];
+		for (const input of inputs) {
+			if (match.includes(input)) {
+				usedInputs.push(input);
+			}
+			if (match === input) {
+				break; // if the input is the only thing in the text, we don't need to check further
+			}
+		}
+
+		if (usedInputs.length) {
+			return replaceOnlyIfNotWrappedInQuotesOrPropertyAccess(match, usedInputs);
+		}
+
+		return match;
+	});
+
+	return value;
+}
+
+/**
+ * Replace the text only if it's not wrapped in quotes or property access
+ */
+function replaceOnlyIfNotWrappedInQuotesOrPropertyAccess(
+	value: string,
+	inputs: string[],
+): string {
+	// replace only if not wrapped in quotes
+	// replace only if doesn't start with . (property access)
+	inputs.forEach((input) => {
+		const regex = new RegExp(`(?<!['".])\\b${input}\\b(?!['"])`, 'g');
+		value = value.replace(regex, `${input}()`);
+	});
+
+	return value;
+}
+
+/**
+ * Replace the value in the template with the new value based on the start and end position + offset
+ */
+function replaceTemplate(
+	template: string,
+	replaceValue: string,
+	start: number,
+	end: number,
+	offset: number,
+) {
+	return (
+		template.slice(0, start + offset) +
+		replaceValue +
+		template.slice(end + offset)
+	);
+}
+
+export interface ElementToMigrate {
+	type:
+		| 'interpolation'
+		| 'property-binding'
+		| 'attribute-binding'
+		| 'event-binding'
+		| 'two-way-binding'
+		| 'structural-directive'
+		| 'block';
+	value: string;
+	inputs: string[];
+	start: number;
+	end: number;
+}
+
+function getAngularCoreImports(sourceFile: SourceFile): ImportDeclaration {
+	return sourceFile.getImportDeclaration((importDecl) => {
+		return importDecl.getModuleSpecifierValue() === '@angular/core';
+	});
 }
 
 export default convertSignalInputsGenerator;

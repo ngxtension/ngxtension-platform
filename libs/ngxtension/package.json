@@ -29,9 +29,10 @@
 		}
 	},
 	"dependencies": {
-		"@nx/devkit": "^17.0.0",
-		"nx": "^17.0.0",
-		"ts-morph": "^21.0.1",
+		"@angular-eslint/bundled-angular-compiler": "^17.3.0",
+		"@nx/devkit": "^18.0.0",
+		"nx": "^18.0.0",
+		"ts-morph": "^22.0.0",
 		"tslib": "^2.3.0"
 	},
 	"sideEffects": false,
