@@ -38,6 +38,8 @@ jobs:
 
       - name: Init git and commit local artifacts
         run: |
+          ls -la
+          ls -la docs
           cd docs/dist
           git init
           git add .
