@@ -169,6 +169,38 @@ this subject as an `actionSource` allows you to still trigger it through
 can be accessed on the state object, even if you need to create an external
 subject.
 
+## Action Updates
+
+Each `actionSource` will have an equivalent `Updated` version signal automatically generated that will be incremented each time the `actionSource` emits or completes, e.g:
+
+```ts
+  state = signalSlice({
+    initialState: this.initialState,
+    actionSources: {
+      load: (_state, $: Observable<void>) => $.pipe(
+        switchMap(() => this.someService.load()),
+        map(data => ({ someProperty: data })
+      )
+    }
+  })
+
+  effect(() => {
+    // triggered when `load` emits/completes and on init
+    console.log(state.loadUpdated())
+  })
+```
+
+This signal will return the current version, starting at `0`. If you do not want your `effect` to be triggered on initialisation you can check for the `0` version value, e.g:
+
+```ts
+effect(() => {
+	if (state.loadUpdated()) {
+		// triggered ONLY when `load` emits/completes
+		// NOT on init
+	}
+});
+```
+
 ## Action Streams
 
 The source/stream for each action is also exposed on the state object. That means that you can access:
@@ -177,7 +209,7 @@ The source/stream for each action is also exposed on the state object. That mean
 this.state.add$;
 ```
 
-Which will allow you to react to the `add` action being called.
+Which will allow you to react to the `add` action being called via an observable.
 
 ## Selectors
 
