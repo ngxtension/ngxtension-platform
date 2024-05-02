@@ -1743,7 +1743,6 @@ export class MyCmp {
     @ViewChildren(PrimeTemplate, { read: ElementRef }) set _templates3(templates2: QueryList<ElementRef>) {
       console.log('doSomethingWith', templates3);
     }
-)
 
     @ViewChild('container', { read: ElementRef }) containerViewChild: ElementRef;
     @ViewChild('resizeHelper') resizeHelperViewChild: Nullable<ElementRef>;
@@ -1753,6 +1752,13 @@ export class MyCmp {
     @ViewChild('scrollableView') scrollableViewChild: Nullable<ElementRef>;
     @ViewChild('scrollableFrozenView') scrollableFrozenViewChild: Nullable<ElementRef>;
 
+
+    @ContentChildren(CdkTreeNodeOutlet, {
+      // We need to use \`descendants: true\`, because Ivy will no longer match
+      // indirect descendants if it's left as false.
+      descendants: true,
+    })
+    nodeOutlet: QueryList<CdkTreeNodeOutlet>;
 
     ngAfterContentInit() {
         (this.templates as QueryList<PrimeTemplate>).forEach((item) => {
@@ -1774,6 +1780,13 @@ export class MyCmp {
                     break;
             }
         });
+
+        this.nodeOutlet.changes
+          .pipe(takeUntil(this._destroyed))
+          .subscribe(() => this.updateChildrenNodes());
+          
+        this.nodeOutlet.changes.pipe(takeUntil(this._destroyed))
+          .subscribe(() => this.updateChildrenNodes());
 
         doSomethingWithThisButton(this.loginButton);
     }
