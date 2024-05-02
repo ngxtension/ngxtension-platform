@@ -171,6 +171,8 @@ subject.
 
 ## Action Updates
 
+:::caution Action Updates are currently experimental, the API may be changed or removed entirely. Please feel free to reach out to joshuamorony with feedback or open an issue. :::
+
 Each `actionSource` will have an equivalent `Updated` version signal automatically generated that will be incremented each time the `actionSource` emits or completes, e.g:
 
 ```ts
