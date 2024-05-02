@@ -176,6 +176,38 @@ describe(signalSlice.name, () => {
 			});
 		});
 
+		it('should create action updates', () => {
+			TestBed.runInInjectionContext(() => {
+				const state = signalSlice({
+					initialState,
+					actionSources: {
+						increaseAge: (state, $: Observable<number>) =>
+							$.pipe(map((amount) => ({ age: state().age + amount }))),
+					},
+				});
+
+				expect(state.increaseAgeUpdated).toBeDefined();
+			});
+		});
+
+		it('should increment updated signal every time source emits', () => {
+			TestBed.runInInjectionContext(() => {
+				const state = signalSlice({
+					initialState,
+					actionSources: {
+						increaseAge: (state, $: Observable<number>) =>
+							$.pipe(map((amount) => ({ age: state().age + amount }))),
+					},
+				});
+
+				expect(state.increaseAgeUpdated()).toEqual(0);
+				state.increaseAge(1);
+				expect(state.increaseAgeUpdated()).toEqual(1);
+				state.increaseAge(1);
+				expect(state.increaseAgeUpdated()).toEqual(2);
+			});
+		});
+
 		it('should resolve the updated state as a promise after reducer is invoked', (done) => {
 			TestBed.runInInjectionContext(() => {
 				const state = signalSlice({

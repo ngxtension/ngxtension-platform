@@ -89,6 +89,13 @@ type ActionStreams<
 			: never;
 };
 
+type ActionUpdates<
+	TSignalValue,
+	TActionSources extends NamedActionSources<TSignalValue>,
+> = {
+	[K in keyof TActionSources & string as `${K}Updated`]: Signal<number>;
+};
+
 export type Source<TSignalValue> = Observable<PartialOrValue<TSignalValue>>;
 type SourceConfig<TSignalValue> = Array<
 	Source<TSignalValue> | ((state: Signal<TSignalValue>) => Source<TSignalValue>)
@@ -104,7 +111,8 @@ export type SignalSlice<
 	ExtraSelectors<TSelectors> &
 	Effects<TEffects> &
 	ActionMethods<TSignalValue, TActionSources> &
-	ActionStreams<TSignalValue, TActionSources>;
+	ActionStreams<TSignalValue, TActionSources> &
+	ActionUpdates<TSignalValue, TActionSources>;
 
 type SelectorsState<TSignalValue extends NoOptionalProperties<TSignalValue>> =
 	Signal<TSignalValue> & Selectors<TSignalValue>;
@@ -269,6 +277,7 @@ function addReducerProperties(
 	subs: Subject<unknown>[],
 	observableFromActionSource?: Observable<any>,
 ) {
+	const version = signal(0);
 	Object.defineProperties(readonlyState, {
 		[key]: {
 			value: (nextValue: unknown) => {
@@ -276,6 +285,7 @@ function addReducerProperties(
 					return new Promise((res, rej) => {
 						nextValue.pipe(takeUntilDestroyed(destroyRef)).subscribe({
 							next: (value) => {
+								version.update((v) => v + 1);
 								subject.next(value);
 							},
 							error: (err) => {
@@ -283,6 +293,7 @@ function addReducerProperties(
 								rej(err);
 							},
 							complete: () => {
+								version.update((v) => v + 1);
 								subject.complete();
 								res(readonlyState());
 							},
@@ -300,12 +311,16 @@ function addReducerProperties(
 					state$.pipe(take(1)).subscribe((val) => {
 						res(val);
 					});
+					version.update((v) => v + 1);
 					subject.next(nextValue);
 				});
 			},
 		},
 		[`${key}$`]: {
 			value: subject.asObservable(),
+		},
+		[`${key}Updated`]: {
+			value: version.asReadonly(),
 		},
 	});
 	subs.push(subject);
