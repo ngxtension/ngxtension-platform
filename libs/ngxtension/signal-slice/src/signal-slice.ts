@@ -46,29 +46,6 @@ type Effects<TEffects extends NamedEffects> = {
 	[K in keyof TEffects]: EffectRef;
 };
 
-type InferPayload<T> =
-	T extends ActionSourceFn<any, infer TPayload> ? TPayload : never;
-
-type ActionSourcePayloadType<TActionSource> = InferPayload<TActionSource>;
-
-type ActionSourceReturnType<TActionSource> = TActionSource extends (
-	state: any,
-	value: any,
-) => Observable<infer TValue>
-	? TValue
-	: never;
-
-type NamedActionEffects<TActionSources> = Partial<{
-	[K in keyof TActionSources]: (action: {
-		name: K;
-		payload: ActionSourcePayloadType<TActionSources[K]>;
-		value: ActionSourceReturnType<TActionSources[K]>;
-		err: any;
-	}) => void;
-}>;
-
-type ActionEffects<TActionSources> = NamedActionEffects<TActionSources>;
-
 type Action<TSignalValue, TValue> = TValue extends [void]
 	? () => Promise<TSignalValue>
 	: [unknown] extends TValue
@@ -122,12 +99,10 @@ export type SignalSlice<
 	TActionSources extends NamedActionSources<TSignalValue>,
 	TSelectors extends NamedSelectors,
 	TEffects extends NamedEffects,
-	TActionEffects extends NamedActionEffects<TActionSources>,
 > = Signal<TSignalValue> &
 	Selectors<TSignalValue> &
 	ExtraSelectors<TSelectors> &
 	Effects<TEffects> &
-	ActionEffects<TActionEffects> &
 	ActionMethods<TSignalValue, TActionSources> &
 	ActionStreams<TSignalValue, TActionSources>;
 
@@ -147,7 +122,6 @@ export function signalSlice<
 	TActionSources extends NamedActionSources<TSignalValue>,
 	TSelectors extends NamedSelectors,
 	TEffects extends NamedEffects,
-	TActionEffects extends NamedActionEffects<TActionSources>,
 >(config: {
 	initialState: TSignalValue;
 	sources?: SourceConfig<TSignalValue>;
@@ -157,16 +131,7 @@ export function signalSlice<
 	effects?: (
 		state: EffectsState<TSignalValue, TActionSources, TSelectors>,
 	) => TEffects;
-	actionEffects?: (
-		state: EffectsState<TSignalValue, TActionSources, TSelectors>,
-	) => TActionEffects;
-}): SignalSlice<
-	TSignalValue,
-	TActionSources,
-	TSelectors,
-	TEffects,
-	TActionEffects
-> {
+}): SignalSlice<TSignalValue, TActionSources, TSelectors, TEffects> {
 	const destroyRef = inject(DestroyRef);
 	const injector = inject(Injector);
 
@@ -183,10 +148,6 @@ export function signalSlice<
 			(typeof config)['effects'],
 			undefined
 		>,
-		actionEffects = (() => ({})) as unknown as Exclude<
-			(typeof config)['actionEffects'],
-			undefined
-		>,
 	} = config;
 
 	const state = signal(initialState);
@@ -200,8 +161,7 @@ export function signalSlice<
 		TSignalValue,
 		TActionSources,
 		TSelectors,
-		TEffects,
-		TActionEffects
+		TEffects
 	>;
 
 	connectSources(state, sources);
@@ -209,9 +169,6 @@ export function signalSlice<
 	for (const [key, actionSource] of Object.entries(
 		actionSources as TActionSources,
 	)) {
-		const effectTrigger = new Subject<any>();
-		subs.push(effectTrigger);
-
 		if (isObservable(actionSource)) {
 			addReducerProperties(
 				readonlyState,
@@ -220,7 +177,6 @@ export function signalSlice<
 				destroyRef,
 				actionSource,
 				subs,
-				effectTrigger,
 			);
 		} else {
 			const subject = new Subject();
@@ -234,19 +190,9 @@ export function signalSlice<
 				destroyRef,
 				subject,
 				subs,
-				effectTrigger,
 				sharedObservable,
 			);
 		}
-
-		const actionEffectFns = actionEffects(slice);
-
-		effectTrigger.subscribe((action) => {
-			const effectFn = actionEffectFns[action.name];
-			if (effectFn) {
-				effectFn(action);
-			}
-		});
 	}
 
 	for (const key in initialState) {
@@ -262,6 +208,9 @@ export function signalSlice<
 	}
 
 	for (const [key, namedEffect] of Object.entries(effects(slice))) {
+		console.warn(
+			"The 'effects' configuration in signalSlice is deprecated. Please use standard signal effects outside of signalSlice instead.",
+		);
 		Object.defineProperty(slice, key, {
 			value: effect((onCleanup) => {
 				const maybeCleanup = namedEffect();
@@ -317,7 +266,6 @@ function addReducerProperties(
 	destroyRef: DestroyRef,
 	subject: Subject<unknown>,
 	subs: Subject<unknown>[],
-	effectTrigger: Subject<any>,
 	observableFromActionSource?: Observable<any>,
 ) {
 	Object.defineProperties(readonlyState, {
@@ -327,21 +275,9 @@ function addReducerProperties(
 					return new Promise((res, rej) => {
 						nextValue.pipe(takeUntilDestroyed(destroyRef)).subscribe({
 							next: (value) => {
-								effectTrigger.next({
-									name: key,
-									payload: nextValue,
-									value,
-									err: undefined,
-								});
 								subject.next(value);
 							},
 							error: (err) => {
-								effectTrigger.next({
-									name: key,
-									payload: nextValue,
-									value: undefined,
-									err,
-								});
 								subject.error(err);
 								rej(err);
 							},
@@ -356,24 +292,7 @@ function addReducerProperties(
 				if (observableFromActionSource) {
 					observableFromActionSource
 						.pipe(takeUntilDestroyed(destroyRef))
-						.subscribe({
-							next: (value) => {
-								effectTrigger.next({
-									name: key,
-									payload: nextValue,
-									value,
-									err: undefined,
-								});
-							},
-							error: (err) => {
-								effectTrigger.next({
-									name: key,
-									payload: nextValue,
-									value: undefined,
-									err,
-								});
-							},
-						});
+						.subscribe();
 				}
 
 				return new Promise((res) => {

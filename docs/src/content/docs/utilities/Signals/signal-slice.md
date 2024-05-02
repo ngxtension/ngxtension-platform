@@ -12,10 +12,6 @@ The key motivation, and what makes this declarative, is that all the ways for
 updating this signal are declared upfront with `sources` and `actionSources`.
 It is not possible to imperatively update the state.
 
-:::tip[Note]
-This can be improved when TypeScript 5.4 is released, but until then the **ordering of configurations** is important to infer types correctly. To prevent potential typing issues, make sure to supply both `effects` and `actionEffects` **after** all other configurations.
-:::
-
 ## Basic Usage
 
 ```ts
@@ -85,6 +81,10 @@ state = signalSlice({
 	],
 });
 ```
+
+:::tip[Lazy Loading]
+If you want any sources to be loaded only _after_ the `signalSlice` is accessed, you can use the `lazySources` configuration.
+:::
 
 ## Action Sources
 
@@ -205,108 +205,40 @@ this.state.loadedAndError();
 
 ## Effects
 
-It is possible to define signal effects within `signalSlice` itself. This just
-uses a standard `effect` behind the scenes, but it provides the benefit of
-allowing you to define your effects alongside all your other state concerns
-rather than having to have them separately in a `constructor` or field
-initialiser:
-
-```ts
-state = signalSlice({
-	initialState: this.initialState,
-	sources: [this.sources$],
-	actionSources: {
-		add: (state, action$: Observable<AddChecklist>) =>
-			action$.pipe(
-				map((checklist) => ({
-					checklists: [...state().checklists, checklist],
-				})),
-			),
-	},
-	effects: (state) => ({
-		init: () => {
-			console.log('hello');
-		},
-		saveChecklists: () => {
-			// side effect to save checklists
-			console.log(state.checklists());
-		},
-		withCleanup: () => {
-			// side effect to save checklists
-			console.log(state.checklists());
-			return () => {
-				console.log('clean up');
-			};
-		},
-	}),
-});
-```
-
-Make sure that you access the state in effects using your `selectors`:
-
-```ts
-state.checklists();
-```
-
-**NOT** directly using the state signal:
-
-```ts
-state().checklists;
-```
-
-If you do, all of your effects will be triggered whenever _anything_ in the state signal updates.
-
-The `effects` are available on the `SignalSlice` as `EffectRef` so you can terminate the effects preemptively if you choose to do so
-
-```ts
-state.saveChecklists.destroy();
-//      👆 EffectRef
-```
-
-## Action Effects
-
 :::caution
-Action Effects are currently experimental, the API may be changed or removed entirely. Please feel free to reach out to `joshuamorony` with feedback or open an issue.
+The `effects` property of `signalSlice` has been deprecated and will eventually be removed. Please use standard signal effects outside of the `signalSlice` instead.
 :::
 
-An `actionEffect` can be used to trigger some imperative action in response to
-an `actionSource` emitting. If you have an `actionSource` named `login`, then
-you can create an `actionEffect` for this `actionSource` by giving the
-`actionEffect` the same name.
-
-For example, you might have a `login` `actionSource` and when that login
-completes you might want to trigger some imperative side effect like navigating
-to another route:
+To create side effects for state changes, you can use the standard Angular `effect` to react to the state signal or selectors from `signalSlice` changing, e.g:
 
 ```ts
-state = signalSlice({
-	initialState: this.initialState,
-	sources: [this.sources$],
+const state = signalSlice({
+	initialState,
 	actionSources: {
-		login: (state, action$: Observable<string>) =>
-			action$.pipe(
-				switchMap(() => this.getTemporalUser()),
-				map(() => ({})),
-			),
+		selectVideo,
+		generateAudio,
+		uploadAudio,
 	},
-	actionEffects: () => ({
-		login: (action) => {
-			console.log(action.name); // the name of the action triggered
-			console.log(action.payload); // the value the action was called with
-			console.log(action.value); // the value the source emitted with (if successful, undefined otherwise)
-			console.log(action.err); // the error the source emitted (if errored, undefined otherwise)
-		},
-	}),
+});
+
+effect(() => {
+	if (state.status() === 'complete') {
+		// do something
+	}
 });
 ```
 
-Action Effects can also be passed the signal slice object, which can be used to
-trigger other actions from within an `actionEffect`:
+If you intend to trigger another `actionSource` from within your effects, it will be necessary to enable `allowSignalWrites` as triggering an `actionSource` will cause a value to be written to the state signal, e.g:
 
 ```ts
-    actionEffects: (state) => ({
-      someAction: (action) => {
-        state.someOtherAction();
-      },
-    }),
+effect(
+	() => {
+		const status = state.status();
+
+		if (state.status() === 'complete') {
+			state.uploadAudio();
+		}
+	},
+	{ allowSignalWrites: true },
+);
 ```
