@@ -45,6 +45,23 @@ export function migrateTemplateVariablesToSignals(
 				changedOffset,
 			);
 			changedOffset += replacedValue.length - value.length;
+		} else if (type === 'attribute-binding') {
+			// inside attribute binding, we can have interpolation that's why we only replace inside interpolation
+			const replacedValue = replaceVariablesInsideInterpolation(
+				value,
+				variables,
+			);
+			template = replaceTemplate(
+				template,
+				replacedValue,
+				start,
+				end,
+				changedOffset,
+			);
+			changedOffset += replacedValue.length - value.length;
+		} else if (type === 'two-way-binding') {
+			// we don't need to replace the value for two-way binding
+			// as two-way binding works with the same variable
 		} else if (type === 'property-binding') {
 			const replacedValue = replaceOnlyIfNotWrappedInQuotesOrPropertyAccess(
 				value,
@@ -138,20 +155,38 @@ class ElementCollector extends RecursiveVisitor {
 		if (element.attrs.length > 0) {
 			for (const attr of element.attrs) {
 				if (attr.name.startsWith('[') && attr.name.endsWith(']')) {
-					// property binding
-					const usedVariables = collectUsedVariables(
-						attr.value,
-						this.variables,
-					);
+					// two-way binding
+					if (attr.name.startsWith('[(') && attr.name.endsWith(')]')) {
+						const usedVariables = collectUsedVariables(
+							attr.value,
+							this.variables,
+						);
 
-					if (usedVariables.length) {
-						this.elements.push({
-							type: 'property-binding',
-							value: attr.value,
-							variables: usedVariables,
-							start: attr.valueSpan.start.offset,
-							end: attr.valueSpan.end.offset,
-						});
+						if (usedVariables.length) {
+							this.elements.push({
+								type: 'two-way-binding',
+								value: attr.value,
+								variables: usedVariables,
+								start: attr.valueSpan.start.offset,
+								end: attr.valueSpan.end.offset,
+							});
+						}
+					} else {
+						// property binding
+						const usedVariables = collectUsedVariables(
+							attr.value,
+							this.variables,
+						);
+
+						if (usedVariables.length) {
+							this.elements.push({
+								type: 'property-binding',
+								value: attr.value,
+								variables: usedVariables,
+								start: attr.valueSpan.start.offset,
+								end: attr.valueSpan.end.offset,
+							});
+						}
 					}
 				}
 
@@ -183,6 +218,25 @@ class ElementCollector extends RecursiveVisitor {
 					if (usedVariables.length) {
 						this.elements.push({
 							type: 'structural-directive',
+							value: attr.value,
+							variables: usedVariables,
+							start: attr.valueSpan.start.offset,
+							end: attr.valueSpan.end.offset,
+						});
+					}
+				}
+
+				// attribute bindings
+				if (attr.value.includes('{{')) {
+					// interpolation inside attribute
+					const usedVariables = collectUsedVariables(
+						attr.value,
+						this.variables,
+					);
+
+					if (usedVariables.length) {
+						this.elements.push({
+							type: 'attribute-binding',
 							value: attr.value,
 							variables: usedVariables,
 							start: attr.valueSpan.start.offset,
@@ -267,8 +321,9 @@ function replaceOnlyIfNotWrappedInQuotesOrPropertyAccess(
 ): string {
 	// replace only if not wrapped in quotes
 	// replace only if doesn't start with . (property access)
+	// replace only if it doesn't end with : (it's a key-value pair)
 	variables.forEach((variable) => {
-		const regex = new RegExp(`(?<!['".])\\b${variable}\\b(?!['"])`, 'g');
+		const regex = new RegExp(`(?<!['".])\\b${variable}\\b(?!['":])`, 'g');
 		value = value.replace(regex, `${variable}()`);
 	});
 

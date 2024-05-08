@@ -85,7 +85,11 @@ function getSignalInputInitializer(
 				types.push(typeNode);
 				types.push('| undefined');
 			} else {
-				types.push(typeNode.replace('| undefined', ''));
+				if (property.getInitializer()?.getText().includes('undefined')) {
+					types.push(typeNode);
+				} else {
+					types.push(typeNode.replace('| undefined', ''));
+				}
 			}
 
 			writer.write(types.concat('>').join(''));
