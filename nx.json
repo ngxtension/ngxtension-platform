@@ -79,10 +79,12 @@
 		"version": {
 			"preVersionCommand": "nx package ngxtension"
 		},
-		"conventionalCommits": {
+		"changelog": {
 			"workspaceChangelog": {
 				"createRelease": "github"
-			},
+			}
+		},
+		"conventionalCommits": {
 			"types": {
 				"feat": {
 					"changelog": {
