@@ -73,11 +73,16 @@
 	},
 	"release": {
 		"projects": ["ngxtension"],
+		"git": {
+			"commitMessage": "chore: release {version}"
+		},
 		"version": {
-			"preVersionCommand": "nx package ngxtension",
-			"conventionalCommits": true
+			"preVersionCommand": "nx package ngxtension"
 		},
 		"conventionalCommits": {
+			"workspaceChangelog": {
+				"createRelease": "github"
+			},
 			"types": {
 				"feat": {
 					"changelog": {
