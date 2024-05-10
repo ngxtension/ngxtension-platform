@@ -1,3 +1,18 @@
+## 3.2.0 (2024-05-10)
+
+
+### Features
+
+- support changes observable by converting it to use toObservable with signals ([#364](https://github.com/ngxtension/ngxtension-platform/pull/364))
+
+### Bug Fixes
+
+- **signal-input-migration:** fix two-way bindings and interpolations inside attribute values ([#369](https://github.com/ngxtension/ngxtension-platform/pull/369))
+
+### ❤️  Thank You
+
+- Enea Jahollari @eneajaho
+
 
 
 ## [3.1.2](https://github.com/ngxtension/ngxtension-platform/compare/3.1.1...3.1.2) (2024-05-01)
