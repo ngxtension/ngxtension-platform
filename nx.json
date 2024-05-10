@@ -71,5 +71,45 @@
 			"projectNameAndRootFormat": "as-provided"
 		}
 	},
+	"release": {
+		"projects": ["ngxtension"],
+		"version": {
+			"preVersionCommand": "nx package ngxtension",
+			"conventionalCommits": true
+		},
+		"conventionalCommits": {
+			"types": {
+				"feat": {
+					"changelog": {
+						"title": "Features"
+					}
+				},
+				"fix": {
+					"changelog": {
+						"title": "Bug Fixes"
+					}
+				},
+				"cleanup": {
+					"changelog": {
+						"title": "Cleanup"
+					},
+					"semverBump": "patch"
+				},
+				"docs": {
+					"changelog": {
+						"title": "Documentation"
+					},
+					"semverBump": "none"
+				},
+				"refactor": {
+					"changelog": {
+						"title": "Refactor"
+					},
+					"semverBump": "patch"
+				}
+			}
+		},
+		"releaseTagPattern": "{version}"
+	},
 	"nxCloudAccessToken": "YWVmZjhlYjMtMTBlZS00YTFiLTkzY2ItOTkxZDcyNzdiYjllfHJlYWQtd3JpdGU="
 }

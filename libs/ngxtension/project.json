@@ -5,6 +5,13 @@
 	"prefix": "libs/ngxtension-platform",
 	"tags": [],
 	"projectType": "library",
+	"release": {
+		"version": {
+			"generatorOptions": {
+				"packageRoot": "dist/{projectRoot}"
+			}
+		}
+	},
 	"targets": {
 		"package": {
 			"executor": "nx:run-commands",
@@ -36,10 +43,9 @@
 			"executor": "@nx/eslint:lint",
 			"outputs": ["{options.outputFile}"]
 		},
-		"publish": {
-			"command": "npm publish",
+		"nx-release-publish": {
 			"options": {
-				"cwd": "dist/libs/ngxtension"
+				"packageRoot": "dist/{projectRoot}"
 			}
 		}
 	}
