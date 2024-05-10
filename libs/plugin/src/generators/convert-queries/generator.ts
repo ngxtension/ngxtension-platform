@@ -9,12 +9,16 @@ import {
 } from '@nx/devkit';
 import { readFileSync } from 'node:fs';
 import { exit } from 'node:process';
-import { CodeBlockWriter, Decorator, Node, WriterFunction } from 'ts-morph';
-import { ContentsStore } from '../shared-utils/contents-store';
 import {
-	getAngularCoreImports,
-	migrateSignalsInClassOrDecorator,
-} from '../shared-utils/migrate-signals-in-ts';
+	CodeBlockWriter,
+	Decorator,
+	Node,
+	Scope,
+	WriterFunction,
+} from 'ts-morph';
+import { ContentsStore } from '../shared-utils/contents-store';
+import { importFrom, removeImport } from '../shared-utils/import-utils';
+import { migrateSignalsInClassOrDecorator } from '../shared-utils/migrate-signals-in-ts';
 import { ConvertContentQueriesGeneratorSchema } from './schema';
 
 const CONTENT_QUERIES = [
@@ -210,6 +214,8 @@ export async function convertQueriesGenerator(
 
 		const classes = sourceFile.getClasses();
 
+		let shouldImportToObservable = false;
+
 		for (const targetClass of classes) {
 			const applicableDecorator = targetClass.getDecorator((decoratorDecl) => {
 				return ['Component', 'Directive'].includes(decoratorDecl.getName());
@@ -283,10 +289,52 @@ export async function convertQueriesGenerator(
 					applicableDecorator,
 					convertedVariables,
 				);
+
+				const variablesToAddChangesProperty = new Set<string>();
+
+				// replace the .changes with the new property
+				convertedVariables.forEach((value, key) => {
+					const changesPatterns = [
+						`this.${key}().changes`,
+						`this.${key}()?.changes`,
+						`this.${key}()!.changes`,
+					];
+
+					// find the pattern in the source text
+					targetClass.forEachDescendant((node) => {
+						if (Node.isPropertyAccessExpression(node)) {
+							const propertyAccess = node;
+							for (const pattern of changesPatterns) {
+								if (propertyAccess.getExpression().getText() === pattern) {
+									propertyAccess.forEachChild((x) => {
+										if (x.getText() === pattern) {
+											x.replaceWithText(`this.${key}Changes`);
+											variablesToAddChangesProperty.add(key);
+										}
+									});
+									break;
+								}
+							}
+						}
+					});
+				});
+
+				for (const key of variablesToAddChangesProperty) {
+					const shouldAddChangesProperty = !targetClass.getProperty(
+						`${key}Changes`,
+					);
+					if (shouldAddChangesProperty) {
+						targetClass.addProperty({
+							name: `${key}Changes`,
+							isReadonly: true,
+							scope: Scope.Protected,
+							initializer: `toObservable(this.${key})`,
+						});
+						shouldImportToObservable = true;
+					}
+				}
 			}
 		}
-
-		const importsToAdd: string[] = [];
 
 		SIGNAL_CONTENT_QUERIES.forEach((query) => {
 			const sourceText = sourceFile.getFullText();
@@ -295,21 +343,13 @@ export async function convertQueriesGenerator(
 				sourceText.includes(`${query}(`)
 			) {
 				// usages as: contentChild<Test>, contentChild(), viewChild<Test>, viewChild()
-				importsToAdd.push(query);
+				importFrom(query, '@angular/core', sourceFile);
 			}
 		});
 
-		const angularCoreImports = getAngularCoreImports(sourceFile);
-
-		importsToAdd.forEach((query) => {
-			if (
-				!angularCoreImports
-					.getNamedImports()
-					.find((namedImport) => namedImport.getName() === query)
-			) {
-				angularCoreImports.addNamedImport(query);
-			}
-		});
+		if (shouldImportToObservable) {
+			importFrom('toObservable', '@angular/core/rxjs-interop', sourceFile);
+		}
 
 		// remove the import if the decorator is not used
 		CONTENT_QUERIES.forEach((query) => {
@@ -339,19 +379,7 @@ export async function convertQueriesGenerator(
 			sourceFile.getFullText(),
 		);
 		if (!queryListIsUsedMoreThanOnce) {
-			const queryListImport = sourceFile.getImportDeclaration(
-				(importDecl) =>
-					importDecl.getModuleSpecifierValue() === '@angular/core' &&
-					importDecl
-						.getNamedImports()
-						.some((namedImport) => namedImport.getName() === 'QueryList'),
-			);
-			if (queryListImport) {
-				const classToRemove = queryListImport
-					.getNamedImports()
-					.find((namedImport) => namedImport.getName() === 'QueryList');
-				classToRemove.remove();
-			}
+			removeImport('QueryList', '@angular/core', sourceFile);
 		}
 
 		tree.write(sourcePath, sourceFile.getFullText());

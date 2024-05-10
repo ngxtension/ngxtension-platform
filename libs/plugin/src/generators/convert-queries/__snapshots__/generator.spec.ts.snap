@@ -3,6 +3,7 @@
 exports[`convertQueriesGenerator should convert properly 1`] = `
 "
 import { Component, ViewChild, ViewChildren, QueryList, contentChild, contentChildren, viewChild, viewChildren } from '@angular/core';
+import { toObservable } from "@angular/core/rxjs-interop";
 
 @Component({
   
@@ -43,7 +44,6 @@ export class MyCmp {
     @ViewChildren(PrimeTemplate, { read: ElementRef }) set _templates3(templates2: QueryList<ElementRef>) {
       console.log('doSomethingWith', templates3);
     }
-)
 
     containerViewChild = viewChild<ElementRef>('container', { read: ElementRef });
     resizeHelperViewChild = viewChild<Nullable<ElementRef>>('resizeHelper');
@@ -53,6 +53,8 @@ export class MyCmp {
     scrollableViewChild = viewChild<Nullable<ElementRef>>('scrollableView');
     scrollableFrozenViewChild = viewChild<Nullable<ElementRef>>('scrollableFrozenView');
 
+
+    nodeOutlet = contentChildren(CdkTreeNodeOutlet, { descendants: true });
 
     ngAfterContentInit() {
         (this.templates() as QueryList<PrimeTemplate>).forEach((item) => {
@@ -75,6 +77,13 @@ export class MyCmp {
             }
         });
 
+        this.nodeOutletChanges
+          .pipe(takeUntil(this._destroyed))
+          .subscribe(() => this.updateChildrenNodes());
+          
+        this.nodeOutletChanges.pipe(takeUntil(this._destroyed))
+          .subscribe(() => this.updateChildrenNodes());
+
         doSomethingWithThisButton(this.loginButton());
     }
 
@@ -83,6 +92,8 @@ export class MyCmp {
           item.destroy();
         });
     }
+
+    protected readonly nodeOutletChanges = toObservable(this.nodeOutlet);
 }
 "
 `;
