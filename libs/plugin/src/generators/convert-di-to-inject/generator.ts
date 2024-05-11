@@ -196,18 +196,28 @@ export async function convertDiToInjectGenerator(
 						// check if the service was used inside the constructor with 'this.' prefix
 						// if so, remove the 'this.' prefix and use the service variable directly
 						constructor.getStatements().forEach((statement) => {
-							if (Node.isExpressionStatement(statement)) {
-								const expression = statement.getExpression();
-								if (Node.isCallExpression(expression)) {
-									const expressionText = expression.getText();
-									if (expressionText.includes(`this.${name.toString()}`)) {
-										const newExpression = expressionText.replace(
-											`this.${name.toString()}`,
-											name.toString(),
-										);
-										statement.replaceWithText(newExpression);
-									}
-								}
+							if (!Node.isExpressionStatement(statement)) {
+								return;
+							}
+
+							const callExpression = statement.getExpression();
+							if (!Node.isCallExpression(callExpression)) {
+								return;
+							}
+
+							const memberExpression = callExpression.getExpression();
+							if (!Node.isMemberExpression(memberExpression)) {
+								return;
+							}
+
+							const text = memberExpression.getText();
+							const [thisKeyword, serviceName] = text.split('.');
+							if (thisKeyword === 'this' && serviceName === name.toString()) {
+								const newExpression = text.replace(
+									`this.${name.toString()}`,
+									name.toString(),
+								);
+								memberExpression.replaceWithText(newExpression);
 							}
 						});
 					} else {

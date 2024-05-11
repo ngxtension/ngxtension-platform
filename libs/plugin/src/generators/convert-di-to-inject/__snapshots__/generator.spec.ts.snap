@@ -61,7 +61,7 @@ exports[`convertDiToInjectGenerator should convert properly with @Inject decorat
 
         this.myService.doSomething();
 
-        service2.doSomethingElse()
+        service2.doSomethingElse();
 
         service2.doSomething();
 
