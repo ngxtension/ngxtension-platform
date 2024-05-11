@@ -48,17 +48,6 @@ export class MyCmp {
     _outputFromSubject = outputFromObservable(this.outputFromSubject, { alias: 'outputFromSubject' });
     /** TODO(migration): you may want to convert this to a normal output */
     _outputFromBehaviorSubject = outputFromObservable(this.outputFromBehaviorSubject, { alias: 'outputFromBehaviorSubject' });
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
 }
 "
 `;
@@ -73,8 +62,6 @@ import { Component, output } from '@angular/core';
 export class MyCmp {
   outputWithoutType = output();
   normalOutput = output<string>();
-;
-;
 }
 "
 `;

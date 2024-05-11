@@ -77,7 +77,7 @@ function getOutputInitializer(
 					writer.write(`outputFromObservable`);
 					writer.write(`(this.${propertyName}`);
 					writer.write(`, { alias: ${alias ?? `'${propertyName}'`} }`);
-					writer.write(`);`);
+					writer.write(`)`);
 				},
 				outputName: `_${propertyName}`,
 				removeOnlyDecorator: true,
@@ -89,7 +89,7 @@ function getOutputInitializer(
 					writer.write(`outputFromObservable`);
 					writer.write(`(${initializer}`);
 					writer.write(`${alias ? `, { alias: ${alias} }` : ''}`);
-					writer.write(`);`);
+					writer.write(`)`);
 				},
 				needsOutputFromObservableImport: true,
 			};
@@ -117,7 +117,7 @@ function getOutputInitializer(
 				writer.write(`output`);
 				writer.write(`${type ? `<${type}>` : ''}(`);
 				writer.write(`${alias ? `, { alias: ${alias} }` : ''}`);
-				writer.write(`);`);
+				writer.write(`)`);
 			},
 			needsOutputFromObservableImport: false,
 		};
