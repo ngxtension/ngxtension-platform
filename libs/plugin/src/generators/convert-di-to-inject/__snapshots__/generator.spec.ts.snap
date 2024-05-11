@@ -59,15 +59,15 @@ exports[`convertDiToInjectGenerator should convert properly with @Inject decorat
 ) {
             const service2 = inject(MyService2);
 
-        myService.doSomething();
+        this.myService.doSomething();
 
-        this.service2.doSomethingElse();
+        service2.doSomethingElse();
 
         service2.doSomething();
 
         someList.forEach(() => {
           // nested scope
-          myService.doSomething();
+          this.myService.doSomething();
         });
 
         // use service in a function call

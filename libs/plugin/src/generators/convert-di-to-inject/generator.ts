@@ -9,7 +9,7 @@ import {
 } from '@nx/devkit';
 import { readFileSync } from 'node:fs';
 import { exit } from 'node:process';
-import { VariableDeclarationKind } from 'ts-morph';
+import { Node, VariableDeclarationKind } from 'ts-morph';
 import { ContentsStore } from '../shared-utils/contents-store';
 import { ConvertDiToInjectGeneratorSchema } from './schema';
 
@@ -192,6 +192,34 @@ export async function convertDiToInjectGenerator(
 							declarationKind: VariableDeclarationKind.Const,
 							declarations: [{ name, initializer }],
 						});
+
+						// check if the service was used inside the constructor with 'this.' prefix
+						// if so, remove the 'this.' prefix and use the service variable directly
+						constructor.getStatements().forEach((statement) => {
+							if (!Node.isExpressionStatement(statement)) {
+								return;
+							}
+
+							const callExpression = statement.getExpression();
+							if (!Node.isCallExpression(callExpression)) {
+								return;
+							}
+
+							const memberExpression = callExpression.getExpression();
+							if (!Node.isMemberExpression(memberExpression)) {
+								return;
+							}
+
+							const text = memberExpression.getText();
+							const [thisKeyword, serviceName] = text.split('.');
+							if (thisKeyword === 'this' && serviceName === name.toString()) {
+								const newExpression = text.replace(
+									`this.${name.toString()}`,
+									name.toString(),
+								);
+								memberExpression.replaceWithText(newExpression);
+							}
+						});
 					} else {
 						targetClass.insertProperty(index, {
 							name,
@@ -201,33 +229,28 @@ export async function convertDiToInjectGenerator(
 								isReadonly || options.includeReadonlyByDefault || false,
 							leadingTrivia: '  ',
 						});
+
+						param
+							.findReferences()
+							.flatMap((ref) => ref.getReferences())
+							.filter((ref) => !ref.isDefinition())
+							.forEach((ref) => {
+								const node = ref.getNode();
+								const parent = node.getParent();
+								if (!parent || !Node.isMemberExpression(parent)) {
+									return;
+								}
+								const text = parent.getText();
+								if (text.includes(`this.${name}`)) {
+									return;
+								}
+								parent.replaceWithText(
+									text.replace(name.toString(), `this.${name}`),
+								);
+							});
 					}
 
 					convertedDeps.add(name);
-
-					// check if service was used inside the constructor without 'this.' prefix
-					// if so, add 'this.' prefix to the service
-
-					// THIS IS NOT NEEDED as we don't convert the service to a class property
-					// Leaving it here as it may be used in the future in other migrations
-					// 	constructor.getStatements().forEach((statement) => {
-					// 		if (Node.isExpressionStatement(statement)) {
-					// 			const expression = statement.getExpression();
-					// 			if (Node.isCallExpression(expression)) {
-					// 				const expressionText = expression.getText();
-					// 				if (
-					// 					expressionText.includes(name.toString()) &&
-					// 					!expressionText.includes(`this.${name.toString()}`)
-					// 				) {
-					// 					const newExpression = expressionText.replace(
-					// 						name.toString(),
-					// 						`this.${name}`,
-					// 					);
-					// 					statement.replaceWithText(newExpression);
-					// 				}
-					// 			}
-					// 		}
-					// 	});
 				});
 
 				if (convertedDeps.size > 0 && !hasInjectImport) {
