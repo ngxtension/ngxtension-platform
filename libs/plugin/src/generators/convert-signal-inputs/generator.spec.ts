@@ -409,12 +409,11 @@ describe('convertSignalInputsGenerator', () => {
 		expect(updated).toMatchSnapshot();
 	});
 
-	it('should fail for issue #290', async () => {
+	it('should convert properly for issue #290', async () => {
 		const readContent = setup('issue290');
-		await expect(async () => {
-			await convertSignalInputsGenerator(tree, options);
-			readContent();
-		}).rejects.toThrow();
+		await convertSignalInputsGenerator(tree, options);
+		const [updated] = readContent();
+		expect(updated).toMatchSnapshot();
 	});
 
 	it('should convert properly for issue #368One', async () => {

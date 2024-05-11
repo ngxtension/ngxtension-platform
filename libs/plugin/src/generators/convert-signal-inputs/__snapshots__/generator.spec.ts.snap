@@ -104,18 +104,6 @@ export class MyCmp {
       let test = this.requiredWithAliasAndTransform() + this.requiredWithAlias();
     }
   }
-
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
 }
 "
 `;
@@ -166,9 +154,19 @@ export class RequestInfoComponent implements OnInit {
   search(): void {
     this.submitter$.next();
   }
-
-;
 }"
+`;
+
+exports[`convertSignalInputsGenerator should convert properly for issue #290 1`] = `
+"
+import { Component, input } from '@angular/core';
+
+@Component({})
+export class MyCmp {
+  inputWithoutType = input();
+  noColon = true
+}
+"
 `;
 
 exports[`convertSignalInputsGenerator should convert properly for issue #368Five 1`] = `
@@ -188,8 +186,6 @@ import { Component, input } from '@angular/core';
 export class InputComponent {
     height = input('100px');
     width = input('100px');
-;
-;
 }
   "
 `;
@@ -200,7 +196,6 @@ exports[`convertSignalInputsGenerator should convert properly for issue #368Four
 @Component({})
 export class InputComponent {
     desc = input<string | undefined>(undefined);
-;
 }
   "
 `;
@@ -222,8 +217,6 @@ exports[`convertSignalInputsGenerator should convert properly for issue #368One 
     export class InputComponent {
         label = input<string>();
         iconRight = input<string>();
-;
-;
     }
   "
 `;
@@ -249,8 +242,6 @@ import { Component, input } from '@angular/core';
 export class InputComponent {
     iconClass = input<string>('');
     icon = input<string>('');
-;
-;
 }
   "
 `;
@@ -270,7 +261,6 @@ import { FormsModule } from '@angular/forms';
 })
 export class InputComponent {
     search = input.required<string>();
-;
 }
   "
 `;
@@ -303,9 +293,6 @@ exports[`convertSignalInputsGenerator should convert properly for issue #368Two 
         sort = input<string>();
         ascText = input<string>();
         descText = input<string>();
-;
-;
-;
     }
   "
 `;
@@ -356,18 +343,6 @@ export class MyCmp {
       let test = this.requiredWithAliasAndTransform() + this.requiredWithAlias();
     }
   }
-
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
 }
 "
 `;
@@ -444,7 +419,6 @@ import { Component, input } from '@angular/core';
 @Component({})
 export class MyCmp {
   hello = input<string>();
-;
 }
 "
 `;
