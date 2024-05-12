@@ -152,16 +152,15 @@ function getSignalInputInitializer(
 
 			writeTypeNodeAndInitializer(writer, required, transformType, true);
 			if (required) {
-				writer.write(optionsAsText ? `${optionsAsText});` : ');');
+				writer.write(optionsAsText ? `${optionsAsText})` : ')');
 			} else {
-				writer.write(optionsAsText ? `, ${optionsAsText});` : ');');
+				writer.write(optionsAsText ? `, ${optionsAsText})` : ')');
 			}
 		} else if (Node.isStringLiteral(decoratorArg)) {
 			writeTypeNodeAndInitializer(writer, false, '', true);
-			writer.write(`, { alias: ${decoratorArg.getText()} });`);
+			writer.write(`, { alias: ${decoratorArg.getText()} })`);
 		} else {
 			writeTypeNodeAndInitializer(writer, false, '', false);
-			writer.write(');');
 		}
 	};
 }
