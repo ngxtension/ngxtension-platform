@@ -228,7 +228,7 @@ export async function convertDiToInjectGenerator(
 						targetClass.insertProperty(index, {
 							name: propertyName,
 							initializer,
-							scope,
+							scope: options.useESPrivateFieldNotation ? null : scope,
 							isReadonly:
 								isReadonly || options.includeReadonlyByDefault || false,
 							leadingTrivia: '  ',
