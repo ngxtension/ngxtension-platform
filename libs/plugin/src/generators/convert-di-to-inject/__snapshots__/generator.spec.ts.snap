@@ -7,10 +7,10 @@ exports[`convertDiToInjectGenerator should convert private modifier fields to na
       template: ''
     })
     export class MyComponent {
-      private #myService = inject(MyService);
-      private #elRef = inject<ElementRef<HtmlImageElement>>(ElementRef<HtmlImageElement>);
-      private #tplRef = inject<TemplateRef<any>>(TemplateRef<any>);
-      private #viewContainerRef = inject(ViewContainerRef);
+      #myService = inject(MyService);
+      #elRef = inject<ElementRef<HtmlImageElement>>(ElementRef<HtmlImageElement>);
+      #tplRef = inject<TemplateRef<any>>(TemplateRef<any>);
+      #viewContainerRef = inject(ViewContainerRef);
 
       constructor(
 ) {
@@ -31,10 +31,10 @@ exports[`convertDiToInjectGenerator should convert private modifier fields to na
         someFunction(service2).test(myService);
       }
 
-      private #service = inject<MyService>('my-service' as any /* TODO(inject-migration): Please check if the type is correct */);
-      private #service4 = inject(MyService4);
-      private #service5 = inject<MyService5>('my-service2' as any /* TODO(inject-migration): Please check if the type is correct */, { optional: true });
-      private #service6 = inject(MyService6, { self: true, optional: true });
+      #service = inject<MyService>('my-service' as any /* TODO(inject-migration): Please check if the type is correct */);
+      #service4 = inject(MyService4);
+      #service5 = inject<MyService5>('my-service2' as any /* TODO(inject-migration): Please check if the type is correct */, { optional: true });
+      #service6 = inject(MyService6, { self: true, optional: true });
     }
 "
 `;
