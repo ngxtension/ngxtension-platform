@@ -221,8 +221,12 @@ export async function convertDiToInjectGenerator(
 							}
 						});
 					} else {
+						const propertyName = options.useESPrivateFieldNotation
+							? `#${name}`
+							: name;
+
 						targetClass.insertProperty(index, {
-							name,
+							name: propertyName,
 							initializer,
 							scope,
 							isReadonly:
@@ -245,7 +249,7 @@ export async function convertDiToInjectGenerator(
 									return;
 								}
 								parent.replaceWithText(
-									text.replace(name.toString(), `this.${name}`),
+									text.replace(name.toString(), `this.${propertyName}`),
 								);
 							});
 					}

@@ -1,5 +1,44 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`convertDiToInjectGenerator should convert private modifier fields to native private fields 1`] = `
+"
+    import { Component, inject } from '@angular/core';
+    @Component({
+      template: ''
+    })
+    export class MyComponent {
+      private #myService = inject(MyService);
+      private #elRef = inject<ElementRef<HtmlImageElement>>(ElementRef<HtmlImageElement>);
+      private #tplRef = inject<TemplateRef<any>>(TemplateRef<any>);
+      private #viewContainerRef = inject(ViewContainerRef);
+
+      constructor(
+) {
+            const service2 = inject(MyService2);
+
+        this.#myService.doSomething();
+
+        service2.doSomethingElse();
+
+        service2.doSomething();
+
+        someList.forEach(() => {
+          // nested scope
+          this.#myService.doSomething();
+        });
+
+        // use service in a function call
+        someFunction(service2).test(myService);
+      }
+
+      private #service = inject<MyService>('my-service' as any /* TODO(inject-migration): Please check if the type is correct */);
+      private #service4 = inject(MyService4);
+      private #service5 = inject<MyService5>('my-service2' as any /* TODO(inject-migration): Please check if the type is correct */, { optional: true });
+      private #service6 = inject(MyService6, { self: true, optional: true });
+    }
+"
+`;
+
 exports[`convertDiToInjectGenerator should convert properly 1`] = `
 "
     import { Component, ElementRef, inject, HostAttributeToken } from '@angular/core';
