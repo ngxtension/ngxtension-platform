@@ -138,6 +138,39 @@ const filesMap = {
       }
     }
 `,
+	componentWithDepAndInjectAndOptionsAndPrivateFields: `
+    import { Component, Inject, Optional, Self } from '@angular/core';
+    @Component({
+      template: ''
+    })
+    export class MyComponent {
+      constructor(
+        private myService: MyService,
+        private elRef: ElementRef<HtmlImageElement>,
+        private tplRef: TemplateRef<any>,
+        private viewContainerRef: ViewContainerRef,
+        service2: MyService2,
+        @Inject('my-service') private service: MyService,
+        @Inject(MyService4) private service4: MyService4,
+        @Optional() @Inject('my-service2') private service5: MyService5,
+        @Self() @Optional() private service6: MyService6,
+      ) {
+        myService.doSomething();
+
+        this.service2.doSomethingElse();
+
+        service2.doSomething();
+
+        someList.forEach(() => {
+          // nested scope
+          myService.doSomething();
+        });
+
+        // use service in a function call
+        someFunction(service2).test(myService);
+      }
+    }
+`,
 } as const;
 
 // cases
@@ -150,6 +183,7 @@ const filesMap = {
 // file with component and constructor with dependencies that don't have type
 
 // remove empty constructor if it's empty and has empty body
+// replace the TS 'private' access modifier with ES '#private' field notation
 
 describe('convertDiToInjectGenerator', () => {
 	let tree: Tree;
@@ -233,6 +267,18 @@ describe('convertDiToInjectGenerator', () => {
 	it('should convert properly with @Inject decorator and options', async () => {
 		const readContent = setup('componentWithDepAndInjectAndOptions');
 		await convertDiToInjectGenerator(tree, options);
+		const [updated] = readContent();
+		expect(updated).toMatchSnapshot();
+	});
+
+	it('should convert private modifier fields to native private fields', async () => {
+		const readContent = setup(
+			'componentWithDepAndInjectAndOptionsAndPrivateFields',
+		);
+		await convertDiToInjectGenerator(tree, {
+			...options,
+			useESPrivateFieldNotation: true,
+		});
 		const [updated] = readContent();
 		expect(updated).toMatchSnapshot();
 	});

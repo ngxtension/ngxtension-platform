@@ -139,6 +139,7 @@ export class AppComponent {
 - `--project`: Specifies the name of the project.
 - `--path`: Specifies the path to the file to be migrated.
 - `--includeReadonlyByDefault`: Specifies whether to include the readonly keyword by default for the injections. Default is `false`.
+- `--useESPrivateFieldNotation`: Specifies whether to replace TS `private` modifier with ES `#private` field notation. Default is `false`.
 
 #### Include readonly by default
 
@@ -162,6 +163,31 @@ import { MyService } from './my-service';
 export class AppComponent {
 	// will add the readonly keyword if the option is set to true
 	private readonly myService = inject(MyService);
+}
+```
+
+#### Use ES private field notation
+
+By default, the migration will keep the `private` keyword to the injected dependencies. If you want to add replace TS `private` modifier with ES `#private` field notation to the injected dependencies you can set the `--useESPrivateFieldNotation` option to `true`.
+
+```typescript
+import { Component } from '@angular/core';
+import { MyService } from './my-service';
+
+@Component()
+export class AppComponent {
+	constructor(private myService: MyService) {}
+}
+```
+
+```typescript
+import { Component } from '@angular/core';
+import { MyService } from './my-service';
+
+@Component()
+export class AppComponent {
+	// will replace 'private' modifier with ES '#private' field notation if the option is set to true
+	readonly #myService = inject(MyService);
 }
 ```
 
