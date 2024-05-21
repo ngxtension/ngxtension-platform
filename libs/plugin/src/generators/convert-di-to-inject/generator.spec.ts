@@ -169,6 +169,18 @@ const filesMap = {
         // use service in a function call
         someFunction(service2).test(myService);
       }
+
+      myMethod() {
+        this.myService.doCompleteTask();
+      }
+
+      get value() {
+        return this.myService.getValue();
+      }
+    
+      set value(theAge: number) {
+        this.myService.setValue();
+      }
     }
 `,
 } as const;

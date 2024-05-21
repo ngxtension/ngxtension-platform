@@ -28,13 +28,25 @@ exports[`convertDiToInjectGenerator should convert private modifier fields to na
         });
 
         // use service in a function call
-        someFunction(service2).test(myService);
+        someFunction(service2).test(this.#myService);
       }
 
       #service = inject<MyService>('my-service' as any /* TODO(inject-migration): Please check if the type is correct */);
       #service4 = inject(MyService4);
       #service5 = inject<MyService5>('my-service2' as any /* TODO(inject-migration): Please check if the type is correct */, { optional: true });
       #service6 = inject(MyService6, { self: true, optional: true });
+
+      myMethod() {
+        this.#myService.doCompleteTask();
+      }
+
+      get value() {
+        return this.#myService.getValue();
+      }
+    
+      set value(theAge: number) {
+        this.#myService.setValue();
+      }
     }
 "
 `;
@@ -110,7 +122,7 @@ exports[`convertDiToInjectGenerator should convert properly with @Inject decorat
         });
 
         // use service in a function call
-        someFunction(service2).test(myService);
+        someFunction(service2).test(this.myService);
       }
 
       private service = inject<MyService>('my-service' as any /* TODO(inject-migration): Please check if the type is correct */);
