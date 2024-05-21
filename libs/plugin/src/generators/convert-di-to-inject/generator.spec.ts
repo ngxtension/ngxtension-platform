@@ -190,6 +190,27 @@ const filesMap = {
       }
     }
 `,
+	componentWithDepAndInjectAndReadonly: `
+    import { Component, Inject, Attribute, Optional } from '@angular/core';
+    @Component({
+      template: ''
+    })
+    export class MyComponent {
+      service3: MyService3;
+
+      constructor(
+        @Attribute('type') private type: string,
+        @Inject('my-service') private service: MyService,
+        @Inject(MyService4) private service4: MyService4,
+        @Optional() @Inject('my-service2') private service5: MyService5,
+        @Inject(SOME_TOKEN) private someToken,
+        private service2: MyService2,
+        service3: MyService3
+      ) {
+        this.service3 = service3;
+      }
+    }
+`,
 } as const;
 
 // cases
@@ -203,6 +224,7 @@ const filesMap = {
 
 // remove empty constructor if it's empty and has empty body
 // replace the TS 'private' access modifier with ES '#private' field notation
+// add the 'readonly' keyword
 
 describe('convertDiToInjectGenerator', () => {
 	let tree: Tree;
@@ -296,6 +318,27 @@ describe('convertDiToInjectGenerator', () => {
 		);
 		await convertDiToInjectGenerator(tree, {
 			...options,
+			useESPrivateFieldNotation: true,
+		});
+		const [updated] = readContent();
+		expect(updated).toMatchSnapshot();
+	});
+
+	it('should add the readonly keyword to converted fields', async () => {
+		const readContent = setup('componentWithDepAndInjectAndReadonly');
+		await convertDiToInjectGenerator(tree, {
+			...options,
+			includeReadonlyByDefault: true,
+		});
+		const [updated] = readContent();
+		expect(updated).toMatchSnapshot();
+	});
+
+	it('should add the readonly keyword to converted native private fields', async () => {
+		const readContent = setup('componentWithDepAndInjectAndReadonly');
+		await convertDiToInjectGenerator(tree, {
+			...options,
+			includeReadonlyByDefault: true,
 			useESPrivateFieldNotation: true,
 		});
 		const [updated] = readContent();

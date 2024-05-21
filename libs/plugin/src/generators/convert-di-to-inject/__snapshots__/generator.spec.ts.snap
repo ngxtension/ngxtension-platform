@@ -1,5 +1,55 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`convertDiToInjectGenerator should add the readonly keyword to converted fields 1`] = `
+"
+    import { Component, inject, HostAttributeToken } from '@angular/core';
+    @Component({
+      template: ''
+    })
+    export class MyComponent {
+      private readonly type = inject<string>(new HostAttributeToken('type'));
+      private readonly service = inject<MyService>('my-service' as any /* TODO(inject-migration): Please check if the type is correct */);
+      private readonly service4 = inject(MyService4);
+      private readonly service5 = inject<MyService5>('my-service2' as any /* TODO(inject-migration): Please check if the type is correct */, { optional: true });
+      private readonly someToken = inject(SOME_TOKEN);
+      private readonly service2 = inject(MyService2);
+      service3: MyService3;
+
+      constructor(
+) {
+            const service3 = inject(MyService3);
+
+        this.service3 = service3;
+      }
+    }
+"
+`;
+
+exports[`convertDiToInjectGenerator should add the readonly keyword to converted native private fields 1`] = `
+"
+    import { Component, inject, HostAttributeToken } from '@angular/core';
+    @Component({
+      template: ''
+    })
+    export class MyComponent {
+      readonly #type = inject<string>(new HostAttributeToken('type'));
+      readonly #service = inject<MyService>('my-service' as any /* TODO(inject-migration): Please check if the type is correct */);
+      readonly #service4 = inject(MyService4);
+      readonly #service5 = inject<MyService5>('my-service2' as any /* TODO(inject-migration): Please check if the type is correct */, { optional: true });
+      readonly #someToken = inject(SOME_TOKEN);
+      readonly #service2 = inject(MyService2);
+      service3: MyService3;
+
+      constructor(
+) {
+            const service3 = inject(MyService3);
+
+        this.service3 = service3;
+      }
+    }
+"
+`;
+
 exports[`convertDiToInjectGenerator should convert private modifier fields to native private fields 1`] = `
 "
     import { Component, inject } from '@angular/core';
