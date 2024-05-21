@@ -18,7 +18,7 @@
 			"aliases": ["includeReadonly", "includeReadonlyByDefault"],
 			"description": "Whether to include readonly for injections by default. Default is false."
 		},
-		"includeESPrivateFieldNotation": {
+		"useESPrivateFieldNotation": {
 			"type": "boolean",
 			"description": "Whether to replace TS private modifier with ES private field notation. Default is false."
 		}
