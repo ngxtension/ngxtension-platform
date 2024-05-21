@@ -154,6 +154,8 @@ const filesMap = {
         @Inject(MyService4) private service4: MyService4,
         @Optional() @Inject('my-service2') private service5: MyService5,
         @Self() @Optional() private service6: MyService6,
+        protected service7: MyService7,
+        public service8: MyService8
       ) {
         myService.doSomething();
 
@@ -168,10 +170,15 @@ const filesMap = {
 
         // use service in a function call
         someFunction(service2).test(myService);
+
+        service7.getTask();
+        service8.getTick();
       }
 
       myMethod() {
         this.myService.doCompleteTask();
+        this.service7.getTask();
+        this.service8.getTick();
       }
 
       get value() {

@@ -29,15 +29,22 @@ exports[`convertDiToInjectGenerator should convert private modifier fields to na
 
         // use service in a function call
         someFunction(service2).test(this.#myService);
+
+        this.service7.getTask();
+        this.service8.getTick();
       }
 
       #service = inject<MyService>('my-service' as any /* TODO(inject-migration): Please check if the type is correct */);
       #service4 = inject(MyService4);
       #service5 = inject<MyService5>('my-service2' as any /* TODO(inject-migration): Please check if the type is correct */, { optional: true });
       #service6 = inject(MyService6, { self: true, optional: true });
+      protected service7 = inject(MyService7);
+      public service8 = inject(MyService8);
 
       myMethod() {
         this.#myService.doCompleteTask();
+        this.service7.getTask();
+        this.service8.getTick();
       }
 
       get value() {

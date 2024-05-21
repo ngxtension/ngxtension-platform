@@ -9,7 +9,7 @@ import {
 } from '@nx/devkit';
 import { readFileSync } from 'node:fs';
 import { exit } from 'node:process';
-import { Node, VariableDeclarationKind } from 'ts-morph';
+import { Node, Scope, VariableDeclarationKind } from 'ts-morph';
 import { ContentsStore } from '../shared-utils/contents-store';
 import { ConvertDiToInjectGeneratorSchema } from './schema';
 
@@ -118,6 +118,8 @@ export async function convertDiToInjectGenerator(
 			if (!applicableDecorator) continue;
 
 			const convertedDeps = new Set<string>();
+			const convertedPrivateDeps = new Set<string>();
+
 			let includeHostAttributeToken = false;
 
 			targetClass.getConstructors().forEach((constructor) => {
@@ -221,14 +223,24 @@ export async function convertDiToInjectGenerator(
 							}
 						});
 					} else {
-						const propertyName = options.useESPrivateFieldNotation
-							? `#${name}`
-							: name;
+						const hasPrivateScope = scope == Scope.Private;
+						const propertyName =
+							hasPrivateScope && options.useESPrivateFieldNotation
+								? `#${name}`
+								: name;
+
+						if (hasPrivateScope) {
+							convertedPrivateDeps.add(name);
+						}
 
 						targetClass.insertProperty(index, {
 							name: propertyName,
 							initializer,
-							scope: options.useESPrivateFieldNotation ? null : scope,
+							scope: hasPrivateScope
+								? options.useESPrivateFieldNotation
+									? null
+									: scope
+								: scope,
 							isReadonly:
 								isReadonly || options.includeReadonlyByDefault || false,
 							leadingTrivia: '  ',
@@ -323,7 +335,7 @@ export async function convertDiToInjectGenerator(
 			});
 
 			if (options.useESPrivateFieldNotation) {
-				Array.from(convertedDeps).forEach((convertedDepsName) => {
+				Array.from(convertedPrivateDeps).forEach((convertedDepsName) => {
 					const startIndex = targetClass.getProperties().length;
 					const tempAddedProperty = targetClass.insertProperty(startIndex, {
 						name: convertedDepsName,
