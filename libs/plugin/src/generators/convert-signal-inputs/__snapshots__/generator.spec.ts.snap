@@ -79,10 +79,12 @@ export class MyCmp {
   withDefaultAlias = input(123, { alias: 'defaultAlias' });
   withoutDefaultAlias = input<number | undefined>(undefined, { alias: 'noDefaultAlias' });
   justAStringAlias = input('', { alias: 'stringAlias' });
-  withTransform = input<boolean, string | ''>(booleanAttribute(false), { transform: booleanAttribute });
+  withTransform = input<boolean, boolean | string>(booleanAttribute(false), { transform: booleanAttribute });
   requiredInput = input.required<string>();
   requiredWithAlias = input.required<boolean>({ alias: 'requiredAlias' });
-  requiredWithAliasAndTransform = input.required<number, string | ''>({ alias: 'transformedRequiredAlias', transform: numberAttribute });
+  requiredWithAliasAndTransform = input.required<number, number | string>({ alias: 'transformedRequiredAlias', transform: numberAttribute });
+  withTransformWithoutType = input(booleanAttribute(false), { transform: booleanAttribute });
+  requiredWithTransformWithoutType = input(numberAttribute(1), { transform: numberAttribute });
 
   @Input() set leaveMeAlone(value: number) {
     console.log('setter', value);
@@ -312,13 +314,15 @@ export class MyCmp {
   withDefaultAlias = input(123, { alias: 'defaultAlias' });
   withoutDefaultAlias = input<number | undefined>(undefined, { alias: 'noDefaultAlias' });
   justAStringAlias = input('', { alias: 'stringAlias' });
-  withTransform = input<boolean, string | ''>(booleanAttribute(false), { transform: booleanAttribute });
+  withTransform = input<boolean, boolean | string>(booleanAttribute(false), { transform: booleanAttribute });
   requiredInput = input.required<string>();
   requiredWithAlias = input.required<boolean>({ alias: 'requiredAlias' });
   /*
    * @description I go with requiredWithAliasAndTransform
    */
-  requiredWithAliasAndTransform = input.required<number, string | ''>({ alias: 'transformedRequiredAlias', transform: numberAttribute });
+  requiredWithAliasAndTransform = input.required<number, number | string>({ alias: 'transformedRequiredAlias', transform: numberAttribute });
+  withTransformWithoutType = input(booleanAttribute(false), { transform: booleanAttribute });
+  requiredWithTransformWithoutType = input(numberAttribute(1), { transform: numberAttribute });
 
   @Input() set leaveMeAlone(value: number) {
     console.log('setter', value);

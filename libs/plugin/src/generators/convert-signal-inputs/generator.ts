@@ -92,6 +92,10 @@ function getSignalInputInitializer(
 				}
 			}
 
+			if (transformType) {
+				types.push('| string');
+			}
+
 			writer.write(types.concat('>').join(''));
 		}
 

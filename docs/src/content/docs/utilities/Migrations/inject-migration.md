@@ -68,7 +68,8 @@ export class AppComponent {
 After running the schematics:
 
 ```typescript
-import { Component } from '@angular/core';
+// will import the `inject` method
+import { Component, inject } from '@angular/core';
 import { MyService } from './my-service';
 import { MyService2 } from './my-service2';
 import { MyService3 } from './my-service3';
