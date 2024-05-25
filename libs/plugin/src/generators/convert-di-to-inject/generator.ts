@@ -223,7 +223,7 @@ export async function convertDiToInjectGenerator(
 							}
 						});
 					} else {
-						const hasPrivateScope = scope == Scope.Private;
+						const hasPrivateScope = scope === Scope.Private;
 						const propertyName =
 							hasPrivateScope && options.useESPrivateFieldNotation
 								? `#${name}`
@@ -236,11 +236,10 @@ export async function convertDiToInjectGenerator(
 						targetClass.insertProperty(index, {
 							name: propertyName,
 							initializer,
-							scope: hasPrivateScope
-								? options.useESPrivateFieldNotation
+							scope:
+								hasPrivateScope && options.useESPrivateFieldNotation
 									? null
-									: scope
-								: scope,
+									: scope,
 							isReadonly:
 								isReadonly || options.includeReadonlyByDefault || false,
 							leadingTrivia: '  ',
