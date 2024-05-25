@@ -165,7 +165,7 @@ export async function convertQueriesGenerator(
 		});
 
 	if ([major, minor] < [17, 3]) {
-		logger.error(`[ngxtension] output() is only available in v17.3 and later`);
+		logger.error(`[ngxtension] queries is only available in v17.3 and later`);
 		return exit(1);
 	}
 

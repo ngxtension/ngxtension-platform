@@ -193,7 +193,7 @@ export async function convertSignalInputsGenerator(
 		});
 
 	if ([major, minor] < [17, 1]) {
-		logger.error(`[ngxtension] output() is only available in v17.1 and later`);
+		logger.error(`[ngxtension] signals is only available in v17.1 and later`);
 		return exit(1);
 	}
 
