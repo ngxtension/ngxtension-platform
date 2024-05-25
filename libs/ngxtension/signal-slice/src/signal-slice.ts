@@ -128,6 +128,7 @@ export function signalSlice<
 	lazySources?: SourceConfig<TSignalValue>;
 	actionSources?: TActionSources;
 	selectors?: (state: SelectorsState<TSignalValue>) => TSelectors;
+	/** @deprecated */
 	effects?: (
 		state: EffectsState<TSignalValue, TActionSources, TSelectors>,
 	) => TEffects;
