@@ -153,7 +153,7 @@ export async function convertOutputsGenerator(
 			return Number(part);
 		});
 
-	if (major < 17 || (major >= 17 && minor < 3)) {
+	if ([major, minor] < [17, 3]) {
 		logger.error(`[ngxtension] output() is only available in v17.3 and later`);
 		return exit(1);
 	}

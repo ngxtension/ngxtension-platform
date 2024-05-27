@@ -192,7 +192,7 @@ export async function convertSignalInputsGenerator(
 			return Number(part);
 		});
 
-	if (major < 17 || (major >= 17 && minor < 1)) {
+	if ([major, minor] < [17, 1]) {
 		logger.error(
 			`[ngxtension] Signal Input is only available in v17.1 and later`,
 		);
