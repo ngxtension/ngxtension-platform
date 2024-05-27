@@ -9,17 +9,25 @@ import { allEventsObservable, allEventsSignal } from 'ngxtension/form-events';
 	imports: [ReactiveFormsModule, JsonPipe, AsyncPipe],
 	template: `
 		<form [formGroup]="form">
-			<label for="name">Name</label>
-			<input formControlName="name" name="name" />
+			<label for="firstName">Name</label>
+			<input formControlName="firstName" name="firstName" />
+
+			<label for="lastName">Name</label>
+			<input formControlName="lastName" name="lastName" />
+
+			<br />
+
+			<button type="reset">Reset</button>
 		</form>
-		<pre>{{ $form | json }}</pre>
+		<pre>{{ $form() | json }}</pre>
 		<pre>{{ form$ | async | json }}</pre>
 	`,
 })
-export default class IntlComponent {
+export default class FormEventsComponent {
 	fb = inject(NonNullableFormBuilder);
 	form = this.fb.group({
-		name: this.fb.control(''),
+		firstName: this.fb.control(''),
+		lastName: this.fb.control(''),
 	});
 
 	form$ = allEventsObservable(this.form);
