@@ -104,10 +104,12 @@ export class MyCmp {
   @Input({ alias: 'defaultAlias' }) withDefaultAlias = 123;
   @Input({ alias: 'noDefaultAlias'}) withoutDefaultAlias?: number;
   @Input('stringAlias') justAStringAlias = '';
-  @Input({ transform: booleanAttribute }) withTransform: string | '' = false;
+  @Input({ transform: booleanAttribute }) withTransform: boolean = false;
   @Input({ required: true }) requiredInput!: string;
   @Input({ required: true, alias: 'requiredAlias' }) requiredWithAlias!: boolean;
-  @Input({ required: true, alias: 'transformedRequiredAlias', transform: numberAttribute }) requiredWithAliasAndTransform!: string | '';
+  @Input({ required: true, alias: 'transformedRequiredAlias', transform: numberAttribute }) requiredWithAliasAndTransform!: number;
+  @Input({ transform: booleanAttribute }) withTransformWithoutType = false;
+  @Input({ transform: numberAttribute }) requiredWithTransformWithoutType = 1;
 
   @Input() set leaveMeAlone(value: number) {
     console.log('setter', value);
@@ -145,13 +147,15 @@ export class MyCmp {
   @Input({ alias: 'defaultAlias' }) withDefaultAlias = 123;
   @Input({ alias: 'noDefaultAlias'}) withoutDefaultAlias?: number;
   @Input('stringAlias') justAStringAlias = '';
-  @Input({ transform: booleanAttribute }) withTransform: string | '' = false;
+  @Input({ transform: booleanAttribute }) withTransform: boolean = false;
   @Input({ required: true }) requiredInput!: string;
   @Input({ required: true, alias: 'requiredAlias' }) requiredWithAlias!: boolean;
   /*
    * @description I go with requiredWithAliasAndTransform
    */
-  @Input({ required: true, alias: 'transformedRequiredAlias', transform: numberAttribute }) requiredWithAliasAndTransform!: string | '';
+  @Input({ required: true, alias: 'transformedRequiredAlias', transform: numberAttribute }) requiredWithAliasAndTransform!: number;
+  @Input({ transform: booleanAttribute }) withTransformWithoutType = false;
+  @Input({ transform: numberAttribute }) requiredWithTransformWithoutType = 1;
 
   @Input() set leaveMeAlone(value: number) {
     console.log('setter', value);

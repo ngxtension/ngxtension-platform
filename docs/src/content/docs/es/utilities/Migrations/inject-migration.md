@@ -6,25 +6,25 @@ badge: stable
 contributors: ['enea-jahollari', 'kevinkreuzer', 'lilbeqiri']
 ---
 
-In Angular v14, `inject()` function was introduced as a new way to inject dependencies into Angular components, directives, services, and other classes. This new function is more flexible and provides a better way to inject dependencies compared to the previous way of using constructor dependency injection.
+En Angular v14, la `inject()` función fue introducida como una nueva forma para inyectar dependencias en componentes, directivass, servicios, y otras clases. Esta nueva función es más flexible y provee un mejor mecanismo de inyección de dependencias, comparado con la forma previa de inyección de dependencias en el constructor.
 
-### How it works?
+### ¿Cómo funciona?
 
-The moment you run the schematics, it will look for all the classes that have dependencies injected in the constructor and convert them to use the `inject()` function.
+En el momento que se ejecutan el schematics, éste mirará todas las clases que tienen dependencias inyectadas en el constructor y las convertirá para que usen la función `inject()`.
 
-- It will keep the same order of the dependencies.
-- It will keep the same type of the dependencies.
-- It will keep the same visibility of the dependencies.
-- It will keep the same decorators (converted into options) of the dependencies.
-- It will use the correct way of injecting the dependencies when injecting generic types.
-- It will skip constructors that have no dependencies.
-- It will cleanup empty constructors.
-- It will add 'this' keyword to the dependencies that are not using it inside the constructor body.
-- It will add the 'inject' import statement to the file if it's not already imported.
+- Mantiene el mismo orden de las dependencias.
+- Mantiene el mismo tipo de las dependencias.
+- Mantiene la misma visibilidad de las dependencias.
+- Mantiene los mismos decoradores (convertidos en opciones) de las dependencias.
+- Usa la manera correcta de inyección de dependencias cuando se inyecten tipos genéricos.
+- Se salta los constructores que no tienen dependencias.
+- Limpia los constructores vacíos.
+- Añade la palabra clave 'this' a las dependencias que no lo están usando dentro del cuerpo del constructor.
+- Añade el import para la función 'inject' al fichero, si no se había añadido anteriormente.
 
-### Example:
+### ExampEjemplole:
 
-Before running the schematics:
+Antes de ejecutar el schematics:
 
 ```typescript
 import { Attribute, Component } from '@angular/core';
@@ -55,20 +55,20 @@ export class AppComponent {
 		service2.doSomething();
 
 		someList.forEach(() => {
-			// nested scope
+			// ámbito interno
 			myService.doSomething();
 		});
 
-		// use service in a function call
+		// usa el servicio en una llamada
 		someFunction(service2).test(myService);
 	}
 }
 ```
 
-After running the schematics:
+Después de ejecutar el schematics:
 
 ```typescript
-// will import the `inject` method
+// Importa la función `inject`
 import { Component, inject } from '@angular/core';
 import { MyService } from './my-service';
 import { MyService2 } from './my-service2';
@@ -78,43 +78,43 @@ import { MyService5 } from './my-service5';
 
 @Component()
 export class AppComponent {
-	// will keep the private keyword
+	// mantiene la palabra clave private
 	private myService = inject(MyService);
 
-	// will pass the Generic type to the inject function as a type argument
+	// pasa el tipo genérico como argumento de la función inject
 	private elRef = inject<ElementRef<HtmlImageElement>>(
 		ElementRef<HtmlImageElement>,
 	);
 
 	private tplRef = inject<TemplateRef<any>>(TemplateRef<any>);
 
-	// will keep the readonly keyword
+	// mantiene la palabra clave readonly
 	private readonly viewContainerRef = inject(ViewContainerRef);
 
-	// will keep the string token but use 'as any' to avoid type errors
+	// mantiene el token string, usando 'as any' para evitar errores
 	private service = inject<MyService>(
 		'my-service' as any /* TODO(inject-migration): Please check if the type is correct */,
 	);
 
-	// will simplify the inject function by passing the class type as a type argument
+	// simplifica la función inject, pasando el tipo de la clase como argumento
 	private service4 = inject(MyService4);
 
-	// will keep using the string token but use 'as any' to avoid type errors
+	// mantiene el uso del token string, pero usando 'as any' para evitar errores
 	private service5 = inject<MyService5>(
 		'my-service2' as any /* TODO(inject-migration): Please check if the type is correct */,
 		{ optional: true },
 	);
 
-	// will keep the decorators and the order
+	// mantiene los decoradores en orden
 	private service6 = inject(MyService6, { self: true, optional: true });
 
-	// will convert the attribute to a string token using HostAttributeToken
+	// convierte el atributo a token string, usando HostAttributeToken
 	myAttr = inject<string>(new HostAttributeToken('my-attr'), {
 		optional: true,
 	});
 
 	constructor() {
-		// will inject inside the constructor body when no scope is used
+		// Inyectará en el cuerpo del constructor cuando no se usa ningún ámbito
 		const service2 = inject(MyService2);
 
 		this.myService.doSomething();
@@ -124,25 +124,25 @@ export class AppComponent {
 		service2.doSomething();
 
 		someList.forEach(() => {
-			// nested scope
+			// ámbito interno
 			this.myService.doSomething();
 		});
 
-		// use service in a function call
+		// usa el servicio en una llamada
 		someFunction(service2).test(this.myService);
 	}
 }
 ```
 
-### Options
+### Opciones
 
-- `--project`: Specifies the name of the project.
-- `--path`: Specifies the path to the file to be migrated.
-- `--includeReadonlyByDefault`: Specifies whether to include the readonly keyword by default for the injections. Default is `false`.
+- `--project`: Especifica el nombre del proyecto.
+- `--path`: Especifica el path del fichero que será migrado.
+- `--includeReadonlyByDefault`: Especifica si incluir la palabra clave readonly por defecto en las inyecciones. El valor por defecto es `false`.
 
-#### Include readonly by default
+#### Incluir readonly por defecto
 
-By default, the migration will not add the `readonly` keyword to the injected dependencies. If you want to add the `readonly` keyword to the injected dependencies you can set the `--includeReadonlyByDefault` option to `true`.
+Por defecto la migración no incluirá la palabra clave `readonly` a las dependencias inyectadas. Si se quiere añadir la palabra clave `readonly`, podemos proporcionar `true` al parámetro `--includeReadonlyByDefault`.
 
 ```typescript
 import { Component } from '@angular/core';
@@ -160,36 +160,36 @@ import { MyService } from './my-service';
 
 @Component()
 export class AppComponent {
-	// will add the readonly keyword if the option is set to true
+	// Añadirá la palabra clave readonly keyword si la opción recibe true
 	private readonly myService = inject(MyService);
 }
 ```
 
-### Usage
+### Uso
 
-In order to run the schematics for all the project in the app you have to run the following script:
+Para ejecutar el schematics en todos los proyectos de la aplicación, tienemos que ejecutar el siguiente script:
 
 ```bash
 ng g ngxtension:convert-di-to-inject
 ```
 
-If you want to specify the project name you can pass the `--project` param.
+Si se precisa especificar el nombre del proyecto, podemos pasar el parámetro `--project`.
 
 ```bash
 ng g ngxtension:convert-di-to-inject --project=<project-name>
 ```
 
-If you want to run the schematic for a specific component or directive you can pass the `--path` param.
+Si necesitamos ejecutar el schematic para un componente o directiva específicos, podemos proporcionar el parámetro `--path`.
 
 ```bash
 ng g ngxtension:convert-di-to-inject --path=<path-to-ts-file>
 ```
 
-### Usage with Nx
+### Uso con Nx
 
-To use the schematics on a Nx monorepo you just swap `ng` with `nx`
+Para usar el schematics con un monorepo Nx, podemos substituir `ng` por `nx`
 
-Example:
+Ejemplo:
 
 ```bash
 nx g ngxtension:convert-di-to-inject --project=<project-name>
