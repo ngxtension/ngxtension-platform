@@ -18,9 +18,19 @@ describe(explicitEffect.name, () => {
 		state = signal('idle');
 
 		constructor() {
-			explicitEffect(() => {
-				log.push(`count updated ${this.count()}, ${this.state()}`,);
-			}, [this.count]);
+			const dep1 = signal(0);
+
+			const dep = () => {
+				dep1.update((x) => x + 1); // This will trigger the effect error
+				return dep1();
+			};
+
+			explicitEffect(
+				[this.count, this.state, dep],
+				([count, state, dep], cleanup) => {
+					log.push(`count updated ${count}, ${state}`);
+				},
+			);
 		}
 	}
 
