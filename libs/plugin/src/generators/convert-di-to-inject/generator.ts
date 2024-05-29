@@ -9,7 +9,7 @@ import {
 } from '@nx/devkit';
 import { readFileSync } from 'node:fs';
 import { exit } from 'node:process';
-import { Node, VariableDeclarationKind } from 'ts-morph';
+import { Node, Scope, VariableDeclarationKind } from 'ts-morph';
 import { ContentsStore } from '../shared-utils/contents-store';
 import { ConvertDiToInjectGeneratorSchema } from './schema';
 
@@ -118,6 +118,8 @@ export async function convertDiToInjectGenerator(
 			if (!applicableDecorator) continue;
 
 			const convertedDeps = new Set<string>();
+			const convertedPrivateDeps = new Set<string>();
+
 			let includeHostAttributeToken = false;
 
 			targetClass.getConstructors().forEach((constructor) => {
@@ -221,10 +223,23 @@ export async function convertDiToInjectGenerator(
 							}
 						});
 					} else {
+						const hasPrivateScope = scope === Scope.Private;
+						const propertyName =
+							hasPrivateScope && options.useESPrivateFieldNotation
+								? `#${name}`
+								: name;
+
+						if (hasPrivateScope) {
+							convertedPrivateDeps.add(name);
+						}
+
 						targetClass.insertProperty(index, {
-							name,
+							name: propertyName,
 							initializer,
-							scope,
+							scope:
+								hasPrivateScope && options.useESPrivateFieldNotation
+									? null
+									: scope,
 							isReadonly:
 								isReadonly || options.includeReadonlyByDefault || false,
 							leadingTrivia: '  ',
@@ -237,15 +252,13 @@ export async function convertDiToInjectGenerator(
 							.forEach((ref) => {
 								const node = ref.getNode();
 								const parent = node.getParent();
-								if (!parent || !Node.isMemberExpression(parent)) {
-									return;
-								}
+
 								const text = parent.getText();
 								if (text.includes(`this.${name}`)) {
 									return;
 								}
 								parent.replaceWithText(
-									text.replace(name.toString(), `this.${name}`),
+									text.replace(name.toString(), `this.${propertyName}`),
 								);
 							});
 					}
@@ -319,6 +332,39 @@ export async function convertDiToInjectGenerator(
 					}
 				}
 			});
+
+			if (options.useESPrivateFieldNotation) {
+				Array.from(convertedPrivateDeps).forEach((convertedDepsName) => {
+					const startIndex = targetClass.getProperties().length;
+					const tempAddedProperty = targetClass.insertProperty(startIndex, {
+						name: convertedDepsName,
+						leadingTrivia: '  ',
+					});
+
+					tempAddedProperty
+						.findReferences()
+						.flatMap((ref) => ref.getReferences())
+						.filter((ref) => !ref.isDefinition())
+						.forEach((ref) => {
+							const node = ref.getNode();
+							const parent = node.getParent();
+
+							const text = parent.getText();
+							if (
+								text.includes(`this.#${convertedDepsName}`) ||
+								text.includes(`#${convertedDepsName}`)
+							) {
+								return;
+							}
+
+							parent.replaceWithText(
+								text.replace(convertedDepsName, `#${convertedDepsName}`),
+							);
+						});
+
+					tempAddedProperty.remove();
+				});
+			}
 		}
 
 		tree.write(sourcePath, sourceFile.getFullText());
