@@ -14,6 +14,5 @@ import { injectResize } from 'ngxtension/resize';
 	imports: [JsonPipe],
 })
 export default class TestResize {
-	private resize$ = injectResize();
-	resize = toSignal(this.resize$);
+	resize = toSignal(injectResize());
 }
