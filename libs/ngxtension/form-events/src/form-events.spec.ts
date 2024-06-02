@@ -83,14 +83,14 @@ describe('Form Events', () => {
 	imports: [ReactiveFormsModule, JsonPipe, AsyncPipe],
 	template: `
 		<form [formGroup]="form" id="test-form">
-			<label for="firstName">Name</label>
+			<label for="firstName">First Name</label>
 			<input
 				data-testid="firstName"
 				formControlName="firstName"
 				name="firstName"
 			/>
 
-			<label for="lastName">Name</label>
+			<label for="lastName">Last Name</label>
 			<input
 				data-testid="lastName"
 				formControlName="lastName"

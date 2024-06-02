@@ -1,6 +1,10 @@
 import { AsyncPipe, JsonPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
+import {
+	NonNullableFormBuilder,
+	ReactiveFormsModule,
+	Validators,
+} from '@angular/forms';
 import { allEventsObservable, allEventsSignal } from 'ngxtension/form-events';
 
 @Component({
@@ -9,10 +13,13 @@ import { allEventsObservable, allEventsSignal } from 'ngxtension/form-events';
 	imports: [ReactiveFormsModule, JsonPipe, AsyncPipe],
 	template: `
 		<form [formGroup]="form">
-			<label for="firstName">Name</label>
+			<label for="firstName">First Name</label>
 			<input formControlName="firstName" name="firstName" />
+			@if (form.controls.firstName.errors?.['required']) {
+				<p>First name is required</p>
+			}
 
-			<label for="lastName">Name</label>
+			<label for="lastName">Last Name</label>
 			<input formControlName="lastName" name="lastName" />
 
 			<br />
@@ -26,7 +33,7 @@ import { allEventsObservable, allEventsSignal } from 'ngxtension/form-events';
 export default class FormEventsComponent {
 	fb = inject(NonNullableFormBuilder);
 	form = this.fb.group({
-		firstName: this.fb.control(''),
+		firstName: this.fb.control('', Validators.required),
 		lastName: this.fb.control(''),
 	});
 
