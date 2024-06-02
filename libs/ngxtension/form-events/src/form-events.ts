@@ -8,7 +8,13 @@ import {
 	TouchedChangeEvent,
 	ValueChangeEvent,
 } from '@angular/forms';
-import { combineLatest, filter, map, startWith } from 'rxjs';
+import {
+	combineLatest,
+	distinctUntilChanged,
+	filter,
+	map,
+	startWith,
+} from 'rxjs';
 
 function valueEvents$<T>(form: AbstractControl<T>) {
 	return form.events.pipe(
@@ -18,9 +24,7 @@ function valueEvents$<T>(form: AbstractControl<T>) {
 		),
 	);
 }
-// function $valueEvents<T>(form: AbstractControl<T>) {
-// 	return toSignal(valueEvents$(form));
-// }
+
 function statusEvents$<T>(form: AbstractControl<T>) {
 	return form.events.pipe(
 		filter(
@@ -29,9 +33,6 @@ function statusEvents$<T>(form: AbstractControl<T>) {
 		),
 	);
 }
-// function $statusEvents<T>(form: AbstractControl<T>) {
-// 	return toSignal(statusEvents$(form));
-// }
 
 function touchedEvents$<T>(form: AbstractControl<T>) {
 	return form.events.pipe(
@@ -42,10 +43,6 @@ function touchedEvents$<T>(form: AbstractControl<T>) {
 	);
 }
 
-// function $touchedEvents<T>(form: AbstractControl<T>) {
-// 	return toSignal(touchedEvents$(form));
-// }
-
 function pristineEvents$<T>(form: AbstractControl<T>) {
 	return form.events.pipe(
 		filter(
@@ -54,46 +51,6 @@ function pristineEvents$<T>(form: AbstractControl<T>) {
 		),
 	);
 }
-// function $prisineEvents<T>(form: AbstractControl<T>) {
-// 	return toSignal(pristineEvents$(form));
-// }
-
-function allEvents$<T>(form: AbstractControl<T>) {
-	return combineLatest([
-		valueEvents$(form),
-		statusEvents$(form),
-		touchedEvents$(form),
-		pristineEvents$(form),
-	]).pipe(
-		map(([value, status, touched, pristine]) => {
-			return {
-				value: value,
-				status: status,
-				touched: touched,
-				pristine: pristine,
-			};
-		}),
-	);
-}
-// function $allEvents<T>(form: AbstractControl<T>) {
-// 	return toSignal(allEvents$(form));
-// }
-
-function allEventsValues$<T>(form: AbstractControl<T>) {
-	return allEvents$(form).pipe(
-		map((events) => {
-			return {
-				value: events.value.value,
-				status: events.status.status,
-				touched: events.touched.touched,
-				pristine: events.pristine.pristine,
-			};
-		}),
-	);
-}
-// function $allEventsValues<T>(form: AbstractControl<T>) {
-// 	return toSignal(allEventsValues$(form));
-// }
 
 function isValueEvent<T>(
 	event: ControlEvent | T,
@@ -115,19 +72,19 @@ function isTouchedEvent<T>(
 }
 export function allEventsObservable<T>(form: AbstractControl<T>) {
 	return combineLatest([
-		valueEvents$(form).pipe(startWith(form.value)),
+		valueEvents$(form).pipe(
+			startWith(form.value),
+			map((value) => (isValueEvent(value) ? value.value : value)),
+			distinctUntilChanged(
+				(previous, current) =>
+					JSON.stringify(previous) === JSON.stringify(current),
+			),
+		),
 		statusEvents$(form).pipe(startWith(form.status)),
 		touchedEvents$(form).pipe(startWith(form.touched)),
 		pristineEvents$(form).pipe(startWith(form.pristine)),
 	]).pipe(
 		map(([value, status, touched, pristine]) => {
-			let val: T | ValueChangeEvent<T>;
-			if (isValueEvent(value)) {
-				val = value.value;
-			} else {
-				val = value;
-			}
-
 			let stat: FormControlStatus | StatusChangeEvent;
 			if (isStatusEvent(status)) {
 				stat = status.status;
@@ -149,7 +106,7 @@ export function allEventsObservable<T>(form: AbstractControl<T>) {
 				prist = pristine;
 			}
 			return {
-				value: val,
+				value: value,
 				status: stat,
 				touched: touch,
 				pristine: prist,
