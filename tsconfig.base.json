@@ -128,6 +128,9 @@
 			"ngxtension/trackby-id-prop": [
 				"libs/ngxtension/trackby-id-prop/src/index.ts"
 			],
+			"ngxtension/when-document-visible": [
+				"libs/ngxtension/when-document-visible/src/index.ts"
+			],
 			"plugin": ["libs/plugin/src/index.ts"]
 		}
 	},
