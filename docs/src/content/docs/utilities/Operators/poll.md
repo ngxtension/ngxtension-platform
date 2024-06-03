@@ -14,9 +14,7 @@ import { poll } from 'ngxtension/poll';
 
 ## Usage
 
-You can use it like the `repeat` operator, but with the ability to delay each emission. It accepts the same parameters as the `timer` function.
-
-It's great to poll and API at a fixed interval with an optional initial delay.
+You can use this operator to poll and API at a fixed interval with an optional initial delay.
 
 ```typescript
 import { HttpClient } from '@angular/common/http';
