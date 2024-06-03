@@ -12,10 +12,12 @@ export default defineConfig({
 		starlight({
 			title: 'ngxtension',
 			logo: {
-				src: './public/logo.svg',
+				light: './public/ngxtension-blue.svg',
+				dark: './public/ngxtension-white.svg',
 				alt: 'ngxtension logo',
+				replacesTitle: true
 			},
-			favicon: './logo.svg',
+			favicon: './ngxt-blue.svg',
 			social: {
 				github: 'https://github.com/nartc/ngxtension-platform',
 				twitter: 'https://twitter.com/Nartc1410',
