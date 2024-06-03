@@ -225,7 +225,7 @@ export async function convertDiToInjectGenerator(
 					} else {
 						const hasPrivateScope = scope === Scope.Private;
 						const propertyName =
-							hasPrivateScope && options.useESPrivateFieldNotation
+							hasPrivateScope && options.useEsprivateFieldNotation
 								? `#${name}`
 								: name;
 
@@ -237,7 +237,7 @@ export async function convertDiToInjectGenerator(
 							name: propertyName,
 							initializer,
 							scope:
-								hasPrivateScope && options.useESPrivateFieldNotation
+								hasPrivateScope && options.useEsprivateFieldNotation
 									? null
 									: scope,
 							isReadonly:
@@ -333,7 +333,7 @@ export async function convertDiToInjectGenerator(
 				}
 			});
 
-			if (options.useESPrivateFieldNotation) {
+			if (options.useEsprivateFieldNotation) {
 				Array.from(convertedPrivateDeps).forEach((convertedDepsName) => {
 					const startIndex = targetClass.getProperties().length;
 					const tempAddedProperty = targetClass.insertProperty(startIndex, {

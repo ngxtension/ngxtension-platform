@@ -2,5 +2,5 @@ export interface ConvertDiToInjectGeneratorSchema {
 	project?: string;
 	path?: string;
 	includeReadonlyByDefault?: boolean;
-	useESPrivateFieldNotation?: boolean;
+	useEsprivateFieldNotation?: boolean;
 }
