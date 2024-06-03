@@ -33,7 +33,12 @@ describe('Form Events', () => {
             },
             "status": "INVALID",
             "touched": false,
-            "pristine": true
+            "pristine": true,
+            "valid": false,
+            "invalid": true,
+            "pending": false,
+            "dirty": false,
+            "untouched": true
             }`),
 		);
 	});
@@ -70,7 +75,12 @@ describe('Form Events', () => {
             },
             "status": "VALID",
             "touched": true,
-            "pristine": false
+            "pristine": false,
+            "valid": true,
+            "invalid": false,
+            "pending": false,
+            "dirty": true,
+            "untouched": false
             }`),
 		);
 	});

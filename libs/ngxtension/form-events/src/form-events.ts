@@ -85,31 +85,34 @@ export function allEventsObservable<T>(form: AbstractControl<T>) {
 		pristineEvents$(form).pipe(startWith(form.pristine)),
 	]).pipe(
 		map(([value, status, touched, pristine]) => {
-			let stat: FormControlStatus | StatusChangeEvent;
-			if (isStatusEvent(status)) {
-				stat = status.status;
-			} else {
-				stat = status;
-			}
+			// Original values (plus value)
+			const stat: FormControlStatus | StatusChangeEvent = isStatusEvent(status)
+				? status.status
+				: status;
+			const touch: boolean | TouchedChangeEvent = isTouchedEvent(touched)
+				? touched.touched
+				: touched;
+			const prist: boolean | PristineChangeEvent = isPristineEvent(pristine)
+				? pristine.pristine
+				: pristine;
 
-			let touch: boolean | TouchedChangeEvent;
-			if (isTouchedEvent(touched)) {
-				touch = touched.touched;
-			} else {
-				touch = touched;
-			}
+			// Derived values - not directly named as events but are aliases for something that can be derived from original values
+			const valid = stat === 'VALID';
+			const invalid = stat === 'INVALID';
+			const pending = stat === 'PENDING';
+			const dirty = !prist;
+			const untouched = !touch;
 
-			let prist: boolean | PristineChangeEvent;
-			if (isPristineEvent(pristine)) {
-				prist = pristine.pristine;
-			} else {
-				prist = pristine;
-			}
 			return {
 				value: value,
 				status: stat,
 				touched: touch,
 				pristine: prist,
+				valid: valid,
+				invalid: invalid,
+				pending: pending,
+				dirty: dirty,
+				untouched: untouched,
 			};
 		}),
 	);
@@ -121,6 +124,11 @@ export function allEventsSignal<T>(form: AbstractControl<T>) {
 			status: form.status,
 			pristine: form.pristine,
 			touched: form.touched,
+			valid: form.valid,
+			invalid: form.invalid,
+			pending: form.pending,
+			dirty: form.dirty,
+			untouched: form.untouched,
 		},
 	});
 }
