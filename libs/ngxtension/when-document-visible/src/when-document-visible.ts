@@ -20,7 +20,7 @@ import {
  * ```
  * @public
  */
-export function whenPageVisible<T>(
+export function whenDocumentVisible<T>(
 	options?: InjectDocumentVisibilityOptions,
 ): MonoTypeOperatorFunction<T> {
 	const visibilityChanged$ = injectDocumentVisibilityStream(options);
