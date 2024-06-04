@@ -15,7 +15,7 @@ export default defineConfig({
 				light: './public/ngxtension-blue.svg',
 				dark: './public/ngxtension-white.svg',
 				alt: 'ngxtension logo',
-				replacesTitle: true
+				replacesTitle: true,
 			},
 			favicon: './ngxt-blue.svg',
 			social: {
@@ -45,6 +45,10 @@ export default defineConfig({
 						es: 'Gráfico de Proyecto',
 					},
 					link: '/dep-graph',
+				},
+				{
+					label: 'Press Kit',
+					link: '/logos/logos',
 				},
 			],
 			components: {
