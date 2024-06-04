@@ -1,3 +1,4 @@
+import { Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
 	AbstractControl,
@@ -9,6 +10,7 @@ import {
 	ValueChangeEvent,
 } from '@angular/forms';
 import {
+	Observable,
 	combineLatest,
 	distinctUntilChanged,
 	filter,
@@ -70,7 +72,17 @@ function isTouchedEvent<T>(
 ): event is TouchedChangeEvent {
 	return event instanceof TouchedChangeEvent;
 }
-export function allEventsObservable<T>(form: AbstractControl<T>) {
+export function allEventsObservable<T>(form: AbstractControl<T>): Observable<{
+	value: T;
+	status: FormControlStatus;
+	touched: boolean;
+	pristine: boolean;
+	valid: boolean;
+	invalid: boolean;
+	pending: boolean;
+	dirty: boolean;
+	untouched: boolean;
+}> {
 	return combineLatest([
 		valueEvents$(form).pipe(
 			startWith(form.value),
@@ -117,7 +129,17 @@ export function allEventsObservable<T>(form: AbstractControl<T>) {
 		}),
 	);
 }
-export function allEventsSignal<T>(form: AbstractControl<T>) {
+export function allEventsSignal<T>(form: AbstractControl<T>): Signal<{
+	value: T;
+	status: FormControlStatus;
+	touched: boolean;
+	pristine: boolean;
+	valid: boolean;
+	invalid: boolean;
+	pending: boolean;
+	dirty: boolean;
+	untouched: boolean;
+}> {
 	return toSignal(allEventsObservable(form), {
 		initialValue: {
 			value: form.value,
