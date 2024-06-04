@@ -43,6 +43,36 @@ describe('Form Events', () => {
 		);
 	});
 
+	it('returns an observable with the initial value, status, pristine, and touched values of a form', async () => {
+		const fixture: ComponentFixture<FormEventsComponent> =
+			TestBed.configureTestingModule({
+				imports: [FormEventsComponent],
+			}).createComponent(FormEventsComponent);
+
+		fixture.detectChanges();
+
+		const signalVals: HTMLElement = fixture.debugElement.query(
+			By.css('[data-testid="observable-values"]'),
+		).nativeElement;
+
+		expect(flattenJsonPipeFormatting(signalVals.textContent)).toBe(
+			flattenJsonPipeFormatting(`            {
+            "value": {
+                "firstName": "",
+                "lastName": ""
+            },
+            "status": "INVALID",
+            "touched": false,
+            "pristine": true,
+            "valid": false,
+            "invalid": true,
+            "pending": false,
+            "dirty": false,
+            "untouched": true
+            }`),
+		);
+	});
+
 	it('returns a signal with the value, status, pristine, and touched values of a form after it has been interacted with', async () => {
 		const fixture: ComponentFixture<FormEventsComponent> =
 			TestBed.configureTestingModule({
@@ -85,7 +115,47 @@ describe('Form Events', () => {
 		);
 	});
 
-	// TODO - observables
+	it('returns a signal with the value, status, pristine, and touched values of a form after it has been interacted with', async () => {
+		const fixture: ComponentFixture<FormEventsComponent> =
+			TestBed.configureTestingModule({
+				imports: [FormEventsComponent],
+			}).createComponent(FormEventsComponent);
+
+		fixture.detectChanges();
+
+		const signalVals: HTMLElement = fixture.debugElement.query(
+			By.css('[data-testid="observable-values"]'),
+		).nativeElement;
+
+		const formFirstNameInput: HTMLInputElement =
+			fixture.debugElement.nativeElement
+				.querySelector('#test-form')
+				.querySelectorAll('input')[0];
+
+		formFirstNameInput.focus();
+		formFirstNameInput.value = 'Jerry';
+		formFirstNameInput.dispatchEvent(new Event('input'));
+		formFirstNameInput.blur();
+
+		fixture.detectChanges();
+
+		expect(flattenJsonPipeFormatting(signalVals.textContent)).toBe(
+			flattenJsonPipeFormatting(`{
+            "value": {
+                "firstName": "Jerry",
+                "lastName": ""
+            },
+            "status": "VALID",
+            "touched": true,
+            "pristine": false,
+            "valid": true,
+            "invalid": false,
+            "pending": false,
+            "dirty": true,
+            "untouched": false
+            }`),
+		);
+	});
 });
 
 @Component({
