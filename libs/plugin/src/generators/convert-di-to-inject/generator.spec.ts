@@ -318,7 +318,7 @@ describe('convertDiToInjectGenerator', () => {
 		);
 		await convertDiToInjectGenerator(tree, {
 			...options,
-			useESPrivateFieldNotation: true,
+			useEsprivateFieldNotation: true,
 		});
 		const [updated] = readContent();
 		expect(updated).toMatchSnapshot();
@@ -339,7 +339,7 @@ describe('convertDiToInjectGenerator', () => {
 		await convertDiToInjectGenerator(tree, {
 			...options,
 			includeReadonlyByDefault: true,
-			useESPrivateFieldNotation: true,
+			useEsprivateFieldNotation: true,
 		});
 		const [updated] = readContent();
 		expect(updated).toMatchSnapshot();
