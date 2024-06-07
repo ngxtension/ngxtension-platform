@@ -4,6 +4,11 @@ exports[`convertSignalInputsGenerator should convert properly 1`] = `
 "
 import { Component, Input, input } from '@angular/core';
 
+interface Person {
+  name: string;
+  lastname: string;
+}
+
 @Component({
   
       template: \`
@@ -51,6 +56,7 @@ import { Component, Input, input } from '@angular/core';
 <button (click)="someFunctionWithnormalInput('normalInput', normalInput())"></button>
 <button (normalInput)="someFunctionWithnormalInput(normalInput(), 'normalInput')"></button>
 <button (eventWithnormalInput)="test = 'normalInput' + normalInput()"></button>
+<button (click)="test = person()?.name"></button>
 
 <a>
  {{ 'someNormalTextnormalInput' | translate: 'normalInput' }}
@@ -69,6 +75,17 @@ import { Component, Input, input } from '@angular/core';
 
 <p>{{ data().normalInput }}</p>
 
+<p>{{person()?.name ? person().name : ""}}</p>
+<p>{{
+  person().name
+}}</p>
+
+<ng-template #sample let-title="name">
+      <span>{{title}}</span>
+</ng-template>
+
+<ng-template *ngTemplateOutlet="sample; context: {name: person().name}"></ng-template>
+
   \`
 })
 export class MyCmp {
@@ -85,6 +102,7 @@ export class MyCmp {
   requiredWithAliasAndTransform = input.required<number, number | string>({ alias: 'transformedRequiredAlias', transform: numberAttribute });
   withTransformWithoutType = input(booleanAttribute(false), { transform: booleanAttribute });
   requiredWithTransformWithoutType = input(numberAttribute(1), { transform: numberAttribute });
+  person = input<Person>();
 
   @Input() set leaveMeAlone(value: number) {
     console.log('setter', value);
@@ -396,6 +414,7 @@ exports[`convertSignalInputsGenerator should convert properly for templateUrl 2`
 <button (click)="someFunctionWithnormalInput('normalInput', normalInput())"></button>
 <button (normalInput)="someFunctionWithnormalInput(normalInput(), 'normalInput')"></button>
 <button (eventWithnormalInput)="test = 'normalInput' + normalInput()"></button>
+<button (click)="test = person?.name"></button>
 
 <a>
  {{ 'someNormalTextnormalInput' | translate: 'normalInput' }}
@@ -413,6 +432,17 @@ exports[`convertSignalInputsGenerator should convert properly for templateUrl 2`
 <cmp normalInput="normalInput"></cmp>
 
 <p>{{ data().normalInput }}</p>
+
+<p>{{person?.name ? person.name : ""}}</p>
+<p>{{
+  person.name
+}}</p>
+
+<ng-template #sample let-title="name">
+      <span>{{title}}</span>
+</ng-template>
+
+<ng-template *ngTemplateOutlet="sample; context: {name: person.name}"></ng-template>
 "
 `;
 
