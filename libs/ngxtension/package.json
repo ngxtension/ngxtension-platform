@@ -29,11 +29,13 @@
 		}
 	},
 	"dependencies": {
+		"tslib": "^2.3.0"
+	},
+	"devDependencies": {
 		"@angular-eslint/bundled-angular-compiler": "^17.3.0",
 		"@nx/devkit": "^18.0.0",
 		"nx": "^18.0.0",
-		"ts-morph": "^22.0.0",
-		"tslib": "^2.3.0"
+		"ts-morph": "^22.0.0"
 	},
 	"sideEffects": false,
 	"generators": "./plugin/generators.json",
