@@ -138,6 +138,79 @@ const filesMap = {
       }
     }
 `,
+	componentWithDepAndInjectAndOptionsAndPrivateFields: `
+    import { Component, Inject, Optional, Self } from '@angular/core';
+    @Component({
+      template: ''
+    })
+    export class MyComponent {
+      constructor(
+        private myService: MyService,
+        private elRef: ElementRef<HtmlImageElement>,
+        private tplRef: TemplateRef<any>,
+        private viewContainerRef: ViewContainerRef,
+        service2: MyService2,
+        @Inject('my-service') private service: MyService,
+        @Inject(MyService4) private service4: MyService4,
+        @Optional() @Inject('my-service2') private service5: MyService5,
+        @Self() @Optional() private service6: MyService6,
+        protected service7: MyService7,
+        public service8: MyService8
+      ) {
+        myService.doSomething();
+
+        this.service2.doSomethingElse();
+
+        service2.doSomething();
+
+        someList.forEach(() => {
+          // nested scope
+          myService.doSomething();
+        });
+
+        // use service in a function call
+        someFunction(service2).test(myService);
+
+        service7.getTask();
+        service8.getTick();
+      }
+
+      myMethod() {
+        this.myService.doCompleteTask();
+        this.service7.getTask();
+        this.service8.getTick();
+      }
+
+      get value() {
+        return this.myService.getValue();
+      }
+    
+      set value(theAge: number) {
+        this.myService.setValue();
+      }
+    }
+`,
+	componentWithDepAndInjectAndReadonly: `
+    import { Component, Inject, Attribute, Optional } from '@angular/core';
+    @Component({
+      template: ''
+    })
+    export class MyComponent {
+      service3: MyService3;
+
+      constructor(
+        @Attribute('type') private type: string,
+        @Inject('my-service') private service: MyService,
+        @Inject(MyService4) private service4: MyService4,
+        @Optional() @Inject('my-service2') private service5: MyService5,
+        @Inject(SOME_TOKEN) private someToken,
+        private service2: MyService2,
+        service3: MyService3
+      ) {
+        this.service3 = service3;
+      }
+    }
+`,
 } as const;
 
 // cases
@@ -150,6 +223,8 @@ const filesMap = {
 // file with component and constructor with dependencies that don't have type
 
 // remove empty constructor if it's empty and has empty body
+// replace the TS 'private' access modifier with ES '#private' field notation
+// add the 'readonly' keyword
 
 describe('convertDiToInjectGenerator', () => {
 	let tree: Tree;
@@ -233,6 +308,39 @@ describe('convertDiToInjectGenerator', () => {
 	it('should convert properly with @Inject decorator and options', async () => {
 		const readContent = setup('componentWithDepAndInjectAndOptions');
 		await convertDiToInjectGenerator(tree, options);
+		const [updated] = readContent();
+		expect(updated).toMatchSnapshot();
+	});
+
+	it('should convert private modifier fields to native private fields', async () => {
+		const readContent = setup(
+			'componentWithDepAndInjectAndOptionsAndPrivateFields',
+		);
+		await convertDiToInjectGenerator(tree, {
+			...options,
+			useEsprivateFieldNotation: true,
+		});
+		const [updated] = readContent();
+		expect(updated).toMatchSnapshot();
+	});
+
+	it('should add the readonly keyword to converted fields', async () => {
+		const readContent = setup('componentWithDepAndInjectAndReadonly');
+		await convertDiToInjectGenerator(tree, {
+			...options,
+			includeReadonlyByDefault: true,
+		});
+		const [updated] = readContent();
+		expect(updated).toMatchSnapshot();
+	});
+
+	it('should add the readonly keyword to converted native private fields', async () => {
+		const readContent = setup('componentWithDepAndInjectAndReadonly');
+		await convertDiToInjectGenerator(tree, {
+			...options,
+			includeReadonlyByDefault: true,
+			useEsprivateFieldNotation: true,
+		});
 		const [updated] = readContent();
 		expect(updated).toMatchSnapshot();
 	});

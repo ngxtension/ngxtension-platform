@@ -104,10 +104,12 @@ export class MyCmp {
   @Input({ alias: 'defaultAlias' }) withDefaultAlias = 123;
   @Input({ alias: 'noDefaultAlias'}) withoutDefaultAlias?: number;
   @Input('stringAlias') justAStringAlias = '';
-  @Input({ transform: booleanAttribute }) withTransform: string | '' = false;
+  @Input({ transform: booleanAttribute }) withTransform: boolean = false;
   @Input({ required: true }) requiredInput!: string;
   @Input({ required: true, alias: 'requiredAlias' }) requiredWithAlias!: boolean;
-  @Input({ required: true, alias: 'transformedRequiredAlias', transform: numberAttribute }) requiredWithAliasAndTransform!: string | '';
+  @Input({ required: true, alias: 'transformedRequiredAlias', transform: numberAttribute }) requiredWithAliasAndTransform!: number;
+  @Input({ transform: booleanAttribute }) withTransformWithoutType = false;
+  @Input({ transform: numberAttribute }) requiredWithTransformWithoutType = 1;
 
   @Input() set leaveMeAlone(value: number) {
     console.log('setter', value);
@@ -145,13 +147,15 @@ export class MyCmp {
   @Input({ alias: 'defaultAlias' }) withDefaultAlias = 123;
   @Input({ alias: 'noDefaultAlias'}) withoutDefaultAlias?: number;
   @Input('stringAlias') justAStringAlias = '';
-  @Input({ transform: booleanAttribute }) withTransform: string | '' = false;
+  @Input({ transform: booleanAttribute }) withTransform: boolean = false;
   @Input({ required: true }) requiredInput!: string;
   @Input({ required: true, alias: 'requiredAlias' }) requiredWithAlias!: boolean;
   /*
    * @description I go with requiredWithAliasAndTransform
    */
-  @Input({ required: true, alias: 'transformedRequiredAlias', transform: numberAttribute }) requiredWithAliasAndTransform!: string | '';
+  @Input({ required: true, alias: 'transformedRequiredAlias', transform: numberAttribute }) requiredWithAliasAndTransform!: number;
+  @Input({ transform: booleanAttribute }) withTransformWithoutType = false;
+  @Input({ transform: numberAttribute }) requiredWithTransformWithoutType = 1;
 
   @Input() set leaveMeAlone(value: number) {
     console.log('setter', value);
@@ -232,6 +236,109 @@ export class MyCmp {
   noColon = true
 }
 `,
+	issue368One: `
+    @Component({
+        selector: 'app-input-example',
+        template: \`
+            {{ label }}
+            @if (iconRight) {
+                <span>blah blah</span>
+            }
+        \`,
+        standalone: true
+    })
+    export class InputComponent {
+        @Input() label!: string;
+        @Input() iconRight!: string;
+    }
+  `,
+	issue368Two: `
+    import { Component, Input } from '@angular/core';
+
+    @Component({
+        selector: 'app-input-ex',
+        template: \`
+            <button>
+                @if (sort === 'asc') {
+                    <span class="asc">
+                        <i class="fa fa-sort-asc"></i>
+                    </span>
+                    {{ ascText }}
+                } @else {
+                    <span class="desc">
+                        <i class="fa fa-sort-desc"></i>
+                    </span>
+                    {{ descText }}
+                }
+            </button>
+        \`,
+        standalone: true
+    })
+    export class InputComponent {
+        @Input() sort!: string;
+        @Input() ascText!: string;
+        @Input() descText!: string;
+    }
+  `,
+	issue368Three: `
+import { Component, Input } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+    selector: 'app-input-ex',
+    template: \`
+        <input type="text" class="form-control" placeholder="Search" [(ngModel)]="search" />
+    \`,
+    standalone: true,
+    imports: [FormsModule]
+})
+export class InputComponent {
+    @Input({ required: true }) search!: string;
+}
+  `,
+	issue368Four: `
+@Component({})
+export class InputComponent {
+    @Input() desc: string | undefined = undefined;
+}
+  `,
+	issue368Five: `
+import { NgStyle } from '@angular/common';
+import { Component, Input } from '@angular/core';
+
+@Component({
+    selector: 'app-input-ex',
+    template: \`
+        <div [ngStyle]="{ height: height, width: width }"></div>
+    \`,
+    standalone: true,
+    imports: [NgStyle]
+})
+export class InputComponent {
+    @Input() height = '100px';
+    @Input() width = '100px';
+}
+  `,
+	issue368Six: `
+import { NgStyle } from '@angular/common';
+import { Component, Input } from '@angular/core';
+
+@Component({
+    selector: 'app-input-ex',
+
+    template: \`
+        <span class="icon">
+            <i class="{{ iconClass }}">{{ icon }}</i>
+        </span>
+    \`,
+    standalone: true,
+    imports: [NgStyle]
+})
+export class InputComponent {
+    @Input() iconClass: string = '';
+    @Input() icon: string = '';
+}
+  `,
 } as const;
 
 describe('convertSignalInputsGenerator', () => {
@@ -306,11 +413,52 @@ describe('convertSignalInputsGenerator', () => {
 		expect(updated).toMatchSnapshot();
 	});
 
-	it('should fail for issue #290', async () => {
+	it('should convert properly for issue #290', async () => {
 		const readContent = setup('issue290');
-		await expect(async () => {
-			await convertSignalInputsGenerator(tree, options);
-			readContent();
-		}).rejects.toThrow();
+		await convertSignalInputsGenerator(tree, options);
+		const [updated] = readContent();
+		expect(updated).toMatchSnapshot();
+	});
+
+	it('should convert properly for issue #368One', async () => {
+		const readContent = setup('issue368One');
+		await convertSignalInputsGenerator(tree, options);
+		const [updated] = readContent();
+		expect(updated).toMatchSnapshot();
+	});
+
+	it('should convert properly for issue #368Two', async () => {
+		const readContent = setup('issue368Two');
+		await convertSignalInputsGenerator(tree, options);
+		const [updated] = readContent();
+		expect(updated).toMatchSnapshot();
+	});
+
+	it('should convert properly for issue #368Three', async () => {
+		const readContent = setup('issue368Three');
+		await convertSignalInputsGenerator(tree, options);
+		const [updated] = readContent();
+		expect(updated).toMatchSnapshot();
+	});
+
+	it('should convert properly for issue #368Four', async () => {
+		const readContent = setup('issue368Four');
+		await convertSignalInputsGenerator(tree, options);
+		const [updated] = readContent();
+		expect(updated).toMatchSnapshot();
+	});
+
+	it('should convert properly for issue #368Five', async () => {
+		const readContent = setup('issue368Five');
+		await convertSignalInputsGenerator(tree, options);
+		const [updated] = readContent();
+		expect(updated).toMatchSnapshot();
+	});
+
+	it('should convert properly for issue #368Six', async () => {
+		const readContent = setup('issue368Six');
+		await convertSignalInputsGenerator(tree, options);
+		const [updated] = readContent();
+		expect(updated).toMatchSnapshot();
 	});
 });

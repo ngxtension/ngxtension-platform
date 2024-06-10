@@ -1,3 +1,65 @@
+## 3.5.0-beta.0 (2024-06-10)
+
+
+### Bug Fixes
+
+- **inject-migration:** update option name and add proper aliases ([#403](https://github.com/ngxtension/ngxtension-platform/pull/403))
+
+### Documentation
+
+- add `explicitEffect` to the homepage ([#394](https://github.com/ngxtension/ngxtension-platform/pull/394))
+- add new logo ([#406](https://github.com/ngxtension/ngxtension-platform/pull/406))
+- **inject-di-migration:** remove extra not needed word ([#402](https://github.com/ngxtension/ngxtension-platform/pull/402))
+
+### ❤️  Thank You
+
+- Enea Jahollari @eneajaho
+- Ilir Beqiri @ilirbeqirii
+- Matthieu Riegler @JeanMeche
+
+## 3.3.0 (2024-05-24)
+
+
+### Features
+
+- **inject-inputs:** add injectInputs ([851c644](https://github.com/ngxtension/ngxtension-platform/commit/851c644))
+
+### Bug Fixes
+
+- **plugin:** add and remove this keyword correctly ([#370](https://github.com/ngxtension/ngxtension-platform/pull/370))
+- **plugin:** remove additional semicolumns for input and output generator ([#371](https://github.com/ngxtension/ngxtension-platform/pull/371))
+- **plugin:** add string to input generic ([#375](https://github.com/ngxtension/ngxtension-platform/pull/375))
+
+### Documentation
+
+- update inject migration example ([#379](https://github.com/ngxtension/ngxtension-platform/pull/379))
+- **inject-inputs:** add injectInputs ([05d0f0a](https://github.com/ngxtension/ngxtension-platform/commit/05d0f0a))
+- **injectors:** spanish translation for createInjectable function ([#316](https://github.com/ngxtension/ngxtension-platform/pull/316))
+- **injectors:** Spanish translation for injectROuteData ([#383](https://github.com/ngxtension/ngxtension-platform/pull/383))
+- **injectors:** Spanish translation for injectRouteFragment ([#385](https://github.com/ngxtension/ngxtension-platform/pull/385))
+- **migrations:** Spanish translation inject migration ([#386](https://github.com/ngxtension/ngxtension-platform/pull/386))
+
+### ❤️  Thank You
+
+- Chau Tran @nartc
+- Sergi Dote Teixidor
+- Tim Deschryver @timdeschryver
+
+## 3.2.0 (2024-05-10)
+
+
+### Features
+
+- support changes observable by converting it to use toObservable with signals ([#364](https://github.com/ngxtension/ngxtension-platform/pull/364))
+
+### Bug Fixes
+
+- **signal-input-migration:** fix two-way bindings and interpolations inside attribute values ([#369](https://github.com/ngxtension/ngxtension-platform/pull/369))
+
+### ❤️  Thank You
+
+- Enea Jahollari @eneajaho
+
 
 
 ## [3.1.2](https://github.com/ngxtension/ngxtension-platform/compare/3.1.1...3.1.2) (2024-05-01)

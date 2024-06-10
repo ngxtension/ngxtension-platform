@@ -85,7 +85,15 @@ function getSignalInputInitializer(
 				types.push(typeNode);
 				types.push('| undefined');
 			} else {
-				types.push(typeNode.replace('| undefined', ''));
+				if (property.getInitializer()?.getText().includes('undefined')) {
+					types.push(typeNode);
+				} else {
+					types.push(typeNode.replace('| undefined', ''));
+				}
+			}
+
+			if (transformType) {
+				types.push('| string');
 			}
 
 			writer.write(types.concat('>').join(''));
@@ -148,16 +156,15 @@ function getSignalInputInitializer(
 
 			writeTypeNodeAndInitializer(writer, required, transformType, true);
 			if (required) {
-				writer.write(optionsAsText ? `${optionsAsText});` : ');');
+				writer.write(optionsAsText ? `${optionsAsText})` : ')');
 			} else {
-				writer.write(optionsAsText ? `, ${optionsAsText});` : ');');
+				writer.write(optionsAsText ? `, ${optionsAsText})` : ')');
 			}
 		} else if (Node.isStringLiteral(decoratorArg)) {
 			writeTypeNodeAndInitializer(writer, false, '', true);
-			writer.write(`, { alias: ${decoratorArg.getText()} });`);
+			writer.write(`, { alias: ${decoratorArg.getText()} })`);
 		} else {
 			writeTypeNodeAndInitializer(writer, false, '', false);
-			writer.write(');');
 		}
 	};
 }
@@ -185,7 +192,7 @@ export async function convertSignalInputsGenerator(
 			return Number(part);
 		});
 
-	if (major < 17 || (major >= 17 && minor < 1)) {
+	if ([major, minor] < [17, 1]) {
 		logger.error(
 			`[ngxtension] Signal Input is only available in v17.1 and later`,
 		);
