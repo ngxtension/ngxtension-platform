@@ -7,7 +7,7 @@ import {
 	Validators,
 } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { allEventsObservable, allEventsSignal } from 'ngxtension/form-events';
+import { allEventsObservable, allEventsSignal } from '../src/form-events';
 
 function flattenJsonPipeFormatting(str: string | null) {
 	return str?.replace(/\s/g, '');
