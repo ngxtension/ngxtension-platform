@@ -13,7 +13,7 @@ export type InjectedInputs<T> = {
 		: never]: T[P] extends InputSignal<infer U> ? U : never;
 };
 
-export function injectInputs<TDir extends Type<any>>(
+export function inputs<TDir extends Type<any>>(
 	dir: InstanceType<TDir>,
 	dirType: TDir,
 ): Signal<InjectedInputs<InstanceType<TDir>>> {
@@ -44,4 +44,14 @@ export function injectInputs<TDir extends Type<any>>(
 			{} as Record<string, any>,
 		),
 	) as Signal<InjectedInputs<InstanceType<TDir>>>;
+}
+
+/**
+ * @deprecated Please use `inputs()` instead
+ */
+export function injectInputs<TDir extends Type<any>>(
+	dir: InstanceType<TDir>,
+	dirType: TDir,
+): Signal<InjectedInputs<InstanceType<TDir>>> {
+	return inputs(dir, dirType);
 }

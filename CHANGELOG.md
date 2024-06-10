@@ -1,3 +1,22 @@
+## 3.5.0-beta.0 (2024-06-10)
+
+
+### Bug Fixes
+
+- **inject-migration:** update option name and add proper aliases ([#403](https://github.com/ngxtension/ngxtension-platform/pull/403))
+
+### Documentation
+
+- add `explicitEffect` to the homepage ([#394](https://github.com/ngxtension/ngxtension-platform/pull/394))
+- add new logo ([#406](https://github.com/ngxtension/ngxtension-platform/pull/406))
+- **inject-di-migration:** remove extra not needed word ([#402](https://github.com/ngxtension/ngxtension-platform/pull/402))
+
+### ❤️  Thank You
+
+- Enea Jahollari @eneajaho
+- Ilir Beqiri @ilirbeqirii
+- Matthieu Riegler @JeanMeche
+
 ## 3.3.0 (2024-05-24)
 
 

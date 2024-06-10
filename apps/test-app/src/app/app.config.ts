@@ -1,9 +1,13 @@
-import { type ApplicationConfig } from '@angular/core';
+import {
+	provideExperimentalZonelessChangeDetection,
+	type ApplicationConfig,
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideSvgSprites } from 'ngxtension/svg-sprite';
 
 export const appConfig: ApplicationConfig = {
 	providers: [
+		provideExperimentalZonelessChangeDetection(),
 		provideRouter([
 			{
 				path: 'resize',
