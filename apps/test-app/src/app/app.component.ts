@@ -32,7 +32,9 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 				<a routerLink="/active-element">Active Element</a>
 			</li>
 			<li>
-				<a routerLink="/document-visibility-state">Document Visibility State</a>
+				<a routerLink="/inject-document-visibility">
+					Document Visibility State
+				</a>
 			</li>
 
 			<li>

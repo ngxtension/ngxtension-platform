@@ -19,7 +19,7 @@ sidebar:
 
 ### Comparison to Angular CDK
 
-[Angular CDK](https://cdk.angular.io) offers features like [Drag & Drop](https://material.angular.io/cdk/drag-drop/overview) and [Scrolling](https://material.angular.io/cdk/scrolling/overview),
+[Angular CDK](https://material.angular.io/cdk/categories) offers features like [Drag & Drop](https://material.angular.io/cdk/drag-drop/overview) and [Scrolling](https://material.angular.io/cdk/scrolling/overview),
 while `ngxtension/gestures` specializes in capturing gestures on elements exclusively. In essence, `ngxtension/gestures` operates at a more granular, low-level perspective compared to Angular CDK.
 Its fine-grained control over Gesture data empowers you to craft a broader range of interactions and facilitates seamless integration with animation libraries such as [GSAP](https://greensock.com/gsap/).
 

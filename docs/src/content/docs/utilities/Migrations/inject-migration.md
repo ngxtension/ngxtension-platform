@@ -168,7 +168,7 @@ export class AppComponent {
 
 #### Use ES private field notation
 
-By default, the migration will keep the `private` keyword to the injected dependencies. If you want to add replace TS `private` modifier with ES `#private` field notation to the injected dependencies you can set the `--useESPrivateFieldNotation` option to `true`.
+By default, the migration will keep the `private` keyword to the injected dependencies. If you want to replace TS `private` modifier with ES `#private` field notation to the injected dependencies you can set the `--useESPrivateFieldNotation` option to `true`.
 
 ```typescript
 import { Component } from '@angular/core';

@@ -1,6 +1,6 @@
 <h1 align="center">NG Extension Platform</h1>
 <p align="center"> 
-<img src="/docs/public/logo.svg" width="100px" height="100px">
+<img src="/docs/public/ngxt-blue.svg" width="100px" height="100px">
 </p>
 
 [![NPM Version](https://img.shields.io/npm/v/ngxtension?style=flat-square)](https://npmjs.org/package/ngxtension)

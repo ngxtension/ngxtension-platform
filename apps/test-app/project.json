@@ -13,7 +13,6 @@
 				"outputPath": "dist/apps/test-app",
 				"index": "apps/test-app/src/index.html",
 				"browser": "apps/test-app/src/main.ts",
-				"polyfills": ["zone.js"],
 				"tsConfig": "apps/test-app/tsconfig.app.json",
 				"assets": ["apps/test-app/src/favicon.ico", "apps/test-app/src/assets"],
 				"styles": ["apps/test-app/src/styles.css"],
