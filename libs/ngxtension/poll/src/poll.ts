@@ -18,10 +18,6 @@ export function poll<T>(
 ): MonoTypeOperatorFunction<T> {
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 	return (source: Observable<T>) => {
-		return timer(initialDelay, period).pipe(
-			concatMap(() => {
-				return source;
-			}),
-		);
+		return timer(initialDelay, period).pipe(concatMap(() => source));
 	};
 }
