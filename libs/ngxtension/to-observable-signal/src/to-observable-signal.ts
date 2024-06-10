@@ -1,6 +1,7 @@
 import {
 	assertInInjectionContext,
 	isDevMode,
+	isSignal,
 	type Signal,
 	type WritableSignal,
 } from '@angular/core';
@@ -14,16 +15,16 @@ import type { Observable, Subscribable } from 'rxjs';
 export type ObservableSignal<T> = Signal<T> & Observable<T>;
 
 export function toObservableSignal<T>(
-	s: WritableSignal<T> | Observable<T> | Subscribable<T>,
+	s: WritableSignal<T> | Subscribable<T>,
 	options?: ToObservableOptions,
 ): WritableSignal<T> & Observable<T>;
 export function toObservableSignal<T>(
-	s: Signal<T> | Observable<T> | Subscribable<T>,
+	s: Signal<T> | Subscribable<T>,
 	options?: ToObservableOptions,
 ): ObservableSignal<T>;
 
 export function toObservableSignal<T>(
-	source: Signal<T> | Observable<T> | Subscribable<T>,
+	source: Signal<T> | Subscribable<T>,
 	options?: ToObservableOptions,
 ) {
 	if (isDevMode() && !options?.injector) {
@@ -31,13 +32,13 @@ export function toObservableSignal<T>(
 	}
 
 	let s: Signal<T | undefined>;
-	let obs: Observable<T>;
+	let obs: Subscribable<T>;
 
-	if (typeof source === 'function') {
-		s = source as Signal<T>;
+	if (isSignal(source)) {
+		s = source;
 		obs = toObservable(source as Signal<T>, options);
 	} else {
-		obs = source as unknown as Observable<T>;
+		obs = source;
 		s = toSignal(obs, { injector: options?.injector });
 	}
 
