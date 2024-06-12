@@ -65,6 +65,9 @@
 				"libs/ngxtension/derived-async/src/index.ts"
 			],
 			"ngxtension/derived-from": ["libs/ngxtension/derived-from/src/index.ts"],
+			"ngxtension/effect-once-if": [
+				"libs/ngxtension/effect-once-if/src/index.ts"
+			],
 			"ngxtension/filter-array": ["libs/ngxtension/filter-array/src/index.ts"],
 			"ngxtension/filter-nil": ["libs/ngxtension/filter-nil/src/index.ts"],
 			"ngxtension/gestures": ["libs/ngxtension/gestures/src/index.ts"],
