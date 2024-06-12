@@ -31,6 +31,11 @@
 			"factory": "./src/generators/convert-to-self-closing-tag/generator",
 			"schema": "./src/generators/convert-to-self-closing-tag/schema.json",
 			"description": "libs/plugin/src/generators/convert-to-self-closing-tag/ generator"
+		},
+		"convert-to-sfc": {
+			"factory": "./src/generators/convert-to-sfc/generator",
+			"schema": "./src/generators/convert-to-sfc/schema.json",
+			"description": "libs/plugin/src/generators/convert-to-sfc/ generator"
 		}
 	},
 	"schematics": {
@@ -70,6 +75,11 @@
 			"factory": "./src/generators/convert-to-self-closing-tag/compat",
 			"schema": "./src/generators/convert-to-self-closing-tag/schema.json",
 			"description": "libs/plugin/src/generators/convert-to-self-closing-tag/ generator"
+		},
+		"convert-to-sfc": {
+			"factory": "./src/generators/convert-to-sfc/compat",
+			"schema": "./src/generators/convert-to-sfc/schema.json",
+			"description": "libs/plugin/src/generators/convert-to-sfc/ generator"
 		}
 	}
 }
