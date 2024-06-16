@@ -92,5 +92,6 @@
 	},
 	"lint-staged": {
 		"*": "pnpm exec prettier --write"
-	}
+	},
+	"packageManager": "pnpm@9.3.0"
 }
