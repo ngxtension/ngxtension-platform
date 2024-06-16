@@ -29,9 +29,7 @@
 		}
 	},
 	"dependencies": {
-		"tslib": "^2.3.0"
-	},
-	"devDependencies": {
+		"tslib": "^2.3.0",
 		"@angular-eslint/bundled-angular-compiler": "^18.0.1",
 		"@nx/devkit": "^19.0.0",
 		"nx": "^19.0.0",
