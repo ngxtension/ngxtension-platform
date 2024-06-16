@@ -1,3 +1,22 @@
+## 3.5.0 (2024-06-16)
+
+
+### Features
+
+- add rxjs operators `poll` and `whenDocumentVisible` ([#404](https://github.com/ngxtension/ngxtension-platform/pull/404))
+- **inputs:** add mergeInputs transform fn ([29b8f7b](https://github.com/ngxtension/ngxtension-platform/commit/29b8f7b))
+- **to-observable-signal:** refactor toObservableSignal to handle Obs… ([#408](https://github.com/ngxtension/ngxtension-platform/pull/408))
+
+### Documentation
+
+- add nguyenphutrong as a contributor for code ([#414](https://github.com/ngxtension/ngxtension-platform/pull/414))
+
+### ❤️  Thank You
+
+- ctran
+- Fabien Dehopré
+- Trong Nguyen @nguyenphutrong
+
 ## 3.5.0-beta.0 (2024-06-10)
 
 
