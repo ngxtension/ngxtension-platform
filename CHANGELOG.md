@@ -1,3 +1,14 @@
+## 3.5.2 (2024-06-17)
+
+
+### Bug Fixes
+
+- **inputs:** ensure the type has '' for mergeInputs ([06bc0fd](https://github.com/ngxtension/ngxtension-platform/commit/06bc0fd))
+
+### ❤️  Thank You
+
+- ctran
+
 ## 3.5.1 (2024-06-17)
 
 
