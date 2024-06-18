@@ -1,3 +1,14 @@
+## 3.5.4 (2024-06-18)
+
+
+### Bug Fixes
+
+- **create-injection-token:** type ([792bff1](https://github.com/ngxtension/ngxtension-platform/commit/792bff1))
+
+### ❤️  Thank You
+
+- ctran
+
 ## 3.5.3 (2024-06-18)
 
 
