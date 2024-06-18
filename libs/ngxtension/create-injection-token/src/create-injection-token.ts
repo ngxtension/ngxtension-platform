@@ -43,6 +43,7 @@ export type CreateInjectionTokenOptions<
 		? { deps?: never }
 		: { deps: CreateInjectionTokenDeps<TFactory, TFactoryDeps> }) & {
 		isRoot?: boolean;
+		isFunctionValue?: boolean;
 		multi?: boolean;
 		token?: InjectionToken<ReturnType<TFactory>>;
 		extraProviders?: Provider | EnvironmentProviders;
@@ -53,8 +54,8 @@ type CreateProvideFnOptions<
 	TFactoryDeps extends Parameters<TFactory> = Parameters<TFactory>,
 > = Pick<
 	CreateInjectionTokenOptions<TFactory, TFactoryDeps>,
-	'deps' | 'extraProviders' | 'multi'
-> & { isFunctionValue?: boolean };
+	'deps' | 'extraProviders' | 'multi' | 'isFunctionValue'
+>;
 
 type InjectFn<TFactoryReturn> = {
 	(): TFactoryReturn;
@@ -258,9 +259,11 @@ export function createNoopInjectionToken<
 	TOptions = Pick<
 		CreateInjectionTokenOptions<() => void, []>,
 		'extraProviders'
-	> & { isFunctionValue?: boolean } & (TMulti extends true
-			? { multi: true }
-			: Record<string, never>),
+	> &
+		(TValue extends (...args: any[]) => any
+			? { isFunctionValue: true }
+			: { isFunctionValue?: never }) &
+		(TMulti extends true ? { multi: true } : { multi?: never }),
 >(description: string, options?: TOptions) {
 	type TReturn = TMulti extends true ? Array<TValue> : TValue;
 
