@@ -1,3 +1,14 @@
+## 3.5.5 (2024-06-18)
+
+
+### Bug Fixes
+
+- **create-injection-token:** more type ([d1d9206](https://github.com/ngxtension/ngxtension-platform/commit/d1d9206))
+
+### ❤️  Thank You
+
+- ctran
+
 ## 3.5.4 (2024-06-18)
 
 
