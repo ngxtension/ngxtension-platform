@@ -1,3 +1,14 @@
+## 3.5.3 (2024-06-18)
+
+
+### Bug Fixes
+
+- **create-injection-token:** allow createNoopInjectionToken pass in isFunctionVAlue ([d990892](https://github.com/ngxtension/ngxtension-platform/commit/d990892))
+
+### ❤️  Thank You
+
+- ctran
+
 ## 3.5.2 (2024-06-17)
 
 
