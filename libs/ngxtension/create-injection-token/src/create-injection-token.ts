@@ -54,7 +54,7 @@ type CreateProvideFnOptions<
 > = Pick<
 	CreateInjectionTokenOptions<TFactory, TFactoryDeps>,
 	'deps' | 'extraProviders' | 'multi'
->;
+> & { isFunctionValue?: boolean };
 
 type InjectFn<TFactoryReturn> = {
 	(): TFactoryReturn;
@@ -114,7 +114,10 @@ function createProvideFn<
 	opts: CreateProvideFnOptions<TFactory, TFactoryDeps> = {},
 ) {
 	const { deps = [], multi = false, extraProviders = [] } = opts;
-	return (value?: TValue | (() => TValue), isFunctionValue = false) => {
+	return (
+		value?: TValue | (() => TValue),
+		isFunctionValue = opts.isFunctionValue ?? false,
+	) => {
 		let provider: Provider;
 		if (typeof value !== 'undefined') {
 			// TODO: (chau) maybe this can be made better
@@ -251,7 +254,9 @@ export function createNoopInjectionToken<
 		CreateInjectionTokenOptions<() => void, []>,
 		'extraProviders'
 	> &
-		(TMulti extends true ? { multi: true } : Record<string, never>),
+		(TMulti extends true ? { multi: true } : Record<string, never>) & {
+			isFunctionValue?: boolean;
+		},
 >(description: string, options?: TOptions) {
 	type TReturn = TMulti extends true ? Array<TValue> : TValue;
 
