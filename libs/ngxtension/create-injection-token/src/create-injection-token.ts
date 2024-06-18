@@ -113,10 +113,15 @@ function createProvideFn<
 	factory: (...args: any[]) => TValue,
 	opts: CreateProvideFnOptions<TFactory, TFactoryDeps> = {},
 ) {
-	const { deps = [], multi = false, extraProviders = [] } = opts;
+	const {
+		deps = [],
+		multi = false,
+		extraProviders = [],
+		isFunctionValue: isFunctionValueFromOpts = false,
+	} = opts;
 	return (
 		value?: TValue | (() => TValue),
-		isFunctionValue = opts.isFunctionValue ?? false,
+		isFunctionValue = isFunctionValueFromOpts,
 	) => {
 		let provider: Provider;
 		if (typeof value !== 'undefined') {
@@ -253,10 +258,9 @@ export function createNoopInjectionToken<
 	TOptions = Pick<
 		CreateInjectionTokenOptions<() => void, []>,
 		'extraProviders'
-	> &
-		(TMulti extends true ? { multi: true } : Record<string, never>) & {
-			isFunctionValue?: boolean;
-		},
+	> & { isFunctionValue?: boolean } & (TMulti extends true
+			? { multi: true }
+			: Record<string, never>),
 >(description: string, options?: TOptions) {
 	type TReturn = TMulti extends true ? Array<TValue> : TValue;
 
