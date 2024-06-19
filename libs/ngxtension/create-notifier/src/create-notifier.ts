@@ -5,7 +5,7 @@ export function createNotifier() {
 
 	return {
 		notify: () => {
-			sourceSignal.update((v) => v + 1);
+			sourceSignal.update((v) => (v >>> 0) + 1);
 		},
 		listen: sourceSignal.asReadonly(),
 	};
