@@ -65,17 +65,29 @@ explicitEffect(
 
 ## Cleanup
 
-An optional second argument can be provided to `explicitEffect` that will be called when the effect is cleaned up.
+An optional second argument can be provided to the `explicitEffect` function that will be called when the effect is cleaned up.
 
 ```ts
 const count = signal(0);
-explicitEffect([this.count], ([count], cleanup) => {
+explicitEffect([count], ([count], cleanup) => {
 	console.log(`count updated ${count}`);
 	cleanup(() => console.log('cleanup'));
 });
+```
 
-// count updated 0
-// count.set(1);
-// cleanup
-// count updated 1
+## Defer
+
+In addition to the regular `effect` options, you can also pass a `defer` value as part of the third object argument of `explicitEffect`. This allows the computation not to execute immediately and only run on first deps change.
+
+```ts
+const count = signal(0);
+explicitEffect(
+	[count],
+	([count]) => {
+		console.log(`count updated ${count}`);
+	},
+	{ defer: true },
+);
+
+count.set(1); // this set will trigger the effect function call, not the initial value
 ```
