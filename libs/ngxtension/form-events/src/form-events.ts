@@ -12,6 +12,7 @@ import {
 import {
 	Observable,
 	combineLatest,
+	defer,
 	distinctUntilChanged,
 	filter,
 	map,
@@ -88,54 +89,56 @@ type FormEventData<T> = {
 export function allEventsObservable<T>(
 	form: AbstractControl<T>,
 ): Observable<FormEventData<T>> {
-	return combineLatest([
-		valueEvents$(form).pipe(
-			startWith(form.value),
-			map((value) => (isValueEvent(value) ? value.value : value)),
-			distinctUntilChanged(
-				(previous, current) =>
-					JSON.stringify(previous) === JSON.stringify(current),
+	return defer(() =>
+		combineLatest([
+			valueEvents$(form).pipe(
+				startWith(form.value),
+				map((value) => (isValueEvent(value) ? value.value : value)),
+				distinctUntilChanged(
+					(previous, current) =>
+						JSON.stringify(previous) === JSON.stringify(current),
+				),
 			),
+			statusEvents$(form).pipe(startWith(form.status)),
+			touchedEvents$(form).pipe(startWith(form.touched)),
+			pristineEvents$(form).pipe(startWith(form.pristine)),
+		]).pipe(
+			map(([valueParam, statusParam, touchedParam, pristineParam]) => {
+				// Original values (plus value)
+				const stat: FormControlStatus | StatusChangeEvent = isStatusEvent(
+					statusParam,
+				)
+					? statusParam.status
+					: statusParam;
+				const touch: boolean | TouchedChangeEvent = isTouchedEvent(touchedParam)
+					? touchedParam.touched
+					: touchedParam;
+				const prist: boolean | PristineChangeEvent = isPristineEvent(
+					pristineParam,
+				)
+					? pristineParam.pristine
+					: pristineParam;
+
+				// Derived values - not directly named as events but are aliases for something that can be derived from original values
+				const validDerived = stat === 'VALID';
+				const invalidDerived = stat === 'INVALID';
+				const pendingDerived = stat === 'PENDING';
+				const dirtyDerived = !prist;
+				const untouchedDerived = !touch;
+
+				return {
+					value: valueParam,
+					status: stat,
+					touched: touch,
+					pristine: prist,
+					valid: validDerived,
+					invalid: invalidDerived,
+					pending: pendingDerived,
+					dirty: dirtyDerived,
+					untouched: untouchedDerived,
+				};
+			}),
 		),
-		statusEvents$(form).pipe(startWith(form.status)),
-		touchedEvents$(form).pipe(startWith(form.touched)),
-		pristineEvents$(form).pipe(startWith(form.pristine)),
-	]).pipe(
-		map(([valueParam, statusParam, touchedParam, pristineParam]) => {
-			// Original values (plus value)
-			const stat: FormControlStatus | StatusChangeEvent = isStatusEvent(
-				statusParam,
-			)
-				? statusParam.status
-				: statusParam;
-			const touch: boolean | TouchedChangeEvent = isTouchedEvent(touchedParam)
-				? touchedParam.touched
-				: touchedParam;
-			const prist: boolean | PristineChangeEvent = isPristineEvent(
-				pristineParam,
-			)
-				? pristineParam.pristine
-				: pristineParam;
-
-			// Derived values - not directly named as events but are aliases for something that can be derived from original values
-			const validDerived = stat === 'VALID';
-			const invalidDerived = stat === 'INVALID';
-			const pendingDerived = stat === 'PENDING';
-			const dirtyDerived = !prist;
-			const untouchedDerived = !touch;
-
-			return {
-				value: valueParam,
-				status: stat,
-				touched: touch,
-				pristine: prist,
-				valid: validDerived,
-				invalid: invalidDerived,
-				pending: pendingDerived,
-				dirty: dirtyDerived,
-				untouched: untouchedDerived,
-			};
-		}),
 	);
 }
 export function allEventsSignal<T>(
