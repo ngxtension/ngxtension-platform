@@ -88,6 +88,13 @@ type FormEventData<T> = {
 
 export function allEventsObservable<T>(
 	form: AbstractControl<T>,
+): Observable<FormEventData<T>>;
+export function allEventsObservable<T>(
+	form: AbstractControl,
+): Observable<FormEventData<T>>;
+
+export function allEventsObservable<T>(
+	form: AbstractControl<T>,
 ): Observable<FormEventData<T>> {
 	return defer(() =>
 		combineLatest([
@@ -141,6 +148,14 @@ export function allEventsObservable<T>(
 		),
 	);
 }
+
+export function allEventsSignal<T>(
+	form: AbstractControl<T>,
+): Signal<FormEventData<T>>;
+export function allEventsSignal<T>(
+	form: AbstractControl,
+): Signal<FormEventData<T>>;
+
 export function allEventsSignal<T>(
 	form: AbstractControl<T>,
 ): Signal<FormEventData<T>> {

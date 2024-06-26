@@ -39,4 +39,11 @@ export default class FormEventsComponent {
 
 	form$ = allEventsObservable(this.form);
 	$form = allEventsSignal(this.form);
+
+	formTyped$ = allEventsObservable<ReturnType<typeof this.form.getRawValue>>(
+		this.form,
+	);
+	$formTyped = allEventsSignal<ReturnType<typeof this.form.getRawValue>>(
+		this.form,
+	);
 }
