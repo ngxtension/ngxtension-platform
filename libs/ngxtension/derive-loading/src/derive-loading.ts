@@ -15,10 +15,33 @@ import {
 } from 'rxjs';
 
 export type DeriveLoadingOptions = {
+	/**
+	 * The time in milliseconds to wait before emiting the loading flag = true.
+	 */
 	threshold?: number;
+	/**
+	 * The time in milliseconds to wait before emiting the loading flag = false.
+	 */
 	loadingTime?: number;
 };
 
+/**
+ * Derive a loading state from the source observable.
+ *
+ * It will emit a loading flag in a "non-flickering" way. This means
+ * if the async operation finishes before the threshold time, the loading flag will not change
+ * to "true", it will stay false.
+ *
+ * It will only emit "true" when the async operation takes longer than the threshold time.
+ * It will change back to "false" after at least the defined threshold + loadingTime has passed.
+ * If the async operation takes longer than threshold + loadingtime, "false" will be emitted after the operation
+ * has finished.
+ *
+ * @param options - The options to configure the loading state derivation.
+ * @returns A observable that emits the loading flag.
+ *
+ * @param options
+ */
 export function deriveLoading<T>(
 	options?: DeriveLoadingOptions,
 ): OperatorFunction<T, boolean> {
