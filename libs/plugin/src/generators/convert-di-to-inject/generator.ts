@@ -245,6 +245,7 @@ export async function convertDiToInjectGenerator(
 							leadingTrivia: '  ',
 						});
 
+						const updates = [] as (() => void)[];
 						param
 							.findReferences()
 							.flatMap((ref) => ref.getReferences())
@@ -257,10 +258,14 @@ export async function convertDiToInjectGenerator(
 								if (text.includes(`this.${name}`)) {
 									return;
 								}
-								parent.replaceWithText(
-									text.replace(name.toString(), `this.${propertyName}`),
-								);
+								updates.push(() => {
+									parent.replaceWithText(
+										text.replace(name.toString(), `this.${propertyName}`),
+									);
+								});
 							});
+
+						updates.forEach((update) => update());
 					}
 
 					convertedDeps.add(name);

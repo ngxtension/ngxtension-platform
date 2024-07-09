@@ -170,12 +170,20 @@ describe(createNoopInjectionToken.name, () => {
 			'noop',
 			{ multi: true },
 		);
+		const [injectTwoFn, provideTwoFn] = createNoopInjectionToken<() => number>(
+			'noop two',
+			{ isFunctionValue: true },
+		);
 		it('then work properly', () => {
 			TestBed.configureTestingModule({
-				providers: [provideFn(1), provideFn(() => 2)],
+				providers: [provideFn(1), provideFn(() => 2), provideTwoFn(() => 3)],
 			}).runInInjectionContext(() => {
 				const values = injectFn();
 				expect(values).toEqual([1, 2]);
+
+				const value = injectTwoFn();
+				expect(value).toStrictEqual(expect.any(Function));
+				expect(value()).toEqual(3);
 			});
 		});
 	});
