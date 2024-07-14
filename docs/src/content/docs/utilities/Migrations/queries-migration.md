@@ -1,7 +1,7 @@
 ---
 title: Queries Migration
 description: Schematics for migrating from decorator-based Queries to Signal-based Queries
-entryPoint: convert-queries
+entryPoint: ../plugin/src/generators/convert-queries
 badge: stable
 contributors: ['enea-jahollari']
 ---

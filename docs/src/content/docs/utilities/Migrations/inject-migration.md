@@ -1,7 +1,7 @@
 ---
 title: inject() Migration
 description: Schematics for migrating from constructor dependency injection to inject()
-entryPoint: convert-di-to-inject
+entryPoint: ../plugin/src/generators/convert-di-to-inject
 badge: stable
 contributors: ['enea-jahollari', 'kevinkreuzer', 'lilbeqiri']
 ---
