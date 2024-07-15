@@ -26,6 +26,11 @@
 			"factory": "./src/generators/convert-queries/generator",
 			"schema": "./src/generators/convert-queries/schema.json",
 			"description": "libs/plugin/src/generators/convert-queries/ generator"
+		},
+		"convert-to-self-closing-tag": {
+			"factory": "./src/generators/convert-to-self-closing-tag/generator",
+			"schema": "./src/generators/convert-to-self-closing-tag/schema.json",
+			"description": "libs/plugin/src/generators/convert-to-self-closing-tag/ generator"
 		}
 	},
 	"schematics": {
@@ -60,6 +65,11 @@
 			"factory": "./src/generators/convert-queries/compat",
 			"schema": "./src/generators/convert-queries/schema.json",
 			"description": "libs/plugin/src/generators/convert-queries/ generator"
+		},
+		"convert-to-self-closing-tag": {
+			"factory": "./src/generators/convert-to-self-closing-tag/compat",
+			"schema": "./src/generators/convert-to-self-closing-tag/schema.json",
+			"description": "libs/plugin/src/generators/convert-to-self-closing-tag/ generator"
 		}
 	}
 }
