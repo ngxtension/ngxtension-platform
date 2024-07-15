@@ -66,6 +66,10 @@ export const appConfig: ApplicationConfig = {
 				],
 			},
 			{
+				path: 'form-events',
+				loadComponent: () => import('./form-events/form-events.component'),
+			},
+			{
 				path: 'control-value-accessor',
 				loadComponent: () =>
 					import('./control-value-accessor/control-value-accessor'),
