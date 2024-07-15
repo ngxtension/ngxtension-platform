@@ -57,6 +57,9 @@
 			"ngxtension/create-notifier": [
 				"libs/ngxtension/create-notifier/src/index.ts"
 			],
+			"ngxtension/create-repeat": [
+				"libs/ngxtension/create-repeat/src/index.ts"
+			],
 			"ngxtension/create-signal": [
 				"libs/ngxtension/create-signal/src/index.ts"
 			],
