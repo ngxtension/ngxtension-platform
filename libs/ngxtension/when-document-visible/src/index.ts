@@ -1,1 +1,1 @@
-export const greeting = 'Hello World!';
+export { whenDocumentVisible } from './when-document-visible';
