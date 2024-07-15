@@ -106,4 +106,27 @@ describe(explicitEffect.name, () => {
 			});
 		});
 	});
+
+	it('should skip the first run of the effect callback', () => {
+		const log: string[] = [];
+		const count = signal(0);
+		const state = signal('idle');
+
+		TestBed.runInInjectionContext(() => {
+			explicitEffect(
+				[count, state],
+				([count, state]) => {
+					log.push(`count updated ${count}, ${state}`);
+				},
+				{ defer: true },
+			);
+			expect(log.length).toBe(0);
+			TestBed.flushEffects();
+			expect(log.length).toBe(0);
+
+			count.set(1);
+			TestBed.flushEffects();
+			expect(log.length).toBe(1);
+		});
+	});
 });
