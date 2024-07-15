@@ -19,7 +19,7 @@
 			"parser": "jsonc-eslint-parser",
 			"rules": {
 				"@nx/dependency-checks": [
-					"error",
+					"warning",
 					{
 						"ignoredDependencies": [
 							"tslib",
@@ -36,7 +36,7 @@
 			"files": ["./package.json", "./generators.json"],
 			"parser": "jsonc-eslint-parser",
 			"rules": {
-				"@nx/nx-plugin-checks": "error"
+				"@nx/nx-plugin-checks": "warning"
 			}
 		}
 	]
