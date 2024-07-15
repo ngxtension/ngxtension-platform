@@ -8,6 +8,7 @@ on:
 
 env:
   NX_VERBOSE_LOGGING: true
+  NX_NO_CLOUD: true
 
 # Needed for nx-set-shas when run on the main branch
 permissions:
