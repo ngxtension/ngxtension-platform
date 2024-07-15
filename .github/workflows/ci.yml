@@ -8,6 +8,7 @@ on:
 
 env:
   NX_VERBOSE_LOGGING: true
+  NX_NO_CLOUD: true
 
 # Needed for nx-set-shas when run on the main branch
 permissions:
@@ -31,7 +32,7 @@ jobs:
       - uses: pnpm/action-setup@v3
         name: Install pnpm
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Start CI run

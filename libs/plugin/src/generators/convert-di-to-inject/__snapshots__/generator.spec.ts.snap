@@ -50,6 +50,30 @@ exports[`convertDiToInjectGenerator should add the readonly keyword to converted
 "
 `;
 
+exports[`convertDiToInjectGenerator should add this keyword to all assignments in constructor 1`] = `
+"
+    import { Component, inject } from '@angular/core';
+
+    @Component({
+      template: ''
+    })
+    export class MyComponent {
+      private service = inject(Service);
+      depOne$: Observable<string>;
+      depTwo$: Observable<string>;
+      depThree$: Observable<string>;
+      depFour$: Observable<string>;
+
+      constructor() {
+        this.depOne$ = this.service.depOne$;
+        this.depTwo$ = this.service.depTwo$;
+        this.depThree$ = this.service.depThree$;
+        this.depFour$ = this.service.depFour$;
+      }
+    }
+"
+`;
+
 exports[`convertDiToInjectGenerator should convert private modifier fields to native private fields 1`] = `
 "
     import { Component, inject } from '@angular/core';
@@ -219,6 +243,7 @@ exports[`convertDiToInjectGenerator should convert properly with usage local 1`]
             const service = inject(MyService);
 
         service.doSomething();
+        service.doSomethingElse();
       }
     }
   "
