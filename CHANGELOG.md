@@ -1,3 +1,108 @@
+## 3.5.5 (2024-06-18)
+
+
+### Bug Fixes
+
+- **create-injection-token:** more type ([d1d9206](https://github.com/ngxtension/ngxtension-platform/commit/d1d9206))
+
+### ❤️  Thank You
+
+- ctran
+
+## 3.5.4 (2024-06-18)
+
+
+### Bug Fixes
+
+- **create-injection-token:** type ([792bff1](https://github.com/ngxtension/ngxtension-platform/commit/792bff1))
+
+### ❤️  Thank You
+
+- ctran
+
+## 3.5.3 (2024-06-18)
+
+
+### Bug Fixes
+
+- **create-injection-token:** allow createNoopInjectionToken pass in isFunctionVAlue ([d990892](https://github.com/ngxtension/ngxtension-platform/commit/d990892))
+
+### ❤️  Thank You
+
+- ctran
+
+## 3.5.2 (2024-06-17)
+
+
+### Bug Fixes
+
+- **inputs:** ensure the type has '' for mergeInputs ([06bc0fd](https://github.com/ngxtension/ngxtension-platform/commit/06bc0fd))
+
+### ❤️  Thank You
+
+- ctran
+
+## 3.5.1 (2024-06-17)
+
+
+### Features
+
+- add rxjs operators `poll` and `whenDocumentVisible` ([#404](https://github.com/ngxtension/ngxtension-platform/pull/404))
+- **inputs:** add mergeInputs transform fn ([29b8f7b](https://github.com/ngxtension/ngxtension-platform/commit/29b8f7b))
+- **to-observable-signal:** refactor toObservableSignal to handle Obs… ([#408](https://github.com/ngxtension/ngxtension-platform/pull/408))
+
+### Bug Fixes
+
+- **inputs:** allow mergeInputs to also accept '' as value ([c45f74e](https://github.com/ngxtension/ngxtension-platform/commit/c45f74e))
+
+### Documentation
+
+- add nguyenphutrong as a contributor for code ([#414](https://github.com/ngxtension/ngxtension-platform/pull/414))
+
+### ❤️  Thank You
+
+- ctran
+- Fabien Dehopré
+- Trong Nguyen @nguyenphutrong
+
+## 3.5.0 (2024-06-16)
+
+
+### Features
+
+- add rxjs operators `poll` and `whenDocumentVisible` ([#404](https://github.com/ngxtension/ngxtension-platform/pull/404))
+- **inputs:** add mergeInputs transform fn ([29b8f7b](https://github.com/ngxtension/ngxtension-platform/commit/29b8f7b))
+- **to-observable-signal:** refactor toObservableSignal to handle Obs… ([#408](https://github.com/ngxtension/ngxtension-platform/pull/408))
+
+### Documentation
+
+- add nguyenphutrong as a contributor for code ([#414](https://github.com/ngxtension/ngxtension-platform/pull/414))
+
+### ❤️  Thank You
+
+- ctran
+- Fabien Dehopré
+- Trong Nguyen @nguyenphutrong
+
+## 3.5.0-beta.0 (2024-06-10)
+
+
+### Bug Fixes
+
+- **inject-migration:** update option name and add proper aliases ([#403](https://github.com/ngxtension/ngxtension-platform/pull/403))
+
+### Documentation
+
+- add `explicitEffect` to the homepage ([#394](https://github.com/ngxtension/ngxtension-platform/pull/394))
+- add new logo ([#406](https://github.com/ngxtension/ngxtension-platform/pull/406))
+- **inject-di-migration:** remove extra not needed word ([#402](https://github.com/ngxtension/ngxtension-platform/pull/402))
+
+### ❤️  Thank You
+
+- Enea Jahollari @eneajaho
+- Ilir Beqiri @ilirbeqirii
+- Matthieu Riegler @JeanMeche
+
 ## 3.3.0 (2024-05-24)
 
 
