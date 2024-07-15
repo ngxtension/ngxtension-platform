@@ -1,7 +1,7 @@
 ---
 title: injectIsIntersecting
 description: ngxtension/inject-is-intersecting
-entryPoint: inject-is-intersecting
+entryPoint: ngxtension/inject-is-intersecting
 badge: stable
 contributors: ['enea-jahollari']
 ---

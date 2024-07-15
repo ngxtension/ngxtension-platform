@@ -1,7 +1,7 @@
 ---
 title: poll
 description: RxJS operator to apply to a stream that you want to poll every "period" milliseconds after an optional "initialDelay" milliseconds.
-entryPoint: poll
+entryPoint: ngxtension/poll
 badge: stable
 contributors: ['fabiendehopre']
 ---

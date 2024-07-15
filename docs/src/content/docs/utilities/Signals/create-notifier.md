@@ -1,7 +1,7 @@
 ---
 title: createNotifier
 description: ngxtension/create-notifier
-entryPoint: create-notifier
+entryPoint: ngxtension/create-notifier
 badge: experimental
 contributors: ['josh-morony']
 ---

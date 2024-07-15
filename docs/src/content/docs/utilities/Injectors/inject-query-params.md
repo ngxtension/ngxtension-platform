@@ -1,7 +1,7 @@
 ---
 title: injectQueryParams
 description: ngxtension/inject-query-params
-entryPoint: inject-query-params
+entryPoint: ngxtension/inject-query-params
 badge: stable
 contributors: ['enea-jahollari']
 ---

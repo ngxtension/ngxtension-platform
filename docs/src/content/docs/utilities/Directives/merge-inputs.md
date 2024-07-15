@@ -1,7 +1,7 @@
 ---
 title: mergeInputs
 description: ngxtension/inject-inputs
-entryPoint: inject-inputs
+entryPoint: ngxtension/inject-inputs
 badge: stable
 contributors: ['chau-tran']
 ---

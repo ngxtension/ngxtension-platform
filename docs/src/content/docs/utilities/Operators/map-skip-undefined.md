@@ -1,7 +1,7 @@
 ---
 title: mapSkipUndefined
 description: An RxJS operator that allows applying a transform function to each value of the observable in (same as map), but with the ability to skip (filter out) some values if the function explicitly returns undefined or simply doesn't return anything for same code-path (implicit return undefined).
-entryPoint: map-skip-undefined
+entryPoint: ngxtension/map-skip-undefined
 badge: stable
 contributors: ['daniele-morosinotto']
 ---

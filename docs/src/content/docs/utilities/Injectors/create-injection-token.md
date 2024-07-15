@@ -1,7 +1,7 @@
 ---
 title: createInjectionToken
 description: Create an InjectionToken and return an injectFn and provideFn for it as well.
-entryPoint: create-injection-token
+entryPoint: ngxtension/create-injection-token
 badge: stable
 contributors: ['chau-tran']
 ---

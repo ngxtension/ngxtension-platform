@@ -1,7 +1,7 @@
 ---
 title: assertInjector
 description: ngxtension/assert-injector
-entryPoint: assert-injector
+entryPoint: ngxtension/assert-injector
 badge: stable
 contributors: ['chau-tran']
 ---

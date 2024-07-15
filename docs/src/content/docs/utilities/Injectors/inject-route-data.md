@@ -1,7 +1,7 @@
 ---
 title: injectRouteData
 description: ngxtension/inject-route-data
-entryPoint: inject-route-data
+entryPoint: ngxtension/inject-route-data
 contributors: ['krzysztof-kachniarz']
 ---
 

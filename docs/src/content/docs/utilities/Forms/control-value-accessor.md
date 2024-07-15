@@ -1,7 +1,7 @@
 ---
 title: NgxControlValueAccessor
 description: A directive to reduce boilerplate when building custom inputs.
-entryPoint: control-value-accessor
+entryPoint: ngxtension/control-value-accessor
 badge: stable
 contributors: ['robby-rabbitman']
 ---

@@ -1,7 +1,7 @@
 ---
 title: rxEffect
 description: ngxtension/rx-effect
-entryPoint: rx-effect
+entryPoint: ngxtension/rx-effect
 badge: stable
 contributors: ['lucas-garcia']
 ---

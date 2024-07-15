@@ -1,7 +1,7 @@
 ---
 title: computedAsync
 description: ngxtension/computed-async
-entryPoint: computed-async
+entryPoint: ngxtension/computed-async
 badge: stable
 contributors: ['enea-jahollari']
 ---
