@@ -280,6 +280,13 @@
 			"avatar_url": "https://avatars.githubusercontent.com/u/3672842?v=4",
 			"profile": "https://github.com/mauriziocescon",
 			"contributions": ["code"]
+		},
+		{
+			"login": "leonelvsc",
+			"name": "Leonel Franchelli",
+			"avatar_url": "https://avatars.githubusercontent.com/u/2332029?v=4",
+			"profile": "https://github.com/leonelvsc",
+			"contributions": ["code"]
 		}
 	],
 	"contributorsPerLine": 7,
