@@ -1,0 +1,32 @@
+{
+	"$schema": "http://json-schema.org/schema",
+	"$id": "",
+	"title": "",
+	"type": "object",
+	"properties": {
+		"project": {
+			"type": "string",
+			"aliases": ["name", "projectName"],
+			"description": "Project for which to convert to single file components."
+		},
+		"path": {
+			"type": "string",
+			"description": "Path to the component to convert to a single file component."
+		},
+		"maxInlineTemplateLines": {
+			"type": "number",
+			"description": "If the template has more lines than this, it will be skipped.",
+			"default": 200
+		},
+		"maxInlineStyleLines": {
+			"type": "number",
+			"description": "If the styles have more lines than this, they will be skipped.",
+			"default": 200
+		},
+		"moveStyles": {
+			"type": "boolean",
+			"description": "Move styles to the single file component.",
+			"default": false
+		}
+	}
+}
