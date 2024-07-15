@@ -52,6 +52,7 @@ const filesMap = {
     export class MyComponent {
       constructor(service: MyService) {
         service.doSomething();
+        service.doSomethingElse();
       }
     }
   `,
@@ -211,6 +212,26 @@ const filesMap = {
       }
     }
 `,
+	componentWithDepAssignmentsInCtor: `
+    import { Component } from '@angular/core';
+
+    @Component({
+      template: ''
+    })
+    export class MyComponent {
+      depOne$: Observable<string>;
+      depTwo$: Observable<string>;
+      depThree$: Observable<string>;
+      depFour$: Observable<string>;
+
+      constructor(private service: Service) {
+        this.depOne$ = service.depOne$;
+        this.depTwo$ = service.depTwo$;
+        this.depThree$ = this.service.depThree$;
+        this.depFour$ = service.depFour$;
+      }
+    }
+`,
 } as const;
 
 // cases
@@ -341,6 +362,13 @@ describe('convertDiToInjectGenerator', () => {
 			includeReadonlyByDefault: true,
 			useEsprivateFieldNotation: true,
 		});
+		const [updated] = readContent();
+		expect(updated).toMatchSnapshot();
+	});
+
+	it('should add this keyword to all assignments in constructor', async () => {
+		const readContent = setup('componentWithDepAssignmentsInCtor');
+		await convertDiToInjectGenerator(tree, options);
 		const [updated] = readContent();
 		expect(updated).toMatchSnapshot();
 	});

@@ -7,7 +7,7 @@
 [![NPM](https://img.shields.io/npm/dw/ngxtension?logo=npm&style=flat-square)](https://npmjs.org/package/ngxtension)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-37-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-38-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A collection of utilities for [Angular](https://angular.dev).
@@ -104,6 +104,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://dafnik.me"><img src="https://avatars.githubusercontent.com/u/16242839?v=4?s=100" width="100px;" alt="Dominik"/><br /><sub><b>Dominik</b></sub></a><br /><a href="https://github.com/ngxtension/ngxtension-platform/commits?author=Dafnik" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://www.linkedin.com/in/trong-nguyen/"><img src="https://avatars.githubusercontent.com/u/62984954?v=4?s=100" width="100px;" alt="Trong Nguyen"/><br /><sub><b>Trong Nguyen</b></sub></a><br /><a href="https://github.com/ngxtension/ngxtension-platform/commits?author=nguyenphutrong" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Kiskae"><img src="https://avatars.githubusercontent.com/u/546681?v=4?s=100" width="100px;" alt="Kiskae"/><br /><sub><b>Kiskae</b></sub></a><br /><a href="https://github.com/ngxtension/ngxtension-platform/commits?author=Kiskae" title="Code">💻</a></td>
     </tr>
   </tbody>
   <tfoot>
