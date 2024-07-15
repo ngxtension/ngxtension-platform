@@ -21,6 +21,24 @@ export interface InjectDocumentVisibilityOptions {
 	injector?: Injector;
 }
 
+export function injectDocumentVisibilityStream(
+	options?: InjectDocumentVisibilityOptions,
+): Observable<DocumentVisibilityState> {
+	const injector = assertInjector(
+		injectDocumentVisibilityStream,
+		options?.injector,
+	);
+
+	return runInInjectionContext(injector, () => {
+		const doc: Document = options?.document ?? inject(DOCUMENT);
+
+		return fromEvent(doc, 'visibilitychange').pipe(
+			startWith(doc.visibilityState),
+			map(() => doc.visibilityState),
+		);
+	});
+}
+
 /**
  * Injects and monitors the current document visibility state. Emits the state initially and then emits on every change.
  *
@@ -40,25 +58,12 @@ export interface InjectDocumentVisibilityOptions {
  *
  * @returns A signal that emits the current `DocumentVisibilityState` (`"visible"`, `"hidden"`, etc.) initially and whenever the document visibility state changes.
  */
-
 export function injectDocumentVisibility(
 	options?: InjectDocumentVisibilityOptions,
 ): Signal<DocumentVisibilityState> {
-	const injector = assertInjector(injectDocumentVisibility, options?.injector);
-
-	return runInInjectionContext(injector, () => {
-		const doc: Document = options?.document ?? inject(DOCUMENT);
-
-		const docVisible$: Observable<DocumentVisibilityState> = fromEvent(
-			doc,
-			'visibilitychange',
-		).pipe(
-			startWith(doc.visibilityState),
-			map(() => doc.visibilityState),
-		);
-
-		return toSignal<DocumentVisibilityState>(docVisible$, {
-			requireSync: true,
-		});
+	const docVisible$: Observable<DocumentVisibilityState> =
+		injectDocumentVisibilityStream(options);
+	return toSignal<DocumentVisibilityState>(docVisible$, {
+		requireSync: true,
 	});
 }
