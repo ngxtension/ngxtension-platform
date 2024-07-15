@@ -45,13 +45,8 @@ export async function convertToSFCGenerator(
 		return exit(1);
 	}
 
-	let {
-		path,
-		project,
-		moveStyles,
-		maxInlineTemplateLines,
-		maxInlineStyleLines,
-	} = options;
+	const { path, project, moveStyles } = options;
+	let { maxInlineTemplateLines, maxInlineStyleLines } = options;
 	maxInlineStyleLines = maxInlineStyleLines || 200;
 	maxInlineTemplateLines = maxInlineTemplateLines || 200;
 
@@ -121,11 +116,11 @@ export async function convertToSFCGenerator(
 									.getText()
 									.slice(1, property.getInitializer().getText().length - 1),
 							);
-							let templateText = tree.exists(templatePath)
+							const templateText = tree.exists(templatePath)
 								? tree.read(templatePath, 'utf8')
 								: '';
 
-							let templateTextLines = templateText.split('\n').length;
+							const templateTextLines = templateText.split('\n').length;
 
 							// if the template is not too long and does not contain any js interpolation
 							if (
@@ -177,11 +172,11 @@ export async function convertToSFCGenerator(
 									removeQuotes(styleUrl),
 								);
 
-								let styleText = tree.exists(stylePath)
+								const styleText = tree.exists(stylePath)
 									? tree.read(stylePath, 'utf8')
 									: '';
 
-								let styleTextLines = styleText.split('\n').length;
+								const styleTextLines = styleText.split('\n').length;
 
 								if (styleTextLines <= maxInlineStyleLines) {
 									try {
