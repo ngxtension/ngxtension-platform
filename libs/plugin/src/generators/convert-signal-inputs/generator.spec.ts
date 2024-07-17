@@ -140,6 +140,9 @@ import { Component, Input } from '@angular/core';
   templateUrl: './my-file.html'
 })
 export class MyCmp {
+  @HostBinding('style.color')
+  @Input() color = 'red';
+
   @Input() inputWithoutType;
   @Input() normalInput = '';
   @Input() withoutDefault?: string;
