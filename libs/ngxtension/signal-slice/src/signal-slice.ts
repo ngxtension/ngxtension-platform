@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { connect, type PartialOrValue, type Reducer } from 'ngxtension/connect';
+import { createNotifier } from 'ngxtension/create-notifier';
 import { Subject, isObservable, share, take, type Observable } from 'rxjs';
 
 type ActionSourceFn<TSignalValue, TPayload> = (
@@ -277,7 +278,7 @@ function addReducerProperties(
 	subs: Subject<unknown>[],
 	observableFromActionSource?: Observable<any>,
 ) {
-	const version = signal(0);
+	const version = createNotifier();
 	Object.defineProperties(readonlyState, {
 		[key]: {
 			value: (nextValue: unknown) => {
@@ -285,7 +286,7 @@ function addReducerProperties(
 					return new Promise((res, rej) => {
 						nextValue.pipe(takeUntilDestroyed(destroyRef)).subscribe({
 							next: (value) => {
-								version.update((v) => v + 1);
+								version.notify();
 								subject.next(value);
 							},
 							error: (err) => {
@@ -293,7 +294,7 @@ function addReducerProperties(
 								rej(err);
 							},
 							complete: () => {
-								version.update((v) => v + 1);
+								version.notify();
 								subject.complete();
 								res(readonlyState());
 							},
@@ -311,7 +312,7 @@ function addReducerProperties(
 					state$.pipe(take(1)).subscribe((val) => {
 						res(val);
 					});
-					version.update((v) => v + 1);
+					version.notify();
 					subject.next(nextValue);
 				});
 			},
@@ -320,7 +321,7 @@ function addReducerProperties(
 			value: subject.asObservable(),
 		},
 		[`${key}Updated`]: {
-			value: version.asReadonly(),
+			value: version.listen,
 		},
 	});
 	subs.push(subject);
