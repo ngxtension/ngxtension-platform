@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { connect, type PartialOrValue, type Reducer } from 'ngxtension/connect';
+import { createNotifier } from 'ngxtension/create-notifier';
 import { Subject, isObservable, share, take, type Observable } from 'rxjs';
 
 type ActionSourceFn<TSignalValue, TPayload> = (
@@ -89,6 +90,13 @@ type ActionStreams<
 			: never;
 };
 
+type ActionUpdates<
+	TSignalValue,
+	TActionSources extends NamedActionSources<TSignalValue>,
+> = {
+	[K in keyof TActionSources & string as `${K}Updated`]: Signal<number>;
+};
+
 export type Source<TSignalValue> = Observable<PartialOrValue<TSignalValue>>;
 type SourceConfig<TSignalValue> = Array<
 	Source<TSignalValue> | ((state: Signal<TSignalValue>) => Source<TSignalValue>)
@@ -104,7 +112,8 @@ export type SignalSlice<
 	ExtraSelectors<TSelectors> &
 	Effects<TEffects> &
 	ActionMethods<TSignalValue, TActionSources> &
-	ActionStreams<TSignalValue, TActionSources>;
+	ActionStreams<TSignalValue, TActionSources> &
+	ActionUpdates<TSignalValue, TActionSources>;
 
 type SelectorsState<TSignalValue extends NoOptionalProperties<TSignalValue>> =
 	Signal<TSignalValue> & Selectors<TSignalValue>;
@@ -269,6 +278,7 @@ function addReducerProperties(
 	subs: Subject<unknown>[],
 	observableFromActionSource?: Observable<any>,
 ) {
+	const version = createNotifier();
 	Object.defineProperties(readonlyState, {
 		[key]: {
 			value: (nextValue: unknown) => {
@@ -276,6 +286,7 @@ function addReducerProperties(
 					return new Promise((res, rej) => {
 						nextValue.pipe(takeUntilDestroyed(destroyRef)).subscribe({
 							next: (value) => {
+								version.notify();
 								subject.next(value);
 							},
 							error: (err) => {
@@ -283,6 +294,7 @@ function addReducerProperties(
 								rej(err);
 							},
 							complete: () => {
+								version.notify();
 								subject.complete();
 								res(readonlyState());
 							},
@@ -300,12 +312,16 @@ function addReducerProperties(
 					state$.pipe(take(1)).subscribe((val) => {
 						res(val);
 					});
+					version.notify();
 					subject.next(nextValue);
 				});
 			},
 		},
 		[`${key}$`]: {
 			value: subject.asObservable(),
+		},
+		[`${key}Updated`]: {
+			value: version.listen,
 		},
 	});
 	subs.push(subject);
