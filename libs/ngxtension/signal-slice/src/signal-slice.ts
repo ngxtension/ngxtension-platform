@@ -81,9 +81,9 @@ type ActionStreams<
 	TActionSources extends NamedActionSources<TSignalValue>,
 > = {
 	[K in keyof TActionSources &
-		string as `${K}$`]: TActionSources[K] extends Reducer<TSignalValue, unknown>
+		string as `${K}$`]: TActionSources[K] extends ActionSourceFn<TSignalValue, unknown>
 		? Observable<void>
-		: TActionSources[K] extends Reducer<TSignalValue, infer TValue>
+		: TActionSources[K] extends ActionSourceFn<TSignalValue, infer TValue>
 			? TValue extends Observable<any>
 				? TValue
 				: Observable<TValue>
