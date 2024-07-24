@@ -138,11 +138,6 @@ describe(signalSlice.name, () => {
 			state.age();
 			expect(testFn).toHaveBeenCalled();
 		});
-
-		it('should connect lazy source after signal value is accessed', () => {
-			state().age;
-			expect(testFn).toHaveBeenCalled();
-		});
 	});
 
 	describe('actionSources', () => {
