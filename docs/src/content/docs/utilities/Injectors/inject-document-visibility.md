@@ -20,7 +20,7 @@ import { injectDocumentVisibility } from 'ngxtension/inject-document-visibility'
 const visibilityState = injectDocumentVisibility();
 
 effect(() => {
-	console.log(visibilityState.value);
+	console.log(visibilityState());
 });
 ```
 
