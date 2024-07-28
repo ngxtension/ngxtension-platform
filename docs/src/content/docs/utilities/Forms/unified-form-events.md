@@ -41,7 +41,7 @@ import { allEventsObservable, allEventsSignal } from 'ngxtension/form-events';
 ## Usage
 
 > DISCLAIMER:
-> Due to some constraints of reactive forms, the value ends up resolving when implemented as `Partial<T>`. However, most if not all edge cases are accounted for, so in the author's opinion and personal use it should be safe to assert it as non-Partial as users see fit. See discussion in this utility's [pull request](https://github.com/ngxtension/ngxtension-platform/pull/391) and a [related issue](https://github.com/ngxtension/ngxtension-platform/issues/365). The author's favorite way to use this form utility and to type the value is explained in the last documentation subsection, ["Synergy with `signalSlice`"](#synergy-with-`signalSlice`).
+> Due to some constraints of reactive forms, the value ends up resolving when implemented as `Partial<T>`. However, most if not all edge cases are accounted for, so in the author's opinion and personal use it should be safe to assert it as non-Partial as users see fit. See discussion in this utility's [pull request](https://github.com/ngxtension/ngxtension-platform/pull/391) and a [related issue](https://github.com/ngxtension/ngxtension-platform/issues/365). The author's favorite way to use this form utility and to type the value is explained in the last documentation subsection, ["Synergy with `signalSlice`"](#synergy-with-signalslice---removing-the-partial-from-partialt-and-more).
 
 [Stackblitz example](https://stackblitz.com/edit/stackblitz-starters-masfsq?file=src%2Fform-events-utils.ts) of both functions.
 
@@ -89,3 +89,9 @@ formState = signalSlice({
 	// ...
 });
 ```
+
+This approach not only helps the typing of the form value, but also
+
+- Other `sources` such as HTTP or store events. The slice's form value can be set using `this.form.patchValue` as a side effect in one or more of those mappings. [Example source code from Josh](https://github.com/joshuamorony/signal-slice-forms/blob/main/src/app/home/home.component.ts#L62).
+- Allows imperative changes such as form submissions using `actionSources`
+- `selectors`, aka built in `computed` values accesible directly from the slice.
