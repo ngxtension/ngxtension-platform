@@ -1,7 +1,7 @@
 ---
 title: NgxControlError
 description: Structural directive for displaying form control errors consistently and reduce boilerplate.
-entryPoint: control-error
+entryPoint: ngxtension/control-error
 badge: stable
 contributors: ['robby-rabbitman']
 ---

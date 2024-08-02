@@ -1,7 +1,7 @@
 ---
 title: derivedAsync
 description: ngxtension/derived-async
-entryPoint: derived-async
+entryPoint: ngxtension/derived-async
 badge: stable
 contributors: ['enea-jahollari']
 ---

@@ -1,7 +1,7 @@
 ---
 title: derivedFrom
 description: ngxtension/derived-from
-entryPoint: derived-from
+entryPoint: ngxtension/derived-from
 badge: stable
 contributors: ['enea-jahollari']
 ---

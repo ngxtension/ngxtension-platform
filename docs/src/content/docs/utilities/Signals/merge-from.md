@@ -1,7 +1,7 @@
 ---
 title: mergeFrom
 description: ngxtension/merge-from
-entryPoint: merge-from
+entryPoint: ngxtension/merge-from
 badge: stable
 contributors: ['chau-tran']
 ---

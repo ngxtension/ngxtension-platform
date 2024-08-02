@@ -1,7 +1,7 @@
 ---
 title: New output() Migration
 description: Schematics for migrating decorator outputs to function based outputs
-entryPoint: convert-outputs
+entryPoint: plugin/src/generators/convert-outputs
 badge: stable
 contributors: ['enea-jahollari']
 ---

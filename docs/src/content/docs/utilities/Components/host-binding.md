@@ -1,7 +1,7 @@
 ---
 title: hostBinding
 description: ngxtension/host-binding
-entryPoint: host-binding
+entryPoint: ngxtension/host-binding
 badge: stable
 contributors: ['lucas-garcia']
 ---

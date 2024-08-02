@@ -1,7 +1,7 @@
 ---
 title: signalSlice
 description: ngxtension/signal-slice
-entryPoint: signal-slice
+entryPoint: ngxtension/signal-slice
 badge: stable
 contributors: ['josh-morony']
 ---

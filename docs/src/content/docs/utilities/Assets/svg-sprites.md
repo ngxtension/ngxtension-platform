@@ -1,7 +1,7 @@
 ---
 title: Svg Sprites
 description: A directive for rendering symbols of svg sprites.
-entryPoint: svg-sprite
+entryPoint: ngxtension/svg-sprite
 badge: stable
 contributors: ['robby-rabbitman']
 ---

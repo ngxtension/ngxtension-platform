@@ -1,7 +1,7 @@
 ---
 title: whenDocumentVisible
 description: RxJS operator to pause a stream when the document is hidden and to resume the stream when the document is visible.
-entryPoint: when-document-visible
+entryPoint: ngxtension/when-document-visible
 badge: stable
 contributors: ['fabiendehopre']
 ---

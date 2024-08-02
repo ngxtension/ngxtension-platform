@@ -1,7 +1,7 @@
 ---
 title: explicitEffect
 description: ngxtension/explicit-effect
-entryPoint: explicit-effect
+entryPoint: ngxtension/explicit-effect
 badge: stable
 contributors: ['jeanmeche', 'enea-jahollari']
 ---

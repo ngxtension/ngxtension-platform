@@ -1,7 +1,7 @@
 ---
 title: toLazySignal
 description: ngxtension/to-lazy-signal
-entryPoint: to-lazy-signal
+entryPoint: ngxtension/to-lazy-signal
 badge: stable
 contributors: ['evgeniy-oz']
 ---
