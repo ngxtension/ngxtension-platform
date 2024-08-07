@@ -76,4 +76,30 @@ describe(mirror.name, () => {
 		expect(fixture.componentInstance.mirrored()).toEqual(4);
 		expect(fixture.componentInstance.value()).toEqual(3); // value should not change
 	});
+
+	it('should work with expressions', async () => {
+		@Component({
+			standalone: true,
+			template: `
+				{{ mirrored() }}
+			`,
+		})
+		class TestCmp {
+			value = input.required<number>();
+			mirrored = mirror(() => this.value() + 1);
+		}
+		const fixture = TestBed.createComponent(TestCmp);
+		fixture.componentRef.setInput('value', 2);
+		await fixture.whenStable();
+
+		expect(fixture.componentInstance.mirrored()).toEqual(3);
+		fixture.componentRef.setInput('value', 3);
+		await fixture.whenStable();
+		expect(fixture.componentInstance.mirrored()).toEqual(4);
+
+		fixture.componentInstance.mirrored.set(5);
+		await fixture.whenStable();
+		expect(fixture.componentInstance.mirrored()).toEqual(5);
+		expect(fixture.componentInstance.value()).toEqual(3); // value should not change
+	});
 });
