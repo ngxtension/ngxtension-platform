@@ -201,8 +201,13 @@ export class NgxControlValueAccessor<T = any>
 	/** @ignore */
 	private readonly injector = inject(Injector);
 
-	/** @ignore */
-	private readonly ngControl = inject(NgControl, {
+	/**
+	 * The `NgControl` instance on this host element. If present, this `NgxControlValueAccessor` instance will be its value accessor.
+	 *
+	 * @see {@link NgControl}
+	 * @see {@link NgControl.valueAccessor}
+	 */
+	public readonly ngControl = inject(NgControl, {
 		self: true,
 		optional: true,
 	});
