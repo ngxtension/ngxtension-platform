@@ -103,7 +103,7 @@ With the effect handled directly within the source
 	`,
 })
 export class Form {
-	readonly #userService = injec(UserService);
+	readonly #userService = inject(UserService);
 
 	readonly user = new FormGroup({
 		firstName: new FormControl(''),
