@@ -7,7 +7,7 @@
 [![NPM](https://img.shields.io/npm/dw/ngxtension?logo=npm&style=flat-square)](https://npmjs.org/package/ngxtension)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-41-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-43-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A collection of utilities for [Angular](https://angular.dev).
@@ -108,7 +108,10 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/mauriziocescon"><img src="https://avatars.githubusercontent.com/u/3672842?v=4?s=100" width="100px;" alt="Maurizio Cescon"/><br /><sub><b>Maurizio Cescon</b></sub></a><br /><a href="https://github.com/ngxtension/ngxtension-platform/commits?author=mauriziocescon" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/leonelvsc"><img src="https://avatars.githubusercontent.com/u/2332029?v=4?s=100" width="100px;" alt="Leonel Franchelli"/><br /><sub><b>Leonel Franchelli</b></sub></a><br /><a href="https://github.com/ngxtension/ngxtension-platform/commits?author=leonelvsc" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://codepen.io/lorenzodianni/"><img src="https://avatars.githubusercontent.com/u/7217805?v=4?s=100" width="100px;" alt="Lorenzo D'Ianni"/><br /><sub><b>Lorenzo D'Ianni</b></sub></a><br /><a href="https://github.com/ngxtension/ngxtension-platform/commits?author=lorenzodianni" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/mikelgo"><img src="https://avatars.githubusercontent.com/u/29756792?v=4" width="100px;" alt="Michael Berger"/><br /><sub><b>Michael Berger</b></sub></a><br /><a href="https://github.com/ngxtension/ngxtension-platform/commits?author=mikelgo" title="Documentation">📖</a> <a href="https://github.com/ngxtension/ngxtension-platform/commits?author=mikelgo" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.berger-engineering.io"><img src="https://avatars.githubusercontent.com/u/29756792?v=4?s=100" width="100px;" alt="Michael Berger"/><br /><sub><b>Michael Berger</b></sub></a><br /><a href="https://github.com/ngxtension/ngxtension-platform/commits?author=mikelgo" title="Code">💻</a> <a href="https://github.com/ngxtension/ngxtension-platform/commits?author=mikelgo" title="Documentation">📖</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/illunix"><img src="https://avatars.githubusercontent.com/u/42069493?v=4?s=100" width="100px;" alt="Maksymilian Szokalski"/><br /><sub><b>Maksymilian Szokalski</b></sub></a><br /><a href="https://github.com/ngxtension/ngxtension-platform/commits?author=illunix" title="Documentation">📖</a></td>
     </tr>
   </tbody>
   <tfoot>
