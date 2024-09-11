@@ -9,7 +9,14 @@
 			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
 			"options": {
 				"jestConfig": "libs/ngxtension/jest.config.ts",
-				"testPathPattern": ["delete-host"]
+				"testPathPattern": ["delete-host"],
+				"passWithNoTests": true
+			},
+			"configurations": {
+				"ci": {
+					"ci": true,
+					"codeCoverage": true
+				}
 			}
 		},
 		"lint": {

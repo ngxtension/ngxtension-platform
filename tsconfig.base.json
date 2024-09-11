@@ -64,6 +64,7 @@
 				"libs/ngxtension/create-signal/src/index.ts"
 			],
 			"ngxtension/debug": ["libs/ngxtension/debug/src/index.ts"],
+			"ngxtension/delete-host": ["libs/ngxtension/delete-host/src/index.ts"],
 			"ngxtension/derive-loading": [
 				"libs/ngxtension/derive-loading/src/index.ts"
 			],
