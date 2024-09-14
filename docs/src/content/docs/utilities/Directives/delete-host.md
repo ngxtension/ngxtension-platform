@@ -30,3 +30,9 @@ Add `DeleteHostDirective` directly to the Angular element as an host directive f
 class TestComponent {
 }
 ```
+
+### Warning
+
+**Important**: Using the `DeleteHostDirective` may interfere with other host directives applied to a component. Since this directive removes the Angular host wrapper around the component after rendering, it might break or alter the behavior of other host directives that rely on the existence of the host element.
+
+It is recommended to test thoroughly if you are using multiple host directives to ensure that applying `DeleteHostDirective` does not cause unintended side effects.
