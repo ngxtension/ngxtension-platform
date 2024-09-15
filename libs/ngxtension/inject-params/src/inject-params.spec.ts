@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, numberAttribute } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { provideRouter } from '@angular/router';
@@ -30,6 +30,34 @@ describe(injectParams.name, () => {
 		expect(instance.userId()).toEqual('test');
 		expect(instance.paramKeysList()).toEqual(['id']);
 	});
+
+	it('returns a signal everytime the route params change based on the param id and transform option', async () => {
+		TestBed.configureTestingModule({
+			providers: [
+				provideRouter([
+					{ path: 'post/:id', component: PostComponent },
+					{ path: 'post', component: PostComponent },
+				]),
+			],
+		});
+
+		const harness = await RouterTestingHarness.create();
+
+		const instanceNull = await harness.navigateByUrl('/post', PostComponent);
+
+		expect(instanceNull.postId()).toEqual(null);
+		expect(instanceNull.postIdDefault()).toEqual(69);
+
+		const instance = await harness.navigateByUrl('/post/420', PostComponent);
+
+		expect(instance.postId()).toEqual(420);
+		expect(instance.postIdDefault()).toEqual(420);
+
+		await harness.navigateByUrl('/post/test', PostComponent);
+
+		expect(instance.postId()).toEqual(NaN);
+		expect(instance.postIdDefault()).toEqual(NaN);
+	});
 });
 
 @Component({
@@ -40,4 +68,16 @@ export class UserProfileComponent {
 	params = injectParams();
 	userId = injectParams('id');
 	paramKeysList = injectParams((params) => Object.keys(params));
+}
+
+@Component({
+	standalone: true,
+	template: ``,
+})
+export class PostComponent {
+	postId = injectParams('id', { transform: numberAttribute });
+	postIdDefault = injectParams('id', {
+		transform: numberAttribute,
+		defaultValue: 69,
+	});
 }
