@@ -115,7 +115,7 @@ describe('Form Events', () => {
 		);
 	});
 
-	it('returns a signal with the value, status, pristine, and touched values of a form after it has been interacted with', async () => {
+	it('returns an observable with the value, status, pristine, and touched values of a form after it has been interacted with', async () => {
 		const fixture: ComponentFixture<FormEventsComponent> =
 			TestBed.configureTestingModule({
 				imports: [FormEventsComponent],
@@ -165,8 +165,28 @@ describe('Form Events', () => {
 
 		fixture.detectChanges();
 
-		const signalVals: HTMLElement = fixture.debugElement.query(
+		const observableVals: HTMLElement = fixture.debugElement.query(
 			By.css('[data-testid="observable-values-initial-value-overwritten"]'),
+		).nativeElement;
+
+		expect(flattenJsonPipeFormatting(observableVals.textContent)).toBe(
+			flattenJsonPipeFormatting(`{
+            "value": {
+                "name": "custom"
+            },
+            "status": "VALID",
+            "touched": false,
+            "pristine": true,
+            "valid": true,
+            "invalid": false,
+            "pending": false,
+            "dirty": false,
+            "untouched": true
+            }`),
+		);
+
+		const signalVals: HTMLElement = fixture.debugElement.query(
+			By.css('[data-testid="signal-values-initial-value-overwritten"]'),
 		).nativeElement;
 
 		expect(flattenJsonPipeFormatting(signalVals.textContent)).toBe(
