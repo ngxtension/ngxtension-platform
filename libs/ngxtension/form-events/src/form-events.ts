@@ -99,8 +99,8 @@ export function allEventsObservable<T>(
 	return defer(() =>
 		combineLatest([
 			valueEvents$(form).pipe(
-				startWith(form.value),
-				map((value) => (isValueEvent(value) ? value.value : value)),
+				startWith(form.getRawValue()),
+				map(() => form.getRawValue()),
 				distinctUntilChanged(
 					(previous, current) =>
 						JSON.stringify(previous) === JSON.stringify(current),
