@@ -52,34 +52,10 @@ export function injectQueryParams(key: string): Signal<string | null>;
  * @param {QueryParamsOptions} options - Optional configuration options for the query parameter.
  * @returns {Signal} A `Signal` that emits the transformed value of the specified query parameter, or `null` if it's not present.
  */
-export function injectQueryParams(
+export function injectQueryParams<ReadT>(
 	key?: string,
-	options?: QueryParamsOptions<boolean, string, boolean>,
-): Signal<boolean | null>;
-
-/**
- * The `injectQueryParams` function allows you to access and manipulate query parameters from the current route.
- *
- * @param {string} key - The name of the query parameter to retrieve.
- * @param {QueryParamsOptions} options - Optional configuration options for the query parameter.
- * @returns {Signal} A `Signal` that emits the transformed value of the specified query parameter, or `null` if it's not present.
- */
-export function injectQueryParams(
-	key?: string,
-	options?: QueryParamsOptions<number, string, number>,
-): Signal<number | null>;
-
-/**
- * The `injectQueryParams` function allows you to access and manipulate query parameters from the current route.
- *
- * @param {string} key - The name of the query parameter to retrieve.
- * @param {QueryParamsOptions} options - Optional configuration options for the query parameter.
- * @returns {Signal} A `Signal` that emits the transformed value of the specified query parameter, or `null` if it's not present.
- */
-export function injectQueryParams(
-	key?: string,
-	options?: QueryParamsOptions<string, string, string>,
-): Signal<string | null>;
+	options?: QueryParamsOptions<ReadT, string, ReadT>,
+): Signal<ReadT | null>;
 
 /**
  * The `injectQueryParams` function allows you to access and manipulate query parameters from the current route.
@@ -170,32 +146,20 @@ export namespace injectQueryParams {
 	 */
 	export function array(
 		key: string,
-		options?: QueryParamsOptions<boolean, string, boolean[]>,
-	): Signal<boolean[] | null>;
-
-	/**
-	 * Retrieve an array query parameter with optional configuration options.
-	 *
-	 * @param {string} key - The name of the array query parameter to retrieve.
-	 * @param {QueryParamsOptions} options - Optional configuration options for the array query parameter.
-	 * @returns {Signal} A `Signal` that emits an array of values for the specified query parameter, or `null` if it's not present.
-	 */
-	export function array(
-		key: string,
-		options?: QueryParamsOptions<number, string, number[]>,
-	): Signal<number[] | null>;
-
-	/**
-	 * Retrieve an array query parameter with optional configuration options.
-	 *
-	 * @param {string} key - The name of the array query parameter to retrieve.
-	 * @param {QueryParamsOptions} options - Optional configuration options for the array query parameter.
-	 * @returns {Signal} A `Signal` that emits an array of values for the specified query parameter, or `null` if it's not present.
-	 */
-	export function array(
-		key: string,
 		options?: QueryParamsOptions<string, string, string[]>,
 	): Signal<string[] | null>;
+
+	/**
+	 * Retrieve an array query parameter with optional configuration options.
+	 *
+	 * @param {string} key - The name of the array query parameter to retrieve.
+	 * @param {QueryParamsOptions} options - Optional configuration options for the array query parameter.
+	 * @returns {Signal} A `Signal` that emits an array of values for the specified query parameter, or `null` if it's not present.
+	 */
+	export function array<ReadT>(
+		key: string,
+		options?: QueryParamsOptions<ReadT, string, ReadT[]>,
+	): Signal<ReadT[] | null>;
 
 	/**
 	 * Retrieve an array query parameter with optional configuration options.
@@ -217,7 +181,7 @@ export namespace injectQueryParams {
 
 			const transformParam = (
 				param: string | string[] | null,
-			): (string | ReadT)[] | null => {
+			): (ReadT | string)[] | null => {
 				if (!param) {
 					return defaultValue ?? initialValue ?? null;
 				}
