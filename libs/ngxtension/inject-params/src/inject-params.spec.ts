@@ -1,4 +1,10 @@
-import { Component, numberAttribute } from '@angular/core';
+import {
+	Component,
+	inject,
+	Injector,
+	numberAttribute,
+	Signal,
+} from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { provideRouter } from '@angular/router';
@@ -22,12 +28,14 @@ describe(injectParams.name, () => {
 
 		expect(instance.params()).toEqual({ id: 'angular' });
 		expect(instance.userId()).toEqual('angular');
+		expect(instance.userIdCustomInjector!()).toEqual('angular');
 		expect(instance.paramKeysList()).toEqual(['id']);
 
 		await harness.navigateByUrl('/user/test', UserProfileComponent);
 
 		expect(instance.params()).toEqual({ id: 'test' });
 		expect(instance.userId()).toEqual('test');
+		expect(instance.userIdCustomInjector!()).toEqual('test');
 		expect(instance.paramKeysList()).toEqual(['id']);
 	});
 
@@ -65,9 +73,19 @@ describe(injectParams.name, () => {
 	template: ``,
 })
 export class UserProfileComponent {
+	private _injector = inject(Injector);
+
 	params = injectParams();
 	userId = injectParams('id');
 	paramKeysList = injectParams((params) => Object.keys(params));
+
+	userIdCustomInjector?: Signal<string | null>;
+
+	constructor() {
+		this.userIdCustomInjector = injectParams('id', {
+			injector: this._injector,
+		});
+	}
 }
 
 @Component({

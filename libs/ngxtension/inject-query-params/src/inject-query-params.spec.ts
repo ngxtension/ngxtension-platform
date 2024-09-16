@@ -1,4 +1,10 @@
-import { Component, numberAttribute } from '@angular/core';
+import {
+	Component,
+	inject,
+	Injector,
+	numberAttribute,
+	Signal,
+} from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { provideRouter } from '@angular/router';
@@ -10,13 +16,17 @@ import { injectQueryParams } from './inject-query-params';
 	template: ``,
 })
 export class SearchComponent {
+	private _injector = inject(Injector);
+
 	queryParams = injectQueryParams();
 	idParam = injectQueryParams('id', { transform: numberAttribute });
+	idParamCustomInjector?: Signal<number | null>;
 	idParamDefault = injectQueryParams('id', {
 		transform: numberAttribute,
 		defaultValue: 420,
 	});
 	idParams = injectQueryParams.array('id', { transform: numberAttribute });
+	idParamsCustomInjector?: Signal<number[] | null>;
 	idParamsDefault = injectQueryParams.array('id', {
 		transform: numberAttribute,
 		defaultValue: [420, 69],
@@ -24,10 +34,25 @@ export class SearchComponent {
 	searchParam = injectQueryParams('query');
 	searchParamDefault = injectQueryParams('query', { defaultValue: 'React' });
 	searchParams = injectQueryParams.array('query');
+	searchParamsCustomInjector?: Signal<string[] | null>;
 	searchParamsDefault = injectQueryParams.array('query', {
 		defaultValue: ['React', 'Vue'],
 	});
 	paramKeysList = injectQueryParams((params) => Object.keys(params));
+
+	constructor() {
+		this.idParamCustomInjector = injectQueryParams('id', {
+			transform: numberAttribute,
+			injector: this._injector,
+		});
+		this.idParamsCustomInjector = injectQueryParams.array('id', {
+			transform: numberAttribute,
+			injector: this._injector,
+		});
+		this.searchParamsCustomInjector = injectQueryParams.array('query', {
+			injector: this._injector,
+		});
+	}
 }
 
 describe(injectQueryParams.name, () => {
@@ -51,6 +76,7 @@ describe(injectQueryParams.name, () => {
 		expect(instance.searchParam()).toEqual('Angular');
 		expect(instance.searchParamDefault()).toEqual('Angular');
 		expect(instance.idParam()).toEqual(null);
+		expect(instance.idParamCustomInjector!()).toEqual(null);
 		expect(instance.idParamDefault()).toEqual(420);
 		expect(instance.paramKeysList()).toEqual(['query']);
 
@@ -58,6 +84,7 @@ describe(injectQueryParams.name, () => {
 
 		expect(instance.queryParams()).toEqual({ query: 'IsCool!', id: '2' });
 		expect(instance.idParam()).toEqual(2);
+		expect(instance.idParamCustomInjector!()).toEqual(2);
 		expect(instance.idParamDefault()).toEqual(2);
 		expect(instance.searchParam()).toEqual('IsCool!');
 		expect(instance.searchParamDefault()).toEqual('IsCool!');
@@ -164,6 +191,10 @@ describe(injectQueryParams.array.name, () => {
 
 		expect(instance.queryParams()).toEqual({ query: ['Angular', 'Analog'] });
 		expect(instance.searchParams()).toEqual(['Angular', 'Analog']);
+		expect(instance.searchParamsCustomInjector!()).toEqual([
+			'Angular',
+			'Analog',
+		]);
 		expect(instance.searchParamsDefault()).toEqual(['Angular', 'Analog']);
 		expect(instance.idParams()).toEqual(null);
 		expect(instance.idParamsDefault()).toEqual([420, 69]);
@@ -176,8 +207,13 @@ describe(injectQueryParams.array.name, () => {
 			id: '2',
 		});
 		expect(instance.idParams()).toEqual([2]);
+		expect(instance.idParamsCustomInjector!()).toEqual([2]);
 		expect(instance.idParamsDefault()).toEqual([2]);
 		expect(instance.searchParams()).toEqual(['IsCool!', 'IsNotCool']);
+		expect(instance.searchParamsCustomInjector!()).toEqual([
+			'IsCool!',
+			'IsNotCool',
+		]);
 		expect(instance.searchParamsDefault()).toEqual(['IsCool!', 'IsNotCool']);
 		expect(instance.paramKeysList()).toEqual(['query', 'id']);
 	});
@@ -199,6 +235,7 @@ describe(injectQueryParams.array.name, () => {
 
 		expect(instance.queryParams()).toEqual({ id: ['2.2', '5'] });
 		expect(instance.idParams()).toEqual([2.2, 5]);
+		expect(instance.idParamsCustomInjector!()).toEqual([2.2, 5]);
 		expect(instance.idParamsDefault()).toEqual([2.2, 5]);
 		expect(instance.paramKeysList()).toEqual(['id']);
 	});

@@ -47,34 +47,10 @@ export function injectParams(key: string): Signal<string | null>;
  * @param {ParamsOptions} options - Optional configuration options for the parameter.
  * @returns {Signal} A `Signal` that emits the transformed value of the specified parameter, or `null` if it's not present.
  */
-export function injectParams(
+export function injectParams<ReadT>(
 	key?: string,
-	options?: ParamsOptions<boolean, string, boolean>,
-): Signal<boolean | null>;
-
-/**
- * The `injectParams` function allows you to access and manipulate parameters from the current route.
- *
- * @param {string} key - The name of the parameter to retrieve.
- * @param {ParamsOptions} options - Optional configuration options for the parameter.
- * @returns {Signal} A `Signal` that emits the transformed value of the specified parameter, or `null` if it's not present.
- */
-export function injectParams(
-	key?: string,
-	options?: ParamsOptions<number, string, number>,
-): Signal<number | null>;
-
-/**
- * The `injectParams` function allows you to access and manipulate parameters from the current route.
- *
- * @param {string} key - The name of the parameter to retrieve.
- * @param {ParamsOptions} options - Optional configuration options for the parameter.
- * @returns {Signal} A `Signal` that emits the transformed value of the specified parameter, or `null` if it's not present.
- */
-export function injectParams(
-	key?: string,
-	options?: ParamsOptions<string, string, string>,
-): Signal<string | null>;
+	options?: ParamsOptions<ReadT, string, ReadT>,
+): Signal<ReadT | null>;
 
 /**
  * The `injectParams` function allows you to access and manipulate parameters from the current route.
