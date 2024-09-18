@@ -6,9 +6,9 @@ entryPoint: assert-injector
 contributors: ['chau-tran']
 ---
 
-`assertInjector` es una extensión de [`assertInInjectionContext`](https://angular.io/api/core/assertInInjectionContext) que acepta una `Function` y un `Injector` personalizado opcional.
+`assertInjector` es una extensión de [`assertInInjectionContext`](https://angular.dev/api/core/assertInInjectionContext) que acepta una `Function` y un `Injector` personalizado opcional.
 
-`assertInjector` afirmará que la `Function` se invoque en un [Contexto de Inyección](https://angular.io/guide/dependency-injection-context) y devolverá un `Injector` **garantizado** ya sea el _personalizado_ que se pasa o el _predeterminado_.
+`assertInjector` afirmará que la `Function` se invoque en un [Contexto de Inyección](https://angular.dev/guide/di/dependency-injection-context) y devolverá un `Injector` **garantizado** ya sea el _personalizado_ que se pasa o el _predeterminado_.
 
 ```ts
 import { assertInjector } from 'ngxtension/assert-injector';
