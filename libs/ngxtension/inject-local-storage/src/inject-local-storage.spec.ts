@@ -29,6 +29,16 @@ describe('injectLocalStorage', () => {
 			});
 		}));
 
+		it('should return data of defaultValue', () => {
+			TestBed.runInInjectionContext(() => {
+				const defaultValue = 'default';
+				const localStorageSignal = injectLocalStorage<string>(key, {
+					defaultValue,
+				});
+				expect(localStorageSignal()).toEqual(defaultValue);
+			});
+		});
+
 		it('should get the current value from localStorage', () => {
 			TestBed.runInInjectionContext(() => {
 				const testValue = 'value';
