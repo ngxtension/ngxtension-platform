@@ -161,7 +161,7 @@ export function allEventsSignal<T>(
 ): Signal<FormEventData<T>> {
 	return toSignal(allEventsObservable(form), {
 		initialValue: {
-			value: form.value,
+			value: form.getRawValue(),
 			status: form.status,
 			pristine: form.pristine,
 			touched: form.touched,
