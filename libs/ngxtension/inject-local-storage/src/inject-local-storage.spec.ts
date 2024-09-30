@@ -29,12 +29,24 @@ describe('injectLocalStorage', () => {
 			});
 		}));
 
-		it('should return data of defaultValue', () => {
+		it('should get a undefined value from localStorage', fakeAsync(() => {
 			TestBed.runInInjectionContext(() => {
+				getItemSpy.mockReturnValue(undefined); // Mock return value for getItem
+				const localStorageSignal = injectLocalStorage<string>(key);
+				tick(); // Wait for effect to run
+				expect(localStorageSignal()).toBeUndefined();
+			});
+		}));
+
+		it('should return defaultValue of type string', () => {
+			TestBed.runInInjectionContext(() => {
+				getItemSpy.mockReturnValue(undefined); // Mock return value for getItem
 				const defaultValue = 'default';
 				const localStorageSignal = injectLocalStorage<string>(key, {
 					defaultValue,
 				});
+
+				expect(typeof localStorageSignal()).not.toBeUndefined();
 				expect(localStorageSignal()).toEqual(defaultValue);
 			});
 		});
