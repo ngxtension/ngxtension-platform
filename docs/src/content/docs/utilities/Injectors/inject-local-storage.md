@@ -55,8 +55,7 @@ Options to configure the behavior of the local storage signal.
 Here's a basic example of using `injectLocalStorage`:
 
 ```typescript
-const username = injectLocalStorage<string>('username', {
-	defaultValue: 'Anonymous',
+const username = injectLocalStorage<string | undefined>('username', {
 	storageSync: true,
 });
 
@@ -67,4 +66,13 @@ effect(() => {
 	console.log(username());
 });
 // Use `username` in your component to get or set the username stored in local storage.
+```
+
+Fallback value can be provided using the `defaultValue` option:
+
+```typescript
+const username = injectLocalStorage<string>('username', {
+	defaultValue: 'Guest',
+});
+// If the key 'username' is not present in local storage, the default value 'Guest' will be used.
 ```
