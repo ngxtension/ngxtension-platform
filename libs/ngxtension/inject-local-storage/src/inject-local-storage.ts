@@ -27,7 +27,7 @@ export function provideLocalStorageImpl(impl: typeof globalThis.localStorage) {
 /**
  * Options to override the default behavior of the local storage signal.
  */
-export type LocalStorageOptionsWithoutDefaultValue = {
+export type LocalStorageOptionsNoDefault = {
 	/**
 	 *
 	 * Determines if local storage syncs with the signal.
@@ -53,7 +53,7 @@ export type LocalStorageOptionsWithoutDefaultValue = {
 };
 
 export type LocalStorageOptionsWithDefaultValue<T> =
-	LocalStorageOptionsWithoutDefaultValue & {
+	LocalStorageOptionsNoDefault & {
 		/**
 		 * Default value for the signal.
 		 * Can be a value or a function that returns the value.
@@ -62,7 +62,7 @@ export type LocalStorageOptionsWithDefaultValue<T> =
 	};
 
 export type LocalStorageOptions<T> =
-	| LocalStorageOptionsWithoutDefaultValue
+	| LocalStorageOptionsNoDefault
 	| LocalStorageOptionsWithDefaultValue<T>;
 
 function isLocalStorageWithDefaultValue<T>(
@@ -94,7 +94,7 @@ export const injectLocalStorage: {
 	): WritableSignal<T>;
 	<T>(
 		key: string,
-		options?: LocalStorageOptionsWithoutDefaultValue,
+		options?: LocalStorageOptionsNoDefault,
 	): WritableSignal<T | undefined>;
 } = <T>(
 	key: string,

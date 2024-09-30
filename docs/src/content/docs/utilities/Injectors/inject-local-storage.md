@@ -56,7 +56,7 @@ Here's a basic example of using `injectLocalStorage`:
 
 ```typescript
 const username = injectLocalStorage<string | undefined>('username', {
-	storageSync: true,
+	storageSync: true
 });
 
 username.set('John Doe');
@@ -72,7 +72,7 @@ Fallback value can be provided using the `defaultValue` option:
 
 ```typescript
 const username = injectLocalStorage<string>('username', {
-	defaultValue: 'Guest',
+	defaultValue: 'Guest'
 });
 // If the key 'username' is not present in local storage, the default value 'Guest' will be used.
 ```
