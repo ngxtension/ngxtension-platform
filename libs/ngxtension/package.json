@@ -5,7 +5,7 @@
 	"engines": {
 		"node": ">=18"
 	},
-	"repository": "nartc/ngxtension-platform",
+	"repository": "ngxtension/ngxtension-platform",
 	"homepage": "https://ngxtension.netlify.app",
 	"license": "MIT",
 	"keywords": [

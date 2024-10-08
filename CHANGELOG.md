@@ -1,3 +1,47 @@
+# 4.0.0 (2024-07-15)
+
+
+### Features
+
+- add deriveLoading RxJs-Operator ([#439](https://github.com/ngxtension/ngxtension-platform/pull/439))
+- add migration for self-closing tags ([#416](https://github.com/ngxtension/ngxtension-platform/pull/416))
+- add effectOnceIf helper function ([#419](https://github.com/ngxtension/ngxtension-platform/pull/419))
+- add migration for sfc components ([#420](https://github.com/ngxtension/ngxtension-platform/pull/420))
+- **create-repeat:** implement the function, docs and tests ([#380](https://github.com/ngxtension/ngxtension-platform/pull/380))
+- **explicitEffect:** addition of defer parameter; this parameter allows the computation not to execute immediately and only run on first deps change. ([#431](https://github.com/ngxtension/ngxtension-platform/pull/431))
+- **form events:** Create unified observable and signal data accessors for form events ([#391](https://github.com/ngxtension/ngxtension-platform/pull/391))
+
+### Bug Fixes
+
+- **computed-previous:** Don't return null for initial value, but return the current value of the source signal instead ([#281](https://github.com/ngxtension/ngxtension-platform/pull/281))
+- **plugin:** update all assignments ([#444](https://github.com/ngxtension/ngxtension-platform/pull/444))
+- **signal-input-migration:** preserve line endings ([#432](https://github.com/ngxtension/ngxtension-platform/pull/432))
+- ⚠️  **signal-slice:** simplify api to deal with typing issues ([#361](https://github.com/ngxtension/ngxtension-platform/pull/361))
+- **when-document-visible:** export the `whenDocumentVisible` operator… ([#425](https://github.com/ngxtension/ngxtension-platform/pull/425))
+
+### Documentation
+
+- add Kiskae as a contributor for code ([#436](https://github.com/ngxtension/ngxtension-platform/pull/436))
+- **signals:** some spanish translations ([#441](https://github.com/ngxtension/ngxtension-platform/pull/441))
+
+#### ⚠️  Breaking Changes
+
+- **signal-slice:** experimental actionEffects API has been removed from signalSlice
+
+### ❤️  Thank You
+
+- Enea Jahollari @eneajaho
+- Fabien Dehopré
+- Josh Morony
+- Kiskae @Kiskae
+- Lorenzo D'Ianni
+- Lucas Garcia @LcsGa
+- Maurizio Cescon
+- Michael Be
+- michael-small @michael-small
+- Sergi Dote Teixidor
+- Tim Deschryver @timdeschryver
+
 ## 3.5.5 (2024-06-18)
 
 

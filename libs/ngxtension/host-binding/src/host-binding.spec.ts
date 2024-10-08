@@ -69,15 +69,20 @@ describe(hostBinding.name, () => {
 	const setup = (updatedFakeControl?: Partial<FakeControl>) => {
 		const fixture = TestBed.createComponent(TestHost);
 
-		if (updatedFakeControl) {
+		const updater = (value?: Partial<FakeControl>) => {
 			fixture.componentInstance.fakeControl.update((ctrl) => ({
 				...ctrl,
-				...updatedFakeControl,
+				...value,
 			}));
+			fixture.detectChanges();
+		};
+
+		if (updatedFakeControl) {
+			updater(updatedFakeControl);
 		}
 		fixture.detectChanges();
 
-		return { fixture };
+		return { fixture, updater };
 	};
 
 	describe('class binding', () => {
@@ -102,7 +107,7 @@ describe(hostBinding.name, () => {
 			expect(fixture.nativeElement.classList).toContain('something');
 		});
 
-		it('should not bind both the "hidden" and "somehting" classes', () => {
+		it('should not bind both the "hidden" and "something" classes', () => {
 			const { fixture } = setup({ klass: null });
 
 			expect(fixture.nativeElement.classList).not.toContain('hidden');
@@ -114,6 +119,18 @@ describe(hostBinding.name, () => {
 
 			expect(fixture.nativeElement.classList).not.toContain('hidden');
 			expect(fixture.nativeElement.classList).toContain('something');
+		});
+
+		it('should remove "hidden" and add "something"', () => {
+			const { fixture, updater } = setup({ klass: 'hidden' });
+
+			expect(fixture.nativeElement.classList).toContain('hidden');
+			expect(fixture.nativeElement.classList).not.toContain('something');
+
+			updater({ klass: 'something' });
+
+			expect(fixture.nativeElement.classList).toContain('something');
+			expect(fixture.nativeElement.classList).not.toContain('hidden');
 		});
 	});
 

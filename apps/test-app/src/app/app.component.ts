@@ -48,6 +48,10 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 			<li>
 				<a routerLink="/control-value-accessor">Control Value Accessor</a>
 			</li>
+
+			<li>
+				<a routerLink="/form-events">Form Events</a>
+			</li>
 		</ul>
 
 		<hr />

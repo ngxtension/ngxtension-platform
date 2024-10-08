@@ -1,7 +1,7 @@
 ---
 title: injectQueryParams
 description: ngxtension/inject-query-params
-entryPoint: inject-query-params
+entryPoint: ngxtension/inject-query-params
 badge: stable
 contributors: ['enea-jahollari']
 ---
@@ -222,3 +222,69 @@ class TestComponent {
 	);
 }
 ```
+
+### Reusable transform functions
+
+When working with query params, there are times we need to get the same value from the query params multiple times on different components. For example, currentPage, pageSize, order and direction of the current page of a paginated list. We can create a reusable transform function to avoid repeating the code.
+
+We can have this shared code in a reusable function and then use it in the component.
+
+```ts
+export interface DefaultFilters {
+	currentPage: number;
+	pageSize: number;
+	orderBy: string;
+	direction: 'asc' | 'desc';
+}
+
+export const withDefaultFilters = (p: Params): DefaultFilters => ({
+	currentPage: p['currentPage'] ? +p['currentPage'] : 1,
+	pageSize: p['pageSize'] ? +p['pageSize'] : 15,
+	orderBy: p['orderBy'] || 'created',
+	direction: p['direction'] === 'asc' ? 'asc' : 'desc',
+});
+```
+
+Then we can use it in the component like this:
+
+```ts
+import { withDefaultFilters } from './shared-filters';
+
+@Component({
+	template: `
+		<pagination
+			[currentPage]="queryParams().currentPage"
+			[pageSize]="queryParams().pageSize"
+			(currentPageChange)="updateParams({ currentPage: $event })"
+			(pageSizeChange)="updateParams({ pageSize: $event })"
+		/>
+	`,
+})
+export class MyComponent {
+	private router = inject(Router);
+
+	queryParams = injectQueryParams((p) => withDefaultFilters(p));
+
+	// or we if also need some more params in the current page
+
+	queryParams = injectQueryParams((p) => ({
+		...withDefaultFilters(p),
+		userId: p['userId'], // will be undefined if not in the query params
+	}));
+
+	ngOnInit() {
+		// we can use the filters in the component
+		const { currentPage, pageSize, orderBy, direction } = this.queryParams();
+	}
+
+	updateParams(queryParams: Params) {
+		this.router.navigate([], {
+			// Update query params without changing the current page
+			queryParams, // The query params to update
+			queryParamsHandling: 'merge', // Merge with existing query params
+		});
+	}
+}
+```
+
+This should help you to avoid repeating code.

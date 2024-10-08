@@ -277,7 +277,14 @@ export async function convertSignalInputsGenerator(
 			targetClass.forEachChild((node) => {
 				if (Node.isPropertyDeclaration(node)) {
 					const inputDecorator = node.getDecorator('Input');
-					if (inputDecorator) {
+
+					// check if there is another decorator besides Input, if so, skip this input
+					// because we don't want to convert it if it has for example @HostBinding()
+					const hasOtherDecorator = node
+						.getDecorators()
+						.some((decorator) => decorator.getName() !== 'Input');
+
+					if (inputDecorator && !hasOtherDecorator) {
 						const { name, isReadonly, docs, scope, hasOverrideKeyword } =
 							node.getStructure();
 

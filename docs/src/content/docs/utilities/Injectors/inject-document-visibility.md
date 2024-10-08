@@ -1,7 +1,7 @@
 ---
 title: injectDocumentVisibility
 description: ngxtension/inject-document-visibility
-entryPoint: inject-document-visibility
+entryPoint: ngxtension/inject-document-visibility
 badge: stable
 contributors: ['fiorelozere']
 ---
@@ -20,7 +20,7 @@ import { injectDocumentVisibility } from 'ngxtension/inject-document-visibility'
 const visibilityState = injectDocumentVisibility();
 
 effect(() => {
-	console.log(visibilityState.value);
+	console.log(visibilityState());
 });
 ```
 

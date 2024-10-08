@@ -15,7 +15,7 @@ describe(signalSlice.name, () => {
 	};
 
 	describe('initialState', () => {
-		let state: SignalSlice<typeof initialState, any, any, any, any>;
+		let state: SignalSlice<typeof initialState, any, any, any>;
 
 		beforeEach(() => {
 			TestBed.runInInjectionContext(() => {
@@ -47,7 +47,7 @@ describe(signalSlice.name, () => {
 		const testSource$ = new Subject<Partial<typeof initialState>>();
 		const testSource2$ = new Subject<Partial<typeof initialState>>();
 
-		let state: SignalSlice<typeof initialState, any, any, any, any>;
+		let state: SignalSlice<typeof initialState, any, any, any>;
 
 		beforeEach(() => {
 			TestBed.runInInjectionContext(() => {
@@ -117,7 +117,7 @@ describe(signalSlice.name, () => {
 			}),
 		);
 
-		let state: SignalSlice<typeof initialState, any, any, any, any>;
+		let state: SignalSlice<typeof initialState, any, any, any>;
 
 		beforeEach(() => {
 			TestBed.runInInjectionContext(() => {
@@ -173,6 +173,38 @@ describe(signalSlice.name, () => {
 				});
 
 				expect(state.increaseAge$).toBeDefined();
+			});
+		});
+
+		it('should create action updates', () => {
+			TestBed.runInInjectionContext(() => {
+				const state = signalSlice({
+					initialState,
+					actionSources: {
+						increaseAge: (state, $: Observable<number>) =>
+							$.pipe(map((amount) => ({ age: state().age + amount }))),
+					},
+				});
+
+				expect(state.increaseAgeUpdated).toBeDefined();
+			});
+		});
+
+		it('should increment updated signal every time source emits', () => {
+			TestBed.runInInjectionContext(() => {
+				const state = signalSlice({
+					initialState,
+					actionSources: {
+						increaseAge: (state, $: Observable<number>) =>
+							$.pipe(map((amount) => ({ age: state().age + amount }))),
+					},
+				});
+
+				expect(state.increaseAgeUpdated()).toEqual(0);
+				state.increaseAge(1);
+				expect(state.increaseAgeUpdated()).toEqual(1);
+				state.increaseAge(1);
+				expect(state.increaseAgeUpdated()).toEqual(2);
 			});
 		});
 
@@ -361,166 +393,19 @@ describe(signalSlice.name, () => {
 					actionSources: {
 						someActionSource: (state, $: Observable<void>) =>
 							$.pipe(map(() => ({ age: state().age }))),
-						someOtherActionSource: (state, $: Observable<void>) =>
-							$.pipe(
-								map(() => {
-									testFn();
-									return {};
-								}),
-							),
 					},
-					actionEffects: (state) => ({
-						someActionSource: () => {
-							state.age();
-							state.someSelector();
-							state.someOtherActionSource();
-						},
-					}),
 					effects: (state) => ({
 						someEffect: () => {
 							state.age();
 							state.someSelector();
-							state.someActionSource();
-						},
-					}),
-				});
-
-				state.someActionSource();
-
-				expect(testFn).toHaveBeenCalled();
-			});
-		});
-	});
-
-	describe('actionEffects', () => {
-		it('should create effects for named actionEffects', (done) => {
-			TestBed.runInInjectionContext(() => {
-				const state = signalSlice({
-					initialState,
-					actionSources: {
-						test: (_state, $: Observable<void>) => $.pipe(map(() => ({}))),
-						load: (_state, $: Observable<void>) =>
-							$.pipe(
-								switchMap(() => of(35)),
-								map((age) => ({ age })),
-							),
-					},
-					actionEffects: (state) => ({
-						load: () => {
-							expect(state().age).toEqual(35);
-							done();
-						},
-					}),
-				});
-
-				state.load();
-				TestBed.flushEffects();
-			});
-		});
-
-		it('should not run until source emits', () => {
-			TestBed.runInInjectionContext(() => {
-				const testFn = jest.fn();
-				const block$ = new Subject<void>();
-
-				const state = signalSlice({
-					initialState,
-					actionSources: {
-						load: (_state, $: Observable<void>) =>
-							$.pipe(
-								switchMap(() => block$),
-								map(() => ({})),
-							),
-					},
-					actionEffects: () => ({
-						load: () => {
 							testFn();
 						},
 					}),
 				});
 
-				state.load();
-				expect(testFn).not.toHaveBeenCalled();
-				block$.next();
+				state.someActionSource();
+				TestBed.flushEffects();
 				expect(testFn).toHaveBeenCalled();
-			});
-		});
-
-		it('should supply appropriate values on action', () => {
-			TestBed.runInInjectionContext(() => {
-				const testFn = jest.fn();
-				const testPayload = 'a';
-				const age = 20;
-
-				const state = signalSlice({
-					initialState,
-					actionSources: {
-						test: (state, $: Observable<string>) =>
-							$.pipe(
-								map(() => ({
-									age,
-								})),
-							),
-					},
-					actionEffects: () => ({
-						test: (action) => {
-							testFn({
-								name: action.name,
-								payload: action.payload,
-								value: action.value,
-								err: action.err,
-							});
-						},
-					}),
-				});
-
-				state.test(testPayload);
-
-				expect(testFn).toHaveBeenCalledWith({
-					name: 'test',
-					payload: testPayload,
-					value: { age },
-					err: undefined,
-				});
-			});
-		});
-
-		it('should supply appropriate values to action on error', () => {
-			TestBed.runInInjectionContext(() => {
-				const testFn = jest.fn();
-				const testPayload = 'a';
-				const error = new Error('oops');
-
-				const state = signalSlice({
-					initialState,
-					actionSources: {
-						test: (state, $: Observable<string>) =>
-							$.pipe(
-								map(() => {
-									throw error;
-								}),
-							),
-					},
-					actionEffects: () => ({
-						test: (action) => {
-							testFn({
-								name: action.name,
-								payload: action.payload,
-								value: action.value,
-								err: action.err,
-							});
-						},
-					}),
-				});
-
-				state.test(testPayload);
-
-				expect(testFn).toHaveBeenCalledWith({
-					name: 'test',
-					payload: testPayload,
-					value: undefined,
-					err: error,
-				});
 			});
 		});
 	});

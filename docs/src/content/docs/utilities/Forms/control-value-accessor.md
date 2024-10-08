@@ -1,12 +1,12 @@
 ---
 title: NgxControlValueAccessor
 description: A directive to reduce boilerplate when building custom inputs.
-entryPoint: control-value-accessor
+entryPoint: ngxtension/control-value-accessor
 badge: stable
 contributors: ['robby-rabbitman']
 ---
 
-`NgxControlValueAccessor` is a directive to reduce boilerplate when building components, which implement the [ControlValueAccessor](https://angular.io/api/forms/ControlValueAccessor) interface.
+`NgxControlValueAccessor` is a directive to reduce boilerplate when building components, which implement the [ControlValueAccessor](https://angular.dev/api/forms/ControlValueAccessor) interface.
 
 ## Import
 
@@ -16,7 +16,7 @@ import { NgxControlValueAccessor } from 'ngxtension/control-value-accessor';
 
 ## Usage
 
-`NgxControlValueAccessor` implements the [ControlValueAccessor](https://angular.io/api/forms/ControlValueAccessor) interface and exposes a _simpler_ api. Declare `NgxControlValueAccessor` in the `hostDirectives` section of your component and inject the instance in order to wire up your template:
+`NgxControlValueAccessor` implements the [ControlValueAccessor](https://angular.dev/api/forms/ControlValueAccessor) interface and exposes a _simpler_ api. Declare `NgxControlValueAccessor` in the `hostDirectives` section of your component and inject the instance in order to wire up your template:
 
 - `NgxControlValueAccessor.value` for syncing the value
 - `NgxControlValueAccessor.disabled` for syncing the disabled state

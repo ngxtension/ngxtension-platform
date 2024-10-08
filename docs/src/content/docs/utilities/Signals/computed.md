@@ -1,7 +1,7 @@
 ---
 title: computed/extendedComputed
 description: ngxtension/computed
-entryPoint: computed
+entryPoint: ngxtension/computed
 badge: deprecated
 contributors: ['chau-tran']
 ---

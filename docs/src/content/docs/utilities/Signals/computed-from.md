@@ -1,7 +1,7 @@
 ---
 title: computedFrom
 description: ngxtension/computed-from
-entryPoint: computed-from
+entryPoint: ngxtension/computed-from
 badge: stable
 contributors: ['enea-jahollari']
 ---

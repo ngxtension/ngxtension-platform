@@ -14,6 +14,16 @@ type ExplicitEffectValues<T> = {
 };
 
 /**
+ * Extend the regular set of effect options
+ */
+declare interface CreateExplicitEffectOptions extends CreateEffectOptions {
+	/**
+	 * Option that allows the computation not to execute immediately, but only run on first change.
+	 */
+	defer?: boolean;
+}
+
+/**
  * This explicit effect function will take the dependencies and the function to run when the dependencies change.
  *
  * @example
@@ -34,7 +44,7 @@ type ExplicitEffectValues<T> = {
  *
  * @param deps - The dependencies that the effect will run on
  * @param fn - The function to run when the dependencies change
- * @param options - The options for the effect
+ * @param options - The options for the effect with the addition of defer (it allows the computation to run on first change, not immediately)
  */
 export function explicitEffect<
 	Input extends readonly unknown[],
@@ -42,10 +52,16 @@ export function explicitEffect<
 >(
 	deps: readonly [...ExplicitEffectValues<Input>],
 	fn: (deps: Params, onCleanup: EffectCleanupRegisterFn) => void,
-	options?: CreateEffectOptions | undefined,
+	options?: CreateExplicitEffectOptions | undefined,
 ): EffectRef {
+	let defer = options && options.defer;
 	return effect((onCleanup) => {
 		const depValues = deps.map((s) => s());
-		untracked(() => fn(depValues as any, onCleanup));
+		untracked(() => {
+			if (!defer) {
+				fn(depValues as any, onCleanup);
+			}
+			defer = false;
+		});
 	}, options);
 }

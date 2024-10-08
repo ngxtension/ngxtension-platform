@@ -6,7 +6,7 @@ entryPoint: create-injection-token
 contributors: ['chau-tran']
 ---
 
-`createInjectionToken` es una abstacción sobre la creación de un [`InjectionToken`](https://angular.io/api/core/InjectionToken) y devuelve una tupla de `[injectFn, provideFn, TOKEN]`
+`createInjectionToken` es una abstacción sobre la creación de un [`InjectionToken`](https://angular.dev/api/core/InjectionToken) y devuelve una tupla de `[injectFn, provideFn, TOKEN]`
 
 Crear un `InjectionToken` no suele ser un gran problema, pero consumir el `InjectionToken` puede ser un poco tedioso si el proyecto utiliza `InjectionToken` mucho.
 

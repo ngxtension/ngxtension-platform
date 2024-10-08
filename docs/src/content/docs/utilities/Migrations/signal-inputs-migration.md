@@ -1,7 +1,7 @@
 ---
 title: Signal Inputs Migration
 description: Schematics for migrating decorator inputs to signal inputs (including input references)
-entryPoint: convert-signal-inputs
+entryPoint: plugin/src/generators/convert-signal-inputs
 badge: stable
 contributors: ['chau-tran']
 ---

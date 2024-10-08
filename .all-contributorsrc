@@ -353,6 +353,61 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "mauriziocescon",
+      "name": "Maurizio Cescon",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3672842?v=4",
+      "profile": "https://github.com/mauriziocescon",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "leonelvsc",
+      "name": "Leonel Franchelli",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2332029?v=4",
+      "profile": "https://github.com/leonelvsc",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "lorenzodianni",
+      "name": "Lorenzo D'Ianni",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7217805?v=4",
+      "profile": "http://codepen.io/lorenzodianni/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "mikelgo",
+      "name": "Michael Berger",
+      "avatar_url": "https://avatars.githubusercontent.com/u/29756792?v=4",
+      "profile": "https://www.berger-engineering.io",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "illunix",
+      "name": "Maksymilian Szokalski",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42069493?v=4",
+      "profile": "https://github.com/illunix",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "Ostromecky",
+      "name": "Paweł Ostromecki",
+      "avatar_url": "https://avatars.githubusercontent.com/u/37908305?v=4",
+      "profile": "https://github.com/Ostromecky",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

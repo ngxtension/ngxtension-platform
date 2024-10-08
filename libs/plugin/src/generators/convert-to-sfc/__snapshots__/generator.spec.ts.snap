@@ -1,0 +1,88 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`convertToSFCGenerator should convert properly for templateUrl 1`] = `
+"
+import { Component, Input } from '@angular/core';
+
+@Component({
+  template: \`
+<div>Hello</div>
+<app-my-cmp1>123</app-my-cmp1>
+\`
+})
+export class MyCmp {
+}
+"
+`;
+
+exports[`convertToSFCGenerator should convert properly for templateUrl 2`] = `null`;
+
+exports[`convertToSFCGenerator should convert properly for templateUrl and styleUrl 1`] = `
+"
+import { Component, Input } from '@angular/core';
+
+@Component({
+  template: \`
+<div>Hello</div>
+<app-my-cmp1>123</app-my-cmp1>
+\`,
+  styles: \`
+h1 {
+  color: red;
+}
+\`
+})
+export class MyCmp {
+}
+"
+`;
+
+exports[`convertToSFCGenerator should convert properly for templateUrl and styleUrl 2`] = `null`;
+
+exports[`convertToSFCGenerator should convert properly for templateUrl and styleUrl 3`] = `
+"<div>Hello</div>
+<app-my-cmp1>123</app-my-cmp1>"
+`;
+
+exports[`convertToSFCGenerator should convert properly for templateUrl and styleUrls 1`] = `
+"
+import { Component, Input } from '@angular/core';
+
+@Component({
+  template: \`
+<div>Hello</div>
+<app-my-cmp1>123</app-my-cmp1>
+\`,
+  styles: \`
+h1 {
+  color: red;
+}
+\`
+})
+export class MyCmp {
+}
+"
+`;
+
+exports[`convertToSFCGenerator should convert properly for templateUrl and styleUrls 2`] = `null`;
+
+exports[`convertToSFCGenerator should convert properly for templateUrl and styleUrls 3`] = `
+"<div>Hello</div>
+<app-my-cmp1>123</app-my-cmp1>"
+`;
+
+exports[`convertToSFCGenerator should skip components with inline templates 1`] = `
+"
+import { Component, Input } from '@angular/core';
+
+@Component({
+  template: \`
+    <router-outlet></router-outlet>
+  \`
+})
+export class MyCmp {
+}
+"
+`;
+
+exports[`convertToSFCGenerator should skip components with inline templates 2`] = `undefined`;
