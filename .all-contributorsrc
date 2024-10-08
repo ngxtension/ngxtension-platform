@@ -399,6 +399,33 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "Ostromecky",
+      "name": "Paweł Ostromecki",
+      "avatar_url": "https://avatars.githubusercontent.com/u/37908305?v=4",
+      "profile": "https://github.com/Ostromecky",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "mattmoos",
+      "name": "Matthias Moos",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25790637?v=4",
+      "profile": "https://github.com/mattmoos",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ShacharHarshuv",
+      "name": "Shahar Har-Shuv",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4821858?v=4",
+      "profile": "https://github.com/ShacharHarshuv",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

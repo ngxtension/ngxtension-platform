@@ -106,6 +106,24 @@ describe(signalSlice.name, () => {
 
 			expect(state().age).toEqual(initialState.age + incrementAge);
 		});
+
+		it('should allow using inital state stream in source', () => {
+			const ageSource$ = new Subject<number>();
+
+			TestBed.runInInjectionContext(() => {
+				state = signalSlice({
+					initialState,
+					sources: [
+						ageSource$.pipe(map((age) => ({ age }))),
+						(state) => state.age$.pipe(map((age) => ({ powerLevel: 2 * age }))),
+					],
+				});
+			});
+
+			ageSource$.next(5);
+			TestBed.flushEffects();
+			expect(state().powerLevel).toEqual(10);
+		});
 	});
 
 	describe('lazySources', () => {

@@ -7,7 +7,7 @@
 [![NPM](https://img.shields.io/npm/dw/ngxtension?logo=npm&style=flat-square)](https://npmjs.org/package/ngxtension)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-43-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-46-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A collection of utilities for [Angular](https://angular.dev).
@@ -112,6 +112,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/illunix"><img src="https://avatars.githubusercontent.com/u/42069493?v=4?s=100" width="100px;" alt="Maksymilian Szokalski"/><br /><sub><b>Maksymilian Szokalski</b></sub></a><br /><a href="https://github.com/ngxtension/ngxtension-platform/commits?author=illunix" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Ostromecky"><img src="https://avatars.githubusercontent.com/u/37908305?v=4?s=100" width="100px;" alt="Paweł Ostromecki"/><br /><sub><b>Paweł Ostromecki</b></sub></a><br /><a href="https://github.com/ngxtension/ngxtension-platform/commits?author=Ostromecky" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/mattmoos"><img src="https://avatars.githubusercontent.com/u/25790637?v=4?s=100" width="100px;" alt="Matthias Moos"/><br /><sub><b>Matthias Moos</b></sub></a><br /><a href="https://github.com/ngxtension/ngxtension-platform/commits?author=mattmoos" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ShacharHarshuv"><img src="https://avatars.githubusercontent.com/u/4821858?v=4?s=100" width="100px;" alt="Shahar Har-Shuv"/><br /><sub><b>Shahar Har-Shuv</b></sub></a><br /><a href="https://github.com/ngxtension/ngxtension-platform/commits?author=ShacharHarshuv" title="Code">💻</a></td>
     </tr>
   </tbody>
   <tfoot>
