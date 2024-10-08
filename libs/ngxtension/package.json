@@ -31,8 +31,8 @@
 	"dependencies": {
 		"tslib": "^2.3.0",
 		"@angular-eslint/bundled-angular-compiler": "^18.0.1",
-		"@nx/devkit": "^19.0.0",
-		"nx": "^19.0.0",
+		"@nx/devkit": "^20.0.0",
+		"nx": "^20.0.0",
 		"ts-morph": "^22.0.0"
 	},
 	"sideEffects": false,

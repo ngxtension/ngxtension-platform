@@ -6,7 +6,7 @@ badge: stable
 contributors: ['robby-rabbitman']
 ---
 
-`NgxControlValueAccessor` es una directiva para reducir la redundancia al construir componentes que implementan la interfaz [ControlValueAccessor](https://angular.io/api/forms/ControlValueAccessor).
+`NgxControlValueAccessor` es una directiva para reducir la redundancia al construir componentes que implementan la interfaz [ControlValueAccessor](https://angular.dev/api/forms/ControlValueAccessor).
 
 ## Importar
 
@@ -16,7 +16,7 @@ import { NgxControlValueAccessor } from 'ngxtension/control-value-accessor';
 
 ## Uso
 
-`NgxControlValueAccessor` implementa la interfaz [ControlValueAccessor](https://angular.io/api/forms/ControlValueAccessor) y expone una api _más simple_. Declara `NgxControlValueAccessor` en la sección `hostDirectives` de tu componente e inyecta la instancia para conectar tu plantilla:
+`NgxControlValueAccessor` implementa la interfaz [ControlValueAccessor](https://angular.dev/api/forms/ControlValueAccessor) y expone una api _más simple_. Declara `NgxControlValueAccessor` en la sección `hostDirectives` de tu componente e inyecta la instancia para conectar tu plantilla:
 
 - `NgxControlValueAccessor.value` para sincronizar el valor.
 - `NgxControlValueAccessor.disabled` para sincronizar el estado deshabilitado.
