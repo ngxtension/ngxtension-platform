@@ -11,22 +11,25 @@ export function toLazySignal<T>(
 
 export function toLazySignal<T>(
 	source: Observable<T> | Subscribable<T>,
-	options: ToSignalOptions & { initialValue?: undefined; requireSync?: false },
+	options: ToSignalOptions<T> & {
+		initialValue?: undefined;
+		requireSync?: false;
+	},
 ): Signal<T | undefined>;
 
 export function toLazySignal<T>(
 	source: Observable<T> | Subscribable<T>,
-	options: ToSignalOptions & { initialValue?: null; requireSync?: false },
+	options: ToSignalOptions<T> & { initialValue?: null; requireSync?: false },
 ): Signal<T | null>;
 
 export function toLazySignal<T>(
 	source: Observable<T> | Subscribable<T>,
-	options: ToSignalOptions & { initialValue?: undefined; requireSync: true },
+	options: ToSignalOptions<T> & { initialValue?: undefined; requireSync: true },
 ): Signal<T>;
 
 export function toLazySignal<T, const U extends T>(
 	source: Observable<T> | Subscribable<T>,
-	options: ToSignalOptions & { initialValue: U; requireSync?: false },
+	options: ToSignalOptions<T> & { initialValue: U; requireSync?: false },
 ): Signal<T | U>;
 
 /**
@@ -35,7 +38,7 @@ export function toLazySignal<T, const U extends T>(
  */
 export function toLazySignal<T, U = undefined>(
 	source: Observable<T> | Subscribable<T>,
-	options?: ToSignalOptions & { initialValue?: U },
+	options?: ToSignalOptions<T> & { initialValue?: U },
 ): Signal<ReturnType<T, U>> {
 	const injector = assertInjector(toLazySignal, options?.injector);
 	let s: Signal<ReturnType<T, U>>;
