@@ -104,6 +104,27 @@ describe(derivedFrom.name, () => {
 				expect(s()[0].toFixed(2)).toEqual('1.00'); // here we can call s()[0].toFixed(2) and will works!
 			});
 		}));
+		it(`for Observables that don't emit synchronously, you can pass undefined as options.initialValue to prevent error`, fakeAsync(() => {
+			TestBed.runInInjectionContext(() => {
+				const late = of(1).pipe(delay(1000)); // late emit after 1s
+				expect(() =>
+					derivedFrom(
+						[late],
+						map(([it]) => it),
+						{ initialValue: undefined },
+					),
+				).not.toThrow();
+				const s = derivedFrom(
+					[late],
+					map(([it]) => it),
+					{ initialValue: undefined },
+				);
+				expect(s()).toEqual(undefined);
+				tick(1000); // wait 1s for late emit
+				expect(s()).toEqual(1); // now we have the real value
+				expect(s().toFixed(2)).toEqual('1.00'); // here we can call s()[0].toFixed(2) and will works!
+			});
+		}));
 		it('value inside array', () => {
 			TestBed.runInInjectionContext(() => {
 				const value = new BehaviorSubject(1);
@@ -147,6 +168,28 @@ describe(derivedFrom.name, () => {
 				tick(1000); // wait 1s for late emit of Promise
 				expect(s()).toEqual({ value: 'a' }); // after 1s we have the resolved value
 				expect(s().value.toUpperCase()).toEqual('A'); // here we can call s().value.toUpperCase() and will works!
+			});
+		}));
+		it('with real async value, you can pass undefined as options.initialValue to prevent error', fakeAsync(() => {
+			TestBed.runInInjectionContext(() => {
+				const value = new Promise<string>((resolve) =>
+					setTimeout(resolve, 1000, 'a'),
+				); //Promise that emit 'a' after 1s
+				expect(() =>
+					derivedFrom(
+						{ value },
+						map(({ value }) => value),
+						{ initialValue: undefined },
+					),
+				).not.toThrow();
+				const s = derivedFrom(
+					{ value },
+					map(({ value }) => value),
+					{ initialValue: undefined },
+				);
+				expect(s()).toEqual(undefined);
+				tick(1000); // wait 1s for late emit of Promise
+				expect(s()).toEqual('a'); // after 1s we have the resolved value
 			});
 		}));
 		it('with a primitive string (that is Iterable), interally converted with from(iter) will emit single value last char (maybe not expected!? -> I suggest using of() for primitives/array)', () => {
