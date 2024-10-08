@@ -260,15 +260,9 @@ export async function convertOutputsGenerator(
 				if (Node.isPropertyDeclaration(node)) {
 					const outputDecorator = node.getDecorator('Output');
 					if (outputDecorator) {
-						let {
-							name,
-							isReadonly,
-							docs,
-							scope,
-							type,
-							hasOverrideKeyword,
-							initializer,
-						} = node.getStructure();
+						const { name, isReadonly, docs, scope, type, hasOverrideKeyword } =
+							node.getStructure();
+						let { initializer } = node.getStructure();
 
 						if (!initializer) {
 							// look for constructor initializer
