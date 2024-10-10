@@ -167,6 +167,11 @@ export interface NgxControlErrorContext {
 	 * Reference to {@link NgxControlError.track}
 	 */
 	track: string | string[];
+
+	/**
+	 * Reference to {@link NgxControlError.key}
+	 */
+	key: string | string[];
 }
 
 /**
@@ -282,14 +287,20 @@ export class NgxControlError {
 	public constructor() {
 		// Whenever one of the tracked errors are included in the controls errors and the control is in an error state, render this template.
 		combineLatest(
-			[toObservable(this.track$), toObservable(this.control$), this._hasError$],
-			(track, control, hasError) => {
+			[
+				toObservable(this.track$),
+				toObservable(this.key$),
+				toObservable(this.control$),
+				this._hasError$,
+			],
+			(track, key, control, hasError) => {
 				this.viewContainerRef.clear();
 
 				if (hasError && control != null && track != null)
 					this.viewContainerRef.createEmbeddedView(this.templateRef, {
 						$implicit: control.errors ?? {},
 						track,
+						key,
 						control,
 					} satisfies NgxControlErrorContext);
 			},
@@ -308,6 +319,18 @@ export class NgxControlError {
 
 	public get track() {
 		return this.track$();
+	}
+
+	/**
+	 * The control key this directive tracks, for the {@link control$ control} provided.
+	 */
+	@Input({ alias: 'ngxControlErrorKey' })
+	public set key(key) {
+		this.key$.set(key);
+	}
+
+	public get key() {
+		return this.key$();
 	}
 
 	/**
@@ -359,6 +382,11 @@ export class NgxControlError {
 	public readonly track$ = signal<undefined | string | string[]>(undefined);
 
 	/**
+	 * The errors this directive tracks, when a {@link control$ control} is provided.
+	 */
+	public readonly key$ = signal<string | string[]>('');
+
+	/**
 	 * The parent of this {@link control$ control}.
 	 *
 	 * NOTE: Might not be the control referenced by {@link AbstractControl.parent parent} of this {@link control$ control}.
@@ -401,12 +429,23 @@ export class NgxControlError {
 	 */
 	private readonly _hasError$ = combineLatest([
 		toObservable(this.track$),
+		toObservable(this.key$),
 		toObservable(this.errorStateMatcher$),
 		toObservable(this.control$).pipe(filterNil()),
 		toObservable(this.parent$),
 	]).pipe(
-		switchMap(([track, errorStateMatcher, control, parent]) =>
-			errorStateMatcher(control, parent).pipe(
+		switchMap(([track, key, errorStateMatcher, _control, parent]) => {
+			const keys = Array.isArray(key)
+				? key
+				: key.trim() !== ''
+					? key.split('.')
+					: [];
+			let control = _control;
+			for (const key of keys) {
+				control = control.get(key.trim()) ?? control;
+			}
+
+			return errorStateMatcher(control, parent).pipe(
 				map(
 					(errorState) =>
 						errorState &&
@@ -416,8 +455,8 @@ export class NgxControlError {
 							? control.hasError(track)
 							: track.some((x) => control.hasError(x))),
 				),
-			),
-		),
+			);
+		}),
 		shareReplay(1), // cache the latest errorStateMatcher computation
 	);
 
