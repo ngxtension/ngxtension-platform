@@ -1,31 +1,34 @@
-import { assertInInjectionContext, inject, type Signal } from '@angular/core';
+import { inject, type Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, type Params } from '@angular/router';
+import { assertInjector } from 'ngxtension/assert-injector';
+import {
+	DefaultValueOptions,
+	InjectorOptions,
+	TransformOptions,
+} from 'ngxtension/shared';
 import { map } from 'rxjs';
 
 type QueryParamsTransformFn<ReadT> = (params: Params) => ReadT;
 
 /**
- * The `InputOptions` interface defines options for configuring the behavior of the `injectQueryParams` function.
+ * The `QueryParamsOptions` type defines options for configuring the behavior of the `injectQueryParams` function.
  *
  * @template ReadT - The expected type of the read value.
  * @template WriteT - The type of the value to be written.
- * @template InitialValueT - The type of the initial value.
+ * @template DefaultValueT - The type of the default value.
  */
-export interface QueryParamsOptions<ReadT, WriteT, InitialValueT> {
-	/**
-	 * A transformation function to convert the written value to the expected read value.
-	 *
-	 * @param v - The value to transform.
-	 * @returns The transformed value.
-	 */
-	transform?: (v: WriteT) => ReadT;
-
-	/**
-	 * The initial value to use if the query parameter is not present or undefined.
-	 */
-	initialValue?: InitialValueT;
-}
+export type QueryParamsOptions<ReadT, WriteT, DefaultValueT> = TransformOptions<
+	ReadT,
+	WriteT
+> &
+	DefaultValueOptions<DefaultValueT> &
+	InjectorOptions & {
+		/**
+		 * The initial value to use if the query parameter is not present or undefined.
+		 */
+		initialValue?: DefaultValueT;
+	};
 
 /**
  * The `injectQueryParams` function allows you to access and manipulate query parameters from the current route.
@@ -49,34 +52,10 @@ export function injectQueryParams(key: string): Signal<string | null>;
  * @param {QueryParamsOptions} options - Optional configuration options for the query parameter.
  * @returns {Signal} A `Signal` that emits the transformed value of the specified query parameter, or `null` if it's not present.
  */
-export function injectQueryParams(
+export function injectQueryParams<ReadT>(
 	key?: string,
-	options?: QueryParamsOptions<boolean, string, boolean>,
-): Signal<boolean | null>;
-
-/**
- * The `injectQueryParams` function allows you to access and manipulate query parameters from the current route.
- *
- * @param {string} key - The name of the query parameter to retrieve.
- * @param {QueryParamsOptions} options - Optional configuration options for the query parameter.
- * @returns {Signal} A `Signal` that emits the transformed value of the specified query parameter, or `null` if it's not present.
- */
-export function injectQueryParams(
-	key?: string,
-	options?: QueryParamsOptions<number, string, number>,
-): Signal<number | null>;
-
-/**
- * The `injectQueryParams` function allows you to access and manipulate query parameters from the current route.
- *
- * @param {string} key - The name of the query parameter to retrieve.
- * @param {QueryParamsOptions} options - Optional configuration options for the query parameter.
- * @returns {Signal} A `Signal` that emits the transformed value of the specified query parameter, or `null` if it's not present.
- */
-export function injectQueryParams(
-	key?: string,
-	options?: QueryParamsOptions<string, string, string>,
-): Signal<string | null>;
+	options?: QueryParamsOptions<ReadT, string, ReadT>,
+): Signal<ReadT | null>;
 
 /**
  * The `injectQueryParams` function allows you to access and manipulate query parameters from the current route.
@@ -99,7 +78,7 @@ export function injectQueryParams<ReadT>(
  * @template ReadT - The expected type of the read value.
  * @param {string} keyOrParamsTransform - The name of the query parameter to retrieve, or a transform function to apply to the query parameters object.
  * @param {QueryParamsOptions} options - Optional configuration options for the query parameter.
- * @returns {QueryParamsOptions} A `Signal` that emits the transformed value of the specified query parameter, or the entire query parameters object if no key is provided.
+ * @returns {Signal} A `Signal` that emits the transformed value of the specified query parameter, or the entire query parameters object if no key is provided.
  *
  * @example
  * const search = injectQueryParams('search'); // returns the value of the 'search' query param
@@ -112,44 +91,45 @@ export function injectQueryParams<ReadT>(
 	keyOrParamsTransform?: string | ((params: Params) => ReadT),
 	options: QueryParamsOptions<ReadT, string, ReadT> = {},
 ): Signal<ReadT | Params | string | boolean | number | null> {
-	assertInInjectionContext(injectQueryParams);
-	const route = inject(ActivatedRoute);
-	const queryParams = route.snapshot.queryParams || {};
+	return assertInjector(injectQueryParams, options?.injector, () => {
+		const route = inject(ActivatedRoute);
+		const queryParams = route.snapshot.queryParams || {};
 
-	const { transform, initialValue } = options;
+		const { transform, initialValue, defaultValue } = options;
 
-	if (!keyOrParamsTransform) {
-		return toSignal(route.queryParams, { initialValue: queryParams });
-	}
-
-	if (typeof keyOrParamsTransform === 'function') {
-		return toSignal(route.queryParams.pipe(map(keyOrParamsTransform)), {
-			initialValue: keyOrParamsTransform(queryParams),
-		});
-	}
-
-	const getParam = (params: Params) => {
-		const param = params?.[keyOrParamsTransform] as
-			| string
-			| string[]
-			| undefined;
-
-		if (!param) {
-			return initialValue ?? null;
+		if (!keyOrParamsTransform) {
+			return toSignal(route.queryParams, { initialValue: queryParams });
 		}
 
-		if (Array.isArray(param)) {
-			if (param.length < 1) {
-				return initialValue ?? null;
+		if (typeof keyOrParamsTransform === 'function') {
+			return toSignal(route.queryParams.pipe(map(keyOrParamsTransform)), {
+				initialValue: keyOrParamsTransform(queryParams),
+			});
+		}
+
+		const getParam = (params: Params) => {
+			const param = params?.[keyOrParamsTransform] as
+				| string
+				| string[]
+				| undefined;
+
+			if (!param) {
+				return defaultValue ?? initialValue ?? null;
 			}
-			return transform ? transform(param[0]) : param[0];
-		}
 
-		return transform ? transform(param) : param;
-	};
+			if (Array.isArray(param)) {
+				if (param.length < 1) {
+					return defaultValue ?? initialValue ?? null;
+				}
+				return transform ? transform(param[0]) : param[0];
+			}
 
-	return toSignal(route.queryParams.pipe(map(getParam)), {
-		initialValue: getParam(queryParams),
+			return transform ? transform(param) : param;
+		};
+
+		return toSignal(route.queryParams.pipe(map(getParam)), {
+			initialValue: getParam(queryParams),
+		});
 	});
 }
 
@@ -166,32 +146,20 @@ export namespace injectQueryParams {
 	 */
 	export function array(
 		key: string,
-		options?: QueryParamsOptions<boolean, string, boolean[]>,
-	): Signal<boolean[] | null>;
-
-	/**
-	 * Retrieve an array query parameter with optional configuration options.
-	 *
-	 * @param {string} key - The name of the array query parameter to retrieve.
-	 * @param {QueryParamsOptions} options - Optional configuration options for the array query parameter.
-	 * @returns {Signal} A `Signal` that emits an array of values for the specified query parameter, or `null` if it's not present.
-	 */
-	export function array(
-		key: string,
-		options?: QueryParamsOptions<number, string, number[]>,
-	): Signal<number[] | null>;
-
-	/**
-	 * Retrieve an array query parameter with optional configuration options.
-	 *
-	 * @param {string} key - The name of the array query parameter to retrieve.
-	 * @param {QueryParamsOptions} options - Optional configuration options for the array query parameter.
-	 * @returns {Signal} A `Signal` that emits an array of values for the specified query parameter, or `null` if it's not present.
-	 */
-	export function array(
-		key: string,
 		options?: QueryParamsOptions<string, string, string[]>,
 	): Signal<string[] | null>;
+
+	/**
+	 * Retrieve an array query parameter with optional configuration options.
+	 *
+	 * @param {string} key - The name of the array query parameter to retrieve.
+	 * @param {QueryParamsOptions} options - Optional configuration options for the array query parameter.
+	 * @returns {Signal} A `Signal` that emits an array of values for the specified query parameter, or `null` if it's not present.
+	 */
+	export function array<ReadT>(
+		key: string,
+		options?: QueryParamsOptions<ReadT, string, ReadT[]>,
+	): Signal<ReadT[] | null>;
 
 	/**
 	 * Retrieve an array query parameter with optional configuration options.
@@ -205,41 +173,42 @@ export namespace injectQueryParams {
 		key: string,
 		options: QueryParamsOptions<ReadT, string, ReadT[]> = {},
 	): Signal<(ReadT | string)[] | null> {
-		assertInInjectionContext(injectQueryParams.array);
-		const route = inject(ActivatedRoute);
-		const queryParams = route.snapshot.queryParams || {};
+		return assertInjector(injectQueryParams.array, options?.injector, () => {
+			const route = inject(ActivatedRoute);
+			const queryParams = route.snapshot.queryParams || {};
 
-		const { transform, initialValue } = options;
+			const { transform, initialValue, defaultValue } = options;
 
-		const transformParam = (
-			param: string | string[] | null,
-		): (string | ReadT)[] | null => {
-			if (!param) {
-				return initialValue ?? null;
-			}
-			if (Array.isArray(param)) {
-				if (param.length < 1) {
-					return initialValue ?? null;
+			const transformParam = (
+				param: string | string[] | null,
+			): (ReadT | string)[] | null => {
+				if (!param) {
+					return defaultValue ?? initialValue ?? null;
 				}
-				// Avoid passing the transform function directly into the map function,
-				// because transform may inadvertently use the array index as its second argument.
-				// Typically, map provides the array index as the second argument to its callback,
-				// which can conflict with transform functions like numberAttribute that expect a fallbackValue as their second parameter.
-				// This mismatch can lead to unexpected behavior, such as values being erroneously converted to array indices
-				// instead of NaN (which would be correct)
-				return transform ? param.map((it) => transform(it)) : param;
-			}
-			return [transform ? transform(param) : param];
-		};
+				if (Array.isArray(param)) {
+					if (param.length < 1) {
+						return defaultValue ?? initialValue ?? null;
+					}
+					// Avoid passing the transform function directly into the map function,
+					// because transform may inadvertently use the array index as its second argument.
+					// Typically, map provides the array index as the second argument to its callback,
+					// which can conflict with transform functions like numberAttribute that expect a fallbackValue as their second parameter.
+					// This mismatch can lead to unexpected behavior, such as values being erroneously converted to array indices
+					// instead of NaN (which would be correct)
+					return transform ? param.map((it) => transform(it)) : param;
+				}
+				return [transform ? transform(param) : param];
+			};
 
-		const getParam = (params: Params) => {
-			const param = params?.[key];
+			const getParam = (params: Params) => {
+				const param = params?.[key];
 
-			return transformParam(param);
-		};
+				return transformParam(param);
+			};
 
-		return toSignal(route.queryParams.pipe(map(getParam)), {
-			initialValue: getParam(queryParams),
+			return toSignal(route.queryParams.pipe(map(getParam)), {
+				initialValue: getParam(queryParams),
+			});
 		});
 	}
 }
