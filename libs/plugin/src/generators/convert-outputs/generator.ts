@@ -62,8 +62,25 @@ function getOutputInitializer(
 		alias = decoratorArg.getText();
 	}
 
+	const initializerOrType =
+		initializer ?? (typeof currentType === 'string' ? currentType : undefined);
+
+	if (!initializerOrType) {
+		logger.error(
+			`[ngxtension] Unable to find initializer or type for "${propertyName}"`,
+		);
+		return exit(1);
+	}
+
 	// check if the initializer is not an EventEmitter -> means its an observable
-	if (!initializer.includes('EventEmitter')) {
+	if (!initializerOrType.includes('EventEmitter')) {
+		if (!initializer) {
+			logger.error(
+				`[ngxtension] Unable to find initializer for "${propertyName}"`,
+			);
+			return exit(1);
+		}
+
 		// if the initializer is a Subject or BehaviorSubject
 		if (
 			initializer.includes('Subject') ||
@@ -96,10 +113,11 @@ function getOutputInitializer(
 		}
 	} else {
 		let type = '';
-		if (initializer.includes('EventEmitter()')) {
+		if (initializerOrType.includes('EventEmitter()')) {
 			// there is no type
 		} else {
-			const genericTypeOnEmitter = initializer.match(/EventEmitter<(.+)>/);
+			const genericTypeOnEmitter =
+				initializerOrType.match(/EventEmitter<(.+)>/);
 			if (genericTypeOnEmitter?.length) {
 				type = genericTypeOnEmitter[1];
 			}
@@ -242,15 +260,23 @@ export async function convertOutputsGenerator(
 				if (Node.isPropertyDeclaration(node)) {
 					const outputDecorator = node.getDecorator('Output');
 					if (outputDecorator) {
-						const {
-							name,
-							isReadonly,
-							docs,
-							scope,
-							type,
-							hasOverrideKeyword,
-							initializer,
-						} = node.getStructure();
+						const { name, isReadonly, docs, scope, type, hasOverrideKeyword } =
+							node.getStructure();
+						let { initializer } = node.getStructure();
+
+						if (!initializer) {
+							// look for constructor initializer
+							const constructor = targetClass.getConstructors()[0];
+							if (constructor) {
+								const constructorInitializer = constructor
+									.getStatements()
+									.find((stmt) => stmt.getText().includes(`${name} =`));
+								if (constructorInitializer) {
+									initializer = constructorInitializer.getText();
+								}
+								constructorInitializer?.remove();
+							}
+						}
 
 						const {
 							needsOutputFromObservableImport,
