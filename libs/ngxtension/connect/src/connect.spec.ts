@@ -215,6 +215,50 @@ describe(connect.name, () => {
 		});
 	});
 
+	describe('connects a signal to a signal not in injection context', () => {
+		@Component({
+			standalone: true,
+			template: '{{ text() }}-{{ someOtherText() }}',
+		})
+		class TestComponent implements OnInit {
+			private injector = inject(Injector);
+
+			text = signal('');
+			someOtherText = signal('');
+
+			ngOnInit() {
+				connect(this.text, () => this.someOtherText(), {
+					injector: this.injector,
+				});
+			}
+		}
+
+		let component: TestComponent;
+		let fixture: ComponentFixture<TestComponent>;
+
+		beforeEach(async () => {
+			fixture = TestBed.createComponent(TestComponent);
+			component = fixture.componentInstance;
+		});
+
+		it('works fine', () => {
+			fixture.detectChanges();
+			expect(fixture.nativeElement.textContent).toBe('-');
+
+			component.someOtherText.set('text');
+			fixture.detectChanges();
+			expect(fixture.nativeElement.textContent).toBe('text-text');
+
+			component.someOtherText.set('text2');
+			fixture.detectChanges();
+			expect(fixture.nativeElement.textContent).toBe('text2-text2');
+
+			component.text.set('text3');
+			fixture.detectChanges();
+			expect(fixture.nativeElement.textContent).toBe('text3-text2');
+		});
+	});
+
 	describe('connects to a slice of a state signal', () => {
 		it('should update properly', () => {
 			const state = signal({
