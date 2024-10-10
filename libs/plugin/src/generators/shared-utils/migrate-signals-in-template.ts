@@ -292,7 +292,7 @@ function replaceVariablesInsideInterpolation(
 	variables: string[],
 ): string {
 	// find all interpolations and replace the variables for each interpolation
-	value = value.replaceAll(/{{(.*?)}}/g, (match) => {
+	value = value.replaceAll(/{{\s*(.*?)\s*}}/g, (match) => {
 		const usedVars = [];
 		for (const variable of variables) {
 			if (match.includes(variable)) {
