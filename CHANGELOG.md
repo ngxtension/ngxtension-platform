@@ -1,3 +1,62 @@
+## 4.1.0 (2024-11-01)
+
+### Features
+
+- handle defaultValue type in injectLocalStorage ([#508](https://github.com/ngxtension/ngxtension-platform/pull/508))
+- **computed:** deprecated for linkedSignal ([e38b946](https://github.com/ngxtension/ngxtension-platform/commit/e38b946))
+- **inject-inputs:** deprecated injectInputs in favor of inputs() ([2b131af](https://github.com/ngxtension/ngxtension-platform/commit/2b131af))
+- **ngx-control-value-accessor:** expose the NgControl instance of the host ([#479](https://github.com/ngxtension/ngxtension-platform/pull/479))
+- **resize:** add orientation handler ([f78b124](https://github.com/ngxtension/ngxtension-platform/commit/f78b124))
+- **signal-slice:** add "Updated" signal for action sources ([#363](https://github.com/ngxtension/ngxtension-platform/pull/363))
+- **signal-slice:** pass initial state streams to source functions ([#486](https://github.com/ngxtension/ngxtension-platform/pull/486))
+
+### Bug Fixes
+
+- typo ([#471](https://github.com/ngxtension/ngxtension-platform/pull/471))
+- update migration entry points ([#448](https://github.com/ngxtension/ngxtension-platform/pull/448))
+- inject typo in rx-affect.md ([#480](https://github.com/ngxtension/ngxtension-platform/pull/480))
+- **derived-async:** fix unsubscribing from old observable when new value is not observable ([#487](https://github.com/ngxtension/ngxtension-platform/pull/487))
+- **docs:** fix incorrect derive loading entrypoint ([#512](https://github.com/ngxtension/ngxtension-platform/pull/512))
+- **host-binding:** ensure previous classes are removed when class binding changes ([#473](https://github.com/ngxtension/ngxtension-platform/pull/473))
+- **plugin:** support outputs without inline initialization ([#497](https://github.com/ngxtension/ngxtension-platform/pull/497))
+- **signal-input-migration:** skip inputs with @HostBinding() decorator ([#460](https://github.com/ngxtension/ngxtension-platform/pull/460))
+- **signal-slice:** fix action streams being infered as never ([#472](https://github.com/ngxtension/ngxtension-platform/pull/472))
+
+### Documentation
+
+- add @mauriziocescon as a contributor ([d6c3165](https://github.com/ngxtension/ngxtension-platform/commit/d6c3165))
+- add @leonelvsc as a contributor ([a4f07da](https://github.com/ngxtension/ngxtension-platform/commit/a4f07da))
+- add @lorenzodianni  as a contributor ([460a94f](https://github.com/ngxtension/ngxtension-platform/commit/460a94f))
+- enhance CONTRIBUTING.md with some hint where to add documentation for a new utility ([#455](https://github.com/ngxtension/ngxtension-platform/pull/455))
+- add if-validator readme ([#452](https://github.com/ngxtension/ngxtension-platform/pull/452))
+- add Michael Berger as contributor ([#457](https://github.com/ngxtension/ngxtension-platform/pull/457))
+- Added docs for injectLocalStorage #464 ([#478](https://github.com/ngxtension/ngxtension-platform/pull/478), [#464](https://github.com/ngxtension/ngxtension-platform/issues/464))
+- add illunix as a contributor for doc ([#482](https://github.com/ngxtension/ngxtension-platform/pull/482))
+- Migrate links to angular.dev ([#503](https://github.com/ngxtension/ngxtension-platform/pull/503))
+- add Ostromecky as a contributor for code ([#511](https://github.com/ngxtension/ngxtension-platform/pull/511))
+- add mattmoos as a contributor for code ([#514](https://github.com/ngxtension/ngxtension-platform/pull/514))
+- add ShacharHarshuv as a contributor for code ([#515](https://github.com/ngxtension/ngxtension-platform/pull/515))
+- add MillerSvt as a contributor for code ([#516](https://github.com/ngxtension/ngxtension-platform/pull/516))
+- **inject-local-storage:** Add missing title ([#502](https://github.com/ngxtension/ngxtension-platform/pull/502))
+
+### ❤️  Thank You
+
+- Enea Jahollari @eneajaho
+- Evan Trimboli
+- Fiorelo Zere @fiorelozere
+- GU55555 @GU55555
+- J. Degand @jdegand
+- Jakub Meinlschmidt
+- Josh Morony
+- Maksymilian Szokalski @illunix
+- Michael Be
+- nartc
+- Paweł Ostromecki @Ostromecky
+- Robby Rabbitman @RobbyRabbitman
+- Shahar Har-Shuv
+- Svyatoslav Zaytsev @MillerSvt
+- Sylvain Autran
+
 # 4.0.0 (2024-07-15)
 
 
