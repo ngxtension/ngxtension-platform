@@ -47,7 +47,8 @@ export function inputs<TDir extends Type<any>>(
 }
 
 /**
- * @deprecated Please use `inputs()` instead
+ * @deprecated Please use `inputs()` instead. Will be removed in v5
+ * @since v4
  */
 export function injectInputs<TDir extends Type<any>>(
 	dir: InstanceType<TDir>,
