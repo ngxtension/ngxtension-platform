@@ -40,7 +40,7 @@ export function injectRouteData<T>(
 		typeof keyOrTransform === 'function'
 			? keyOrTransform
 			: (data: Data) =>
-					keyOrTransform ? data?.[keyOrTransform] ?? null : data;
+					keyOrTransform ? (data?.[keyOrTransform] ?? null) : data;
 
 	return toSignal(route.data.pipe(map(getDataParam)), {
 		initialValue: getDataParam(initialRouteData),

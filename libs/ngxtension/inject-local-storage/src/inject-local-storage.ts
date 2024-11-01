@@ -126,7 +126,7 @@ const internalInjectLocalStorage = <R>(
 
 		const initialStoredValue = goodTry(() => localStorage.getItem(key));
 		const initialValue = initialStoredValue
-			? goodTry(() => parse(initialStoredValue) as R) ?? defaultValue
+			? (goodTry(() => parse(initialStoredValue) as R) ?? defaultValue)
 			: defaultValue;
 		const internalSignal = signal(initialValue);
 

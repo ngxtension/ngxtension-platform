@@ -16,7 +16,7 @@ export function migrateTemplateVariablesToSignals(
 		template,
 		'template.html',
 		{
-      preserveLineEndings: true,
+			preserveLineEndings: true,
 			tokenizeBlocks: true,
 		},
 	);
