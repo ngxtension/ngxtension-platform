@@ -1,68 +1,12 @@
 {
 	"migrations": [
 		{
-			"version": "20.0.0-beta.7",
-			"description": "Migration for v20.0.0-beta.7",
-			"implementation": "./src/migrations/update-20-0-0/move-use-daemon-process",
+			"version": "20.0.1",
+			"description": "Set `useLegacyCache` to true for migrating workspaces",
+			"implementation": "./src/migrations/update-20-0-1/use-legacy-cache",
+			"x-repair-skip": true,
 			"package": "nx",
-			"name": "move-use-daemon-process"
-		},
-		{
-			"cli": "nx",
-			"version": "19.6.0-beta.4",
-			"description": "Update ciWebServerCommand to use static serve for the application.",
-			"implementation": "./src/migrations/update-19-6-0/update-ci-webserver-for-static-serve",
-			"package": "@nx/cypress",
-			"name": "update-19-6-0-update-ci-webserver-for-vite"
-		},
-		{
-			"cli": "nx",
-			"version": "20.0.0-beta.5",
-			"description": "replace getJestProjects with getJestProjectsAsync",
-			"implementation": "./src/migrations/update-20-0-0/replace-getJestProjects-with-getJestProjectsAsync",
-			"package": "@nx/jest",
-			"name": "replace-getJestProjects-with-getJestProjectsAsync"
-		},
-		{
-			"cli": "nx",
-			"version": "19.5.0-beta.1",
-			"requires": { "@angular/core": ">=18.1.0" },
-			"description": "Update the @angular/cli package version to ~18.1.0.",
-			"factory": "./src/migrations/update-19-5-0/update-angular-cli",
-			"package": "@nx/angular",
-			"name": "update-angular-cli-version-18-1-0"
-		},
-		{
-			"cli": "nx",
-			"version": "19.6.0-beta.4",
-			"description": "Ensure Module Federation DTS is turned off by default.",
-			"factory": "./src/migrations/update-19-6-0/turn-off-dts-by-default",
-			"package": "@nx/angular",
-			"name": "update-19-6-0"
-		},
-		{
-			"cli": "nx",
-			"version": "19.6.0-beta.7",
-			"requires": { "@angular/core": ">=18.2.0" },
-			"description": "Update the @angular/cli package version to ~18.2.0.",
-			"factory": "./src/migrations/update-19-6-0/update-angular-cli",
-			"package": "@nx/angular",
-			"name": "update-angular-cli-version-18-2-0"
-		},
-		{
-			"cli": "nx",
-			"version": "19.6.1-beta.0",
-			"description": "Ensure Target Defaults are set correctly for Module Federation.",
-			"factory": "./src/migrations/update-19-6-1/ensure-depends-on-for-mf",
-			"package": "@nx/angular",
-			"name": "update-19-6-1-ensure-module-federation-target-defaults"
-		},
-		{
-			"version": "18.1.0",
-			"description": "Updates calls to afterRender with an explicit phase to the new API",
-			"factory": "./migrations/after-render-phase/bundle",
-			"package": "@angular/core",
-			"name": "migration-after-render-phase"
+			"name": "use-legacy-cache"
 		}
 	]
 }
