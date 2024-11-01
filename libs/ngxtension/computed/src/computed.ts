@@ -2,7 +2,8 @@ import type { CreateComputedOptions } from '@angular/core';
 import { computed as ngComputed } from '@angular/core';
 
 /**
- * @deprecated Will be removed in v2
+ * @deprecated Use `linkedSignal`. Will be removed in v5
+ * @since v4
  */
 export function computed<TValue>(
 	computedCallback: (currentValue: TValue) => TValue,
@@ -19,6 +20,7 @@ export function computed<TValue>(
 }
 
 /**
- * @deprecated Will be removed in v2
+ * @deprecated Use `linkedSignal`. Will be removed in v5
+ * @since v4
  */
 export const extendedComputed = computed;
