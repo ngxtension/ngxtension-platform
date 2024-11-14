@@ -142,10 +142,9 @@ const internalInjectLocalStorage = <R>(
 		if (storageSync) {
 			const onStorage = (event: StorageEvent) => {
 				if (event.storageArea === localStorage && event.key === key) {
-					const newValue =
-						event.newValue !== null
-							? (parse(event.newValue) as R)
-							: defaultValue;
+					const newValue = event.newValue
+						? (goodTry(() => parse(event.newValue!) as R) ?? defaultValue)
+						: defaultValue;
 					internalSignal.set(newValue);
 				}
 			};
