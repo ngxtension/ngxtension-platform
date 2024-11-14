@@ -1,7 +1,7 @@
+import { DOCUMENT } from '@angular/common';
 import {
 	DestroyRef,
 	InjectionToken,
-	effect,
 	inject,
 	signal,
 	type Injector,
@@ -75,11 +75,11 @@ function isFunction(value: unknown): value is (...args: unknown[]) => unknown {
 	return typeof value === 'function';
 }
 
-function goodTry<T>(tryFn: () => T): T | undefined {
+function goodTry<T>(tryFn: () => T, defaultValue: T): T {
 	try {
 		return tryFn();
 	} catch {
-		return undefined;
+		return defaultValue;
 	}
 }
 
@@ -123,28 +123,80 @@ const internalInjectLocalStorage = <R>(
 	return assertInjector(injectLocalStorage, options.injector, () => {
 		const localStorage = inject(NGXTENSION_LOCAL_STORAGE);
 		const destroyRef = inject(DestroyRef);
+		const window = inject(DOCUMENT).defaultView;
 
-		const initialStoredValue = goodTry(() => localStorage.getItem(key));
-		const initialValue = initialStoredValue
-			? (goodTry(() => parse(initialStoredValue) as R) ?? defaultValue)
-			: defaultValue;
-		const internalSignal = signal(initialValue);
+		if (!window) {
+			throw new Error('Cannot access to window element');
+		}
 
-		effect(() => {
-			const value = internalSignal();
-			if (value === undefined) {
-				goodTry(() => localStorage.removeItem(key));
-			} else {
-				goodTry(() => localStorage.setItem(key, stringify(value)));
+		const initialStoredValue = goodTry(() => localStorage.getItem(key), null);
+		const internalSignal = signal<R>(
+			initialStoredValue
+				? goodTry(() => parse(initialStoredValue) as R, defaultValue)
+				: defaultValue,
+		);
+
+		const syncValueWithLocalStorage = (value: R): void => {
+			const newValue = goodTry(
+				() => (value === undefined ? null : stringify(value)),
+				null,
+			);
+
+			try {
+				if (newValue === localStorage.getItem(key)) {
+					return;
+				}
+
+				if (newValue === null) {
+					localStorage.removeItem(key);
+				} else {
+					localStorage.setItem(key, newValue);
+				}
+
+				// We notify other consumers in this tab about changing the value in the store for synchronization
+				window.dispatchEvent(
+					new StorageEvent(`storage`, {
+						key,
+						newValue,
+						storageArea: localStorage,
+					}),
+				);
+			} catch {
+				// ignore errors
 			}
-		});
+		};
 
 		if (storageSync) {
+			const originalSet = internalSignal.set;
+			const originalUpdate = internalSignal.update;
+
+			const set: typeof originalSet = (newValue: R) => {
+				// set the value in the signal using the original set function
+				originalSet(newValue);
+
+				// then we refresh the value in localStorage and notify other consumers in this tab about the change
+				syncValueWithLocalStorage(newValue);
+			};
+
+			const update: typeof originalUpdate = (updateFn: (value: R) => R) => {
+				let newValue: R;
+
+				// set the value in the signal using the original set function
+				originalUpdate((value) => (newValue = updateFn(value)));
+
+				// then we refresh the value in localStorage and notify other consumers in this tab about the change
+				syncValueWithLocalStorage(newValue!);
+			};
+
+			internalSignal.set = set;
+			internalSignal.update = update;
+
 			const onStorage = (event: StorageEvent) => {
 				if (event.storageArea === localStorage && event.key === key) {
-					const newValue = event.newValue
-						? (goodTry(() => parse(event.newValue!) as R) ?? defaultValue)
-						: defaultValue;
+					const newValue =
+						event.newValue !== null
+							? (parse(event.newValue) as R)
+							: defaultValue;
 					internalSignal.set(newValue);
 				}
 			};
