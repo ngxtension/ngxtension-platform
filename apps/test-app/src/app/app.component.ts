@@ -52,10 +52,34 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 			<li>
 				<a routerLink="/form-events">Form Events</a>
 			</li>
+
+			<li>
+				<a routerLink="/linked-query-param">Linked Query Param</a>
+			</li>
 		</ul>
 
 		<hr />
 		<router-outlet />
+	`,
+
+	styles: `
+		ul {
+			display: flex;
+			justify-content: flex-start;
+			gap: 5px;
+			list-style: none;
+		}
+
+		a {
+			text-decoration: none;
+			border: 1px solid black;
+			padding: 5px;
+			color: black;
+		}
+		a:hover {
+			background: black;
+			color: white;
+		}
 	`,
 })
 export class AppComponent {}
