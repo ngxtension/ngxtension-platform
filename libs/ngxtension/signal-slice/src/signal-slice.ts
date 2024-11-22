@@ -121,6 +121,7 @@ export type SignalSlice<
 	Selectors<TSignalValue> &
 	ExtraSelectors<TSelectors> &
 	Effects<TEffects> &
+	InitialStateStreams<TSignalValue> &
 	ActionMethods<TSignalValue, TActionSources> &
 	ActionStreams<TSignalValue, TActionSources> &
 	ActionUpdates<TSignalValue, TActionSources>;
