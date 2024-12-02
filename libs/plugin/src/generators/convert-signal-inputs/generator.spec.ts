@@ -48,6 +48,7 @@ const template = `<div>{{ inputWithoutType }}</div>
 <button (click)="someFunctionWithnormalInput('normalInput', normalInput)"></button>
 <button (normalInput)="someFunctionWithnormalInput(normalInput, 'normalInput')"></button>
 <button (eventWithnormalInput)="test = 'normalInput' + normalInput"></button>
+<button (click)="test = person?.name"></button>
 
 <a>
  {{ 'someNormalTextnormalInput' | translate: 'normalInput' }}
@@ -65,6 +66,17 @@ const template = `<div>{{ inputWithoutType }}</div>
 <cmp normalInput="normalInput"></cmp>
 
 <p>{{ data().normalInput }}</p>
+
+<p>{{person?.name ? person.name : ""}}</p>
+<p>{{
+  person.name
+}}</p>
+
+<ng-template #sample let-title="name">
+      <span>{{title}}</span>
+</ng-template>
+
+<ng-template *ngTemplateOutlet="sample; context: {name: person.name}"></ng-template>
 `;
 
 const filesMap = {
@@ -91,6 +103,11 @@ export class MyCmp {
 	component: `
 import { Component, Input } from '@angular/core';
 
+interface Person {
+  name: string;
+  lastname: string;
+}
+
 @Component({
   template: \`
     ${template}
@@ -110,6 +127,7 @@ export class MyCmp {
   @Input({ required: true, alias: 'transformedRequiredAlias', transform: numberAttribute }) requiredWithAliasAndTransform!: number;
   @Input({ transform: booleanAttribute }) withTransformWithoutType = false;
   @Input({ transform: numberAttribute }) requiredWithTransformWithoutType = 1;
+  @Input() person: Person;
 
   @Input() set leaveMeAlone(value: number) {
     console.log('setter', value);
