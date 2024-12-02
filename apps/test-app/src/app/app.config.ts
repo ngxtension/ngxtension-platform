@@ -74,6 +74,11 @@ export const appConfig: ApplicationConfig = {
 				loadComponent: () =>
 					import('./control-value-accessor/control-value-accessor'),
 			},
+			{
+				path: 'linked-query-param',
+				loadChildren: () =>
+					import('./linked-query-param/routes').then((x) => x.routes),
+			},
 		]),
 	],
 };
