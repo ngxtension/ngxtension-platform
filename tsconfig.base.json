@@ -112,6 +112,9 @@
 				"libs/ngxtension/inject-route-fragment/src/index.ts"
 			],
 			"ngxtension/intl": ["libs/ngxtension/intl/src/index.ts"],
+			"ngxtension/linked-query-param": [
+				"libs/ngxtension/linked-query-param/src/index.ts"
+			],
 			"ngxtension/map-array": ["libs/ngxtension/map-array/src/index.ts"],
 			"ngxtension/map-skip-undefined": [
 				"libs/ngxtension/map-skip-undefined/src/index.ts"
