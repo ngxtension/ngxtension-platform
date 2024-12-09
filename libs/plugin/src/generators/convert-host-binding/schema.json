@@ -1,0 +1,17 @@
+{
+	"$schema": "http://json-schema.org/schema",
+	"$id": "ConvertHostBinding",
+	"title": "",
+	"type": "object",
+	"properties": {
+		"project": {
+			"type": "string",
+			"aliases": ["name", "projectName"],
+			"description": "Project for which to convert from host binding to host property."
+		},
+		"path": {
+			"type": "string",
+			"description": "Path to the component/directive you want to convert to use the host property."
+		}
+	}
+}

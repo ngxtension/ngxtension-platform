@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`convert-host-binding generator should convert properly for component 1`] = `
+"
+	import { Component } from '@angular/core';
+
+  @Component({
+    selector: 'my-component',
+    template: 'My component',
+      host: { '[class.active]': 'isActive', '[attr.aria-disabled]': 'isDisabled', '[tabIndex]': 'getTabIndex()' }
+})
+  export class MyComponent {
+    isActive = true;
+
+    get isDisabled() {
+      return true;
+    }
+
+    getTabIndex() {
+      return this.isDisabled ? -1 : 0;
+    }
+  }
+  "
+`;
+
+exports[`convert-host-binding generator should convert properly for component with host property 1`] = `
+"
+  import { Component } from '@angular/core';
+
+    @Component({
+      selector: 'my-component',
+      template: 'My component',
+      host: {
+        '[class.active]': 'isActive',
+          '[attr.aria-disabled]': 'isDisabled'
+    }
+    })
+    export class MyComponent {
+      isActive = true;
+
+      get isDisabled() {
+        return true;
+      }
+    }
+  "
+`;
+
+exports[`convert-host-binding generator should convert properly for directive 1`] = `
+"
+	import { Directive } from '@angular/core';
+
+  @Directive({
+    selector: '[myDirective]',
+      host: { '[class.active]': 'isActive',
+          '(keydown)': 'updateValue($event)'
+    }
+})
+  export class MyDirective {
+    isActive = true;
+
+    
+    updateValue(event: KeyboardEvent) {
+    }
+  }
+  "
+`;
