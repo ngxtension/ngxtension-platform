@@ -1,3 +1,20 @@
+## 4.2.0 (2024-12-09)
+
+### Features
+
+- add linkedQueryParam implementation, tests and docs ([#526](https://github.com/nartc/ngxtension-platform/pull/526))
+- **inject-local-storage:** dispatch storage event on change ([#523](https://github.com/nartc/ngxtension-platform/pull/523), [#525](https://github.com/nartc/ngxtension-platform/pull/525))
+
+### Bug Fixes
+
+- **signal-slice:** add initial state stream typing to state object ([#521](https://github.com/nartc/ngxtension-platform/pull/521))
+
+### ❤️  Thank You
+
+- Enea Jahollari @eneajaho
+- Josh Morony
+- Svyatoslav Zaytsev @MillerSvt
+
 ## 4.1.0 (2024-11-01)
 
 ### Features
