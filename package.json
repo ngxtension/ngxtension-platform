@@ -4,7 +4,7 @@
 	"license": "MIT",
 	"scripts": {
 		"postinstall": "simple-git-hooks",
-		"release": "dotenv release-it --"
+		"package": "nx run-many -t build --projects=ngxtension,plugin"
 	},
 	"private": true,
 	"engines": {
@@ -93,5 +93,6 @@
 	"lint-staged": {
 		"*": "pnpm exec prettier --write"
 	},
-	"packageManager": "pnpm@9.3.0"
+	"packageManager": "pnpm@9.3.0",
+	"nx": {}
 }

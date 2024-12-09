@@ -14,16 +14,6 @@
 		}
 	},
 	"targets": {
-		"package": {
-			"executor": "nx:run-commands",
-			"options": {
-				"commands": [
-					"pnpm exec nx build ngxtension",
-					"pnpm exec nx build plugin"
-				],
-				"parallel": false
-			}
-		},
 		"build": {
 			"executor": "@nx/angular:package",
 			"outputs": ["{workspaceRoot}/dist/{projectRoot}"],

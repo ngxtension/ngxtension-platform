@@ -74,7 +74,7 @@
 	"release": {
 		"projects": ["ngxtension"],
 		"version": {
-			"preVersionCommand": "nx package ngxtension"
+			"preVersionCommand": "npm run package"
 		},
 		"git": {
 			"commitMessage": "chore: release {version}"

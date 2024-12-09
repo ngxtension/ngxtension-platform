@@ -34,7 +34,8 @@
 						"output": "."
 					}
 				]
-			}
+			},
+			"dependsOn": [{ "target": "build", "projects": "ngxtension" }]
 		},
 		"lint": {
 			"executor": "@nx/eslint:lint",
