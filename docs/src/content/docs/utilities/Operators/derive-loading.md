@@ -1,7 +1,7 @@
 ---
 title: deriveLoading
 description: ngxtension/derive-loading
-entryPoint: derive-loading
+entryPoint: ngxtension/derive-loading
 badge: stable
 contributors: ['michael-berger']
 ---

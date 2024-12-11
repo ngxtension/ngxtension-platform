@@ -10,7 +10,7 @@ Esto es una colección de pipes diseñados para aplicaciones Angular que aprovec
 
 Aunque no está pensado para reemplazar completamente los pipes estándar de Angular para `currency`, `date` y `number`, sirve como un kit de herramientas complementario para mejorar las funcionalidades existentes.
 
-El locale por defecto se determina mediante el token [`LOCALE_ID`](https://angular.io/api/core/LOCALE_ID). Al alterar esto se cambiará el locale para todos los pipes incluidos.
+El locale por defecto se determina mediante el token [`LOCALE_ID`](https://angular.dev/api/core/LOCALE_ID). Al alterar esto se cambiará el locale para todos los pipes incluidos.
 
 Como alternativa, puedes especificar el locale directamente como **último parámetro de cualquier pipe, anulando así la configuración por defecto**.
 

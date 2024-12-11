@@ -1,12 +1,12 @@
 {
 	"migrations": [
 		{
-			"version": "19.2.4-beta.0",
-			"description": "Set project name in nx.json explicitly",
-			"implementation": "./src/migrations/update-19-2-4/set-project-name",
+			"version": "20.0.1",
+			"description": "Set `useLegacyCache` to true for migrating workspaces",
+			"implementation": "./src/migrations/update-20-0-1/use-legacy-cache",
 			"x-repair-skip": true,
 			"package": "nx",
-			"name": "19-2-4-set-project-name"
+			"name": "use-legacy-cache"
 		}
 	]
 }

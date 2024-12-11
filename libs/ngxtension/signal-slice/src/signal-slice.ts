@@ -10,7 +10,7 @@ import {
 	type WritableSignal,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { connect, type PartialOrValue, type Reducer } from 'ngxtension/connect';
+import { connect, type PartialOrValue } from 'ngxtension/connect';
 import { createNotifier } from 'ngxtension/create-notifier';
 import { Subject, isObservable, share, take, type Observable } from 'rxjs';
 
@@ -81,13 +81,20 @@ type ActionStreams<
 	TActionSources extends NamedActionSources<TSignalValue>,
 > = {
 	[K in keyof TActionSources &
-		string as `${K}$`]: TActionSources[K] extends ActionSourceFn<TSignalValue, unknown>
+		string as `${K}$`]: TActionSources[K] extends ActionSourceFn<
+		TSignalValue,
+		unknown
+	>
 		? Observable<void>
 		: TActionSources[K] extends ActionSourceFn<TSignalValue, infer TValue>
 			? TValue extends Observable<any>
 				? TValue
 				: Observable<TValue>
 			: never;
+};
+
+type InitialStateStreams<TSignalValue> = {
+	[K in keyof TSignalValue & string as `${K}$`]: Observable<TSignalValue[K]>;
 };
 
 type ActionUpdates<
@@ -99,7 +106,10 @@ type ActionUpdates<
 
 export type Source<TSignalValue> = Observable<PartialOrValue<TSignalValue>>;
 type SourceConfig<TSignalValue> = Array<
-	Source<TSignalValue> | ((state: Signal<TSignalValue>) => Source<TSignalValue>)
+	| Source<TSignalValue>
+	| ((
+			state: Signal<TSignalValue> & InitialStateStreams<TSignalValue>,
+	  ) => Source<TSignalValue>)
 >;
 
 export type SignalSlice<
@@ -111,6 +121,7 @@ export type SignalSlice<
 	Selectors<TSignalValue> &
 	ExtraSelectors<TSelectors> &
 	Effects<TEffects> &
+	InitialStateStreams<TSignalValue> &
 	ActionMethods<TSignalValue, TActionSources> &
 	ActionStreams<TSignalValue, TActionSources> &
 	ActionUpdates<TSignalValue, TActionSources>;
@@ -174,8 +185,6 @@ export function signalSlice<
 		TEffects
 	>;
 
-	connectSources(state, sources);
-
 	for (const [key, actionSource] of Object.entries(
 		actionSources as TActionSources,
 	)) {
@@ -206,15 +215,20 @@ export function signalSlice<
 	}
 
 	for (const key in initialState) {
+		const value = computed(() => readonlyState()[key]);
 		Object.defineProperty(readonlyState, key, {
-			value: computed(() => readonlyState()[key]),
+			value,
 		});
+		(readonlyState as any)[`${key}$`] = toObservable(value);
 	}
 
 	for (const [key, selector] of Object.entries(selectors(slice))) {
+		const value = computed(selector);
+
 		Object.defineProperty(readonlyState, key, {
-			value: computed(selector),
+			value,
 		});
+		(readonlyState as any)[`${key}$`] = toObservable(value);
 	}
 
 	for (const [key, namedEffect] of Object.entries(effects(slice))) {
@@ -231,6 +245,8 @@ export function signalSlice<
 		});
 	}
 
+	connectSources(state, sources, readonlyState);
+
 	destroyRef.onDestroy(() => {
 		subs.forEach((sub) => sub.complete());
 	});
@@ -238,7 +254,7 @@ export function signalSlice<
 	const connectLazySources = () => {
 		if (!lazySourcesLoaded) {
 			lazySourcesLoaded = true;
-			connectSources(state, lazySources, injector, true);
+			connectSources(state, lazySources, readonlyState, injector, true);
 		}
 	};
 
@@ -257,6 +273,7 @@ export function signalSlice<
 function connectSources<TSignalValue>(
 	state: WritableSignal<TSignalValue>,
 	sources: SourceConfig<TSignalValue>,
+	readonlyState: Signal<TSignalValue>,
 	injector?: Injector,
 	useUntracked = false,
 ) {
@@ -264,7 +281,7 @@ function connectSources<TSignalValue>(
 		if (isObservable(source)) {
 			connect(state, source, injector, useUntracked);
 		} else {
-			connect(state, source(state.asReadonly()), injector, useUntracked);
+			connect(state, source(readonlyState as any), injector, useUntracked);
 		}
 	}
 }

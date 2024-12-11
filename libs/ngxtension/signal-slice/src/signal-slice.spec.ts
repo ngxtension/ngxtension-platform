@@ -1,3 +1,4 @@
+import { toSignal } from '@angular/core/rxjs-interop';
 import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
 import { Observable, Subject, of, timer } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -31,6 +32,24 @@ describe(signalSlice.name, () => {
 
 		it('should create default selectors', () => {
 			expect(state.age()).toEqual(initialState.age);
+		});
+
+		it('should provide streams of initial state', () => {
+			TestBed.runInInjectionContext(() => {
+				const state = signalSlice({
+					initialState,
+					actionSources: {
+						increaseAge: (state, $: Observable<void>) =>
+							$.pipe(map(() => ({ age: state().age + 1 }))),
+					},
+				});
+
+				const age = toSignal(state.age$);
+
+				state.increaseAge();
+				TestBed.flushEffects();
+				expect(age()).toEqual(initialState.age + 1);
+			});
 		});
 
 		it('should not accept optional properties in initial state', () => {
@@ -105,6 +124,24 @@ describe(signalSlice.name, () => {
 			ageSource$.next(incrementAge);
 
 			expect(state().age).toEqual(initialState.age + incrementAge);
+		});
+
+		it('should allow using inital state stream in source', () => {
+			const ageSource$ = new Subject<number>();
+
+			TestBed.runInInjectionContext(() => {
+				state = signalSlice({
+					initialState,
+					sources: [
+						ageSource$.pipe(map((age) => ({ age }))),
+						(state) => state.age$.pipe(map((age) => ({ powerLevel: 2 * age }))),
+					],
+				});
+			});
+
+			ageSource$.next(5);
+			TestBed.flushEffects();
+			expect(state().powerLevel).toEqual(10);
 		});
 	});
 

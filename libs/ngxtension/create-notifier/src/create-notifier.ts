@@ -1,5 +1,10 @@
 import { signal } from '@angular/core';
 
+/**
+ * Creates a signal notifier that can be used to notify effects or other consumers.
+ *
+ * @returns A notifier object.
+ */
 export function createNotifier() {
 	const sourceSignal = signal(0);
 

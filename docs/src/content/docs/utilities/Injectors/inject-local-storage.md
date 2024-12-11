@@ -1,3 +1,11 @@
+---
+title: injectLocalStorage
+description: ngxtension/inject-local-storage
+entryPoint: ngxtension/inject-local-storage
+badge: stable
+contributors: ['enea-jahollari']
+---
+
 This injector provides a reactive local storage management system using Angular's dependency injection and reactivity model. This API allows for easy integration and manipulation of local storage with real-time synchronization across browser tabs.
 
 ## API
@@ -47,10 +55,7 @@ Options to configure the behavior of the local storage signal.
 Here's a basic example of using `injectLocalStorage`:
 
 ```typescript
-const username = injectLocalStorage<string>('username', {
-	defaultValue: 'Anonymous',
-	storageSync: true,
-});
+const username = injectLocalStorage<string>('username');
 
 username.set('John Doe');
 username.update((username) => 'Guest ' + username);
@@ -59,4 +64,23 @@ effect(() => {
 	console.log(username());
 });
 // Use `username` in your component to get or set the username stored in local storage.
+// The value might be null or undefined if default value is not provided.
+```
+
+Fallback value can be provided using the `defaultValue` option:
+
+```typescript
+const username = injectLocalStorage<string>('username', {
+	defaultValue: 'Guest',
+});
+// If the key 'username' is not present in local storage, the default value 'Guest' will be used.
+```
+
+Storage synchronization can be enabled using the `storageSync` option:
+
+```typescript
+const username = injectLocalStorage<string>('username', {
+	storageSync: true,
+});
+// Changes to the local storage will be reflected across browser tabs.
 ```

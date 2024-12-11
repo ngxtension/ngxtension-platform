@@ -1,6 +1,6 @@
 import { Signal, signal } from '@angular/core';
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { Observable, catchError, delay, map, of, startWith } from 'rxjs';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { catchError, delay, map, Observable, of, startWith, timer } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { derivedAsync } from './derived-async';
 
@@ -379,6 +379,40 @@ describe(derivedAsync.name, () => {
 				tick(100); // wait 50ms
 				expect(s()).toEqual(2);
 				expect(logs).toEqual([1, 2]);
+			});
+		}));
+	});
+
+	describe('works with observables and raw values', () => {
+		it('waits for them to resolve', fakeAsync(() => {
+			TestBed.runInInjectionContext(() => {
+				const logs: number[] = [];
+				const value = signal(false);
+
+				const s = derivedAsync(() => {
+					return value() ? timer(0, 100) : null;
+				});
+
+				expect(s()).toEqual(undefined); // initial value
+				TestBed.flushEffects();
+				expect(s()).toEqual(null); // raw value
+
+				value.set(true);
+				TestBed.flushEffects();
+				expect(s()).toEqual(null); // still raw value
+
+				tick(); // wait for timer to resolve
+				expect(s()).toEqual(0);
+
+				tick(100); // wait for next timer tick
+				expect(s()).toEqual(1);
+
+				value.set(false);
+				TestBed.flushEffects();
+				expect(s()).toEqual(null); // raw value
+
+				tick(100); // still raw value
+				expect(s()).toEqual(null);
 			});
 		}));
 	});

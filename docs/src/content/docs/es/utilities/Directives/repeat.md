@@ -16,7 +16,7 @@ import { Repeat } from 'ngxtension/repeat';
 
 ### Básico
 
-Utiliza la directiva `Repeat` como una extensión de `NgFor` de Angular para iterar sobre un número fijo de iteraciones. La [`TrackByFunction`](https://angular.io/api/core/TrackByFunction) se establece automáticamente para iterar de manera eficiente.
+Utiliza la directiva `Repeat` como una extensión de `NgFor` de Angular para iterar sobre un número fijo de iteraciones. La [`TrackByFunction`](https://angular.dev/api/core/TrackByFunction) se establece automáticamente para iterar de manera eficiente.
 
 ```ts
 import { Component } from '@angular/core';

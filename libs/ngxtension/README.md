@@ -1,6 +1,6 @@
 # NG Extension Platform
 
-A collection of utilities for [Angular](https://angular.io).
+A collection of utilities for [Angular](https://angular.dev).
 
 ## Installation
 

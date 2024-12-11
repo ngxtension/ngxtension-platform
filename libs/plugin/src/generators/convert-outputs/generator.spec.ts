@@ -55,6 +55,14 @@ export class MyCmp {
 
   @Output() withObservable = this.someObservable$;
   @Output('withAlias') aliasOutput = new EventEmitter<string>();
+  
+  @Output() noInitializer: EventEmitter<string>;
+  
+  @Output() initializedInConstructor;
+  
+  constructor() {
+    this.initializedInConstructor = new EventEmitter<string>();
+  }
 
   ngOnInit() {
     let imABoolean = false;
