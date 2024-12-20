@@ -1,0 +1,26 @@
+{
+	"$schema": "https://json-schema.org/schema",
+	"$id": "convertoDestroyref",
+	"title": "",
+	"type": "object",
+	"properties": {
+		"project": {
+			"type": "string",
+			"aliases": ["name", "projectName"],
+			"description": "Project for which to convert from constructor DI to inject function."
+		},
+		"path": {
+			"type": "string",
+			"description": "Path to the component/directive/pipe you want to convert to use the inject function"
+		},
+		"useEsprivateFieldNotation": {
+			"type": "boolean",
+			"aliases": [
+				"useESPrivateFieldNotation",
+				"useEsprivateFieldNotation",
+				"useEsPrivateFieldNotation"
+			],
+			"description": "Whether to replace TS private modifier with ES private field notation. Default is false."
+		}
+	}
+}
