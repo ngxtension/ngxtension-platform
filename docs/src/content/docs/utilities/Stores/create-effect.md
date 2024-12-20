@@ -83,13 +83,13 @@ export class Example {
 	// Will not resubscribe on error
 	private loadProducts = createEffect<string>(
 		(_) => _.pipe(switchMap((id) => this.api.loadProducts(id))),
-		{ retryOnEror: false },
+		{ retryOnError: false },
 	);
 
 	// Will resubscribe on error with a delay, not more than 3 times
 	private loadProducts = createEffect<string>(
 		(_) => _.pipe(switchMap((id) => this.api.loadProducts(id))),
-		{ retryOnEror: { count: 3, delay: 500 } },
+		{ retryOnError: { count: 3, delay: 500 } },
 	);
 }
 ```
