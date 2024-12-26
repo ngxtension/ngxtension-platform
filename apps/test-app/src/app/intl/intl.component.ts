@@ -8,7 +8,6 @@ import {
 
 @Component({
 	selector: 'ngxtension-platform-intl',
-	standalone: true,
 	imports: [
 		CommonModule,
 		DisplayNamesPipe,

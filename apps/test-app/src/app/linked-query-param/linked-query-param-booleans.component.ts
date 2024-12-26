@@ -7,7 +7,6 @@ import {
 } from 'ngxtension/linked-query-param';
 
 @Component({
-	standalone: true,
 	template: `
 		<div>
 			<pre>Show Deleted: {{ showDeleted() | json }}</pre>
