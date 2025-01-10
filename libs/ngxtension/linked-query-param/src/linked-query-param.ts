@@ -35,6 +35,7 @@ type NavigateMethodFields = Pick<
 	| 'onSameUrlNavigation'
 	| 'replaceUrl'
 	| 'skipLocationChange'
+	| 'preserveFragment'
 >;
 
 /**
@@ -93,6 +94,7 @@ export class LinkedQueryParamGlobalHandler {
 			onSameUrlNavigation,
 			replaceUrl,
 			skipLocationChange,
+			preserveFragment,
 		} = config;
 		if (queryParamsHandling || queryParamsHandling === '') {
 			this._navigationExtras.queryParamsHandling = queryParamsHandling;
@@ -105,6 +107,9 @@ export class LinkedQueryParamGlobalHandler {
 		}
 		if (skipLocationChange) {
 			this._navigationExtras.skipLocationChange = skipLocationChange;
+		}
+		if (preserveFragment) {
+			this._navigationExtras.preserveFragment = preserveFragment;
 		}
 	}
 
