@@ -1,3 +1,13 @@
+## 4.2.1 (2025-01-16)
+
+### Bug Fixes
+
+- add preserveFragment to linkedQueryParam navigation extras ([#540](https://github.com/ngxtension/ngxtension-platform/pull/540))
+
+### ❤️ Thank You
+
+- Enea Jahollari @eneajaho
+
 ## 4.2.0 (2024-12-09)
 
 ### Features
