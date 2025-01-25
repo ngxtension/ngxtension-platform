@@ -40,6 +40,12 @@ export function signalHistory<T>(
 		capacity?: number;
 
 		/**
+		 * A function that determines whether a value should be recorded in the history.
+		 * By default, all values are recorded.
+		 */
+		shouldRecord?: (value: T, oldValue: T) => boolean;
+
+		/**
 		 * The injector to use for the effect.
 		 * @default undefined
 		 */
@@ -99,8 +105,14 @@ export function signalHistory<T>(
 		explicitEffect(
 			[source],
 			([value]) => {
+				const lastValue = undoStack()[undoStack().length - 1]?.value;
+
 				// skip if the value is the same as the last value
-				if (value === undoStack()[undoStack().length - 1]?.value) return;
+				if (value === lastValue) return;
+
+				// skip if the value should not be recorded
+				if (options?.shouldRecord && !options?.shouldRecord(value, lastValue))
+					return;
 
 				const newRecord = createHistoryRecord(value);
 

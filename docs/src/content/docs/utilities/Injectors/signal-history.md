@@ -76,3 +76,19 @@ class TestComponent implements OnInit {
 	}
 }
 ```
+
+## Should Record
+
+You can pass a `shouldRecord` function to the `signalHistory` function.
+
+```ts
+@Component()
+class TestComponent {
+	readonly source = signal<string[]>([]);
+
+	readonly sourceHistory = signalHistory(this.source, {
+		// Only record changes to the length of the array
+		shouldRecord: (value, oldValue) => value.length !== oldValue.length,
+	});
+}
+```

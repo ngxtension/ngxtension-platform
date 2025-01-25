@@ -260,7 +260,9 @@ export default class SignalHistoryComponent {
 	readonly newTodoTitle = signal('');
 
 	readonly todos = signal<Todo[]>([]);
-	readonly todosHistory = signalHistory(this.todos);
+	readonly todosHistory = signalHistory(this.todos, {
+		shouldRecord: (value, oldValue) => value.length !== oldValue.length,
+	});
 
 	// todosHistory.history(); - All history
 	// todosHistory.undo() - Undo last action
