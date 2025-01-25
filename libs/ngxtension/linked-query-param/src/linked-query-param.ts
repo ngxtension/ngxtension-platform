@@ -2,7 +2,9 @@ import {
 	effect,
 	inject,
 	Injectable,
+	InjectionToken,
 	Injector,
+	Provider,
 	runInInjectionContext,
 	signal,
 	untracked,
@@ -17,6 +19,8 @@ import {
 } from '@angular/router';
 import { assertInjector } from 'ngxtension/assert-injector';
 import { createNotifier } from 'ngxtension/create-notifier';
+import { explicitEffect } from 'ngxtension/explicit-effect';
+
 import { distinctUntilKeyChanged, map } from 'rxjs';
 
 /**
@@ -37,6 +41,47 @@ type NavigateMethodFields = Pick<
 	| 'skipLocationChange'
 	| 'preserveFragment'
 >;
+
+const defaultConfig: Partial<NavigateMethodFields> = {
+	queryParamsHandling: 'merge',
+};
+
+const _LINKED_QUERY_PARAM_CONFIG_TOKEN = new InjectionToken<
+	Partial<NavigateMethodFields>
+>('LinkedQueryParamConfig', {
+	providedIn: 'root',
+	factory: () => defaultConfig,
+});
+
+/*
+ * This function allows users to override the default behavior of the `linkedQueryParam` navigation extras per component.
+ *
+ * @example
+ * ```ts
+ * @Component({
+ *   providers: [
+ *     provideLinkedQueryParamConfig({ preserveFragment: true })
+ *   ]
+ * })
+ * export class MyComponent {
+ *   // No matter which query param changes, the `preserveFragment` option
+ *   // will be set to `true` for all the `linkedQueryParam` functions in this component.
+ *   readonly searchQuery = linkedQueryParam('searchQuery');
+ *   readonly page = linkedQueryParam('page');
+ * }
+ * ```
+ *
+ * As always, you can override this behavior on a per-function basis by passing the navigation extras to the `linkedQueryParam` function.
+ *
+ */
+export function provideLinkedQueryParamConfig(
+	config: Partial<NavigateMethodFields>,
+): Provider {
+	return {
+		provide: _LINKED_QUERY_PARAM_CONFIG_TOKEN,
+		useValue: config,
+	};
+}
 
 /**
  * Service to coalesce multiple navigation calls into a single navigation event.
@@ -63,10 +108,12 @@ export class LinkedQueryParamGlobalHandler {
 	constructor() {
 		effect(() => {
 			// listen to the scheduler notifier to schedule the navigation event
-			this._schedulerNotifier.listen();
-
-			// we need to untrack the navigation call in order to not register any other signal as a dependency
-			untracked(() => void this.navigate());
+			// we wrap the listen in a condition (listen() default value is 0) in order to not schedule
+			// the first navigation event by default, because only changes should trigger it
+			if (this._schedulerNotifier.listen()) {
+				// we need to untrack the navigation call in order to not register any other signal as a dependency
+				untracked(() => void this.navigate());
+			}
 		});
 	}
 
@@ -121,7 +168,6 @@ export class LinkedQueryParamGlobalHandler {
 		return this._router
 			.navigate([], {
 				queryParams: this._currentKeys,
-				queryParamsHandling: 'merge', // can be overridden by the `queryParamsHandling` option
 				...this._navigationExtras, // override the navigation extras
 			})
 			.then((value) => {
@@ -288,6 +334,7 @@ export function linkedQueryParam<T>(
 	return runInInjectionContext(injector, () => {
 		const route = inject(ActivatedRoute);
 		const globalHandler = inject(LinkedQueryParamGlobalHandler);
+		const config = inject(_LINKED_QUERY_PARAM_CONFIG_TOKEN);
 
 		/**
 		 * Parses a parameter value based on provided configuration.
@@ -325,13 +372,20 @@ export function linkedQueryParam<T>(
 
 		const originalSet = source.set;
 
-		effect(() => {
-			const x = queryParamValue();
+		explicitEffect([queryParamValue], ([value]) => {
 			// update the source signal whenever the query param changes
-			untracked(() => originalSet(x as T));
+			originalSet(value as T);
 		});
 
 		const set = (value: T) => {
+			// first we check if the value is undefined or null so we can set the default value instead
+			if (
+				(value === undefined || value === null) &&
+				options?.defaultValue !== undefined
+			) {
+				value = options.defaultValue;
+			}
+
 			// we first set the initial value so it synchronous (same as a normal signal)
 			originalSet(value);
 
@@ -347,7 +401,10 @@ export function linkedQueryParam<T>(
 			}
 
 			globalHandler.setParamKeyValue(key, valueToBeSet);
-			globalHandler.setCurrentNavigationExtras(options ?? {});
+			globalHandler.setCurrentNavigationExtras({
+				...config,
+				...(options ?? {}),
+			});
 
 			// schedule the navigation event (multiple synchronous navigations will be coalesced)
 			// this will also reset the current keys and navigation extras after the navigation
