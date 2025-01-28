@@ -79,6 +79,11 @@ export const appConfig: ApplicationConfig = {
 				loadChildren: () =>
 					import('./linked-query-param/routes').then((x) => x.routes),
 			},
+			{
+				path: 'signal-history',
+				loadComponent: () =>
+					import('./signal-history/signal-history.component'),
+			},
 		]),
 	],
 };

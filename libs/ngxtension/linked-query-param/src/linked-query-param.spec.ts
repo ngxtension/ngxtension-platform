@@ -11,10 +11,12 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
+import { injectRouteFragment } from 'libs/ngxtension/inject-route-fragment/src/inject-route-fragment';
 import {
 	linkedQueryParam,
 	paramToBoolean,
 	paramToNumber,
+	provideLinkedQueryParamConfig,
 } from './linked-query-param';
 
 interface MyParams {
@@ -118,6 +120,10 @@ describe(linkedQueryParam.name, () => {
 						component: WithDefaultAndParseComponent,
 					},
 					{ path: 'with-injector-in-oninit', component: WithInjectorInOnInit },
+					{
+						path: 'with-preserve-fragment',
+						component: WithPreserveFragmentComponent,
+					},
 				]),
 			],
 		});
@@ -276,12 +282,12 @@ describe(linkedQueryParam.name, () => {
 
 		instance.defaultBehaviorWithDefault.set(null);
 
-		expect(instance.defaultBehaviorWithDefault()).toBe(null);
+		expect(instance.defaultBehaviorWithDefault()).toBe('default');
 
 		tick();
 		expect(
 			instance.route.snapshot.queryParams['defaultBehaviorWithDefault'],
-		).toBe(undefined);
+		).toBe('default');
 	}));
 
 	it('should handle boolean values', fakeAsync(async () => {
@@ -479,6 +485,34 @@ describe(linkedQueryParam.name, () => {
 			undefined,
 		);
 	}));
+
+	it('should work with preserveFragment', fakeAsync(async () => {
+		const harness = await RouterTestingHarness.create();
+		const instance = await harness.navigateByUrl(
+			'/with-preserve-fragment#foo',
+			WithPreserveFragmentComponent,
+		);
+
+		expect(instance.fragment()).toBe('foo');
+		expect(instance.route.snapshot.fragment).toBe('foo');
+
+		instance.searchQuery.set('bar');
+		tick();
+		expect(instance.searchQuery()).toBe('bar');
+		expect(instance.route.snapshot.queryParams['searchQuery']).toBe('bar');
+		expect(instance.route.snapshot.fragment).toBe('foo');
+		expect(instance.fragment()).toBe('foo');
+
+		await harness.navigateByUrl('/with-preserve-fragment#foo3');
+
+		expect(instance.fragment()).toBe('foo3');
+
+		instance.searchQuery.set('baz');
+		tick();
+		expect(instance.searchQuery()).toBe('baz');
+		expect(instance.route.snapshot.queryParams['searchQuery']).toBe('baz');
+		expect(instance.route.snapshot.fragment).toBe('foo3');
+	}));
 });
 
 @Component({ standalone: true, template: `` })
@@ -491,6 +525,17 @@ export class WithInjectorInOnInit implements OnInit {
 	ngOnInit() {
 		this.param = linkedQueryParam('testParamInit', { injector: this.injector });
 	}
+}
+
+@Component({
+	standalone: true,
+	template: ``,
+	providers: [provideLinkedQueryParamConfig({ preserveFragment: true })],
+})
+export class WithPreserveFragmentComponent {
+	route = inject(ActivatedRoute);
+	readonly fragment = injectRouteFragment();
+	readonly searchQuery = linkedQueryParam('searchQuery');
 }
 
 @Component({ standalone: true, template: `` })

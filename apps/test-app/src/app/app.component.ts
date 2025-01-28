@@ -56,6 +56,10 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 			<li>
 				<a routerLink="/linked-query-param">Linked Query Param</a>
 			</li>
+
+			<li>
+				<a routerLink="/signal-history">Signal History</a>
+			</li>
 		</ul>
 
 		<hr />

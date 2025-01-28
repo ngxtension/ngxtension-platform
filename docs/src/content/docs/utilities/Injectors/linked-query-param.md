@@ -126,6 +126,8 @@ You can also set the signal to null to remove the query parameter from the URL.
 
 These will work the same as using them on the `navigate()` method of the Router.
 
+You can either provide the navigation extras in the options param in the `linkedQueryParam` function, or you can use the `provideLinkedQueryParamConfig` function to provide the navigation extras either in a component (recommended) or globally.
+
 - `queryParamsHandling`
 
 You can specify how to handle query parameters when updating the URL.
@@ -162,6 +164,22 @@ You can specify whether to replace the current URL in the browser's history or p
 
 ```ts
 const page = linkedQueryParam('page', { replaceUrl: true });
+```
+
+#### With `provideLinkedQueryParamConfig`
+
+In the example below, the `preserveFragment` option will be set to `true` for all the `linkedQueryParam` function usages in the component (and its children).
+
+```ts
+import { provideLinkedQueryParamConfig } from 'ngxtension/linked-query-param';
+
+@Component({
+	providers: [provideLinkedQueryParamConfig({ preserveFragment: true })],
+})
+export class MyComponent {
+	readonly searchQuery = linkedQueryParam('searchQuery');
+	readonly page = linkedQueryParam('page');
+}
 ```
 
 ### Examples of usage
