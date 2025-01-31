@@ -402,6 +402,7 @@ export function linkedQueryParam<T>(
 
 			globalHandler.setParamKeyValue(key, valueToBeSet);
 			globalHandler.setCurrentNavigationExtras({
+				...defaultConfig,
 				...config,
 				...(options ?? {}),
 			});
