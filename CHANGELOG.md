@@ -1,3 +1,13 @@
+## 4.3.1 (2025-01-31)
+
+### Bug Fixes
+
+- update provideLinkedQueryParamConfig function to override the default ([#552](https://github.com/ngxtension/ngxtension-platform/pull/552))
+
+### ❤️  Thank You
+
+- Enea Jahollari @eneajaho
+
 ## 4.3.0 (2025-01-31)
 
 ### Features
