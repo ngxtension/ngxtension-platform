@@ -74,6 +74,9 @@
 			"ngxtension/effect-once-if": [
 				"libs/ngxtension/effect-once-if/src/index.ts"
 			],
+			"ngxtension/explicit-effect": [
+				"libs/ngxtension/explicit-effect/src/index.ts"
+			],
 			"ngxtension/filter-array": ["libs/ngxtension/filter-array/src/index.ts"],
 			"ngxtension/filter-nil": ["libs/ngxtension/filter-nil/src/index.ts"],
 			"ngxtension/form-events": ["libs/ngxtension/form-events/src/index.ts"],
@@ -111,9 +114,6 @@
 			"ngxtension/inject-route-fragment": [
 				"libs/ngxtension/inject-route-fragment/src/index.ts"
 			],
-			"ngxtension/signal-history": [
-				"libs/ngxtension/signal-history/src/index.ts"
-			],
 			"ngxtension/intl": ["libs/ngxtension/intl/src/index.ts"],
 			"ngxtension/linked-query-param": [
 				"libs/ngxtension/linked-query-param/src/index.ts"
@@ -131,8 +131,8 @@
 			"ngxtension/repeat-pipe": ["libs/ngxtension/repeat-pipe/src/index.ts"],
 			"ngxtension/resize": ["libs/ngxtension/resize/src/index.ts"],
 			"ngxtension/rx-effect": ["libs/ngxtension/rx-effect/src/index.ts"],
-			"ngxtension/explicit-effect": [
-				"libs/ngxtension/explicit-effect/src/index.ts"
+			"ngxtension/signal-history": [
+				"libs/ngxtension/signal-history/src/index.ts"
 			],
 			"ngxtension/signal-slice": ["libs/ngxtension/signal-slice/src/index.ts"],
 			"ngxtension/singleton-proxy": [

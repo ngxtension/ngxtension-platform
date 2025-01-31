@@ -1,3 +1,14 @@
+## 4.3.0 (2025-01-31)
+
+### Features
+
+- add injectSignalHistory implementation, tests and docs ([#543](https://github.com/ngxtension/ngxtension-platform/pull/543))
+- add provideLinkedQueryParamConfig function and updated the beha… ([#542](https://github.com/ngxtension/ngxtension-platform/pull/542))
+
+### ❤️  Thank You
+
+- Enea Jahollari @eneajaho
+
 ## 4.2.1 (2025-01-16)
 
 ### Bug Fixes
