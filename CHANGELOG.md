@@ -1,3 +1,7 @@
+## 4.3.2 (2025-01-31)
+
+This was a version bump only, there were no code changes.
+
 ## 4.3.1 (2025-01-31)
 
 ### Bug Fixes
