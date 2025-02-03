@@ -9,7 +9,6 @@ import { allEventsObservable, allEventsSignal } from 'ngxtension/form-events';
 
 @Component({
 	selector: 'ngxtension-platform-intl',
-	standalone: true,
 	imports: [ReactiveFormsModule, JsonPipe, AsyncPipe],
 	template: `
 		<form [formGroup]="form">

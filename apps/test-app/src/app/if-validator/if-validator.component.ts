@@ -4,7 +4,6 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ifValidator } from 'ngxtension/if-validator';
 
 @Component({
-	standalone: true,
 	imports: [CommonModule, ReactiveFormsModule],
 	host: {
 		style: 'display: block; margin: 12px',

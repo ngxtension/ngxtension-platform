@@ -5,7 +5,6 @@ import { Title } from '@angular/platform-browser';
 import { linkedQueryParam } from 'ngxtension/linked-query-param';
 
 @Component({
-	standalone: true,
 	template: `
 		<div>
 			<pre>SearchQuery: {{ searchQuery() | json }}</pre>

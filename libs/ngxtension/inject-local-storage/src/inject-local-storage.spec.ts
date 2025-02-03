@@ -192,19 +192,14 @@ describe('injectLocalStorage', () => {
 
 				const effectConsumer = await new Promise<ReactiveNode | null>(
 					(resolve) => {
-						const effectRef = effect(
-							() => {
-								localStorageSignal.set(newValue1);
-								localStorageSignal.update(() => newValue2);
+						const effectRef = effect(() => {
+							localStorageSignal.set(newValue1);
+							localStorageSignal.update(() => newValue2);
 
-								resolve(getActiveConsumer());
+							resolve(getActiveConsumer());
 
-								effectRef.destroy();
-							},
-							{
-								allowSignalWrites: true,
-							},
-						);
+							effectRef.destroy();
+						});
 
 						TestBed.flushEffects();
 					},

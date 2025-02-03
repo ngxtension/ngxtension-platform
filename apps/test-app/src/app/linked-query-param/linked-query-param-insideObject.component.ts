@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { linkedQueryParam } from 'ngxtension/linked-query-param';
 
 @Component({
-	standalone: true,
 	template: `
 		<div>
 			<label>

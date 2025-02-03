@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { linkedQueryParam, paramToNumber } from 'ngxtension/linked-query-param';
 
 @Component({
-	standalone: true,
 	template: `
 		<div>
 			<pre>Page Number: {{ pageNumber() | json }}</pre>

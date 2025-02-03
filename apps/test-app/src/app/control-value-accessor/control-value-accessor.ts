@@ -109,7 +109,6 @@ export class UserSelect {
 
 @Component({
 	selector: 'ngxtension-platform-control-value-accessor',
-	standalone: true,
 	imports: [
 		CommonModule,
 		FormsModule,

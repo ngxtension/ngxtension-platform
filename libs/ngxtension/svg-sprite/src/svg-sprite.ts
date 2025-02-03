@@ -1,7 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import {
 	Directive,
-	ENVIRONMENT_INITIALIZER,
 	ElementRef,
 	Injectable,
 	Input,
@@ -10,6 +9,7 @@ import {
 	computed,
 	inject,
 	makeEnvironmentProviders,
+	provideEnvironmentInitializer,
 	signal,
 	type OnInit,
 } from '@angular/core';
@@ -135,17 +135,16 @@ export type CreateNgxSvgSpriteOptions = Omit<NgxSvgSprite, 'url'> &
  */
 export const provideSvgSprites = (...sprites: CreateNgxSvgSpriteOptions[]) =>
 	makeEnvironmentProviders([
-		{
-			provide: ENVIRONMENT_INITIALIZER,
-			multi: true,
-			useFactory: () => {
+		provideEnvironmentInitializer(() => {
+			const initializerFn = (() => {
 				const service = inject(NgxSvgSprites);
 				return () =>
 					sprites.forEach((sprite) =>
 						service.register(createSvgSprite(sprite)),
 					);
-			},
-		},
+			})();
+			return initializerFn();
+		}),
 	]);
 
 /**
