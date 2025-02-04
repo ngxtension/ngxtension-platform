@@ -4,16 +4,14 @@ import {
 	Input,
 	Output,
 	booleanAttribute,
+	effect,
 	inject,
-	runInInjectionContext,
 	signal,
 	untracked,
-	type OnInit,
 } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { NgControl, NgModel, type ControlValueAccessor } from '@angular/forms';
 import { createInjectionToken } from 'ngxtension/create-injection-token';
-import { rxEffect } from 'ngxtension/rx-effect';
 import { skip } from 'rxjs';
 
 const noop = () => undefined;
@@ -196,9 +194,7 @@ export const provideCvaCompareToByProp = <T>(prop: keyof T) =>
 @Directive({
 	standalone: true,
 })
-export class NgxControlValueAccessor<T = any>
-	implements ControlValueAccessor, OnInit
-{
+export class NgxControlValueAccessor<T = any> implements ControlValueAccessor {
 	/** @ignore */
 	private readonly injector = inject(Injector);
 
@@ -240,30 +236,38 @@ export class NgxControlValueAccessor<T = any>
 	public readonly compareTo$ =
 		signal<NgxControlValueAccessorCompareTo<T>>(injectCvaCompareTo());
 
-	/** @ignore */
-	public ngOnInit(): void {
-		if (this.ngControl != null) {
-			runInInjectionContext(this.injector, () => {
-				// NOTE: Don't use 'effect' because we have no idea if we are setting other signals here.
+	protected readonly notifyNgControlOnValueChanges = effect(() => {
+		const value = this.value$();
 
-				// sync value
-				rxEffect(toObservable(this.value$), (value) => {
-					if (!this.compareTo(this.ngControl?.value, value))
-						this.onChange(value);
-				});
+		untracked(() => {
+			/**
+			 * no-op if THIS value is already _equal_ to the value of the control => we dont need to notify the control.
+			 */
+			if (this.compareTo(this.ngControl?.value, value)) {
+				return;
+			}
 
-				// sync disabled state
-				rxEffect(toObservable(this.disabled$), (disabled) => {
-					if (
-						this.ngControl != null &&
-						this.ngControl.control != null &&
-						this.ngControl.disabled !== disabled
-					)
-						this.ngControl.control[disabled ? 'disable' : 'enable']();
-				});
-			});
-		}
-	}
+			this.onChange(value);
+		});
+	});
+
+	protected readonly notifyNgControlOnDisabledChanges = effect(() => {
+		const disabled = this.disabled$();
+
+		untracked(() => {
+			/**
+			 * no-op if THIS disabled state is already _equal_ to the disabled state of the control  or there is no control
+			 */
+			if (
+				this.ngControl?.control == null ||
+				this.ngControl.disabled === disabled
+			) {
+				return;
+			}
+
+			this.ngControl.control[disabled ? 'disable' : 'enable']();
+		});
+	});
 
 	/** The value of this. If a control is present, it reflects it's value. */
 	@Input()
