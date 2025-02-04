@@ -7,6 +7,7 @@ import {
 	inject,
 	runInInjectionContext,
 	signal,
+	untracked,
 	type OnInit,
 } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
@@ -271,7 +272,7 @@ export class NgxControlValueAccessor<T = any>
 	}
 
 	public get value() {
-		return this.value$();
+		return untracked(this.value$);
 	}
 
 	/** Whether this is disabled. If a control is present, it reflects it's disabled state. */
@@ -281,7 +282,7 @@ export class NgxControlValueAccessor<T = any>
 	}
 
 	public get disabled() {
-		return this.disabled$();
+		return untracked(this.disabled$);
 	}
 
 	/**
@@ -295,7 +296,7 @@ export class NgxControlValueAccessor<T = any>
 	}
 
 	public get compareTo() {
-		return this.compareTo$();
+		return untracked(this.compareTo$);
 	}
 
 	/**
