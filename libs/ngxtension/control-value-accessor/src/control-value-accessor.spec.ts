@@ -369,6 +369,16 @@ describe('NgxControlValueAccessor', () => {
 
 				expect(cva.disabled).toEqual(true);
 				expect(input.disabled).toEqual(true);
+
+				cva.disabled = false;
+				fixture.detectChanges();
+				expect(params.control.disabled).toEqual(false);
+				expect(input.disabled).toEqual(false);
+
+				cva.disabled = true;
+				fixture.detectChanges();
+				expect(params.control.disabled).toEqual(true);
+				expect(input.disabled).toEqual(true);
 			});
 		});
 
