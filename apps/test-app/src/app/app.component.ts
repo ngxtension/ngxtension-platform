@@ -60,6 +60,10 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 			<li>
 				<a routerLink="/signal-history">Signal History</a>
 			</li>
+
+			<li>
+				<a routerLink="/text-selection">Text Selection</a>
+			</li>
 		</ul>
 
 		<hr />
