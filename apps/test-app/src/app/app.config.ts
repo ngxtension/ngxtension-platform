@@ -84,6 +84,11 @@ export const appConfig: ApplicationConfig = {
 				loadComponent: () =>
 					import('./signal-history/signal-history.component'),
 			},
+			{
+				path: 'text-selection',
+				loadComponent: () =>
+					import('./text-selection/text-selection.component'),
+			},
 		]),
 	],
 };

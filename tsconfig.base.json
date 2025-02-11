@@ -111,6 +111,9 @@
 			"ngxtension/inject-route-data": [
 				"libs/ngxtension/inject-route-data/src/index.ts"
 			],
+			"ngxtension/inject-text-selection": [
+				"libs/ngxtension/inject-text-selection/src/index.ts"
+			],
 			"ngxtension/inject-route-fragment": [
 				"libs/ngxtension/inject-route-fragment/src/index.ts"
 			],
