@@ -19,12 +19,9 @@ contributors: ['fiorelozere']
 Below is an example of how to integrate the text selection in an Angular component:
 
 ```ts
-// Import the hook from its file or package
-import { Component } from '@angular/core';
-import { useTextSelection } from '@ngxtension/inject-text-selection'; // adjust the path accordingly
+import { injectTextSelection } from 'ngxtension/inject-text-selection';
 
 @Component({
-  selector: 'app-text-selection-demo',
   template: `
     <div>
       <p>Selected text: {{ selectionState.text() }}</p>
@@ -32,8 +29,7 @@ import { useTextSelection } from '@ngxtension/inject-text-selection'; // adjust 
 ``,
 })
 export class TextSelectionDemoComponent {
-  // Initialize the text selection state using the hook
-  selectionState = injectTextSelection();
+  readonly selectionState = injectTextSelection();
 
   constructor() {
     effect(() => {
@@ -44,7 +40,6 @@ export class TextSelectionDemoComponent {
     });
   }
 }
-
 ```
 
 ### API
@@ -56,3 +51,4 @@ Creates reactive signals for text selection.
   - `ranges`: A **computed** signal returning an array of [Range](https://developer.mozilla.org/en-US/docs/Web/API/Range) objects corresponding to the current selection.
   - `rects`: A **computed** signal that maps each Range to its bounding client rect.
   - `selection`: A writable signal representing the current [Selection](https://developer.mozilla.org/en-US/docs/Web/API/Selection) object (or `null` if no selection exists).
+  - `clearSelection`: A convenience method for `window.getSelection().empty()` to clear the selection.
