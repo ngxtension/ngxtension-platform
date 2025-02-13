@@ -29,9 +29,13 @@ export function injectRouteData(): Signal<Data>;
  *
  * @template T - The expected type of the read value.
  * @param {string} key - The name of the route data to retrieve.
+ * @param {RouteDataOptions} options - Optional configuration options for the route data.
  * @returns {Signal} A `Signal` that emits the value of the specified route data, or `null` if it's not present.
  */
-export function injectRouteData<T>(key: keyof Data): Signal<T | null>;
+export function injectRouteData<T>(
+	key: keyof Data,
+	options?: RouteDataOptions<T>,
+): Signal<T | null>;
 
 /**
  * The `injectRouteData` function allows you to access and manipulate route data from the current route.
@@ -39,6 +43,7 @@ export function injectRouteData<T>(key: keyof Data): Signal<T | null>;
  *
  * @template T - The expected type of the read value.
  * @param {RouteDataTransformFn<T>} fn - A transform function that takes the route data object and returns the desired value.
+ * @param {RouteDataOptions} options - Optional configuration options for the route data.
  * @returns {Signal<T>} A `Signal` that emits the transformed value based on the provided custom transform function.
  *
  * @example
@@ -46,6 +51,7 @@ export function injectRouteData<T>(key: keyof Data): Signal<T | null>;
  */
 export function injectRouteData<ReadT>(
 	fn: RouteDataTransformFn<ReadT>,
+	options?: RouteDataOptions<ReadT>,
 ): Signal<ReadT>;
 
 export function injectRouteData<T>(
