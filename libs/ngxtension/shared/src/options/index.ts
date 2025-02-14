@@ -1,3 +1,3 @@
 export * from './default-value';
 export * from './injector';
-export * from './transform';
+export * from './parse';

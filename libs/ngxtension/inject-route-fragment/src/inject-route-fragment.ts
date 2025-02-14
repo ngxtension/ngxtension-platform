@@ -5,7 +5,7 @@ import { assertInjector } from 'ngxtension/assert-injector';
 import {
 	DefaultValueOptions,
 	InjectorOptions,
-	TransformOptions,
+	ParseOptions,
 } from 'ngxtension/shared';
 import { map } from 'rxjs';
 
@@ -14,12 +14,21 @@ import { map } from 'rxjs';
  *
  * @template T - The expected type of the read value.
  */
-export type InjectRouteFragmentOptions<T = unknown> = TransformOptions<
+export type InjectRouteFragmentOptions<T = unknown> = ParseOptions<
 	T,
 	string | null
 > &
 	InjectorOptions &
-	DefaultValueOptions<T>;
+	DefaultValueOptions<T> & {
+		/**
+		 * A transformation function to convert the written value to the expected read value.
+		 *
+		 * @deprecated Use `parse` as a replacement.
+		 * @param v - The value to transform.
+		 * @returns The transformed value.
+		 */
+		transform?: (v: string | null) => T;
+	};
 
 /**
  * The `injectRouteFragment` function allows you to access and transform url fragment from the current route.
@@ -47,6 +56,9 @@ export function injectRouteFragment<T>(
 		const getFragment = (fragment: string | null) => {
 			if (fragment === null && options?.defaultValue) {
 				return options.defaultValue;
+			}
+			if (options?.parse) {
+				return options.parse(fragment);
 			}
 			if (options?.transform) {
 				return options.transform(fragment);

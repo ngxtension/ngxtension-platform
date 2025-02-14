@@ -93,9 +93,9 @@ export class UserProfileComponent {
 	template: ``,
 })
 export class PostComponent {
-	postId = injectParams('id', { transform: numberAttribute });
+	postId = injectParams('id', { parse: numberAttribute });
 	postIdDefault = injectParams('id', {
-		transform: numberAttribute,
+		parse: numberAttribute,
 		defaultValue: 69,
 	});
 }

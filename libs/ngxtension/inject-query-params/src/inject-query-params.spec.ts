@@ -19,16 +19,16 @@ export class SearchComponent {
 	private _injector = inject(Injector);
 
 	queryParams = injectQueryParams();
-	idParam = injectQueryParams('id', { transform: numberAttribute });
+	idParam = injectQueryParams('id', { parse: numberAttribute });
 	idParamCustomInjector?: Signal<number | null>;
 	idParamDefault = injectQueryParams('id', {
-		transform: numberAttribute,
+		parse: numberAttribute,
 		defaultValue: 420,
 	});
-	idParams = injectQueryParams.array('id', { transform: numberAttribute });
+	idParams = injectQueryParams.array('id', { parse: numberAttribute });
 	idParamsCustomInjector?: Signal<number[] | null>;
 	idParamsDefault = injectQueryParams.array('id', {
-		transform: numberAttribute,
+		parse: numberAttribute,
 		defaultValue: [420, 69],
 	});
 	searchParam = injectQueryParams('query');
@@ -42,11 +42,11 @@ export class SearchComponent {
 
 	constructor() {
 		this.idParamCustomInjector = injectQueryParams('id', {
-			transform: numberAttribute,
+			parse: numberAttribute,
 			injector: this._injector,
 		});
 		this.idParamsCustomInjector = injectQueryParams.array('id', {
-			transform: numberAttribute,
+			parse: numberAttribute,
 			injector: this._injector,
 		});
 		this.searchParamsCustomInjector = injectQueryParams.array('query', {
@@ -64,7 +64,7 @@ describe(injectQueryParams.name, () => {
 		});
 	});
 
-	it('returns a signal everytime the query params change based on the param passed to the fn and transform fn', async () => {
+	it('returns a signal everytime the query params change based on the param passed to the fn and parse fn', async () => {
 		const harness = await RouterTestingHarness.create();
 
 		const instance = await harness.navigateByUrl(
@@ -158,7 +158,7 @@ describe(injectQueryParams.name, () => {
 		expect(instance.paramKeysList()).toEqual(['query']);
 	});
 
-	it('returns a signal for query parameters with no transform', async () => {
+	it('returns a signal for query parameters with no parse', async () => {
 		const harness = await RouterTestingHarness.create();
 		const instance = await harness.navigateByUrl(
 			'/search?query=Angular',
@@ -181,7 +181,7 @@ describe(injectQueryParams.array.name, () => {
 		});
 	});
 
-	it('returns a signal everytime the query params change based on the param passed to the fn and transform fn', async () => {
+	it('returns a signal everytime the query params change based on the param passed to the fn and parse fn', async () => {
 		const harness = await RouterTestingHarness.create();
 
 		const instance = await harness.navigateByUrl(
@@ -330,7 +330,7 @@ describe(injectQueryParams.array.name, () => {
 		expect(instance.searchParams()).toEqual(['Hello World', 'Hi There']);
 	});
 
-	it('returns a signal for array query parameters with no transform', async () => {
+	it('returns a signal for array query parameters with no parse', async () => {
 		const harness = await RouterTestingHarness.create();
 		const instance = await harness.navigateByUrl(
 			'/search?query=Angular&query=React',

@@ -16,7 +16,9 @@ import { injectParams } from 'ngxtension/inject-params';
 
 ## Usage
 
-`injectParams` when is called, returns a signal with the current route params.
+### Get all route params
+
+`injectParams` returns a signal with the current route params.
 
 ```ts
 @Component({
@@ -28,12 +30,25 @@ class TestComponent {
 }
 ```
 
+#### Transform all params
+
+Or, if we want to transform the params, we can pass a function to `injectParams`.
+
+```ts
+@Component()
+class TestComponent {
+	paramsKeys = injectParams((params) => Object.keys(params)); // returns a signal with the keys of the params
+}
+```
+
+### Specific param
+
 If we want to get the value for a specific param, we can pass the name of the param to `injectParams`.
 
 ```ts
 @Component({
 	template: `
-		@if (user()) {
+		@if (user(); as user) {
 			<div>{{ user.name }}</div>
 		} @else {
 			<div>No user!</div>
@@ -50,11 +65,52 @@ class TestComponent {
 }
 ```
 
-Or, if we want to transform the params, we can pass a function to `injectParams`.
+#### Transform
+
+If you want to additional parse the specific param, we can pass a `parse` function.
 
 ```ts
-@Component()
+@Component({
+	template: `
+		@if (user(); as user) {
+			<div>{{ user.name }}</div>
+		} @else {
+			<div>No user!</div>
+		}
+	`,
+})
 class TestComponent {
-	paramsKeys = injectParams((params) => Object.keys(params)); // returns a signal with the keys of the params
+	userId = injectParams('id', { parse: numberAttribute }); // returns a signal with the value of the id param parsed to a number
+
+	user = derivedFrom(
+		[this.userId],
+		switchMap((id) => this.userService.getUser(id).pipe(startWith(null))),
+	);
+}
+```
+
+#### Default value
+
+If we want to use a default value if there is no value, we can pass a `defaultValue`.
+
+```ts
+@Component({
+	template: `
+		@if (angular(); as angular) {
+			<div>{{ angular.name }}</div>
+		} @else {
+			<div>No Angular version found!</div>
+		}
+	`,
+})
+class TestComponent {
+	angularVersion = injectParams('version', { defaultValue: '19' }); // returns a signal with the value of the id param parsed to a number
+
+	angular = derivedFrom(
+		[this.angularVersion],
+		switchMap((version) =>
+			this.angularService.getAngular(version).pipe(startWith(null)),
+		),
+	);
 }
 ```

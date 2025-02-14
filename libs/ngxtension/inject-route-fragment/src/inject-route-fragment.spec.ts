@@ -78,7 +78,7 @@ describe(injectRouteFragment.name, () => {
 		expect(instance.numberFragmentDefaultValue()).toEqual(100000000);
 	});
 
-	it('returns right signals and values for different transformers', async () => {
+	it('returns right signals and values for different parsers', async () => {
 		const instance = await harness.navigateByUrl('test', TestComponent);
 
 		expect(instance.fragment()).toEqual(null);
@@ -118,17 +118,17 @@ describe(injectRouteFragment.name, () => {
 export class TestComponent implements OnInit {
 	private _injector = inject(Injector);
 	fragment = injectRouteFragment();
-	numberFragment = injectRouteFragment({ transform: numberAttribute });
+	numberFragment = injectRouteFragment({ parse: numberAttribute });
 	numberFragmentDefaultValue = injectRouteFragment({
-		transform: numberAttribute,
+		parse: numberAttribute,
 		defaultValue: 100,
 	});
-	booleanFragment = injectRouteFragment({ transform: booleanAttribute });
+	booleanFragment = injectRouteFragment({ parse: booleanAttribute });
 	fragmentDefaultValue = injectRouteFragment({
 		defaultValue: 'default-fragment',
 	});
 	isFragmentAvailable = injectRouteFragment({
-		transform: (fragment) => !!fragment,
+		parse: (fragment) => !!fragment,
 	});
 	fragmentFromCustomInjector: Signal<string | null> | null = null;
 	fragmentDefaultValueFromCustomInjector: Signal<string | null> | null = null;

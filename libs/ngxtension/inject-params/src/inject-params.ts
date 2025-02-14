@@ -5,7 +5,7 @@ import { assertInjector } from 'ngxtension/assert-injector';
 import {
 	DefaultValueOptions,
 	InjectorOptions,
-	TransformOptions,
+	ParseOptions,
 } from 'ngxtension/shared';
 import { map } from 'rxjs';
 
@@ -18,7 +18,7 @@ type ParamsTransformFn<ReadT> = (params: Params) => ReadT;
  * @template WriteT - The type of the value to be written.
  * @template DefaultValueT - The type of the default value.
  */
-export type ParamsOptions<ReadT, WriteT, DefaultValueT> = TransformOptions<
+export type ParamsOptions<ReadT, WriteT, DefaultValueT> = ParseOptions<
 	ReadT,
 	WriteT
 > &
@@ -91,7 +91,7 @@ export function injectParams<T>(
 	return assertInjector(injectParams, options?.injector, () => {
 		const route = inject(ActivatedRoute);
 		const params = route.snapshot.params;
-		const { transform, defaultValue } = options;
+		const { parse, defaultValue } = options;
 
 		if (!keyOrParamsTransform) {
 			return toSignal(route.params, { initialValue: params });
@@ -110,7 +110,7 @@ export function injectParams<T>(
 				return defaultValue ?? null;
 			}
 
-			return transform ? transform(param) : param;
+			return parse ? parse(param) : param;
 		};
 
 		return toSignal(route.params.pipe(map(getParam)), {
