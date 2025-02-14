@@ -67,7 +67,7 @@ class TestComponent {
 
 #### Transform
 
-If you want to additional parse the specific param, we can pass a `parse` function.
+If you want to parse the specific param, you can pass a `parse` function.
 
 ```ts
 @Component({
