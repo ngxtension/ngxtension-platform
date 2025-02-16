@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Provider, inject } from '@angular/core';
+import { Component, Provider, effect, inject } from '@angular/core';
 import { TestBed, fakeAsync, flush } from '@angular/core/testing';
 import {
 	FormControl,
@@ -208,6 +208,80 @@ describe('NgxControlValueAccessor', () => {
 		expect(fixture.debugElement.injector.get(NgControl)).toEqual(
 			'some mock control directive',
 		);
+	});
+
+	describe('accessing properties should be outside a reactive context', () => {
+		it('value', () => {
+			const { cva, fixture } = render(`<custom-input />`);
+
+			let effectCallCount = 0;
+
+			TestBed.runInInjectionContext(() => {
+				effect(() => {
+					effectCallCount++;
+
+					// accessing the value property should not register the internal signal
+					cva.value;
+				});
+			});
+
+			// initial effect execution
+			fixture.detectChanges();
+			expect(effectCallCount).toEqual(1);
+
+			// setting the value should not trigger the effect
+			cva.value = '123';
+			fixture.detectChanges();
+			expect(effectCallCount).toEqual(1);
+		});
+
+		it('disabled', () => {
+			const { cva, fixture } = render(`<custom-input />`);
+
+			let effectCallCount = 0;
+
+			TestBed.runInInjectionContext(() => {
+				effect(() => {
+					effectCallCount++;
+
+					// accessing the disabled property should not register the internal signal
+					cva.disabled;
+				});
+			});
+
+			// initial effect execution
+			fixture.detectChanges();
+			expect(effectCallCount).toEqual(1);
+
+			// setting the value should not trigger the effect
+			cva.disabled = !cva.disabled;
+			fixture.detectChanges();
+			expect(effectCallCount).toEqual(1);
+		});
+
+		it('compareTo', () => {
+			const { cva, fixture } = render(`<custom-input />`);
+
+			let effectCallCount = 0;
+
+			TestBed.runInInjectionContext(() => {
+				effect(() => {
+					effectCallCount++;
+
+					// accessing the compareTo property should not register the internal signal
+					cva.compareTo;
+				});
+			});
+
+			// initial effect execution
+			fixture.detectChanges();
+			expect(effectCallCount).toEqual(1);
+
+			// setting the value should not trigger the effect
+			cva.compareTo = () => true;
+			fixture.detectChanges();
+			expect(effectCallCount).toEqual(1);
+		});
 	});
 
 	describe('with a NgControl', () => {
