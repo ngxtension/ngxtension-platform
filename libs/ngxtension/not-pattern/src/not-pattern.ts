@@ -13,18 +13,18 @@ import {
  * @usageNotes
  *
  * ```typescript
- * const control = new FormControl('abc', patternNot(/[0-9]/));
+ * const control = new FormControl('abc', notPattern(/[0-9]/));
  * console.log(control.errors); // null - valid because 'abc' does not contain numbers
  *
- * const control2 = new FormControl('abc123', patternNot(/[0-9]/));
- * console.log(control2.errors); // {patternNot: {requiredPattern: '/[0-9]/', actual: 'abc123'}} - invalid because it contains numbers
+ * const control2 = new FormControl('abc123', notPattern(/[0-9]/));
+ * console.log(control2.errors); // {notPattern: {requiredPattern: '/[0-9]/', actual: 'abc123'}} - invalid because it contains numbers
  * ```
  *
  * @param pattern A regular expression or string to match against
- * @returns A validator function that returns an error map with the `patternNot` property
+ * @returns A validator function that returns an error map with the `notPattern` property
  * if the validation check fails, otherwise `null`.
  */
-export function patternNot(pattern: string | RegExp): ValidatorFn {
+export function notPattern(pattern: string | RegExp): ValidatorFn {
 	if (!pattern) return Validators.nullValidator;
 	let regex: RegExp;
 	let regexStr: string;
@@ -49,7 +49,7 @@ export function patternNot(pattern: string | RegExp): ValidatorFn {
 		const value: string = control.value;
 		console.log('value', value, 'regex', regex);
 		return regex.test(value)
-			? { patternNot: { disallowedPattern: regexStr, actualValue: value } }
+			? { notPattern: { disallowedPattern: regexStr, actualValue: value } }
 			: null;
 	};
 }

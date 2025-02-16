@@ -1,37 +1,38 @@
 ---
-title: patternNot
+title: notPattern
 description: A validator function that ensures form control values do NOT match a specified pattern
-entryPoint: ngxtension/pattern-not
+entryPoint: ngxtension/not-pattern
 badge: stable
 ---
 
 ## Import
 
 ```typescript
-import { patternNot } from 'ngxtension/pattern-not';
+import { notPattern } from 'ngxtension/not-pattern';
 ```
 
 ## Usage
 
-Use `patternNot` to validate that a form control's value does NOT match a specific pattern. This is the opposite of Angular's built-in pattern validator.
+Use `notPattern` to validate that a form control's value does NOT match a specific pattern. This is the opposite of Angular's built-in pattern validator.
 
 ```typescript
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { patternNot } from 'ngxtension/pattern-not';
+import { notPattern } from 'ngxtension/not-pattern';
+n;
 
 @Component({
 	selector: 'my-app',
 	imports: [CommonModule, ReactiveFormsModule],
 	template: `
 		<input [formControl]="noNumbersControl" />
-		@if (noNumbersControl.errors?.['patternNot']) {
+		@if (noNumbersControl.errors?.['notPattern']) {
 			<div>Numbers are not allowed!</div>
 		}
 	`,
 })
 export class App {
 	// Will be invalid if the input contains any numbers
-	noNumbersControl = new FormControl('', patternNot(/[0-9]/));
+	noNumbersControl = new FormControl('', notPattern(/[0-9]/));
 }
 ```
 
@@ -39,17 +40,17 @@ export class App {
 
 ```typescript
 // Prevent numbers in text
-const noNumbersControl = new FormControl('abc', patternNot(/[0-9]/));
+const noNumbersControl = new FormControl('abc', notPattern(/[0-9]/));
 console.log(noNumbersControl.errors); // null - valid because 'abc' has no numbers
 
-const withNumbersControl = new FormControl('abc123', patternNot(/[0-9]/));
+const withNumbersControl = new FormControl('abc123', notPattern(/[0-9]/));
 console.log(withNumbersControl.errors);
-// {patternNot: {disallowedPattern: '/[0-9]/', actualValue: 'abc123'}}
+// {notPattern: {disallowedPattern: '/[0-9]/', actualValue: 'abc123'}}
 
 // Can also use string patterns
 const noSpecialCharsControl = new FormControl(
 	'hello',
-	patternNot('[!@#$%^&*(),.?":{}|<>]'),
+	notPattern('[!@#$%^&*(),.?":{}|<>]'),
 );
 ```
 
@@ -65,7 +66,7 @@ When validation fails, the validator returns an error object with this structure
 
 ```typescript
 {
-  patternNot: {
+  notPattern: {
     disallowedPattern: string, // The string representation of the pattern
     actualValue: string        // The current value that matched the pattern
   }
