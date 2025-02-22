@@ -8,6 +8,7 @@ import {
 import { TestBed } from '@angular/core/testing';
 import {
 	FormControl,
+	FormGroup,
 	FormGroupDirective,
 	NgForm,
 	Validators,
@@ -160,6 +161,91 @@ describe('NgxControlError', () => {
 				instance.control$.set(new FormControl(''));
 				TestBed.flushEffects();
 
+				expect(instance.hasError$()).toBe(false);
+			}),
+		);
+
+		it(
+			'should support key as a string (one level) for nested controls',
+			unitTest(() => {
+				const instance = new NgxControlError();
+				const form = new FormGroup({
+					foo: new FormControl('', Validators.required),
+				});
+
+				instance.track$.set('required');
+				instance.control$.set(form);
+				instance.key$.set('foo');
+				instance.errorStateMatcher$.set(() => of(true));
+				TestBed.flushEffects();
+				expect(instance.hasError$()).toBe(true);
+
+				form.controls.foo.setValue('bar');
+				TestBed.flushEffects();
+				expect(instance.hasError$()).toBe(true);
+			}),
+		);
+
+		it('should support key as a string (two levels) for nested controls', () => {
+			const instance = new NgxControlError();
+			const form = new FormGroup({
+				foo: new FormGroup({
+					bar: new FormControl('', Validators.required),
+				}),
+			});
+
+			instance.control$.set(form);
+			instance.key$.set('foo.bar');
+			instance.track$.set('required');
+			instance.errorStateMatcher$.set(() => of(true));
+			TestBed.flushEffects();
+			expect(instance.hasError$()).toBe(true);
+
+			form.controls.foo.controls.bar.setValue('baz');
+			TestBed.flushEffects();
+			expect(instance.hasError$()).toBe(false);
+		});
+
+		it(
+			'should support key as an array (one level) for nested controls',
+			unitTest(() => {
+				const instance = new NgxControlError();
+				const form = new FormGroup({
+					foo: new FormControl('', Validators.required),
+				});
+
+				instance.control$.set(form);
+				instance.key$.set(['foo']);
+				instance.track$.set('required');
+				instance.errorStateMatcher$.set(() => of(true));
+				TestBed.flushEffects();
+				expect(instance.hasError$()).toBe(false);
+
+				form.controls.foo.setValue('bar');
+				TestBed.flushEffects();
+				expect(instance.hasError$()).toBe(false);
+			}),
+		);
+
+		it(
+			'should support key as an array (two levels) for nested controls',
+			unitTest(() => {
+				const instance = new NgxControlError();
+				const form = new FormGroup({
+					foo: new FormGroup({
+						bar: new FormControl('', Validators.required),
+					}),
+				});
+
+				instance.control$.set(form);
+				instance.key$.set(['foo', 'bar']);
+				instance.track$.set('required');
+				instance.errorStateMatcher$.set(() => of(true));
+				TestBed.flushEffects();
+				expect(instance.hasError$()).toBe(false);
+
+				form.controls.foo.controls.bar.setValue('baz');
+				TestBed.flushEffects();
 				expect(instance.hasError$()).toBe(false);
 			}),
 		);
