@@ -36,6 +36,11 @@
 			"factory": "./src/generators/convert-to-sfc/generator",
 			"schema": "./src/generators/convert-to-sfc/schema.json",
 			"description": "libs/plugin/src/generators/convert-to-sfc/ generator"
+		},
+		"convert-host-binding": {
+			"factory": "./src/generators/convert-host-binding/generator",
+			"schema": "./src/generators/convert-host-binding/schema.json",
+			"description": "libs/plugin/src/generators/convert-host-binding/ generator"
 		}
 	},
 	"schematics": {
@@ -80,6 +85,11 @@
 			"factory": "./src/generators/convert-to-sfc/compat",
 			"schema": "./src/generators/convert-to-sfc/schema.json",
 			"description": "libs/plugin/src/generators/convert-to-sfc/ generator"
+		},
+		"convert-host-binding": {
+			"factory": "./src/generators/convert-host-binding/compat",
+			"schema": "./src/generators/convert-host-binding/schema.json",
+			"description": "libs/plugin/src/generators/convert-host-binding/ generator"
 		}
 	}
 }
