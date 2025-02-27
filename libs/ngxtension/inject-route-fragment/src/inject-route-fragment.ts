@@ -1,23 +1,34 @@
-import { inject, type Injector, type Signal } from '@angular/core';
+import { inject, type Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { assertInjector } from 'ngxtension/assert-injector';
+import {
+	DefaultValueOptions,
+	InjectorOptions,
+	ParseOptions,
+} from 'ngxtension/shared';
 import { map } from 'rxjs';
 
-export interface InjectRouteFragmentOptions<T = unknown> {
-	/**
-	 * A transformation function.
-	 *
-	 * @param fragment - The fragment value to transform.
-	 * @returns The transformed value.
-	 */
-	transform?: (fragment: string | null) => T;
-
-	/**
-	 * The optional "custom" Injector. If this is not provided, will be retrieved from the current injection context
-	 */
-	injector?: Injector;
-}
+/**
+ * The `InjectRouteFragmentOptions` type defines options for configuring the behavior of the `injectRouteFragment` function.
+ *
+ * @template T - The expected type of the read value.
+ */
+export type InjectRouteFragmentOptions<T = unknown> = ParseOptions<
+	T,
+	string | null
+> &
+	InjectorOptions &
+	DefaultValueOptions<T> & {
+		/**
+		 * A transformation function to convert the written value to the expected read value.
+		 *
+		 * @deprecated Use `parse` as a replacement.
+		 * @param v - The value to transform.
+		 * @returns The transformed value.
+		 */
+		transform?: (v: string | null) => T;
+	};
 
 /**
  * The `injectRouteFragment` function allows you to access and transform url fragment from the current route.
@@ -43,7 +54,16 @@ export function injectRouteFragment<T>(
 		const route = inject(ActivatedRoute);
 		const initialRouteFragment = route.snapshot.fragment;
 		const getFragment = (fragment: string | null) => {
-			if (options?.transform) return options.transform(fragment);
+			if (fragment === null && options?.defaultValue) {
+				return options.defaultValue;
+			}
+			if (options?.parse) {
+				return options.parse(fragment);
+			}
+			if (options?.transform) {
+				return options.transform(fragment);
+			}
+
 			return fragment;
 		};
 		const fragment$ = route.fragment.pipe(map(getFragment));

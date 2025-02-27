@@ -137,6 +137,7 @@
 			"ngxtension/signal-history": [
 				"libs/ngxtension/signal-history/src/index.ts"
 			],
+			"ngxtension/shared": ["libs/ngxtension/shared/src/index.ts"],
 			"ngxtension/signal-slice": ["libs/ngxtension/signal-slice/src/index.ts"],
 			"ngxtension/singleton-proxy": [
 				"libs/ngxtension/singleton-proxy/src/index.ts"
