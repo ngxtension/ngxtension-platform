@@ -111,11 +111,11 @@
 			"ngxtension/inject-route-data": [
 				"libs/ngxtension/inject-route-data/src/index.ts"
 			],
-			"ngxtension/inject-text-selection": [
-				"libs/ngxtension/inject-text-selection/src/index.ts"
-			],
 			"ngxtension/inject-route-fragment": [
 				"libs/ngxtension/inject-route-fragment/src/index.ts"
+			],
+			"ngxtension/inject-text-selection": [
+				"libs/ngxtension/inject-text-selection/src/index.ts"
 			],
 			"ngxtension/intl": ["libs/ngxtension/intl/src/index.ts"],
 			"ngxtension/linked-query-param": [
@@ -129,6 +129,7 @@
 			"ngxtension/navigation-end": [
 				"libs/ngxtension/navigation-end/src/index.ts"
 			],
+			"ngxtension/pattern-not": ["libs/ngxtension/pattern-not/src/index.ts"],
 			"ngxtension/poll": ["libs/ngxtension/poll/src/index.ts"],
 			"ngxtension/repeat": ["libs/ngxtension/repeat/src/index.ts"],
 			"ngxtension/repeat-pipe": ["libs/ngxtension/repeat-pipe/src/index.ts"],
