@@ -2,6 +2,7 @@ import {
 	Component,
 	inject,
 	Injector,
+	model,
 	numberAttribute,
 	OnInit,
 	signal,
@@ -107,6 +108,10 @@ export class SearchComponent {
 			defaultValue: 'default',
 		},
 	);
+
+	externalSource = signal<string | null>(null);
+	externalModelWithRequired = model.required<string>();
+	paramWithSource = linkedQueryParam('test', { source: this.externalSource });
 }
 
 describe(linkedQueryParam.name, () => {
@@ -512,6 +517,32 @@ describe(linkedQueryParam.name, () => {
 		expect(instance.searchQuery()).toBe('baz');
 		expect(instance.route.snapshot.queryParams['searchQuery']).toBe('baz');
 		expect(instance.route.snapshot.fragment).toBe('foo3');
+	}));
+
+	it('should work with external source signal', fakeAsync(async () => {
+		const harness = await RouterTestingHarness.create();
+		const instance = await harness.navigateByUrl('/search', SearchComponent);
+
+		expect(instance.paramWithSource()).toBe(null);
+		expect(instance.externalSource()).toBe(null);
+
+		instance.paramWithSource.set('test');
+		tick();
+		expect(instance.paramWithSource()).toBe('test');
+		expect(instance.externalSource()).toBe('test');
+		expect(instance.route.snapshot.queryParams['test']).toBe('test');
+
+		instance.externalSource.set('external');
+		tick();
+		expect(instance.paramWithSource()).toBe('external');
+		expect(instance.externalSource()).toBe('external');
+		expect(instance.route.snapshot.queryParams['test']).toBe('external');
+
+		instance.paramWithSource.set(null);
+		tick();
+		expect(instance.paramWithSource()).toBe(null);
+		expect(instance.externalSource()).toBe(null);
+		expect(instance.route.snapshot.queryParams['test']).toBe(undefined);
 	}));
 });
 
