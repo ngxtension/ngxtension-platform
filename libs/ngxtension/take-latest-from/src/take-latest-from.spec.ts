@@ -16,9 +16,11 @@ describe('takeLatestFrom', () => {
 			shareReplay({ bufferSize: 1, refCount: false }),
 		);
 
-		source.pipe(takeLatestFrom(() => [obs1, obs2])).subscribe((value) => {
-			result = value;
-		});
+		const sub = source
+			.pipe(takeLatestFrom(() => [obs1, obs2]))
+			.subscribe((value) => {
+				result = value;
+			});
 
 		expect(result).toEqual(undefined);
 
@@ -32,6 +34,8 @@ describe('takeLatestFrom', () => {
 
 		source.next('c');
 		expect(result).toEqual(['c', 'x', 'y']);
+
+		sub.unsubscribe();
 	}));
 
 	it('should emit when source emitted and hot observables have a value', fakeAsync(() => {
@@ -41,9 +45,11 @@ describe('takeLatestFrom', () => {
 		const obs1 = new BehaviorSubject('x');
 		const obs2 = new BehaviorSubject('y');
 
-		source.pipe(takeLatestFrom(() => [obs1, obs2])).subscribe((value) => {
-			result = value;
-		});
+		const sub = source
+			.pipe(takeLatestFrom(() => [obs1, obs2]))
+			.subscribe((value) => {
+				result = value;
+			});
 
 		expect(result).toEqual(undefined);
 
@@ -56,6 +62,8 @@ describe('takeLatestFrom', () => {
 
 		source.next('c');
 		expect(result).toEqual(['c', 'x', 'y']);
+
+		sub.unsubscribe();
 	}));
 
 	it('should emit when source emitted and cold observables emit later', fakeAsync(() => {
@@ -65,9 +73,11 @@ describe('takeLatestFrom', () => {
 		const obs1 = timer(100).pipe(map(() => 'x'));
 		const obs2 = timer(200).pipe(map(() => 'y'));
 
-		source.pipe(takeLatestFrom(() => [obs1, obs2])).subscribe((value) => {
-			result = value;
-		});
+		const sub = source
+			.pipe(takeLatestFrom(() => [obs1, obs2]))
+			.subscribe((value) => {
+				result = value;
+			});
 
 		expect(result).toEqual(undefined);
 
@@ -86,5 +96,33 @@ describe('takeLatestFrom', () => {
 		source.next('c');
 		tick(200);
 		expect(result).toEqual(['c', 'x', 'y']);
+
+		sub.unsubscribe();
+	}));
+
+	it('should wait for the next value of provided cold observable when source emitted after that cold observable', fakeAsync(() => {
+		let result: string[] | undefined;
+
+		const source = new Subject<string>();
+		const obs1 = timer(100, 500).pipe(map(() => 'x'));
+		const obs2 = timer(200, 500).pipe(map(() => 'y'));
+
+		const sub = source
+			.pipe(takeLatestFrom(() => [obs1, obs2]))
+			.subscribe((value) => {
+				result = value;
+			});
+
+		expect(result).toEqual(undefined);
+		tick(200);
+		expect(result).toEqual(undefined);
+
+		source.next('a');
+		expect(result).toEqual(undefined);
+
+		tick(700);
+		expect(result).toEqual(['a', 'x', 'y']);
+
+		sub.unsubscribe();
 	}));
 });

@@ -20,8 +20,12 @@ src$.pipe(whitLatestFrom(data$)).subscribe();
 
 Cases when `withLatestFrom()` will not emit when `src$` emits:
 
-- if `data$` is a cold observable and emitted before `src$` emitted - the next time `withLatestFrom()` will emit is when `data$` emits;
-- if `data$` emitted after `src$` emitted (`data$` can be hot or cold) - the next time `withLatestFrom()` will emit is when `src$` emits.
+- if `data$` is a cold observable and emitted before `src$` emitted;
+- if `data$` emitted after `src$` emitted (`data$` can be hot or cold).
+
+In the first case, `withLatestFrom()` will wait for the next `data$` value to emit, and `takeLatestFrom()` will do the same.
+
+In the second case, `withLatestFrom()` will wait for the next `src$` value to emit, and `takeLatestFrom()` will emit at the moment when `data$` emits its value.
 
 ## Usage
 
