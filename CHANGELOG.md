@@ -1,3 +1,29 @@
+## 4.4.0 (2025-03-11)
+
+### Features
+
+- unify inject route utilities ([#450](https://github.com/ngxtension/ngxtension-platform/pull/450))
+- add host binding migration ([#528](https://github.com/ngxtension/ngxtension-platform/pull/528))
+- **inject-text-selection:** added the function, docs, tests and created sample app ([#559](https://github.com/ngxtension/ngxtension-platform/pull/559))
+
+### Bug Fixes
+
+- **docs:** correct typo in retryOnError field ([#534](https://github.com/ngxtension/ngxtension-platform/pull/534))
+- **ngx-control-value-accessor:** accessing properties is outside of the reactive context ([#555](https://github.com/ngxtension/ngxtension-platform/pull/555))
+
+### Documentation
+
+- add szheleshchenko as a contributor for doc ([#560](https://github.com/ngxtension/ngxtension-platform/pull/560))
+- Add missing entry in contributors ([#568](https://github.com/ngxtension/ngxtension-platform/pull/568))
+
+### ❤️  Thank You
+
+- Dominik @Dafnik
+- Fiorelo Zere @fiorelozere
+- Paweł Ostromecki @ostromeckyp
+- Robby Rabbitman @RobbyRabbitman
+- Sergei Zheleshchenko @szheleshchenko
+
 ## 4.3.2 (2025-01-31)
 
 This was a version bump only, there were no code changes.
