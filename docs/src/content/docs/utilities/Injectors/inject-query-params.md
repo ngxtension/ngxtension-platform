@@ -62,7 +62,7 @@ import { injectQueryParams } from 'ngxtension/inject-query-params';
 	template: `
 		Search results for: {{ searchParam() }}
 
-		@for (user of filteredUsers()) {
+		@for (user of filteredUsers(); track user.id) {
 			<div>{{ user.name }}</div>
 		} @empty {
 			<div>No users!</div>
@@ -79,7 +79,7 @@ class TestComponent {
 }
 ```
 
-If we want to additional transform the value into any shape, we can pass a `transform` function.
+If we want to additional parse the value into any shape, we can pass a `parse` function.
 
 ```ts
 // Example url: /users?pageNumber=1
@@ -92,13 +92,13 @@ import { injectQueryParams } from 'ngxtension/inject-query-params';
 	`,
 })
 class TestComponent {
-	pageNumber = injectQueryParams('pageNumber', { transform: numberAttribute });
+	pageNumber = injectQueryParams('pageNumber', { parse: numberAttribute });
 
 	multipliedNumber = computed(() => this.pageNumber() * 2);
 }
 ```
 
-If we want to use a default value if there is no value, we can pass a `initialValue`.
+If we want to use a default value if there is no value, we can pass a `defaultValue`.
 
 ```ts
 // Example urls producing the same output: "/users?search=nartc", "/users"
@@ -109,7 +109,7 @@ import { injectQueryParams } from 'ngxtension/inject-query-params';
 	template: `
 		Search results for: {{ searchParam() }}
 
-		@for (user of filteredUsers()) {
+		@for (user of filteredUsers(); track user.id) {
 			<div>{{ user.name }}</div>
 		} @empty {
 			<div>No users!</div>
@@ -118,7 +118,7 @@ import { injectQueryParams } from 'ngxtension/inject-query-params';
 })
 class TestComponent {
 	// returns a signal with the value of the search query param or '' if not provided.
-	searchParam = injectQueryParams('search', { initialValue: 'nartc' });
+	searchParam = injectQueryParams('search', { defaultValue: 'nartc' });
 
 	filteredUsers = derivedAsync(
 		() => this.userService.getUsers(this.searchParam()),
@@ -179,9 +179,9 @@ import { injectQueryParams } from 'ngxtension/inject-query-params';
 })
 class TestComponent {
 	productService = inject(ProductService);
-	// returns a signal with the array values of the product query param and transform each value
+	// returns a signal with the array values of the product query param and parse each value
 	productIds = injectQueryParams.array('productIds', {
-		transform: numberAttribute,
+		parse: numberAttribute,
 	});
 
 	products = derivedAsync(
@@ -191,7 +191,7 @@ class TestComponent {
 }
 ```
 
-If we want to use a default value if there are no values, we can pass a `initialValue`.
+If we want to use a default value if there are no values, we can pass a `defaultValue`.
 
 ```ts
 // Example urls producing the same output: "/search?products=Angular", "/search"
@@ -213,7 +213,7 @@ class TestComponent {
 	productService = inject(ProductService);
 	// returns a signal with the array values of the product query param or 'Angular' if the user provides none
 	productNames = injectQueryParams.array('products', {
-		initialValue: ['Angular'],
+		defaultValue: ['Angular'],
 	});
 
 	products = derivedAsync(

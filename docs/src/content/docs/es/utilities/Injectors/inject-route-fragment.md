@@ -31,7 +31,7 @@ class TestComponent implements OnInit {
 
 	ngOnInit() {
 		const isFragmentAvailable: Signal<boolean> = injectRouteFragment({
-			transform: (fragment) => !!fragment,
+			parse: (fragment) => !!fragment,
 			injector: this.injector,
 		});
 	}
