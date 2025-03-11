@@ -1,3 +1,18 @@
+## 4.5.0 (2025-03-11)
+
+### Features
+
+- introduce takeLatestFrom() ([#571](https://github.com/ngxtension/ngxtension-platform/pull/571))
+
+### Refactor
+
+- Handle getting value from disabled form controls in `form-events` util ([#499](https://github.com/ngxtension/ngxtension-platform/pull/499))
+
+### ❤️ Thank You
+
+- Evgeniy OZ @e-oz
+- michael-small @michael-small
+
 ## 4.4.0 (2025-03-11)
 
 ### Features
