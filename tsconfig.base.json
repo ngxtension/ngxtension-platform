@@ -111,11 +111,11 @@
 			"ngxtension/inject-route-data": [
 				"libs/ngxtension/inject-route-data/src/index.ts"
 			],
-			"ngxtension/inject-text-selection": [
-				"libs/ngxtension/inject-text-selection/src/index.ts"
-			],
 			"ngxtension/inject-route-fragment": [
 				"libs/ngxtension/inject-route-fragment/src/index.ts"
+			],
+			"ngxtension/inject-text-selection": [
+				"libs/ngxtension/inject-text-selection/src/index.ts"
 			],
 			"ngxtension/intl": ["libs/ngxtension/intl/src/index.ts"],
 			"ngxtension/linked-query-param": [
@@ -134,10 +134,10 @@
 			"ngxtension/repeat-pipe": ["libs/ngxtension/repeat-pipe/src/index.ts"],
 			"ngxtension/resize": ["libs/ngxtension/resize/src/index.ts"],
 			"ngxtension/rx-effect": ["libs/ngxtension/rx-effect/src/index.ts"],
+			"ngxtension/shared": ["libs/ngxtension/shared/src/index.ts"],
 			"ngxtension/signal-history": [
 				"libs/ngxtension/signal-history/src/index.ts"
 			],
-			"ngxtension/shared": ["libs/ngxtension/shared/src/index.ts"],
 			"ngxtension/signal-slice": ["libs/ngxtension/signal-slice/src/index.ts"],
 			"ngxtension/singleton-proxy": [
 				"libs/ngxtension/singleton-proxy/src/index.ts"
