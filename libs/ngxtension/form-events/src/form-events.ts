@@ -99,8 +99,8 @@ export function allEventsObservable<T>(
 	return defer(() =>
 		combineLatest([
 			valueEvents$(form).pipe(
-				startWith(form.value),
-				map((value) => (isValueEvent(value) ? value.value : value)),
+				startWith(form.getRawValue()),
+				map(() => form.getRawValue()),
 				distinctUntilChanged(
 					(previous, current) =>
 						JSON.stringify(previous) === JSON.stringify(current),
@@ -161,7 +161,7 @@ export function allEventsSignal<T>(
 ): Signal<FormEventData<T>> {
 	return toSignal(allEventsObservable(form), {
 		initialValue: {
-			value: form.value,
+			value: form.getRawValue(),
 			status: form.status,
 			pristine: form.pristine,
 			touched: form.touched,
