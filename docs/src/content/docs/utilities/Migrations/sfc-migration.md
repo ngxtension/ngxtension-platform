@@ -26,25 +26,25 @@ In order to change the maximum line length, you can pass the `--max-inline-templ
 In order to run the schematics for all the project in the app you have to run the following script:
 
 ```bash
-ng g ngxtension:convert-to-sfc
+ng g ngxtension-plugin:convert-to-sfc
 ```
 
 If you want to specify the project name you can pass the `--project` param.
 
 ```bash
-ng g ngxtension:convert-to-sfc --project=<project-name>
+ng g ngxtension-plugin:convert-to-sfc --project=<project-name>
 ```
 
 If you want to run the schematic for a specific component or directive you can pass the `--path` param.
 
 ```bash
-ng g ngxtension:convert-to-sfc --path=<path-to-ts-file>
+ng g ngxtension-plugin:convert-to-sfc --path=<path-to-ts-file>
 ```
 
 If you want to change the maximum line length for the template or styles you can pass the `--max-inline-template-lines` param or `--max-inline-style-lines` param.
 
 ```bash
-ng g ngxtension:convert-to-sfc --max-inline-template-lines=100 --max-inline-style-lines=100
+ng g ngxtension-plugin:convert-to-sfc --max-inline-template-lines=100 --max-inline-style-lines=100
 ```
 
 ### Usage with Nx
@@ -54,5 +54,5 @@ To use the schematics on a Nx monorepo you just swap `ng` with `nx`
 Example:
 
 ```bash
-nx g ngxtension:convert-to-sfc --project=<project-name>
+nx g ngxtension-plugin:convert-to-sfc --project=<project-name>
 ```

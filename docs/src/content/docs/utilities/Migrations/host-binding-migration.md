@@ -69,19 +69,19 @@ export class CustomSlider {
 In order to run the schematics for all the project in the app you have to run the following script:
 
 ```bash
-ng g ngxtension:convert-host-binding
+ng g ngxtension-plugin:convert-host-binding
 ```
 
 If you want to specify the project name you can pass the `--project` param.
 
 ```bash
-ng g ngxtension:convert-host-binding --project=<project-name>
+ng g ngxtension-plugin:convert-host-binding --project=<project-name>
 ```
 
 If you want to run the schematic for a specific component or directive you can pass the `--path` param.
 
 ```bash
-ng g ngxtension:convert-host-binding --path=<path-to-ts-file>
+ng g ngxtension-plugin:convert-host-binding --path=<path-to-ts-file>
 ```
 
 ### Usage with Nx
@@ -91,5 +91,5 @@ To use the schematics on a Nx monorepo you just swap `ng` with `nx`
 Example:
 
 ```bash
-nx g ngxtension:convert-host-binding --project=<project-name>
+nx g ngxtension-plugin:convert-host-binding --project=<project-name>
 ```

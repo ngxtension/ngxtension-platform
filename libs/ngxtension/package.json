@@ -1,7 +1,7 @@
 {
 	"name": "ngxtension",
 	"description": "Utilities library for Angular",
-	"version": "0.0.0",
+	"version": "0.0.0-replace",
 	"engines": {
 		"node": ">=18"
 	},
@@ -29,19 +29,7 @@
 		}
 	},
 	"dependencies": {
-		"tslib": "^2.3.0",
-		"@angular-eslint/bundled-angular-compiler": "^18.0.1",
-		"@nx/devkit": "^20.0.0",
-		"nx": "^20.0.0",
-		"ts-morph": "^22.0.0"
+		"tslib": "^2.3.0"
 	},
-	"sideEffects": false,
-	"generators": "./plugin/generators.json",
-	"schematics": "./plugin/generators.json",
-	"nx-migrations": {
-		"migrations": "./plugin/migrations.json"
-	},
-	"ng-update": {
-		"migrations": "./plugin/migrations.json"
-	}
+	"sideEffects": false
 }
