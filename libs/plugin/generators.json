@@ -44,11 +44,6 @@
 		}
 	},
 	"schematics": {
-		"ng-add": {
-			"factory": "./src/generators/init/compat",
-			"schema": "./src/generators/init/schema.json",
-			"description": "Init ngxtension"
-		},
 		"init": {
 			"factory": "./src/generators/init/compat",
 			"schema": "./src/generators/init/schema.json",
