@@ -1,3 +1,24 @@
+# 5.0.0 (2025-03-14)
+
+### Features
+
+- notPattern ([#564](https://github.com/ngxtension/ngxtension-platform/pull/564))
+- ⚠️  publish ngxtension-plugin separately ([#581](https://github.com/ngxtension/ngxtension-platform/pull/581))
+
+### Documentation
+
+- add endlacer as a contributor for code ([#576](https://github.com/ngxtension/ngxtension-platform/pull/576))
+- form-events ([#577](https://github.com/ngxtension/ngxtension-platform/pull/577))
+
+### ⚠️  Breaking Changes
+
+- ⚠️  publish ngxtension-plugin separately ([#581](https://github.com/ngxtension/ngxtension-platform/pull/581))
+
+### ❤️ Thank You
+
+- Andreas Dorner @endlacer
+- Chau Tran
+
 ## 4.5.0 (2025-03-11)
 
 ### Features
