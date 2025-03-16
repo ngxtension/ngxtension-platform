@@ -1,12 +1,14 @@
 import { AsyncPipe, JsonPipe } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, Injector, OnInit, Signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import {
+	FormControlStatus,
 	NonNullableFormBuilder,
 	ReactiveFormsModule,
 	Validators,
 } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { firstValueFrom, Observable } from 'rxjs';
 import { allEventsObservable, allEventsSignal } from '../src/form-events';
 
 function flattenJsonPipeFormatting(str: string | null) {
@@ -261,6 +263,69 @@ describe('Form Events', () => {
 		expect(flattenJsonPipeFormatting(signalVals.textContent)).toBe(
 			flattenJsonPipeFormatting(formValue),
 		);
+	});
+});
+
+describe('works in ngOnInit by passing an Injector', () => {
+	@Component({ standalone: true, template: '' })
+	class InInitComponent implements OnInit {
+		injector = inject(Injector);
+		fb = inject(NonNullableFormBuilder);
+		data!: Signal<{
+			value: string;
+			status: FormControlStatus;
+			touched: boolean;
+			pristine: boolean;
+			valid: boolean;
+			invalid: boolean;
+			pending: boolean;
+			dirty: boolean;
+			untouched: boolean;
+		}>;
+		data$!: Observable<{
+			value: string;
+			status: FormControlStatus;
+			touched: boolean;
+			pristine: boolean;
+			valid: boolean;
+			invalid: boolean;
+			pending: boolean;
+			dirty: boolean;
+			untouched: boolean;
+		}>;
+		form = this.fb.control('');
+
+		ngOnInit() {
+			this.data$ = allEventsObservable<string>(this.form);
+			this.data = allEventsSignal<string>(this.form, this.injector);
+		}
+	}
+
+	let component: InInitComponent;
+
+	beforeEach(async () => {
+		const fixture = TestBed.createComponent(InInitComponent);
+		component = fixture.componentInstance;
+	});
+
+	it('should not throw an error', async () => {
+		const expected = {
+			value: '1',
+			status: 'VALID',
+			touched: false,
+			pristine: true,
+			valid: true,
+			invalid: false,
+			pending: false,
+			dirty: false,
+			untouched: true,
+		};
+		component.ngOnInit();
+		component.form.patchValue('1');
+		expect(component.data()).toStrictEqual(expected);
+
+		const result = await firstValueFrom(component.data$);
+		expect(result).toStrictEqual(expected);
 	});
 });
 

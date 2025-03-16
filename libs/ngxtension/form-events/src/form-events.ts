@@ -1,4 +1,4 @@
-import { Signal } from '@angular/core';
+import { Injector, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
 	AbstractControl,
@@ -151,13 +151,16 @@ export function allEventsObservable<T>(
 
 export function allEventsSignal<T>(
 	form: AbstractControl<T>,
+	injector?: Injector,
 ): Signal<FormEventData<T>>;
 export function allEventsSignal<T>(
 	form: AbstractControl,
+	injector?: Injector,
 ): Signal<FormEventData<T>>;
 
 export function allEventsSignal<T>(
 	form: AbstractControl<T>,
+	injector?: Injector,
 ): Signal<FormEventData<T>> {
 	return toSignal(allEventsObservable(form), {
 		initialValue: {
@@ -171,5 +174,6 @@ export function allEventsSignal<T>(
 			dirty: form.dirty,
 			untouched: form.untouched,
 		},
+		injector: injector,
 	});
 }
