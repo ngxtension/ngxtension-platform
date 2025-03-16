@@ -124,6 +124,10 @@ describe(linkedQueryParam.name, () => {
 						path: 'with-preserve-fragment',
 						component: WithPreserveFragmentComponent,
 					},
+					{
+						path: 'with-dynamic-key',
+						component: WithDynamicKeyComponent,
+					},
 				]),
 			],
 		});
@@ -513,6 +517,25 @@ describe(linkedQueryParam.name, () => {
 		expect(instance.route.snapshot.queryParams['searchQuery']).toBe('baz');
 		expect(instance.route.snapshot.fragment).toBe('foo3');
 	}));
+
+	it('should work with dynamic key', fakeAsync(async () => {
+		const harness = await RouterTestingHarness.create();
+		const instance = await harness.navigateByUrl(
+			'/with-dynamic-key',
+			WithDynamicKeyComponent,
+		);
+
+		expect(instance.keySignal()).toBe('dynamicKey');
+		expect(instance.dynamicKeyParam()).toBe(null);
+		expect(instance.route.snapshot.queryParams['dynamicKey']).toBe(undefined);
+
+		instance.keySignal.set('dynamicKey2');
+		tick();
+		expect(instance.dynamicKeyParam()).toBe('dynamicKey2');
+		expect(instance.route.snapshot.queryParams['dynamicKey']).toBe(
+			'dynamicKey2',
+		);
+	}));
 });
 
 @Component({ standalone: true, template: `` })
@@ -550,4 +573,15 @@ export class WithDefaultAndParseComponent {
 		// @ts-expect-error Type 'never' is not assignable to type 'WritableSignal<number>'.
 		this.parseBehaviorWithDefault = signal(1);
 	}
+}
+
+@Component({ standalone: true, template: `` })
+export class WithDynamicKeyComponent {
+	route = inject(ActivatedRoute);
+
+	keySignal = signal('dynamicKey');
+	keyAsFunction = () => 'functionKey';
+
+	dynamicKeyParam = linkedQueryParam(this.keySignal);
+	dynamicKeyAsFunctionParam = linkedQueryParam(() => this.keyAsFunction());
 }
