@@ -239,14 +239,14 @@ export class NgxControlValueAccessor<T = any> implements ControlValueAccessor {
 	protected readonly notifyNgControlOnValueChanges = effect(() => {
 		const value = this.value$();
 
-		untracked(() => {
-			/**
-			 * no-op if THIS value is already _equal_ to the value of the control => we dont need to notify the control.
-			 */
-			if (this.compareTo(this.ngControl?.value, value)) {
-				return;
-			}
+		/**
+		 * no-op if THIS value is already _equal_ to the value of the control => we dont need to notify the control.
+		 */
+		if (this.compareTo(this.ngControl?.value, value)) {
+			return;
+		}
 
+		untracked(() => {
 			this.onChange(value);
 		});
 	});
