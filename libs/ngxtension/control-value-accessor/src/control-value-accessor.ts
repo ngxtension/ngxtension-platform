@@ -1,6 +1,5 @@
 import {
 	Directive,
-	Injector,
 	Input,
 	Output,
 	booleanAttribute,
@@ -195,9 +194,6 @@ export const provideCvaCompareToByProp = <T>(prop: keyof T) =>
 	standalone: true,
 })
 export class NgxControlValueAccessor<T = any> implements ControlValueAccessor {
-	/** @ignore */
-	private readonly injector = inject(Injector);
-
 	/**
 	 * The `NgControl` instance on this host element. If present, this `NgxControlValueAccessor` instance will be its value accessor.
 	 *
