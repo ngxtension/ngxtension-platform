@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, Injector, Signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { ActivatedRouteSnapshot, provideRouter } from '@angular/router';
@@ -28,6 +28,10 @@ describe(injectRouteData.name, () => {
 								const id = route.paramMap.get('id')!;
 								return getEntityDetails(id);
 							},
+							conditionalEmpty: (route: ActivatedRouteSnapshot) => {
+								const id = route.paramMap.get('id')!;
+								return id === 'entity-2' ? getEntityDetails(id) : null;
+							},
 						},
 					},
 				]),
@@ -41,26 +45,40 @@ describe(injectRouteData.name, () => {
 			EntityDetailsComponent,
 		);
 
-		expect(instance.routeData()).toEqual({ details: 'Entity 1 details' });
+		expect(instance.routeData()).toEqual({
+			details: 'Entity 1 details',
+			conditionalEmpty: null,
+		});
+		expect(instance.routeDataKeys()).toEqual(['details', 'conditionalEmpty']);
 		expect(instance.entityDetails()).toEqual('Entity 1 details');
-		expect(instance.routeDataKeys()).toEqual(['details']);
+		expect(instance.entityDetailsCustomInjector()).toEqual('Entity 1 details');
 		expect(instance.emptyRouteData()).toEqual(null);
+		expect(instance.conditionalEmptyWithDefaultRouteData()).toEqual(
+			'Entity default details',
+		);
+		expect(
+			instance.conditionalEmptyWithDefaultRouteDataCustomInjector(),
+		).toEqual('Entity default details');
 
 		await harness.navigateByUrl(
 			'entity/entity-2/details',
 			EntityDetailsComponent,
 		);
 
-		expect(instance.routeData()).toEqual({ details: 'Entity 2 details' });
+		expect(instance.routeData()).toEqual({
+			details: 'Entity 2 details',
+			conditionalEmpty: 'Entity 2 details',
+		});
+		expect(instance.routeDataKeys()).toEqual(['details', 'conditionalEmpty']);
 		expect(instance.entityDetails()).toEqual('Entity 2 details');
-		expect(instance.routeDataKeys()).toEqual(['details']);
+		expect(instance.entityDetailsCustomInjector()).toEqual('Entity 2 details');
 		expect(instance.emptyRouteData()).toEqual(null);
-
-		// await harness.navigateByUrl('/search?query=IsCool!&id=2');
-		//
-		// expect(instance.queryParams()).toEqual({ query: 'IsCool!', id: '2' });
-		// expect(instance.searchParam()).toEqual('IsCool!');
-		// expect(instance.paramKeysList()).toEqual(['query', 'id']);
+		expect(instance.conditionalEmptyWithDefaultRouteData()).toEqual(
+			'Entity 2 details',
+		);
+		expect(
+			instance.conditionalEmptyWithDefaultRouteDataCustomInjector(),
+		).toEqual('Entity 2 details');
 	});
 });
 
@@ -69,8 +87,26 @@ describe(injectRouteData.name, () => {
 	template: ``,
 })
 export class EntityDetailsComponent {
+	private _injector = inject(Injector);
+
 	routeData = injectRouteData();
 	entityDetails = injectRouteData('details');
 	routeDataKeys = injectRouteData((data) => Object.keys(data));
 	emptyRouteData = injectRouteData('empty');
+	conditionalEmptyWithDefaultRouteData = injectRouteData('conditionalEmpty', {
+		defaultValue: 'Entity default details',
+	});
+
+	entityDetailsCustomInjector: Signal<unknown>;
+	conditionalEmptyWithDefaultRouteDataCustomInjector: Signal<string | null>;
+
+	constructor() {
+		this.entityDetailsCustomInjector = injectRouteData('details', {
+			injector: this._injector,
+		});
+		this.conditionalEmptyWithDefaultRouteDataCustomInjector = injectRouteData(
+			'conditionalEmpty',
+			{ defaultValue: 'Entity default details', injector: this._injector },
+		);
+	}
 }

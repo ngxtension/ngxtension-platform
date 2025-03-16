@@ -9,55 +9,26 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ### Automatic
 
-`ngxtension` comes with an initialize schematic/generator for both Angular CLI and [Nx](https://nx.dev)
-
-The schematic/generator adds `ngxtension` as a dependency to the project as well as turning on `skipLibCheck` to ensure
-typings from external libraries do not fail the project's strictness.
-
-#### Angular CLI
-
-```shell title="Adding ngxtension"
-ng add ngxtension
+```shell
+npm install -D ngxtension-plugin
 ```
-
-#### Nx CLI
 
 <Tabs>
-	<TabItem label="npm">
+ <TabItem label="ng">
 
-```shell title="Installing ngxtension"
-npm install ngxtension
+```shell title="Invoking init generator"
+  ng g ngxtension-plugin:init
 ```
 
   </TabItem>
-	<TabItem label="yarn">
+ <TabItem label="nx">
 
-```shell title="Installing ngxtension"
-yarn add ngxtension
-```
-
-  </TabItem>
-	<TabItem label="pnpm">
-
-```shell title="Installing ngxtension"
-pnpm install ngxtension
-```
-
-  </TabItem>
-	<TabItem label="bun">
-
-```shell title="Installing ngxtension"
-bun add ngxtension
+```shell title="Invoking init generator"
+  nx g ngxtension-plugin:init
 ```
 
   </TabItem>
 </Tabs>
-
-Then invoke the `ngxtension:init` generator
-
-```shell title="Invoking init generator"
-nx g ngxtension:init
-```
 
 ### Manual
 

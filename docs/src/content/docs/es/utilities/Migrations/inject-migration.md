@@ -170,19 +170,19 @@ export class AppComponent {
 Para ejecutar el schematics en todos los proyectos de la aplicación, tienemos que ejecutar el siguiente script:
 
 ```bash
-ng g ngxtension:convert-di-to-inject
+ng g ngxtension-plugin:convert-di-to-inject
 ```
 
 Si se precisa especificar el nombre del proyecto, podemos pasar el parámetro `--project`.
 
 ```bash
-ng g ngxtension:convert-di-to-inject --project=<project-name>
+ng g ngxtension-plugin:convert-di-to-inject --project=<project-name>
 ```
 
 Si necesitamos ejecutar el schematic para un componente o directiva específicos, podemos proporcionar el parámetro `--path`.
 
 ```bash
-ng g ngxtension:convert-di-to-inject --path=<path-to-ts-file>
+ng g ngxtension-plugin:convert-di-to-inject --path=<path-to-ts-file>
 ```
 
 ### Uso con Nx
@@ -192,5 +192,5 @@ Para usar el schematics con un monorepo Nx, podemos substituir `ng` por `nx`
 Ejemplo:
 
 ```bash
-nx g ngxtension:convert-di-to-inject --project=<project-name>
+nx g ngxtension-plugin:convert-di-to-inject --project=<project-name>
 ```
