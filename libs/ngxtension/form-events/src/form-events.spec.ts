@@ -266,33 +266,24 @@ describe('Form Events', () => {
 	});
 });
 
+type FormEventData = {
+	value: string;
+	status: FormControlStatus;
+	touched: boolean;
+	pristine: boolean;
+	valid: boolean;
+	invalid: boolean;
+	pending: boolean;
+	dirty: boolean;
+	untouched: boolean;
+};
 describe('works in ngOnInit by passing an Injector', () => {
 	@Component({ standalone: true, template: '' })
 	class InInitComponent implements OnInit {
 		injector = inject(Injector);
 		fb = inject(NonNullableFormBuilder);
-		data!: Signal<{
-			value: string;
-			status: FormControlStatus;
-			touched: boolean;
-			pristine: boolean;
-			valid: boolean;
-			invalid: boolean;
-			pending: boolean;
-			dirty: boolean;
-			untouched: boolean;
-		}>;
-		data$!: Observable<{
-			value: string;
-			status: FormControlStatus;
-			touched: boolean;
-			pristine: boolean;
-			valid: boolean;
-			invalid: boolean;
-			pending: boolean;
-			dirty: boolean;
-			untouched: boolean;
-		}>;
+		data!: Signal<FormEventData>;
+		data$!: Observable<FormEventData>;
 		form = this.fb.control('');
 
 		ngOnInit() {
