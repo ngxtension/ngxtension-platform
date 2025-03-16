@@ -4,6 +4,7 @@ import {
 	Injectable,
 	InjectionToken,
 	Injector,
+	isSignal,
 	Provider,
 	runInInjectionContext,
 	Signal,
@@ -253,17 +254,8 @@ export function linkedQueryParam<T = string>(
 		const globalHandler = inject(LinkedQueryParamGlobalHandler);
 		const config = inject(_LINKED_QUERY_PARAM_CONFIG_TOKEN);
 
-		// Get the current key value
-		const getCurrentKey = () => {
-			return isSignal(key) ? key() : key;
-		};
-
 		const parseParamValue = (params: Params) => {
-			const currentKey = getCurrentKey();
-			// If key is undefined (from a computed signal), return null or default value
-			if (currentKey === undefined) {
-				return options?.defaultValue ?? null;
-			}
+			const currentKey = getCurrentKey(key);
 			const value: string | null = params[currentKey] ?? null;
 			if (options?.parse) {
 				return options.parse(value);
@@ -292,13 +284,19 @@ export function linkedQueryParam<T = string>(
 			originalSet(value as T);
 		});
 
+		//  TODO: HEAVILY test this one
+		// if (isSignal(key)) {
+		//   let prevQueryParamKeyName: string | null | undefined = undefined;
+		//   explicitEffect([key], ([value]) => {
+		//     if (prevQueryParamKeyName && prevQueryParamKeyName !== value) {
+		//       globalHandler.setParamKeyValue(prevQueryParamKeyName, null);
+		//       prevQueryParamKeyName = value;
+		//     }
+		//   }, { defer: true});
+		// }
+
 		const set = (value: T) => {
-			const currentKey = getCurrentKey();
-			// Don't update query params if key is undefined
-			if (currentKey === undefined) {
-				originalSet(value);
-				return;
-			}
+			const currentKey = getCurrentKey(key);
 
 			if (
 				(value === undefined || value === null) &&
@@ -335,6 +333,15 @@ export function linkedQueryParam<T = string>(
 		return Object.assign(source, { set, update });
 	});
 }
+
+// Get the current key value or throw an error if it's null or undefined
+const getCurrentKey = (key: QueryParamKey) => {
+	const queryParamName = isSignal(key) || isFunction(key) ? key() : key;
+	if (queryParamName === undefined) {
+		throw new Error('linkedQueryParam: key cannot be null or undefined');
+	}
+	return queryParamName;
+};
 
 /**
  * Can be used to parse a query param value to a number.
@@ -399,4 +406,8 @@ export function paramToBoolean(
 ) {
 	return (x: string | null) =>
 		x === undefined || x === null ? config.defaultValue : x === 'true';
+}
+
+function isFunction(value: any): value is Function {
+	return typeof value === 'function';
 }

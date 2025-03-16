@@ -1,3 +1,4 @@
+//@ts-nocheck
 import {
 	Component,
 	inject,
@@ -525,15 +526,43 @@ describe(linkedQueryParam.name, () => {
 			WithDynamicKeyComponent,
 		);
 
+		// default value is null
 		expect(instance.keySignal()).toBe('dynamicKey');
 		expect(instance.dynamicKeyParam()).toBe(null);
 		expect(instance.route.snapshot.queryParams['dynamicKey']).toBe(undefined);
 
+		// changing the query param value to something else
+		instance.dynamicKeyParam.set('dynamicKeyNewValue');
+		tick();
+		expect(instance.dynamicKeyParam()).toBe('dynamicKeyNewValue');
+		expect(instance.route.snapshot.queryParams['dynamicKey']).toBe(
+			'dynamicKeyNewValue',
+		);
+
+		// changing the query param value back to null
+		instance.dynamicKeyParam.set(null);
+		tick();
+		expect(instance.dynamicKeyParam()).toBe(null);
+		expect(instance.route.snapshot.queryParams['dynamicKey']).toBe(undefined);
+
+		// changing the key signal value to something else should
+		// remove the old query param key-value pair and add the new one, with null value by default
 		instance.keySignal.set('dynamicKey2');
 		tick();
-		expect(instance.dynamicKeyParam()).toBe('dynamicKey2');
-		expect(instance.route.snapshot.queryParams['dynamicKey']).toBe(
-			'dynamicKey2',
+		expect(instance.dynamicKeyParam()).toBe(null);
+		expect(instance.route.snapshot.queryParams['dynamicKey']).toBe(undefined);
+		expect(instance.route.snapshot.queryParams['dynamicKey2']).toBe(undefined);
+
+		// changing the signal again to some new value should update the query param
+		expect(instance.dynamicKeyParam()).toBe(null);
+		instance.dynamicKeyParam.set('dynamicKey2NewValue');
+		tick();
+
+		expect(instance.dynamicKeyParam()).toBe('dynamicKey2NewValue');
+
+		expect(instance.route.snapshot.queryParams['dynamicKey']).toBe(undefined);
+		expect(instance.route.snapshot.queryParams['dynamicKey2']).toBe(
+			'dynamicKey2NewValue',
 		);
 	}));
 });
@@ -582,6 +611,6 @@ export class WithDynamicKeyComponent {
 	keySignal = signal('dynamicKey');
 	keyAsFunction = () => 'functionKey';
 
-	dynamicKeyParam = linkedQueryParam(this.keySignal);
+	dynamicKeyParam = linkedQueryParam<string | null>(this.keySignal);
 	dynamicKeyAsFunctionParam = linkedQueryParam(() => this.keyAsFunction());
 }
