@@ -94,7 +94,7 @@ function isTouchedEvent<T>(
 	return event instanceof TouchedChangeEvent;
 }
 
-export type FormEventData<T> = {
+type FormEventData<T> = {
 	value: T;
 	status: FormControlStatus;
 	touched: boolean;
