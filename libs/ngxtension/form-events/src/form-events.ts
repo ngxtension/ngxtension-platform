@@ -81,11 +81,10 @@ function errorsEvents$<T>(form: AbstractControl<T>) {
 			if (form instanceof AbstractControl) {
 				return of(form.errors);
 			}
-			throwError(
+			return throwError(
 				() =>
 					new Error('NGXTENSION: form is not a FormGroup or AbstractControl'),
 			);
-			return of(null);
 		}),
 	);
 }
