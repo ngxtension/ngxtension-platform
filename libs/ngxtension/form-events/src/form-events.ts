@@ -8,6 +8,7 @@ import {
 	PristineChangeEvent,
 	StatusChangeEvent,
 	TouchedChangeEvent,
+	ValidationErrors,
 	ValueChangeEvent,
 } from '@angular/forms';
 import {
@@ -66,7 +67,7 @@ function errorsEvents$<T>(form: AbstractControl<T>) {
 			if (form instanceof FormGroup) {
 				return of(
 					Object.entries(form.controls).reduce(
-						(acc: Record<string, any>, [key, control]) => {
+						(acc: ValidationErrors, [key, control]) => {
 							if (!acc[key]) {
 								acc[key];
 							}
@@ -118,7 +119,7 @@ type FormEventData<T> = {
 	pending: boolean;
 	dirty: boolean;
 	untouched: boolean;
-	controlErrors: any | null;
+	controlErrors: ValidationErrors | null;
 };
 
 export function allEventsObservable<T>(
