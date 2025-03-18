@@ -17,7 +17,10 @@ import {
 	distinctUntilChanged,
 	filter,
 	map,
+	of,
 	startWith,
+	switchMap,
+	throwError,
 } from 'rxjs';
 
 function valueEvents$<T>(form: AbstractControl<T>) {
@@ -56,23 +59,34 @@ function pristineEvents$<T>(form: AbstractControl<T>) {
 	);
 }
 
-function errorsEvents$(form: FormGroup | AbstractControl) {
-	if (form instanceof FormGroup) {
-		return Object.entries(form.controls).reduce(
-			(acc: Record<string, any>, [key, control]) => {
-				if (!acc[key]) {
-					acc[key];
-				}
-				acc[key] = control.errors;
-				return acc;
-			},
-			{},
-		);
-	}
-	if (form instanceof AbstractControl) {
-		return form.errors;
-	}
-	throw new Error('NGXTENSION: Invalid form type');
+function errorsEvents$<T>(form: AbstractControl<T>) {
+	return form.valueChanges.pipe(
+		startWith(null),
+		switchMap(() => {
+			if (form instanceof FormGroup) {
+				return of(
+					Object.entries(form.controls).reduce(
+						(acc: Record<string, any>, [key, control]) => {
+							if (!acc[key]) {
+								acc[key];
+							}
+							acc[key] = control.errors;
+							return acc;
+						},
+						{},
+					),
+				);
+			}
+			if (form instanceof AbstractControl) {
+				return of(form.errors);
+			}
+			throwError(
+				() =>
+					new Error('NGXTENSION: form is not a FormGroup or AbstractControl'),
+			);
+			return of(null);
+		}),
+	);
 }
 
 function isValueEvent<T>(
@@ -130,18 +144,7 @@ export function allEventsObservable<T>(
 			statusEvents$(form).pipe(startWith(form.status)),
 			touchedEvents$(form).pipe(startWith(form.touched)),
 			pristineEvents$(form).pipe(startWith(form.pristine)),
-			form.valueChanges.pipe(
-				startWith(form),
-				map(() => {
-					if (form instanceof FormGroup) {
-						return errorsEvents$(form);
-					}
-					if (form instanceof AbstractControl) {
-						return errorsEvents$(form);
-					}
-					return null;
-				}),
-			),
+			errorsEvents$(form),
 		]).pipe(
 			map(([valueParam, statusParam, touchedParam, pristineParam, errors]) => {
 				// Original values (plus value)
