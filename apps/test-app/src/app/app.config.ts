@@ -1,9 +1,13 @@
-import { type ApplicationConfig } from '@angular/core';
+import {
+	provideExperimentalZonelessChangeDetection,
+	type ApplicationConfig,
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideSvgSprites } from 'ngxtension/svg-sprite';
 
 export const appConfig: ApplicationConfig = {
 	providers: [
+		provideExperimentalZonelessChangeDetection(),
 		provideRouter([
 			{
 				path: 'resize',
@@ -62,9 +66,28 @@ export const appConfig: ApplicationConfig = {
 				],
 			},
 			{
+				path: 'form-events',
+				loadComponent: () => import('./form-events/form-events.component'),
+			},
+			{
 				path: 'control-value-accessor',
 				loadComponent: () =>
 					import('./control-value-accessor/control-value-accessor'),
+			},
+			{
+				path: 'linked-query-param',
+				loadChildren: () =>
+					import('./linked-query-param/routes').then((x) => x.routes),
+			},
+			{
+				path: 'signal-history',
+				loadComponent: () =>
+					import('./signal-history/signal-history.component'),
+			},
+			{
+				path: 'text-selection',
+				loadComponent: () =>
+					import('./text-selection/text-selection.component'),
 			},
 		]),
 	],

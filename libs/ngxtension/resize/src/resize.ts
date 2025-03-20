@@ -130,6 +130,7 @@ function createResizeStream(
 	zone: NgZone,
 ) {
 	const window = document.defaultView;
+	const screen = window?.screen;
 	const isSupport = !!window?.ResizeObserver;
 
 	let observer: ResizeObserver;
@@ -216,6 +217,20 @@ function createResizeStream(
 			fromEvent(window, 'resize')
 				.pipe(debounceAndTorndown(resizeDebounce))
 				.subscribe(boundCallback);
+
+			if (
+				screen &&
+				'orientation' in screen &&
+				'addEventListener' in screen.orientation
+			) {
+				fromEvent(screen.orientation, 'change')
+					.pipe(debounceAndTorndown(scrollDebounce))
+					.subscribe(boundCallback);
+			} else if (window && 'orientationchange' in window) {
+				fromEvent(window, 'orientationchange')
+					.pipe(debounceAndTorndown(scrollDebounce))
+					.subscribe(boundCallback);
+			}
 		});
 
 		return () => {

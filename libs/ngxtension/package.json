@@ -1,11 +1,11 @@
 {
 	"name": "ngxtension",
 	"description": "Utilities library for Angular",
-	"version": "0.0.0",
+	"version": "0.0.0-replace",
 	"engines": {
 		"node": ">=18"
 	},
-	"repository": "nartc/ngxtension-platform",
+	"repository": "ngxtension/ngxtension-platform",
 	"homepage": "https://ngxtension.netlify.app",
 	"license": "MIT",
 	"keywords": [
@@ -29,19 +29,7 @@
 		}
 	},
 	"dependencies": {
-		"@angular-eslint/bundled-angular-compiler": "^17.3.0",
-		"@nx/devkit": "^18.0.0",
-		"nx": "^18.0.0",
-		"ts-morph": "^22.0.0",
 		"tslib": "^2.3.0"
 	},
-	"sideEffects": false,
-	"generators": "./plugin/generators.json",
-	"schematics": "./plugin/generators.json",
-	"nx-migrations": {
-		"migrations": "./plugin/migrations.json"
-	},
-	"ng-update": {
-		"migrations": "./plugin/migrations.json"
-	}
+	"sideEffects": false
 }

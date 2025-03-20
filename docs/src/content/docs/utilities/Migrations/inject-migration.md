@@ -1,7 +1,7 @@
 ---
 title: inject() Migration
 description: Schematics for migrating from constructor dependency injection to inject()
-entryPoint: convert-di-to-inject
+entryPoint: /plugin/src/generators/convert-di-to-inject
 badge: stable
 contributors: ['enea-jahollari', 'kevinkreuzer', 'lilbeqiri']
 ---
@@ -68,7 +68,8 @@ export class AppComponent {
 After running the schematics:
 
 ```typescript
-import { Component } from '@angular/core';
+// will import the `inject` method
+import { Component, inject } from '@angular/core';
 import { MyService } from './my-service';
 import { MyService2 } from './my-service2';
 import { MyService3 } from './my-service3';
@@ -138,6 +139,7 @@ export class AppComponent {
 - `--project`: Specifies the name of the project.
 - `--path`: Specifies the path to the file to be migrated.
 - `--includeReadonlyByDefault`: Specifies whether to include the readonly keyword by default for the injections. Default is `false`.
+- `--useESPrivateFieldNotation`: Specifies whether to replace TS `private` modifier with ES `#private` field notation. Default is `false`.
 
 #### Include readonly by default
 
@@ -164,24 +166,49 @@ export class AppComponent {
 }
 ```
 
+#### Use ES private field notation
+
+By default, the migration will keep the `private` keyword to the injected dependencies. If you want to replace TS `private` modifier with ES `#private` field notation to the injected dependencies you can set the `--useESPrivateFieldNotation` option to `true`.
+
+```typescript
+import { Component } from '@angular/core';
+import { MyService } from './my-service';
+
+@Component()
+export class AppComponent {
+	constructor(private myService: MyService) {}
+}
+```
+
+```typescript
+import { Component } from '@angular/core';
+import { MyService } from './my-service';
+
+@Component()
+export class AppComponent {
+	// will replace 'private' modifier with ES '#private' field notation if the option is set to true
+	readonly #myService = inject(MyService);
+}
+```
+
 ### Usage
 
 In order to run the schematics for all the project in the app you have to run the following script:
 
 ```bash
-ng g ngxtension:convert-di-to-inject
+ng g ngxtension-plugin:convert-di-to-inject
 ```
 
 If you want to specify the project name you can pass the `--project` param.
 
 ```bash
-ng g ngxtension:convert-di-to-inject --project=<project-name>
+ng g ngxtension-plugin:convert-di-to-inject --project=<project-name>
 ```
 
 If you want to run the schematic for a specific component or directive you can pass the `--path` param.
 
 ```bash
-ng g ngxtension:convert-di-to-inject --path=<path-to-ts-file>
+ng g ngxtension-plugin:convert-di-to-inject --path=<path-to-ts-file>
 ```
 
 ### Usage with Nx
@@ -191,5 +218,5 @@ To use the schematics on a Nx monorepo you just swap `ng` with `nx`
 Example:
 
 ```bash
-nx g ngxtension:convert-di-to-inject --project=<project-name>
+nx g ngxtension-plugin:convert-di-to-inject --project=<project-name>
 ```

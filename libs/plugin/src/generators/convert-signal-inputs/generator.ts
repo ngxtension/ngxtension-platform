@@ -92,6 +92,10 @@ function getSignalInputInitializer(
 				}
 			}
 
+			if (transformType) {
+				types.push('| string');
+			}
+
 			writer.write(types.concat('>').join(''));
 		}
 
@@ -188,7 +192,7 @@ export async function convertSignalInputsGenerator(
 			return Number(part);
 		});
 
-	if (major < 17 || (major >= 17 && minor < 1)) {
+	if ([major, minor] < [17, 1]) {
 		logger.error(
 			`[ngxtension] Signal Input is only available in v17.1 and later`,
 		);
@@ -273,7 +277,14 @@ export async function convertSignalInputsGenerator(
 			targetClass.forEachChild((node) => {
 				if (Node.isPropertyDeclaration(node)) {
 					const inputDecorator = node.getDecorator('Input');
-					if (inputDecorator) {
+
+					// check if there is another decorator besides Input, if so, skip this input
+					// because we don't want to convert it if it has for example @HostBinding()
+					const hasOtherDecorator = node
+						.getDecorators()
+						.some((decorator) => decorator.getName() !== 'Input');
+
+					if (inputDecorator && !hasOtherDecorator) {
 						const { name, isReadonly, docs, scope, hasOverrideKeyword } =
 							node.getStructure();
 

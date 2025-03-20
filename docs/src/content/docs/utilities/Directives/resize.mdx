@@ -2,7 +2,7 @@
 title: resize
 description: An Angular directive and function for listening to element resize events, allowing you to respond dynamically to changes in element size.
 badge: stable
-entryPoint: resize
+entryPoint: ngxtension/resize
 contributors: ['tomer']
 ---
 
@@ -19,7 +19,7 @@ import { NgxResize, injectResize } from 'ngxtension/resize';
 - `injectResize()`: a CIF that observes the resize event on the Host element of the component
 - `NgxResize`: a directive that can observe the resize event of any element that it is attached on
 
-Both emit resize result outside of [Angular Zone](https://angular.io/guide/zone) by default but both provide way to configure the behavior.
+Both emit resize result outside of [Angular Zone](https://angular.dev/best-practices/zone-pollution) by default but both provide way to configure the behavior.
 
 ## Usage
 

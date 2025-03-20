@@ -28,7 +28,9 @@
 		},
 		{
 			"files": ["*.html"],
+			"excludedFiles": ["*inline-template-*.component.html"],
 			"extends": ["plugin:@nx/angular-template"],
+			"excludedFiles": ["*inline-template-*.component.html"],
 			"rules": {}
 		},
 		{

@@ -1,7 +1,7 @@
 ---
 title: Queries Migration
 description: Schematics for migrating from decorator-based Queries to Signal-based Queries
-entryPoint: convert-queries
+entryPoint: plugin/src/generators/convert-queries
 badge: stable
 contributors: ['enea-jahollari']
 ---
@@ -41,9 +41,13 @@ import {
 export class AppComponent {
 	@ContentChild('my-content-child')
 	myContentChild: ElementRef<HTMLImageElement>;
-	@ContentChildren('my-content-children') myContentChildren: QueryList<ElementRef<HTMLImageElement>>;
+	@ContentChildren('my-content-children') myContentChildren: QueryList<
+		ElementRef<HTMLImageElement>
+	>;
 	@ViewChild('my-view-child') myViewChild: ElementRef<HTMLImageElement>;
-	@ViewChildren('my-view-children') myViewChildren: QueryList<ElementRef<HTMLImageElement>>;
+	@ViewChildren('my-view-children') myViewChildren: QueryList<
+		ElementRef<HTMLImageElement>
+	>;
 
 	@ViewChild('my-input') set myInput(el: ElementRef<HTMLInputElement>) {
 		el.nativeElement.focus();
@@ -89,19 +93,19 @@ export class AppComponent {
 In order to run the schematics for all the project in the app you have to run the following script:
 
 ```bash
-ng g ngxtension:convert-queries
+ng g ngxtension-plugin:convert-queries
 ```
 
 If you want to specify the project name you can pass the `--project` param.
 
 ```bash
-ng g ngxtension:convert-queries --project=<project-name>
+ng g ngxtension-plugin:convert-queries --project=<project-name>
 ```
 
 If you want to run the schematic for a specific component or directive you can pass the `--path` param.
 
 ```bash
-ng g ngxtension:convert-queries --path=<path-to-ts-file>
+ng g ngxtension-plugin:convert-queries --path=<path-to-ts-file>
 ```
 
 ### Usage with Nx
@@ -111,5 +115,5 @@ To use the schematics on a Nx monorepo you just swap `ng` with `nx`
 Example:
 
 ```bash
-nx g ngxtension:convert-queries --project=<project-name>
+nx g ngxtension-plugin:convert-queries --project=<project-name>
 ```

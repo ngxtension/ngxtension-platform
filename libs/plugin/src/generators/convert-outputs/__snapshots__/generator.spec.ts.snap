@@ -28,6 +28,13 @@ export class MyCmp {
 
   withObservable = outputFromObservable(this.someObservable$);
   aliasOutput = output<string>({ alias: 'withAlias' });
+  
+  noInitializer = output<string>();
+  
+  initializedInConstructor = output<string>();
+  
+  constructor() {
+  }
 
   ngOnInit() {
     let imABoolean = false;

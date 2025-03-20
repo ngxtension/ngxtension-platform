@@ -132,7 +132,7 @@ function _normalizeArgs<Input, Output>(
 		);
 	if (!hasOperator) args.splice(1, 0, identity);
 	const [sources, operator, options] = args;
-	const hasInitValue = options?.initialValue !== undefined;
+	const hasInitValue = !!options && 'initialValue' in options;
 	const normalizedSources = Object.entries(sources).reduce(
 		(acc, [keyOrIndex, source]) => {
 			if (isSignal(source)) {

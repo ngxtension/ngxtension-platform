@@ -19,7 +19,7 @@ describe(computedPrevious.name, () => {
 		const cmp = setup();
 
 		expect(cmp.value()).toEqual(0);
-		expect(cmp.previous()).toEqual(null);
+		expect(cmp.previous()).toEqual(0);
 
 		cmp.value.set(1);
 

@@ -43,8 +43,9 @@ export function hostBinding<T, S extends Signal<T> | WritableSignal<T>>(
 		const renderer = inject(Renderer2);
 		const element: HTMLElement = inject(ElementRef).nativeElement;
 
+		let prevClasses: string[] = [];
+
 		effect(() => {
-			let prevClasses: string[] = [];
 			const value = signal();
 			const [binding, property, unit] = hostPropertyName.split('.');
 

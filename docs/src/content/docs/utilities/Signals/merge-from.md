@@ -1,7 +1,7 @@
 ---
 title: mergeFrom
 description: ngxtension/merge-from
-entryPoint: merge-from
+entryPoint: ngxtension/merge-from
 badge: stable
 contributors: ['chau-tran']
 ---
@@ -11,7 +11,7 @@ It also gives us the possibility to change the emitted value before emitting it 
 
 It is similar to `merge()`, but it also takes `Signals` into consideration.
 
-From `ngxtension` perspective, `mergeFrom` is similar to [`derivedFrom`](./derived-from.md), but it doesn't emit the combined value, but the latest emitted value by using the `merge` operator instead of `combineLatest`.
+From `ngxtension` perspective, `mergeFrom` is similar to [`derivedFrom`](/utilities/signals/derived-from), but it doesn't emit the combined value, but the latest emitted value by using the `merge` operator instead of `combineLatest`.
 
 ```ts
 import { mergeFrom } from 'ngxtension/merge-from';

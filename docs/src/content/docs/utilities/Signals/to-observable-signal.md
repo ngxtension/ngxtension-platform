@@ -1,7 +1,7 @@
 ---
 title: toObservableSignal
 description: ngxtension/to-observable-signal
-entryPoint: to-observable-signal
+entryPoint: ngxtension/to-observable-signal
 badge: stable
 contributors: ['evgeniy-oz']
 ---

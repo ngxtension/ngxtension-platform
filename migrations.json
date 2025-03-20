@@ -1,22 +1,12 @@
 {
 	"migrations": [
 		{
-			"cli": "nx",
-			"version": "18.2.0-beta.0",
-			"requires": {
-				"@angular/core": ">=17.3.0"
-			},
-			"description": "Update the @angular/cli package version to ~17.3.0.",
-			"factory": "./src/migrations/update-18-2-0/update-angular-cli",
-			"package": "@nx/angular",
-			"name": "update-angular-cli-version-17-3-0"
-		},
-		{
-			"version": "17.3.0",
-			"description": "Updates two-way bindings that have an invalid expression to use the longform expression instead.",
-			"factory": "./migrations/invalid-two-way-bindings/bundle",
-			"package": "@angular/core",
-			"name": "invalid-two-way-bindings"
+			"version": "20.0.1",
+			"description": "Set `useLegacyCache` to true for migrating workspaces",
+			"implementation": "./src/migrations/update-20-0-1/use-legacy-cache",
+			"x-repair-skip": true,
+			"package": "nx",
+			"name": "use-legacy-cache"
 		}
 	]
 }

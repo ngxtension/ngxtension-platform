@@ -72,14 +72,14 @@
 		}
 	},
 	"release": {
-		"projects": ["ngxtension"],
+		"projects": ["ngxtension", "plugin"],
 		"version": {
-			"preVersionCommand": "nx package ngxtension"
+			"preVersionCommand": "npm run package"
+		},
+		"git": {
+			"commitMessage": "chore: release {version}"
 		},
 		"changelog": {
-			"git": {
-				"commitMessage": "chore: release {version}"
-			},
 			"workspaceChangelog": {
 				"createRelease": "github"
 			}
@@ -118,5 +118,6 @@
 		},
 		"releaseTagPattern": "{version}"
 	},
-	"nxCloudAccessToken": "YWVmZjhlYjMtMTBlZS00YTFiLTkzY2ItOTkxZDcyNzdiYjllfHJlYWQtd3JpdGU="
+	"nxCloudAccessToken": "YWVmZjhlYjMtMTBlZS00YTFiLTkzY2ItOTkxZDcyNzdiYjllfHJlYWQtd3JpdGU=",
+	"useLegacyCache": true
 }

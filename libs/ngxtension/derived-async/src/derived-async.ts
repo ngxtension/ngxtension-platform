@@ -18,6 +18,7 @@ import {
 	exhaustAll,
 	isObservable,
 	mergeAll,
+	of,
 	switchAll,
 } from 'rxjs';
 
@@ -266,15 +267,14 @@ export function derivedAsync<T>(
 				return;
 			}
 
-			if (isObservable(newSource) || isPromise(newSource)) {
-				// we untrack the source$.next() so that we don't register other signals as dependencies
-				untracked(() => sourceEvent$.next(newSource));
-			} else {
-				// if the new source is not an observable or a promise, we set the value immediately
-				untracked(() =>
-					sourceValue.set({ kind: StateKind.Value, value: newSource as T }),
+			// we untrack the source$.next() so that we don't register other signals as dependencies
+			untracked(() => {
+				sourceEvent$.next(
+					isObservable(newSource) || isPromise(newSource)
+						? newSource
+						: of(newSource as T),
 				);
-			}
+			});
 		});
 
 		// we return a computed value that will return the current value
