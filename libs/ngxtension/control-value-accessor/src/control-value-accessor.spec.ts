@@ -358,6 +358,7 @@ describe('NgxControlValueAccessor', () => {
 				expect(cva.disabled).toEqual(true);
 				expect(input.disabled).toEqual(true);
 
+				// verify sync of control.disabled => cva.disabled
 				params.control.enable();
 				fixture.detectChanges();
 
@@ -368,6 +369,17 @@ describe('NgxControlValueAccessor', () => {
 				fixture.detectChanges();
 
 				expect(cva.disabled).toEqual(true);
+				expect(input.disabled).toEqual(true);
+
+				// verify sync of cva.disabled => control.disabled
+				cva.disabled = false;
+				fixture.detectChanges();
+				expect(params.control.disabled).toEqual(false);
+				expect(input.disabled).toEqual(false);
+
+				cva.disabled = true;
+				fixture.detectChanges();
+				expect(params.control.disabled).toEqual(true);
 				expect(input.disabled).toEqual(true);
 			});
 		});
@@ -440,6 +452,7 @@ describe('NgxControlValueAccessor', () => {
 				expect(cva.disabled).toEqual(true);
 				expect(input.disabled).toEqual(true);
 
+				// verify sync of control.disabled => cva.disabled
 				ngControl?.control!.enable();
 				fixture.detectChanges();
 
@@ -450,6 +463,17 @@ describe('NgxControlValueAccessor', () => {
 				fixture.detectChanges();
 
 				expect(cva.disabled).toEqual(true);
+				expect(input.disabled).toEqual(true);
+
+				// verify sync of cva.disabled => control.disabled
+				cva.disabled = false;
+				fixture.detectChanges();
+				expect(ngControl?.disabled).toEqual(false);
+				expect(input.disabled).toEqual(false);
+
+				cva.disabled = true;
+				fixture.detectChanges();
+				expect(ngControl?.disabled).toEqual(true);
 				expect(input.disabled).toEqual(true);
 			});
 		});
