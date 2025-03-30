@@ -7,6 +7,7 @@ import {
 	ViewContainerRef,
 	inject,
 	signal,
+	untracked,
 	type Provider,
 } from '@angular/core';
 import {
@@ -307,21 +308,38 @@ export class NgxControlError {
 	}
 
 	public get track() {
-		return this.track$();
+		return untracked(this.track$);
 	}
 
 	/**
-	 * The control which `errors` are tracked.
+	 * The control which `errors` are tracked. Either a control instance or the name of the control when used in a form.
 	 *
 	 * @see {@link AbstractControl.errors}
 	 */
-	@Input({ alias: 'ngxControlError', required: true })
 	public set control(control) {
 		this.control$.set(control);
 	}
 
 	public get control() {
-		return this.control$();
+		return untracked(this.control$);
+	}
+
+	/**
+	 * The control which `errors` are tracked. Either a control instance or the name of the control when used in a form.
+	 *
+	 * @see {@link AbstractControl.errors}
+	 */
+	@Input({ alias: 'ngxControlError', required: true })
+	public set controlInput(control: AbstractControl | string) {
+		if (control instanceof AbstractControl) {
+			this.control$.set(control);
+			return;
+		}
+
+		/**
+		 * TODO: throw an error if the control is not found?
+		 */
+		this.control$.set(this.parent$()?.control.get(control) ?? undefined);
 	}
 
 	/**
@@ -336,7 +354,7 @@ export class NgxControlError {
 	}
 
 	public get errorStateMatcher() {
-		return this.errorStateMatcher$();
+		return untracked(this.errorStateMatcher$);
 	}
 
 	/**
@@ -350,7 +368,7 @@ export class NgxControlError {
 	}
 
 	public get parent() {
-		return this.parent$();
+		return untracked(this.parent$);
 	}
 
 	/**
