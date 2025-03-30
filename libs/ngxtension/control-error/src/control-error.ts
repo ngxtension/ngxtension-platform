@@ -330,12 +330,15 @@ export class NgxControlError {
 	 * @see {@link AbstractControl.errors}
 	 */
 	@Input({ alias: 'ngxControlError', required: true })
-	protected set controlInput(control: AbstractControl | string) {
+	public set controlInput(control: AbstractControl | string) {
 		if (control instanceof AbstractControl) {
 			this.control$.set(control);
 			return;
 		}
 
+		/**
+		 * TODO: throw an error if the control is not found?
+		 */
 		this.control$.set(this.parent$()?.control.get(control) ?? undefined);
 	}
 
