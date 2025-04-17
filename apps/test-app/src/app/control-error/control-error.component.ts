@@ -17,8 +17,8 @@ import { NgxControlError } from 'ngxtension/control-error';
 
 			<label>
 				<b>Name</b>
-				<input type="text" [formControl]="form.controls.name" />
-				<strong *ngxControlError="form.controls.name; track: 'required'">
+				<input type="text" formControlName="name" />
+				<strong *ngxControlError="'name'; track: 'required'">
 					Name is required.
 				</strong>
 			</label>
