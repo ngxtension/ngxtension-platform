@@ -1,6 +1,6 @@
 {
 	"name": "ngxtension-plugin",
-	"version": "0.0.0-replace",
+	"version": "0.0.0",
 	"type": "commonjs",
 	"dependencies": {
 		"@angular-eslint/bundled-angular-compiler": "^18.0.1",

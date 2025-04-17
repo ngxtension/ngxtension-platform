@@ -1,3 +1,21 @@
+## 5.1.0 (2025-04-17)
+
+### Features
+
+- **computed-previous:** lazy computed previous ([#590](https://github.com/ngxtension/ngxtension-platform/pull/590), [#591](https://github.com/ngxtension/ngxtension-platform/pull/591))
+- **form-events:** provide optional injector for both form event utils ([#585](https://github.com/ngxtension/ngxtension-platform/pull/585))
+- **merge-http-context:** add mergeHttpContext utility function ([#587](https://github.com/ngxtension/ngxtension-platform/pull/587))
+
+### Documentation
+
+- add PForever as a contributor for code ([#583](https://github.com/ngxtension/ngxtension-platform/pull/583))
+
+### ❤️ Thank You
+
+- Krzysztof Kachniarz @kkachniarz220
+- michael-small @michael-small
+- Svyatoslav Zaytsev @MillerSvt
+
 # 5.0.0 (2025-03-14)
 
 ### Features
