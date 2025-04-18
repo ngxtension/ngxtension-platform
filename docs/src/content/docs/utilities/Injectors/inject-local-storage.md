@@ -6,7 +6,7 @@ badge: stable
 contributors: ['enea-jahollari']
 ---
 
-This injector provides a reactive local storage management system using Angular's dependency injection and reactivity model. This API allows for easy integration and manipulation of local storage with real-time synchronization across browser tabs.
+This injector provides a reactive local storage management system using Angular's dependency injection and reactivity model. This API allows for easy integration and manipulation of local storage with real-time synchronization across browser tabs and dynamic key support.
 
 ## API
 
@@ -35,9 +35,9 @@ Options to configure the behavior of the local storage signal.
 ### Function: `injectLocalStorage`
 
 - **Parameters**:
-  - `key`: The local storage key under which data is stored.
+  - `keyOrComputation`: A string key or a computation function returning a key string under which data is stored. If a function is provided, the signal will reinitialize whenever the computed key changes.
   - `options`: Configuration options of type `LocalStorageOptions`.
-- **Returns**: A `WritableSignal` representing the state of the local storage item. Updates to this signal are reflected in local storage and vice versa if `storageSync` is true.
+- **Returns**: A reactive signal (`LocalStorageSignal<T>`) with `set` and `update` methods representing the state of the local storage item. Updates to this signal are reflected in local storage (and emit a `storage` event), and external storage events update the signal if `storageSync` is enabled.
 
 ## Usage
 
@@ -47,9 +47,6 @@ Options to configure the behavior of the local storage signal.
 2. **Creating a Local Storage Signal**:
    Use `injectLocalStorage` to create a reactive local storage signal. Configure behavior with `LocalStorageOptions`.
 
-3. **Responding to Changes**:
-   Local storage changes reflect automatically in the signal if `storageSync` is enabled, and vice versa. Use the signal in your Angular components to reactively update the UI based on local storage data.
-
 ## Example
 
 Here's a basic example of using `injectLocalStorage`:
@@ -58,29 +55,42 @@ Here's a basic example of using `injectLocalStorage`:
 const username = injectLocalStorage<string>('username');
 
 username.set('John Doe');
-username.update((username) => 'Guest ' + username);
+username.update((name) => 'Guest ' + name);
 
 effect(() => {
 	console.log(username());
 });
-// Use `username` in your component to get or set the username stored in local storage.
-// The value might be null or undefined if default value is not provided.
 ```
 
-Fallback value can be provided using the `defaultValue` option:
+Use `username` in your component to get or set the username stored in local storage. The value might be `undefined` if no default value is provided.
+
+**Fallback value**:
 
 ```typescript
 const username = injectLocalStorage<string>('username', {
 	defaultValue: 'Guest',
 });
-// If the key 'username' is not present in local storage, the default value 'Guest' will be used.
 ```
 
-Storage synchronization can be enabled using the `storageSync` option:
+Uses 'Guest' if 'username' is not in local storage.
+
+**Storage synchronization**:
 
 ```typescript
 const username = injectLocalStorage<string>('username', {
 	storageSync: true,
 });
-// Changes to the local storage will be reflected across browser tabs.
 ```
+
+Changes reflect across browser tabs.
+
+**Dynamic key support**:
+
+```typescript
+const currentUserId = signal('user-1');
+const settings = injectLocalStorage(() => `settings-${currentUserId()}`, {
+	defaultValue: { theme: 'light' },
+});
+```
+
+Reinitializes when currentUserId() changes.
