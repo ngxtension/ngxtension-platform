@@ -17,7 +17,7 @@ import 'jest-preset-angular/setup-jest';
 declare global {
 	namespace jest {
 		interface It {
-			insideInjectionContext: (
+			injectable: (
 				name: string,
 				fn: (() => void) | (() => PromiseLike<unknown>),
 				timeout?: number,
@@ -30,7 +30,7 @@ declare global {
 	}
 }
 
-it.insideInjectionContext = (
+it.injectable = (
 	name: string,
 	fn: (() => void) | (() => PromiseLike<unknown>),
 	timeout?: number,
