@@ -33,10 +33,9 @@ export function provideLocalStorageImpl(impl: typeof globalThis.localStorage) {
  */
 export type LocalStorageOptionsNoDefault = {
 	/**
-	 *
 	 * Determines if local storage syncs with the signal.
 	 * When true, updates in one tab reflect in others, ideal for shared-state apps.
-	 * Defaults to true.
+	 * @default true
 	 */
 	storageSync?: boolean;
 	/**
@@ -65,9 +64,26 @@ export type LocalStorageOptionsWithDefaultValue<T> =
 		defaultValue: T | (() => T);
 	};
 
+type ClearOnKeyChange = {
+	/**
+	 * Specifies whether the value stored under the previous key
+	 * should be removed from `localStorage` when the key changes.
+	 * @default true
+	 */
+	clearOnKeyChange?: boolean;
+};
+
+export type LocalStorageOptionsComputedNoDefault =
+	LocalStorageOptionsNoDefault & ClearOnKeyChange;
+
+export type LocalStorageOptionsComputedWithDefaultValue<T> =
+	LocalStorageOptionsWithDefaultValue<T> & ClearOnKeyChange;
+
 export type LocalStorageOptions<T> =
 	| LocalStorageOptionsNoDefault
-	| LocalStorageOptionsWithDefaultValue<T>;
+	| LocalStorageOptionsWithDefaultValue<T>
+	| LocalStorageOptionsComputedNoDefault
+	| LocalStorageOptionsComputedWithDefaultValue<T>;
 
 function patch<K extends keyof any, V>(
 	target: any,
@@ -132,11 +148,11 @@ export const injectLocalStorage: {
 	): LocalStorageSignal<T | undefined>;
 	<T>(
 		keyComputation: () => string,
-		options: LocalStorageOptionsWithDefaultValue<T>,
+		options: LocalStorageOptionsComputedWithDefaultValue<T>,
 	): LocalStorageSignal<T>;
 	<T>(
 		keyComputation: () => string,
-		options?: LocalStorageOptionsNoDefault,
+		options?: LocalStorageOptionsComputedNoDefault,
 	): LocalStorageSignal<T | undefined>;
 } = <T>(
 	keyOrComputation: string | (() => string),
@@ -170,6 +186,8 @@ const internalInjectLocalStorage = <R>(
 		: JSON.stringify;
 	const parse = isFunction(options.parse) ? options.parse : parseJSON;
 	const storageSync = options.storageSync ?? true;
+	const clearOnKeyChange =
+		'clearOnKeyChange' in options ? (options.clearOnKeyChange ?? true) : true;
 
 	return assertInjector(injectLocalStorage, options.injector, () => {
 		const localStorage = inject(NGXTENSION_LOCAL_STORAGE);
@@ -209,7 +227,16 @@ const internalInjectLocalStorage = <R>(
 			const key = computedKey();
 
 			untracked(() => {
-				if (state().kind === Kind.INITIAL || state().key !== key) {
+				const { kind, key: prevKey } = state();
+				if (kind === Kind.INITIAL || prevKey !== key) {
+					if (clearOnKeyChange && kind === Kind.COMPUTED) {
+						try {
+							localStorage.removeItem(prevKey);
+						} catch {
+							/* ignore */
+						}
+					}
+
 					state.set({
 						kind: Kind.COMPUTED,
 						key,
@@ -286,7 +313,7 @@ const internalInjectLocalStorage = <R>(
 		}
 
 		const set: WritableSignal<R>['set'] = (newValue: R) => {
-			const { kind, key, value } = untracked(state);
+			const { kind, key } = untracked(state);
 			let newKey: string;
 
 			switch (kind) {

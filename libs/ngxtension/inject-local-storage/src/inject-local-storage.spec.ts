@@ -419,5 +419,41 @@ describe('injectLocalStorage', () => {
 				}).toBeReactivePure();
 			},
 		);
+
+		it.injectable(
+			'should remove old key when clearOnKeyChange is true (default)',
+			() => {
+				key = signal('k1');
+				localStorage.setItem('k1', JSON.stringify('v1'));
+
+				const localStorageSignal = injectLocalStorage<string>(key);
+
+				expect(localStorageSignal()).toBe('v1');
+
+				key.set('k2');
+
+				// should preserve value until next read
+				expect(localStorage.getItem('k1')).toEqual(JSON.stringify('v1'));
+
+				expect(localStorageSignal()).toBeUndefined();
+
+				expect(localStorage.getItem('k1')).toBeNull();
+				expect(localStorage.getItem('k2')).toBeNull();
+
+				localStorageSignal.set('v2');
+				expect(localStorage.getItem('k2')).toEqual(JSON.stringify('v2'));
+			},
+		);
+
+		it.injectable('should keep old key when clearOnKeyChange is false', () => {
+			key = signal('k1');
+			localStorage.setItem('k1', JSON.stringify('v1'));
+
+			injectLocalStorage<string>(key, { clearOnKeyChange: false });
+
+			key.set('k2');
+
+			expect(localStorage.getItem('k1')).toEqual(JSON.stringify('v1'));
+		});
 	});
 });

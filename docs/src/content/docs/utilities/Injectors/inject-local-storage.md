@@ -31,6 +31,7 @@ Options to configure the behavior of the local storage signal.
   - `stringify`: A custom function to serialize stored data. Defaults to `JSON.stringify`.
   - `parse`: A custom function to deserialize stored data. Defaults to a function handling JSON parsing with support for `undefined`.
   - `injector`: Optional custom injector for dependency resolution.
+  - `clearOnKeyChange`: If set to true, removes the value stored under the previous key from localStorage when the computed key changes. Applies only when a key-computation function is provided. Defaults to `true`.
 
 ### Function: `injectLocalStorage`
 
