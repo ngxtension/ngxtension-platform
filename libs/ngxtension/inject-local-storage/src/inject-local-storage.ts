@@ -31,7 +31,7 @@ export function provideLocalStorageImpl(impl: typeof globalThis.localStorage) {
 /**
  * Options to override the default behavior of the local storage signal.
  */
-export type LocalStorageOptionsNoDefault = {
+export type LocalStorageOptionsBase<T> = {
 	/**
 	 * Determines if local storage syncs with the signal.
 	 * When true, updates in one tab reflect in others, ideal for shared-state apps.
@@ -42,12 +42,12 @@ export type LocalStorageOptionsNoDefault = {
 	 * Override the default JSON.stringify function for custom serialization.
 	 * @param value
 	 */
-	stringify?: (value: unknown) => string;
+	stringify?: (value: T) => string;
 	/**
 	 * Override the default JSON.parse function for custom deserialization.
 	 * @param value
 	 */
-	parse?: (value: string) => unknown;
+	parse?: (value: string) => T;
 
 	/**
 	 * Injector for the Injection Context
@@ -55,8 +55,10 @@ export type LocalStorageOptionsNoDefault = {
 	injector?: Injector;
 };
 
+export type LocalStorageOptionsNoDefault<T> = LocalStorageOptionsBase<T>;
+
 export type LocalStorageOptionsWithDefaultValue<T> =
-	LocalStorageOptionsNoDefault & {
+	LocalStorageOptionsNoDefault<T> & {
 		/**
 		 * Default value for the signal.
 		 * Can be a value or a function that returns the value.
@@ -73,16 +75,16 @@ type ClearOnKeyChange = {
 	clearOnKeyChange?: boolean;
 };
 
-export type LocalStorageOptionsComputedNoDefault =
-	LocalStorageOptionsNoDefault & ClearOnKeyChange;
+export type LocalStorageOptionsComputedNoDefault<T> =
+	LocalStorageOptionsBase<T> & ClearOnKeyChange;
 
 export type LocalStorageOptionsComputedWithDefaultValue<T> =
 	LocalStorageOptionsWithDefaultValue<T> & ClearOnKeyChange;
 
 export type LocalStorageOptions<T> =
-	| LocalStorageOptionsNoDefault
+	| LocalStorageOptionsNoDefault<T>
 	| LocalStorageOptionsWithDefaultValue<T>
-	| LocalStorageOptionsComputedNoDefault
+	| LocalStorageOptionsComputedNoDefault<T>
 	| LocalStorageOptionsComputedWithDefaultValue<T>;
 
 function patch<K extends keyof any, V>(
@@ -144,7 +146,7 @@ export const injectLocalStorage: {
 	): LocalStorageSignal<T>;
 	<T>(
 		key: string,
-		options?: LocalStorageOptionsNoDefault,
+		options?: LocalStorageOptionsNoDefault<T>,
 	): LocalStorageSignal<T | undefined>;
 	<T>(
 		keyComputation: () => string,
@@ -152,7 +154,7 @@ export const injectLocalStorage: {
 	): LocalStorageSignal<T>;
 	<T>(
 		keyComputation: () => string,
-		options?: LocalStorageOptionsComputedNoDefault,
+		options?: LocalStorageOptionsComputedNoDefault<T>,
 	): LocalStorageSignal<T | undefined>;
 } = <T>(
 	keyOrComputation: string | (() => string),
@@ -169,16 +171,16 @@ export const injectLocalStorage: {
 			defaultValue,
 		);
 	}
-	return internalInjectLocalStorage<T | undefined>(
+	return internalInjectLocalStorage<T, T | undefined>(
 		keyOrComputation,
 		options,
 		undefined,
 	);
 };
 
-const internalInjectLocalStorage = <R>(
+const internalInjectLocalStorage = <T, R = T>(
 	keyOrComputation: string | (() => string),
-	options: LocalStorageOptions<R>,
+	options: LocalStorageOptions<T>,
 	defaultValue: R,
 ): LocalStorageSignal<R> => {
 	const stringify = isFunction(options.stringify)
