@@ -5,12 +5,11 @@ import {
 	inject,
 	InjectionToken,
 	type Injector,
-	Signal,
+	linkedSignal,
 	signal,
 	untracked,
 	type WritableSignal,
 } from '@angular/core';
-import { SIGNAL, SignalNode } from '@angular/core/primitives/signals';
 import { assertInjector } from 'ngxtension/assert-injector';
 
 export const NGXTENSION_LOCAL_STORAGE = new InjectionToken(
@@ -87,14 +86,6 @@ export type LocalStorageOptions<T> =
 	| LocalStorageOptionsComputedNoDefault<T>
 	| LocalStorageOptionsComputedWithDefaultValue<T>;
 
-function patch<K extends keyof any, V>(
-	target: any,
-	key: K,
-	value: V,
-): asserts target is Record<K, V> {
-	target[key] = value;
-}
-
 enum Kind {
 	INITIAL,
 	COMPUTED,
@@ -114,8 +105,7 @@ interface ComputedState<T> {
 
 type State<T> = InitialState | ComputedState<T>;
 
-type LocalStorageSignal<T> = Signal<T> &
-	Pick<WritableSignal<T>, 'set' | 'update' | 'asReadonly'>;
+type LocalStorageSignal<T> = WritableSignal<T>;
 
 function isLocalStorageWithDefaultValue<T>(
 	options: LocalStorageOptions<T>,
@@ -224,7 +214,7 @@ const internalInjectLocalStorage = <T, R = T>(
 				: getDefaultValue(defaultValue);
 		};
 
-		const internalSignal = computed<R>(() => {
+		const internalSignal = linkedSignal<R>(() => {
 			const key = computedKey();
 
 			untracked(() => {
@@ -317,7 +307,7 @@ const internalInjectLocalStorage = <T, R = T>(
 			});
 		}
 
-		const set: WritableSignal<R>['set'] = (newValue: R) => {
+		internalSignal.set = (newValue: R) => {
 			const { kind, key } = untracked(state);
 			let newKey: string;
 
@@ -343,7 +333,7 @@ const internalInjectLocalStorage = <T, R = T>(
 			syncValueWithLocalStorage(newValue);
 		};
 
-		const update: WritableSignal<R>['update'] = (updateFn: (value: R) => R) => {
+		internalSignal.update = (updateFn: (value: R) => R) => {
 			// set the value in the signal using the original set function
 			state.update(({ kind, key, value }) => {
 				let newValue: R;
@@ -372,27 +362,6 @@ const internalInjectLocalStorage = <T, R = T>(
 				};
 			});
 		};
-
-		patch(internalSignal, 'set', set);
-		patch(internalSignal, 'update', update);
-		// TODO replace with linkedSignal after upgrade to Angular 19
-		patch(
-			internalSignal,
-			'asReadonly',
-			function signalAsReadonlyFn(this: typeof internalSignal) {
-				const node = this[SIGNAL] as SignalNode<R> & {
-					readonlyFn?: Signal<R>;
-				};
-
-				if (node.readonlyFn === undefined) {
-					const readonlyFn = () => this();
-					readonlyFn[SIGNAL] = node;
-					node.readonlyFn = readonlyFn;
-				}
-
-				return node.readonlyFn;
-			},
-		);
 
 		return internalSignal;
 	});
