@@ -72,7 +72,7 @@
 		}
 	},
 	"release": {
-		"projects": ["ngxtension"],
+		"projects": ["ngxtension", "plugin"],
 		"version": {
 			"preVersionCommand": "npm run package"
 		},

@@ -1,4 +1,4 @@
-import { Signal } from '@angular/core';
+import { Injector, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
 	AbstractControl,
@@ -99,8 +99,8 @@ export function allEventsObservable<T>(
 	return defer(() =>
 		combineLatest([
 			valueEvents$(form).pipe(
-				startWith(form.value),
-				map((value) => (isValueEvent(value) ? value.value : value)),
+				startWith(form.getRawValue()),
+				map(() => form.getRawValue()),
 				distinctUntilChanged(
 					(previous, current) =>
 						JSON.stringify(previous) === JSON.stringify(current),
@@ -151,17 +151,20 @@ export function allEventsObservable<T>(
 
 export function allEventsSignal<T>(
 	form: AbstractControl<T>,
+	injector?: Injector,
 ): Signal<FormEventData<T>>;
 export function allEventsSignal<T>(
 	form: AbstractControl,
+	injector?: Injector,
 ): Signal<FormEventData<T>>;
 
 export function allEventsSignal<T>(
 	form: AbstractControl<T>,
+	injector?: Injector,
 ): Signal<FormEventData<T>> {
 	return toSignal(allEventsObservable(form), {
 		initialValue: {
-			value: form.value,
+			value: form.getRawValue(),
 			status: form.status,
 			pristine: form.pristine,
 			touched: form.touched,
@@ -171,5 +174,6 @@ export function allEventsSignal<T>(
 			dirty: form.dirty,
 			untouched: form.untouched,
 		},
+		injector: injector,
 	});
 }

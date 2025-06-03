@@ -1,3 +1,65 @@
+# 5.0.0 (2025-03-14)
+
+### Features
+
+- notPattern ([#564](https://github.com/ngxtension/ngxtension-platform/pull/564))
+- ⚠️  publish ngxtension-plugin separately ([#581](https://github.com/ngxtension/ngxtension-platform/pull/581))
+
+### Documentation
+
+- add endlacer as a contributor for code ([#576](https://github.com/ngxtension/ngxtension-platform/pull/576))
+- form-events ([#577](https://github.com/ngxtension/ngxtension-platform/pull/577))
+
+### ⚠️  Breaking Changes
+
+- ⚠️  publish ngxtension-plugin separately ([#581](https://github.com/ngxtension/ngxtension-platform/pull/581))
+
+### ❤️ Thank You
+
+- Andreas Dorner @endlacer
+- Chau Tran
+
+## 4.5.0 (2025-03-11)
+
+### Features
+
+- introduce takeLatestFrom() ([#571](https://github.com/ngxtension/ngxtension-platform/pull/571))
+
+### Refactor
+
+- Handle getting value from disabled form controls in `form-events` util ([#499](https://github.com/ngxtension/ngxtension-platform/pull/499))
+
+### ❤️ Thank You
+
+- Evgeniy OZ @e-oz
+- michael-small @michael-small
+
+## 4.4.0 (2025-03-11)
+
+### Features
+
+- unify inject route utilities ([#450](https://github.com/ngxtension/ngxtension-platform/pull/450))
+- add host binding migration ([#528](https://github.com/ngxtension/ngxtension-platform/pull/528))
+- **inject-text-selection:** added the function, docs, tests and created sample app ([#559](https://github.com/ngxtension/ngxtension-platform/pull/559))
+
+### Bug Fixes
+
+- **docs:** correct typo in retryOnError field ([#534](https://github.com/ngxtension/ngxtension-platform/pull/534))
+- **ngx-control-value-accessor:** accessing properties is outside of the reactive context ([#555](https://github.com/ngxtension/ngxtension-platform/pull/555))
+
+### Documentation
+
+- add szheleshchenko as a contributor for doc ([#560](https://github.com/ngxtension/ngxtension-platform/pull/560))
+- Add missing entry in contributors ([#568](https://github.com/ngxtension/ngxtension-platform/pull/568))
+
+### ❤️  Thank You
+
+- Dominik @Dafnik
+- Fiorelo Zere @fiorelozere
+- Paweł Ostromecki @ostromeckyp
+- Robby Rabbitman @RobbyRabbitman
+- Sergei Zheleshchenko @szheleshchenko
+
 ## 4.3.2 (2025-01-31)
 
 This was a version bump only, there were no code changes.

@@ -14,8 +14,8 @@ export async function initGenerator(tree: Tree) {
 	const packageJson = readJson(tree, 'package.json');
 
 	const version =
-		packageJson['dependencies']?.['ngxtension'] ||
-		packageJson['devDependencies']?.['ngxtension'] ||
+		packageJson['dependencies']?.['ngxtension-plugin'] ||
+		packageJson['devDependencies']?.['ngxtension-plugin'] ||
 		'latest';
 
 	addDependenciesToPackageJson(tree, { ngxtension: version }, {});

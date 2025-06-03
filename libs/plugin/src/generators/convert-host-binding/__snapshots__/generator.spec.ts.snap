@@ -1,0 +1,116 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`convert-host-binding generator should convert properly for component 1`] = `
+"
+	import { Component } from '@angular/core';
+
+  @Component({
+    selector: 'my-component',
+    template: 'My component',
+      host: { '[class.active]': 'isActive', '[attr.aria-disabled]': 'isDisabled', '[tabIndex]': 'getTabIndex()' }
+})
+  export class MyComponent {
+    isActive = true;
+
+    get isDisabled() {
+      return true;
+    }
+
+    getTabIndex() {
+      return this.isDisabled ? -1 : 0;
+    }
+  }
+  "
+`;
+
+exports[`convert-host-binding generator should convert properly for component with complex host listener 1`] = `
+"
+  import { Component } from '@angular/core';
+  @Component({
+    selector: 'my-complex-component',
+    template: 'My complex component',
+      host: { '(document:keydown.escape)': 'escapeKeydownHandler($event)', '(mousedown)': 'handleMousedown($event.target)', '(click)': 'handleEventNoArgs()' }
+})
+  export class MyComplexComponent {
+    escapeKeydownHandler(event: KeyboardEvent): void {
+    }
+
+    
+    handleMousedown(target: any): void {
+    }
+    
+    handleEventNoArgs(): void {
+    }
+  }
+  "
+`;
+
+exports[`convert-host-binding generator should convert properly for component with duplicate host binding 1`] = `
+"
+  import { Component } from '@angular/core';
+
+  @Component({
+    selector: 'my-duplicated-component',
+    template: 'My duplicated component',
+      host: { '[class.active]': 'isActive2' }
+})
+  export class MyDuplicatedComponent {
+    isActive = true;
+    isActive2 = true;
+  "
+`;
+
+exports[`convert-host-binding generator should convert properly for component with host property 1`] = `
+"
+  import { Component } from '@angular/core';
+
+    @Component({
+      selector: 'my-component',
+      template: 'My component',
+      host: {
+        '[class.active]': 'isActive',
+          '[attr.aria-disabled]': 'isDisabled'
+    }
+    })
+    export class MyComponent {
+      isActive = true;
+
+      get isDisabled() {
+        return true;
+      }
+    }
+  "
+`;
+
+exports[`convert-host-binding generator should convert properly for component with no host binding 1`] = `
+"
+  import { Component } from '@angular/core';
+
+  @Component({
+    selector: 'my-empty-component',
+    template: 'My empty component',
+  })
+  export class MyEmptyComponent {
+  }
+  "
+`;
+
+exports[`convert-host-binding generator should convert properly for directive 1`] = `
+"
+	import { Directive } from '@angular/core';
+
+  @Directive({
+    selector: '[myDirective]',
+      host: { '[class.active]': 'isActive',
+          '(keydown)': 'updateValue($event)'
+    }
+})
+  export class MyDirective {
+    isActive = true;
+
+    
+    updateValue(event: KeyboardEvent) {
+    }
+  }
+  "
+`;

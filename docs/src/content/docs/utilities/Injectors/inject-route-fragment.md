@@ -18,20 +18,24 @@ import { injectRouteFragment } from 'ngxtension/inject-route-fragment';
 ```ts
 @Component(...)
 class TestComponent {
-  fragment = injectRouteFragment();
+  fragment: Signal<string | null> = injectRouteFragment();
 }
 ```
 
-You can pass transform function or custom injector.
+You can pass a `parse` function, custom injector or `defaultValue`.
 
 ```ts
 @Component()
 class TestComponent implements OnInit {
 	injector = inject(Injector);
 
+	fragmentNotNull: Signal<string> = injectRouteFragment({
+		defaultValue: 'abc',
+	});
+
 	ngOnInit() {
 		const isFragmentAvailable: Signal<boolean> = injectRouteFragment({
-			transform: (fragment) => !!fragment,
+			parse: (fragment) => !!fragment,
 			injector: this.injector,
 		});
 	}

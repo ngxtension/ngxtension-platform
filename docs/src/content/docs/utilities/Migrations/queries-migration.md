@@ -93,19 +93,19 @@ export class AppComponent {
 In order to run the schematics for all the project in the app you have to run the following script:
 
 ```bash
-ng g ngxtension:convert-queries
+ng g ngxtension-plugin:convert-queries
 ```
 
 If you want to specify the project name you can pass the `--project` param.
 
 ```bash
-ng g ngxtension:convert-queries --project=<project-name>
+ng g ngxtension-plugin:convert-queries --project=<project-name>
 ```
 
 If you want to run the schematic for a specific component or directive you can pass the `--path` param.
 
 ```bash
-ng g ngxtension:convert-queries --path=<path-to-ts-file>
+ng g ngxtension-plugin:convert-queries --path=<path-to-ts-file>
 ```
 
 ### Usage with Nx
@@ -115,5 +115,5 @@ To use the schematics on a Nx monorepo you just swap `ng` with `nx`
 Example:
 
 ```bash
-nx g ngxtension:convert-queries --project=<project-name>
+nx g ngxtension-plugin:convert-queries --project=<project-name>
 ```

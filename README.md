@@ -1,5 +1,5 @@
 <h1 align="center">NG Extension Platform</h1>
-<p align="center"> 
+<p align="center">
 <img src="/docs/public/ngxt-blue.svg" width="100px" height="100px">
 </p>
 
@@ -7,36 +7,22 @@
 [![NPM](https://img.shields.io/npm/dw/ngxtension?logo=npm&style=flat-square)](https://npmjs.org/package/ngxtension)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-48-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-50-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A collection of utilities for [Angular](https://angular.dev).
 
 ## Installation
 
-The `ng-add` schematic/generator installs the `ngxtension` package as well as turning on `skipLibCheck` TypeScript configuration if it hasn't been turned on.
-This allows your project to skip checking types for external libraries like `ngxtension` where typings might not be compatible with your project's strictness.
-
 ```shell
-ng add ngxtension
+npm install -D ngxtension-plugin
 ```
 
-or
+then invoke the `init` generator/schematic
 
 ```shell
-npm install ngxtension
-```
-
-```shell
-yarn add ngxtension
-```
-
-```shell
-pnpm install ngxtension
-```
-
-```shell
-nx generate ngxtension:init
+ng generate ngxtension-plugin:init
+# nx generate ngxtension-plugin:init
 ```
 
 ## Utilities
@@ -117,6 +103,10 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ShacharHarshuv"><img src="https://avatars.githubusercontent.com/u/4821858?v=4?s=100" width="100px;" alt="Shahar Har-Shuv"/><br /><sub><b>Shahar Har-Shuv</b></sub></a><br /><a href="https://github.com/ngxtension/ngxtension-platform/commits?author=ShacharHarshuv" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/MillerSvt"><img src="https://avatars.githubusercontent.com/u/143048525?v=4?s=100" width="100px;" alt="Svyatoslav Zaytsev"/><br /><sub><b>Svyatoslav Zaytsev</b></sub></a><br /><a href="https://github.com/ngxtension/ngxtension-platform/commits?author=MillerSvt" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/szheleshchenko"><img src="https://avatars.githubusercontent.com/u/78230221?v=4?s=100" width="100px;" alt="Sergei Zheleshchenko"/><br /><sub><b>Sergei Zheleshchenko</b></sub></a><br /><a href="https://github.com/ngxtension/ngxtension-platform/commits?author=szheleshchenko" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://andreasdorner.de"><img src="https://avatars.githubusercontent.com/u/66420187?v=4?s=100" width="100px;" alt="Andreas Dorner"/><br /><sub><b>Andreas Dorner</b></sub></a><br /><a href="https://github.com/ngxtension/ngxtension-platform/commits?author=endlacer" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/PForever"><img src="https://avatars.githubusercontent.com/u/24297126?v=4?s=100" width="100px;" alt="Igor Ganov"/><br /><sub><b>Igor Ganov</b></sub></a><br /><a href="https://github.com/ngxtension/ngxtension-platform/commits?author=PForever" title="Code">💻</a></td>
     </tr>
   </tbody>
   <tfoot>
