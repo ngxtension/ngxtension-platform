@@ -2,8 +2,8 @@ import {
 	inject,
 	InjectionToken,
 	Injector,
+	Signal,
 	signal,
-	WritableSignal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { assertInjector } from 'ngxtension/assert-injector';
@@ -22,7 +22,9 @@ const NGXTENSION_RATE_LIMIT = new InjectionToken('NGXTENSION_RATE_LIMIT', {
 	factory: () => 200,
 });
 
-export type RateLimitedSignal<T> = Pick<WritableSignal<T>, 'set' | 'update'>;
+export type RateLimitedSignal<T> = Signal<T> & {
+	next: (value: T) => void;
+};
 
 export interface RateLimitedSignalOptions {
 	/**
@@ -79,16 +81,11 @@ export function injectRateLimited<T>(
 
 		stream.pipe(takeUntilDestroyed()).subscribe((value) => inner.set(value));
 
-		return new Proxy(inner, {
+		return new Proxy(inner.asReadonly(), {
 			get(target, prop, receiver) {
 				switch (prop) {
-					case 'set':
+					case 'next':
 						return (value: T) => subject.next(value);
-					case 'update':
-						return (updater: (value: T) => T) => {
-							const nextValue = updater(inner());
-							subject.next(nextValue);
-						};
 					default:
 						return Reflect.get(target, prop, receiver);
 				}
