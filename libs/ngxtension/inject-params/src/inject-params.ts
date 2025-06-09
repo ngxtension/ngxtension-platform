@@ -1,6 +1,7 @@
 import { inject, type Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, type Params } from '@angular/router';
+import { injectLeafActivatedRoute } from 'libs/ngxtension/inject-leaf-activated-route/src/inject-leaf-activated-route';
 import { assertInjector } from 'ngxtension/assert-injector';
 import {
 	DefaultValueOptions,
@@ -10,6 +11,14 @@ import {
 import { map } from 'rxjs';
 
 type ParamsTransformFn<ReadT> = (params: Params) => ReadT;
+
+export type ParamsFromNavigationEndOptions = {
+	/**
+	 * Retrieve params from the leaf `ActivatedRoute` of the latest `NavigationEnd` event.
+	 * Essentially, this resolve to all params, instead of only the params of the current route level.
+	 */
+	fromNavigationEnd?: boolean;
+};
 
 /**
  * The `ParamsOptions` type defines options for configuring the behavior of the `injectParams` function.
@@ -23,6 +32,7 @@ export type ParamsOptions<ReadT, WriteT, DefaultValueT> = ParseOptions<
 	WriteT
 > &
 	DefaultValueOptions<DefaultValueT> &
+	ParamsFromNavigationEndOptions &
 	InjectorOptions;
 
 /**
@@ -65,6 +75,7 @@ export function injectParams<ReadT>(
  */
 export function injectParams<ReadT>(
 	fn: ParamsTransformFn<ReadT>,
+	options?: ParamsFromNavigationEndOptions,
 ): Signal<ReadT>;
 
 /**
@@ -89,7 +100,10 @@ export function injectParams<T>(
 	options: ParamsOptions<T, string, T> = {},
 ): Signal<T | Params | string | null> {
 	return assertInjector(injectParams, options?.injector, () => {
-		const route = inject(ActivatedRoute);
+		const route = options.fromNavigationEnd
+			? injectLeafActivatedRoute()()
+			: inject(ActivatedRoute);
+
 		const params = route.snapshot.params;
 		const { parse, defaultValue } = options;
 

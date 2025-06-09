@@ -1,11 +1,20 @@
 import { inject, type Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, type Data } from '@angular/router';
+import { injectLeafActivatedRoute } from 'libs/ngxtension/inject-leaf-activated-route/src/inject-leaf-activated-route';
 import { assertInjector } from 'ngxtension/assert-injector';
 import { DefaultValueOptions, InjectorOptions } from 'ngxtension/shared';
 import { map } from 'rxjs';
 
 type RouteDataTransformFn<T> = (data: Data) => T;
+
+export type RouteDataFromNavigationEndOptions = {
+	/**
+	 * Retrieve data from the leaf `ActivatedRoute` of the latest `NavigationEnd` event.
+	 * Essentially, this resolve to all route data, instead of only the route data of the current route level.
+	 */
+	fromNavigationEnd?: boolean;
+};
 
 /**
  * The `RouteDataOptions` type defines options for configuring the behavior of the `injectRouteData` function.
@@ -15,7 +24,9 @@ type RouteDataTransformFn<T> = (data: Data) => T;
  * @template DefaultValueT - The type of the default value.
  */
 export type RouteDataOptions<DefaultValueT> =
-	DefaultValueOptions<DefaultValueT> & InjectorOptions;
+	DefaultValueOptions<DefaultValueT> &
+		RouteDataFromNavigationEndOptions &
+		InjectorOptions;
 
 /**
  * The `injectRouteData` function allows you to access and manipulate route data from the current route.
@@ -59,7 +70,10 @@ export function injectRouteData<T>(
 	options: RouteDataOptions<T> = {},
 ) {
 	return assertInjector(injectRouteData, options?.injector, () => {
-		const route = inject(ActivatedRoute);
+		const route = options.fromNavigationEnd
+			? injectLeafActivatedRoute()()
+			: inject(ActivatedRoute);
+
 		const initialRouteData = route.snapshot.data || {};
 		const { defaultValue } = options;
 
