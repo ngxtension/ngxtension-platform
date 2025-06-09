@@ -77,9 +77,9 @@ export function injectRateLimited<T>(
 		const subject = new Subject<T>();
 		const inner = signal<T>(initialValue);
 
-		const stream = subject.pipe(operator(delayMs, asyncScheduler, config));
-
-		stream.pipe(takeUntilDestroyed()).subscribe((value) => inner.set(value));
+		subject
+			.pipe(operator(delayMs, asyncScheduler, config), takeUntilDestroyed())
+			.subscribe((value) => inner.set(value));
 
 		return new Proxy(inner.asReadonly(), {
 			get(target, prop, receiver) {
