@@ -96,6 +96,9 @@
 				"libs/ngxtension/inject-is-intersecting/src/index.ts"
 			],
 			"ngxtension/inject-lazy": ["libs/ngxtension/inject-lazy/src/index.ts"],
+			"ngxtension/inject-leaf-activated-route": [
+				"libs/ngxtension/inject-leaf-activated-route/src/index.ts"
+			],
 			"ngxtension/inject-local-storage": [
 				"libs/ngxtension/inject-local-storage/src/index.ts"
 			],
