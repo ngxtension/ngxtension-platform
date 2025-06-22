@@ -12,6 +12,16 @@
 
 A collection of utilities for [Angular](https://angular.dev).
 
+## Version Compatibility Table
+
+| ngxtension Version | Release Date | Angular Version Support |
+|-------------------|--------------|------------------------|
+| **5.x** | 2025-03-14 | >=16.0.0 |
+| **4.x** | 2024-07-15 | >=16.0.0 |
+| **3.x** | 2024-04-24 | >=16.0.0 |
+| **2.x** | 2024-02-02 | >=16.0.0 |
+| **1.x** | 2023-11-09 | >=16.0.0 |
+
 ## Installation
 
 ```shell
