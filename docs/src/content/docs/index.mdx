@@ -2,101 +2,231 @@
 title: Welcome to ngxtension
 template: splash
 hero:
-  tagline: A collection of utilities for Angular.
+  tagline: A comprehensive collection of utilities for modern Angular development.
   image:
     alt: ngxtension logo
     file: ../../../public/ngxt-blue.svg
     dark: ../../../public/ngxt-white.svg
     light: ../../../public/ngxt-blue.svg
-
   actions:
-    - text: Getting Started
+    - text: Get Started
       link: /getting-started/introduction
       icon: right-arrow
       variant: primary
     - text: View on GitHub
       link: https://github.com/nartc/ngxtension-platform
       icon: external
+      variant: secondary
 ---
 
-import { Card, CardGrid, Steps } from '@astrojs/starlight/components';
+### Quick Start 🚀
 
-## What does **ngxtension** offer 🔨?
+#### Install ngxtension
 
-<CardGrid stagger>
-  <Card title="Signal utilities" icon="rocket">
+```bash
+npm install ngxtension
+# or
+pnpm add ngxtension
+# or
+yarn add ngxtension
+```
+
+#### Import and use
+
+Import only what you need. **ngxtension** is built with tree-shaking in mind.
+
+```tsx
+import { linkedQueryParam, paramToNumber } from 'ngxtension/linked-query-param';
+import { derivedFrom } from 'ngxtension/derived-from';
+
+@Component({
+	template: `
+		<input [(ngModel)]="searchQuery" />
+
+		@for (result of results(); track result.id) {
+			<div>{{ result.title }}</div>
+		}
+
+		<pagination [(page)]="pageNumber" />
+	`,
+})
+export class MyComponent {
+	readonly searchQuery = linkedQueryParam('search');
+	readonly pageNumber = linkedQueryParam('page', {
+		parse: paramToNumber({ defaultValue: 1 }),
+	});
+
+	readonly results = derivedFrom(this.searchQuery, (query) =>
+		this.searchService.search(query),
+	);
+}
+```
+
+#### Explore more utilities
+
+Check out our comprehensive collection of utilities designed to make Angular development faster and more enjoyable.
+
+### Why ngxtension? ✨
+
+- **🚀 Modern Angular**: Built for Angular's latest features including signals, standalone components, and the new control flow
+- **⚡ Performance**: Optimized utilities that leverage Angular's change detection and signals system
+- **🛠️ Developer Experience**: Intuitive APIs that reduce boilerplate and improve code readability
+- **📦 Tree-shakable**: Only import what you need, keeping your bundle size minimal
+- **🔄 Type-safe**: Full TypeScript support with excellent type inference
+- **🎯 Focused**: Each utility solves a specific problem without unnecessary complexity
+
+## What does **ngxtension** offer? 🚀
+
+<div class="card-grid">
+  <div class="card">
+    <h3>Signal Utilities</h3>
     <div class="home-links">
-      - [<strong>derivedAsync</strong> - Safely derive data asynchronously](/utilities/signals/derived-async/)
-      - [<strong>derivedFrom</strong> - combineLatest with signals support](/utilities/signals/derived-from/)
       - [<strong>connect</strong> - connect everything to everything](/utilities/signals/connect/)
+      - [<strong>derivedFrom</strong> - combineLatest with signals support](/utilities/signals/derived-from/)
+      - [<strong>explicitEffect</strong> - effect with explicit dependencies](/utilities/signals/explicit-effect/)
       - [<strong>createNotifier</strong> - the tick you're missing](/utilities/signals/create-notifier/)
       - [<strong>signalSlice</strong> - tasty sliced state management](/utilities/signals/signal-slice/)
       - [<strong>toLazySignal</strong> - defer signal's eager execution](/utilities/signals/to-lazy-signal/)
-      - [<strong>toObservableSignal</strong> - a Signal/Observable at a time](/utilities/signals/to-observable-signal/)
-      - [<strong>mergeFrom</strong> - merge operator with signals support](/utilities/signals/merge-from/)
-      - [<strong>createSignal/createComputed</strong> - vue style signals](/utilities/signals/create-signal/)
-      - [<strong>computedPrevious</strong> - track previously emitted values](/utilities/signals/computed-previous/)
-      - [<strong>computed/extendedComputed</strong> - enhanced computed with previously derived value](/utilities/signals/computed/)
-      - [<strong>explicitEffect</strong> - effect with explicit dependencies](/utilities/signals/explicit-effect/)
+      - [<strong>signalHistory</strong> - track signal value history](/utilities/injectors/signal-history/)
+      <div class="more-items">[<strong>toObservableSignal</strong>](/utilities/signals/to-observable-signal/) • [<strong>mergeFrom</strong>](/utilities/signals/merge-from/) • [<strong>computedPrevious</strong>](/utilities/signals/computed-previous/) </div>
     </div>
-  </Card>
-  <Card title="Injector utilities" icon="star" >
-    <div class="home-links">
-      - [<strong>injectLazy</strong> - Lazy inject your lazy services](/utilities/injectors/inject-lazy/)
-      - [<strong>injectParams</strong> - inject signal route params](/utilities/injectors/inject-params/)
-      - [<strong>injectQueryParams</strong> - inject signal route query params](/utilities/injectors/inject-query-params/)
-      - [<strong>createInjectionToken</strong> - cool InjectionToken creation](/utilities/injectors/create-injection-token/)
-      - [<strong>injectDestroy</strong> - destroy$ you don't have to unsub](/utilities/injectors/inject-destroy/)
-      - [<strong>injectRouteData</strong> - inject data from the current route](/utilities/injectors/inject-route-data/)
-      - [<strong>injectNavigationEnd</strong> - listen to navigation end events](/utilities/injectors/navigation-end/)
-      - [<strong>injectNetwork</strong> - track the current network state](/utilities/injectors/inject-network/)
-      - [<strong>injectIsIntersecting</strong> - listen when element intersects](/utilities/injectors/inject-is-intersecting/)
-      - [<strong>createInjectable</strong> - cool Service creation](/utilities/injectors/create-injectable/)
-      - [<strong>injectAutoEffect</strong> - injection-context aware Effect](/utilities/injectors/auto-effect/)
-      - [<strong>assertInjector</strong> - extension of assertInInjectionContext](/utilities/injectors/assert-injector/)
-      - [<strong>injectActiveElement</strong> - track when the active, focused element changes](/utilities/injectors/active-element/)
-      - [<strong>injectDocumentVisibility</strong> - track the current visibility state of the document](/utilities/injectors/inject-document-visibility/)
-    </div>
-  </Card>
-  <Card title="RxJs operators" icon="right-arrow">
-    <div class="home-links">
-      - [<strong>debug</strong> - log stream inputs and transformed outputs](/utilities/operators/debug/)
-      - [<strong>filterArray</strong> - filter array emitted by the stream](/utilities/operators/filter-array/)
-      - [<strong>filterNil</strong> - filter out null and undefined values](/utilities/operators/filter-nil/)
-      - [<strong>mapArray</strong> - map array emitted by the stream](/utilities/operators/map-array/)
-      - [<strong>mapSkipUndefined</strong> - skip undefined on map](/utilities/operators/map-skip-undefined/)
-      - [<strong>poll</strong> - poll a stream every "period" milliseconds](/utilities/operators/poll/)
-      - [<strong>reduceArray</strong> - reduce array emitted by the stream](/utilities/operators/reduce-array/)
-      - [<strong>rxEffect</strong> - utility to create a side effect with rxjs](/utilities/operators/rx-effect/)
-      - [<strong>whenDocumentVisible</strong> - pause a stream when the document is hidden](/utilities/operators/when-document-visible/)
-    </div>
-  </Card>
-  <Card title="Code migrations" icon="document">
-    <div class="home-links">
-      - [<strong>input() Migration</strong> - migrate to the signal-based inputs](/utilities/migrations/signal-inputs-migration/)
-      - [<strong>output() Migration</strong> - migrate to the new output()](/utilities/migrations/new-outputs-migration/)
-      - [<strong>inject() Migration</strong> - migrate to inject() based DI](/utilities/migrations/inject-migration/)
-      - [<strong>viewChild(), contentChild(), viewChildren(), contentChildren() Migration</strong> - migrate to the new template queries()](/utilities/migrations/queries-migration/)
-      - [<strong>self-closing tag</strong> - migrate to the new self-closing tag](/utilities/migrations/self-closing-tags/)
-      - [<strong>SFC components</strong> - migrate to the new SFC components](/utilities/migrations/sfc-migration/)
-    </div>
-  </Card>
+  </div>
 
-  <Card title="Directives" icon="puzzle">
+<div class="card">
+	<h3>Router Utilities</h3>
+	<div class="home-links">
+		- [<strong>linkedQueryParam</strong> - bidirectional query parameter
+		binding](/utilities/injectors/linked-query-param/) - [
+		<strong>injectQueryParams</strong> - inject signal route query
+		params](/utilities/injectors/inject-query-params/) - [
+		<strong>injectParams</strong> - inject signal route
+		params](/utilities/injectors/inject-params/) - [
+		<strong>injectRouteData</strong> - inject data from the current
+		route](/utilities/injectors/inject-route-data/) - [
+		<strong>injectRouteFragment</strong> - inject route fragment as
+		signal](/utilities/injectors/inject-route-fragment/) - [
+		<strong>injectNavigationEnd</strong> - listen to navigation end
+		events](/utilities/injectors/navigation-end/)
+	</div>
+</div>
+
+<div class="card">
+	<h3>Injector Utilities</h3>
+	<div class="home-links">
+		- [<strong>injectLazy</strong> - Lazy inject your lazy
+		services](/utilities/injectors/inject-lazy/) - [
+		<strong>createInjectionToken</strong> - cool InjectionToken
+		creation](/utilities/injectors/create-injection-token/) - [
+		<strong>injectDestroy</strong> - destroy$ you don't have to
+		unsub](/utilities/injectors/inject-destroy/) - [
+		<strong>injectNetwork</strong> - track the current network
+		state](/utilities/injectors/inject-network/) - [
+		<strong>injectIsIntersecting</strong> - listen when element
+		intersects](/utilities/injectors/inject-is-intersecting/) - [
+		<strong>injectLocalStorage</strong> - inject localStorage as
+		signal](/utilities/injectors/inject-local-storage/)
+		<div class="more-items">
+			[<strong>injectTextSelection</strong>
+			](/utilities/injectors/inject-text-selection/) • [
+			<strong>injectInputs</strong>](/utilities/injectors/inject-inputs/) • [
+			<strong>createInjectable</strong>
+			](/utilities/injectors/create-injectable/) • [<strong>autoEffect</strong>
+			](/utilities/injectors/auto-effect/) • [<strong>assertInjector</strong>
+			](/utilities/injectors/assert-injector/) • [
+			<strong>injectActiveElement</strong>
+			](/utilities/injectors/active-element/) • [
+			<strong>injectDocumentVisibility</strong>
+			](/utilities/injectors/inject-document-visibility/)
+		</div>
+	</div>
+</div>
+
+<div class="card">
+	<h3>RxJS Operators</h3>
+	<div class="home-links">
+		- [<strong>debug</strong> - log stream inputs and transformed
+		outputs](/utilities/operators/debug/) - [<strong>filterArray</strong> -
+		filter array emitted by the stream](/utilities/operators/filter-array/) - [
+		<strong>filterNil</strong> - filter out null and undefined
+		values](/utilities/operators/filter-nil/) - [<strong>mapArray</strong> - map
+		array emitted by the stream](/utilities/operators/map-array/) - [
+		<strong>mapSkipUndefined</strong> - skip undefined on
+		map](/utilities/operators/map-skip-undefined/) - [<strong>poll</strong> -
+		poll a stream every "period" milliseconds](/utilities/operators/poll/)
+		<div class="more-items">
+			[<strong>reduceArray</strong>](/utilities/operators/reduce-array/) • [
+			<strong>whenDocumentVisible</strong>
+			](/utilities/operators/when-document-visible/) • [
+			<strong>deriveLoading</strong>](/utilities/operators/derive-loading/) • [
+			<strong>takeLatestFrom</strong>](/utilities/operators/take-latest-from/)
+		</div>
+	</div>
+</div>
+
+<div class="card">
+	<h3>Forms</h3>
+	<div class="home-links">
+		- [<strong>ifValidator / ifAsyncValidator</strong> - apply sync/async
+		conditional form validation](/utilities/forms/if-validator/) - [
+		<strong>controlValueAccessor</strong> - create custom form
+		controls](/utilities/forms/control-value-accessor/) - [
+		<strong>controlError</strong> - handle form control
+		errors](/utilities/forms/control-error/) - [<strong>formEvents</strong> -
+		enhanced form event handling](/utilities/forms/form-events/)
+	</div>
+</div>
+
+<div class="card">
+	<h3>Pipes</h3>
+	<div class="home-links">
+		- [<strong>repeatPipe</strong> - repeat pipe for template
+		iteration](/utilities/pipes/repeat-pipe/) - [<strong>call/apply</strong> -
+		call and apply functions in templates](/utilities/pipes/call-apply/)
+	</div>
+</div>
+
+<div class="card">
+	<h3>Effects & Lifecycle</h3>
+	<div class="home-links">
+		- [<strong>createEffect</strong> - standalone version of NgRx ComponentStore
+		Effect](/utilities/stores/create-effect/) - [<strong>effectOnceIf</strong> -
+		run effect once when condition is met](/utilities/effects/effect-once-if/)
+		-[<strong>rxEffect</strong> - utility to create a side effect with
+		rxjs](/utilities/operators/rx-effect/)
+	</div>
+</div>
+
+<div class="card">
+	<h3>Directives</h3>
+	<div class="home-links">
+		- [<strong>clickOutside</strong> - track when clicked outside an
+		element](/utilities/directives/click-outside/) - [<strong>repeat</strong> -
+		extension for an effective NgFor iteration](/utilities/directives/repeat/) -
+		[<strong>resize</strong> - track element/host
+		resizing](/utilities/directives/resize/) - [
+		<strong>TrackById / TrackByProp</strong> - efficient iteration with trackby
+		id or prop](/utilities/directives/trackby-id-prop/)
+	</div>
+</div>
+
+<div class="card">
+	<h3>Components</h3>
+	<div class="home-links">
+		- [<strong>hostBinding</strong> - signal counterpart of @HostBinding
+		API](/utilities/components/host-binding/) - [<strong>svgSprite</strong> -
+		SVG sprite management](/utilities/components/svg-sprite/) - [
+		<strong>Gesture</strong> - collection of Gestures to bind mouse and touch
+		events](/utilities/gesture/intro/)
+	</div>
+</div>
+
+  <div class="card">
+    <h3>Miscellaneous</h3>
     <div class="home-links">
-      - [<strong>clickOutside</strong> - track when clicked outside an element](/utilities/directives/click-outside/)
-      - [<strong>repeat</strong> - extension for an effective NgFor iteration](/utilities/directives/repeat/)
-      - [<strong>resize</strong> - track element/host resizing](/utilities/directives/resize/)
-      - [<strong>TrackById / TrackByProp</strong> - efficient iteration with trackby id or prop](/utilities/directives/trackby-id-prop/)
-    </div>
-  </Card>
-  <Card title="And more..." icon="open-book">
-    <div class="home-links">
-      - [<strong>hostBinding</strong> - signal counterpart of @HostBinding API](/utilities/components/host-binding/)
-      - [<strong>createEffect</strong> - standalone version of NgRx ComponentStore Effect](/utilities/stores/create-effect/)
       - [<strong>createSingletonProxy</strong> - lazy create singleton instance of a given class](/utilities/miscellaneous/singleton-proxy/)
-      - [<strong>ifValidator / ifAsyncValidator</strong> - apply sync/async conditional form validation](/utilities/forms/if-validator/)
-      - [<strong>Gesture</strong> - collection of Gestures to bind mouse and touch events](/utilities/gesture/intro/)
+      - [<strong>call/apply</strong> - call and apply functions safely](/utilities/miscellaneous/call-apply/)
+      - [<strong>intl</strong> - internationalization utilities](utilities/intl/intl/)
+      - [<strong>mergeHttpContext</strong> - merge HTTP context providers](/utilities/http/merge-http-context/)
     </div>
-  </Card>
-</CardGrid>
+  </div>
+</div>

@@ -23,4 +23,12 @@ const docs = defineCollection({
 		}),
 });
 
-export const collections = { docs, contributors };
+const i18n = defineCollection({
+	type: 'data',
+	schema: z.object({
+		title: z.string(),
+		description: z.string().optional(),
+	}),
+});
+
+export const collections = { docs, contributors, i18n };

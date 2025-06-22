@@ -1,12 +1,506 @@
+/* Homepage specific styles */
 .home-links ul {
-	list-style-type: disc;
-	padding-left: 25px;
+	list-style-type: none;
+	padding-left: 0;
+	margin: 0;
+}
+
+.home-links li {
+	position: relative;
+	margin-bottom: 0.75rem;
+	padding-left: 1.5rem;
+	line-height: 1.6;
+	transition: all 0.2s ease;
+}
+
+.home-links li::before {
+	content: '→';
+	position: absolute;
+	left: 0;
+	top: 5px;
+	color: var(--sl-color-accent);
+	font-weight: bold;
+	font-size: 0.9rem;
+	transition: all 0.2s ease;
+}
+
+.home-links li:hover::before {
+	transform: translateX(4px);
+	color: var(--sl-color-accent-high);
 }
 
 .home-links a {
 	text-decoration: none;
+	transition: all 0.2s ease;
+	display: inline-block;
+	color: var(--sl-color-text);
+	font-weight: 500;
+	padding: 0.25rem 0;
+	border-radius: 6px;
+	position: relative;
+}
+
+.home-links a:hover {
+	transform: translateX(4px);
+	color: var(--sl-color-accent);
+	background: var(--sl-color-accent-low);
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
 }
 
 .home-links a::after {
-	content: ' → ';
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 0;
+	height: 2px;
+	background: linear-gradient(
+		90deg,
+		var(--sl-color-accent) 0%,
+		var(--sl-color-accent-high) 100%
+	);
+	transition: width 0.3s ease;
+	border-radius: 1px;
+}
+
+.home-links a:hover::after {
+	width: 100%;
+}
+
+/* Enhanced card styling */
+.home-links strong {
+	color: var(--sl-color-accent);
+	font-weight: 600;
+	transition: color 0.2s ease;
+}
+
+.home-links a:hover strong {
+	color: var(--sl-color-accent-high);
+}
+
+/* More items styling */
+.more-items {
+	margin-top: 1rem;
+	padding-top: 1rem;
+	border-top: 1px solid var(--sl-color-border);
+	font-size: 0.9rem;
+	line-height: 1.5;
+	color: var(--sl-color-text);
+}
+
+.more-items a {
+	color: var(--sl-color-text);
+	font-weight: 500;
+	text-decoration: none;
+	transition: all 0.2s ease;
+	padding: 0.1rem 0.2rem;
+	border-radius: 4px;
+	margin: 0 0.1rem;
+}
+
+.more-items a:hover {
+	color: var(--sl-color-accent);
+	background: var(--sl-color-accent-low);
+	transform: none;
+}
+
+.more-items strong {
+	color: var(--sl-color-accent);
+	font-weight: 600;
+}
+
+.more-items a:hover strong {
+	color: var(--sl-color-accent-high);
+}
+
+/* Hero section enhancements */
+.hero {
+	text-align: center;
+	padding: 4rem 0;
+}
+
+.hero .tagline {
+	font-size: 1.5rem;
+	font-weight: 400;
+	color: var(--sl-color-text);
+	margin-bottom: 2rem;
+}
+
+/* Modern Card Grid Styling */
+.card-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 2rem;
+	margin: 3rem 0;
+	padding: 0 1rem;
+}
+
+.card {
+	position: relative;
+	border: none;
+	border-radius: 4px;
+	padding: 2rem;
+	transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	overflow: hidden;
+	background: linear-gradient(
+		135deg,
+		var(--sl-color-surface) 0%,
+		var(--sl-color-surface-elevated) 100%
+	);
+	box-shadow:
+		0px 2px 2px 0px rgb(0 0 0 / 5%),
+		0 2px 4px -1px rgb(0 0 0 / 5%);
+	border: 1px solid var(--sl-color-border);
+}
+
+.card:hover {
+	transform: translateY(-8px) scale(1.02);
+	box-shadow:
+		0 20px 25px -5px rgba(0, 0, 0, 0.1),
+		0 10px 10px -5px rgba(0, 0, 0, 0.04);
+	border-color: var(--sl-color-accent);
+}
+
+.card h3 {
+	margin-top: 0;
+	margin-bottom: 1.5rem;
+	color: var(--sl-color-accent);
+	font-size: 1.5rem;
+	font-weight: 700;
+	letter-spacing: -0.025em;
+	position: relative;
+}
+
+.card h3::after {
+	content: '';
+	position: absolute;
+	bottom: -8px;
+	left: 0;
+	width: 40px;
+	height: 3px;
+	background: linear-gradient(
+		90deg,
+		var(--sl-color-accent) 0%,
+		var(--sl-color-accent-high) 100%
+	);
+	border-radius: 2px;
+	transition: width 0.3s ease;
+}
+
+.card:hover h3::after {
+	width: 60px;
+}
+
+/* Card category-specific colors */
+.card:nth-child(1) h3 {
+	color: #3b82f6;
+} /* Signal Utilities - Blue */
+.card:nth-child(2) h3 {
+	color: #dc2626;
+} /* Router Utilities - Red */
+.card:nth-child(3) h3 {
+	color: #8b5cf6;
+} /* Injector Utilities - Purple */
+.card:nth-child(4) h3 {
+	color: #06b6d4;
+} /* RxJS Operators - Cyan */
+.card:nth-child(5) h3 {
+	color: #10b981;
+} /* Directives - Green */
+.card:nth-child(6) h3 {
+	color: #f59e0b;
+} /* Pipes - Amber */
+.card:nth-child(7) h3 {
+	color: #ef4444;
+} /* Forms - Red */
+.card:nth-child(8) h3 {
+	color: #6366f1;
+} /* HTTP & Context - Indigo */
+.card:nth-child(9) h3 {
+	color: #ec4899;
+} /* Effects & Lifecycle - Pink */
+.card:nth-child(10) h3 {
+	color: #84cc16;
+} /* Components - Lime */
+.card:nth-child(11) h3 {
+	color: #f97316;
+} /* Internationalization - Orange */
+.card:nth-child(12) h3 {
+	color: #14b8a6;
+} /* Gestures - Teal */
+.card:nth-child(13) h3 {
+	color: #6b7280;
+} /* Miscellaneous - Gray */
+.card:nth-child(14) h3 {
+	color: #8b5cf6;
+} /* Code Migrations - Purple */
+
+/* Category-specific list arrow colors */
+.card:nth-child(1) .home-links li::before {
+	color: #3b82f6;
+}
+.card:nth-child(2) .home-links li::before {
+	color: #dc2626;
+}
+.card:nth-child(3) .home-links li::before {
+	color: #8b5cf6;
+}
+.card:nth-child(4) .home-links li::before {
+	color: #06b6d4;
+}
+.card:nth-child(5) .home-links li::before {
+	color: #10b981;
+}
+.card:nth-child(6) .home-links li::before {
+	color: #f59e0b;
+}
+.card:nth-child(7) .home-links li::before {
+	color: #ef4444;
+}
+.card:nth-child(8) .home-links li::before {
+	color: #6366f1;
+}
+.card:nth-child(9) .home-links li::before {
+	color: #ec4899;
+}
+.card:nth-child(10) .home-links li::before {
+	color: #84cc16;
+}
+.card:nth-child(11) .home-links li::before {
+	color: #f97316;
+}
+.card:nth-child(12) .home-links li::before {
+	color: #14b8a6;
+}
+.card:nth-child(13) .home-links li::before {
+	color: #6b7280;
+}
+.card:nth-child(14) .home-links li::before {
+	color: #8b5cf6;
+}
+
+/* Enhanced link styling within cards */
+.card .home-links a {
+	color: var(--sl-color-text);
+	font-weight: 500;
+	line-height: 1.6;
+	padding: 0.25rem 0;
+	border-radius: 4px;
+	transition: all 0.2s ease;
+}
+
+.card .home-links a:hover {
+	color: var(--sl-color-accent);
+	background: var(--sl-color-accent-low);
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
+	transform: translateX(4px);
+}
+
+.card .home-links strong {
+	font-weight: 600;
+	color: inherit;
+}
+
+/* Quick start section */
+.quick-start {
+	background: linear-gradient(
+		135deg,
+		var(--sl-color-accent-low) 0%,
+		var(--sl-color-accent) 100%
+	);
+	border-radius: 16px;
+	padding: 2.5rem;
+	margin: 2rem 0;
+	color: white;
+}
+
+.quick-start h3 {
+	color: white;
+	margin-bottom: 1.5rem;
+	font-size: 1.5rem;
+	font-weight: 700;
+}
+
+/* Why ngxtension section */
+.why-ngxtension {
+	background: linear-gradient(
+		135deg,
+		var(--sl-color-accent-low) 0%,
+		var(--sl-color-accent) 100%
+	);
+	border-radius: 16px;
+	padding: 2.5rem;
+	margin: 2rem 0;
+	color: white;
+}
+
+.why-ngxtension h2 {
+	color: white;
+	margin-bottom: 1.5rem;
+	font-size: 1.75rem;
+	font-weight: 700;
+}
+
+.why-ngxtension ul {
+	list-style: none;
+	padding: 0;
+}
+
+.why-ngxtension li {
+	margin-bottom: 1rem;
+	padding-left: 2rem;
+	position: relative;
+	font-size: 1.1rem;
+	line-height: 1.6;
+}
+
+.why-ngxtension li::before {
+	content: '✨';
+	position: absolute;
+	left: 0;
+	font-size: 1.2rem;
+}
+
+/* Steps component enhancements */
+.steps {
+	background: linear-gradient(
+		135deg,
+		var(--sl-color-accent-low) 0%,
+		var(--sl-color-accent) 100%
+	);
+	border-radius: 16px;
+	padding: 2.5rem;
+	margin: 2rem 0;
+	color: white;
+}
+
+.steps h3 {
+	color: white;
+	margin-bottom: 1.5rem;
+	font-size: 1.5rem;
+	font-weight: 700;
+}
+
+/* Code block enhancements */
+.steps pre {
+	background: var(--sl-color-black);
+	border-radius: 12px;
+	margin: 1.5rem 0;
+	border: 1px solid var(--sl-color-border);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+	.hero .tagline {
+		font-size: 1.25rem;
+	}
+
+	.card-grid {
+		grid-template-columns: 1fr;
+		gap: 1.5rem;
+		padding: 0 0.5rem;
+	}
+
+	.card {
+		padding: 1.5rem;
+	}
+
+	.home-links li {
+		padding-left: 1.25rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.more-items {
+		font-size: 0.85rem;
+		margin-top: 0.75rem;
+		padding-top: 0.75rem;
+	}
+
+	.quick-start,
+	.why-ngxtension,
+	.steps {
+		padding: 1.5rem;
+		margin: 1.5rem 0;
+	}
+}
+
+/* Animation for cards */
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(30px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.card {
+	animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.card:nth-child(1) {
+	animation-delay: 0.1s;
+}
+.card:nth-child(2) {
+	animation-delay: 0.2s;
+}
+.card:nth-child(3) {
+	animation-delay: 0.3s;
+}
+.card:nth-child(4) {
+	animation-delay: 0.4s;
+}
+.card:nth-child(5) {
+	animation-delay: 0.5s;
+}
+.card:nth-child(6) {
+	animation-delay: 0.6s;
+}
+.card:nth-child(7) {
+	animation-delay: 0.7s;
+}
+.card:nth-child(8) {
+	animation-delay: 0.8s;
+}
+.card:nth-child(9) {
+	animation-delay: 0.9s;
+}
+.card:nth-child(10) {
+	animation-delay: 1s;
+}
+.card:nth-child(11) {
+	animation-delay: 1.1s;
+}
+.card:nth-child(12) {
+	animation-delay: 1.2s;
+}
+.card:nth-child(13) {
+	animation-delay: 1.3s;
+}
+.card:nth-child(14) {
+	animation-delay: 1.4s;
+}
+
+/* Dark mode enhancements */
+@media (prefers-color-scheme: dark) {
+	.card {
+		background: linear-gradient(
+			135deg,
+			var(--sl-color-surface) 0%,
+			var(--sl-color-surface-elevated) 100%
+		);
+		box-shadow:
+			0 4px 6px -1px rgba(0, 0, 0, 0.1),
+			0 2px 4px -1px rgba(0, 0, 0, 0.1);
+	}
+
+	.card:hover {
+		box-shadow:
+			0 20px 25px -5px rgba(0, 0, 0, 0.2),
+			0 10px 10px -5px rgba(0, 0, 0, 0.15);
+	}
 }
