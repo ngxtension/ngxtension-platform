@@ -261,7 +261,7 @@ const internalInjectLocalStorage = <R>(
 
 			const key = untracked(computedKey);
 			const newValue = goodTry(
-				() => (value === undefined ? null : stringify(value)),
+				() => (value === undefined ? null : untracked(() => stringify(value))),
 				null,
 			);
 

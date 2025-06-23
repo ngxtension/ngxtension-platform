@@ -286,6 +286,24 @@ describe('injectLocalStorage', () => {
 
 			expect(localStorageSignal2()).toEqual(newValue);
 		});
+
+		it.injectable(
+			'should be reactive pure if signals reads in stringify function',
+			() => {
+				const config = signal({ maxLength: 10 });
+				const value = injectLocalStorage<string[]>('test', {
+					stringify: (items) =>
+						// @ts-expect-error https://github.com/ngxtension/ngxtension-platform/pull/596
+						JSON.stringify(items.slice(0, config().maxLength)),
+					defaultValue: [],
+				});
+
+				expect(() => {
+					value.set(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']);
+					value.update((items) => [...items, 'l']);
+				}).toBeReactivePure();
+			},
+		);
 	});
 
 	describe('with computed key', () => {
