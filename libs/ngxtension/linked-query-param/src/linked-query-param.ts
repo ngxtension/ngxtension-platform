@@ -181,11 +181,12 @@ export class LinkedQueryParamGlobalHandler {
 }
 
 type LinkedQueryParamOptions = {
-	/**
-	 * The injector to use to inject the router and activated route.
-	 */
 	injector?: Injector;
 } & Partial<NavigateMethodFields>;
+
+type LinkedQueryParamOptionsWithSource<T> = LinkedQueryParamOptions & {
+	source: WritableSignal<T | null>;
+};
 
 /**
  * These are the function types that will be used to parse and stringify the query param value.
@@ -202,6 +203,14 @@ type StringifyFn<T> = (value: T) => StringifyReturnType;
  */
 type SignalSetFn<T> = (value: T) => void;
 type SignalUpdateFn<T> = (fn: (value: T) => T) => void;
+
+export function linkedQueryParam<T = string>(
+	key: string,
+	options: LinkedQueryParamOptionsWithSource<T>,
+): WritableSignal<T> & {
+	set: SignalSetFn<T | null>;
+	update: SignalUpdateFn<T | null>;
+};
 
 /**
  * Creates a signal that is linked to a query parameter.
@@ -226,6 +235,7 @@ type SignalUpdateFn<T> = (fn: (value: T) => T) => void;
  * @param options Configuration options for the signal.
  * @returns A signal that is linked to the query parameter.
  */
+// @ts-ignore
 export function linkedQueryParam<T = string>(
 	key: string,
 	options: LinkedQueryParamOptions & {
@@ -318,6 +328,7 @@ export function linkedQueryParam<T = string>(
 export function linkedQueryParam<T>(
 	key: string,
 	options?: LinkedQueryParamOptions & {
+		source: WritableSignal<T>;
 		defaultValue?: T;
 		parse?: ParseFn<T>;
 		stringify?: StringifyFn<T>;
@@ -368,9 +379,26 @@ export function linkedQueryParam<T>(
 			{ initialValue: parseParamValue(route.snapshot.queryParams) },
 		);
 
-		const source = signal<T>(queryParamValue() as T);
+		const source = options?.source || signal<T>(queryParamValue() as T);
 
 		const originalSet = source.set;
+
+		if (options?.source) {
+			// we need to update the source signal with the current query param value
+			originalSet(queryParamValue() as T);
+
+			// If the source signal is provided, we need to update the query param whenever the source signal changes
+			explicitEffect(
+				[source],
+				([value]) => {
+					// we call set with the new source signal value here, so that the navigation event will be scheduled
+					set(value);
+					// we treat the query params as the source of truth in this case, so we will change the query params,
+					// only after the first emission of the source value
+				},
+				{ defer: true },
+			);
+		}
 
 		explicitEffect([queryParamValue], ([value]) => {
 			// update the source signal whenever the query param changes
