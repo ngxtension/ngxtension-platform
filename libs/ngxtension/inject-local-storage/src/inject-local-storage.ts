@@ -127,11 +127,15 @@ function isFunction(value: unknown): value is (...args: unknown[]) => unknown {
 	return typeof value === 'function';
 }
 
-function goodTry<T>(tryFn: () => T, defaultValue: T): T {
+function getDefaultValue<R>(defaultValue: R | (() => R)): R {
+	return isFunction(defaultValue) ? defaultValue() : defaultValue;
+}
+
+function goodTry<T>(tryFn: () => T, defaultValue: () => T): T {
 	try {
 		return tryFn();
 	} catch {
-		return defaultValue;
+		return defaultValue();
 	}
 }
 
@@ -160,28 +164,17 @@ export const injectLocalStorage: {
 	keyOrComputation: string | (() => string),
 	options: LocalStorageOptions<T> = {},
 ): LocalStorageSignal<T | undefined> => {
-	if (isLocalStorageWithDefaultValue(options)) {
-		const defaultValue = isFunction(options.defaultValue)
-			? options.defaultValue()
-			: options.defaultValue;
-
-		return internalInjectLocalStorage<T>(
-			keyOrComputation,
-			options,
-			defaultValue,
-		);
-	}
 	return internalInjectLocalStorage<T, T | undefined>(
 		keyOrComputation,
 		options,
-		undefined,
+		isLocalStorageWithDefaultValue(options) ? options.defaultValue : undefined,
 	);
 };
 
 const internalInjectLocalStorage = <T, R = T>(
 	keyOrComputation: string | (() => string),
 	options: LocalStorageOptions<T>,
-	defaultValue: R,
+	defaultValue: R | (() => R),
 ): LocalStorageSignal<R> => {
 	const stringify = isFunction(options.stringify)
 		? options.stringify
@@ -218,11 +211,17 @@ const internalInjectLocalStorage = <T, R = T>(
 		);
 
 		const getInitialValue = (key: string) => {
-			const initialStoredValue = goodTry(() => localStorage.getItem(key), null);
+			const initialStoredValue = goodTry(
+				() => localStorage.getItem(key),
+				() => null,
+			);
 
 			return initialStoredValue
-				? goodTry(() => parse(initialStoredValue) as R, defaultValue)
-				: defaultValue;
+				? goodTry(
+						() => parse(initialStoredValue) as R,
+						() => getDefaultValue(defaultValue),
+					)
+				: getDefaultValue(defaultValue);
 		};
 
 		const internalSignal = computed<R>(() => {
@@ -264,7 +263,7 @@ const internalInjectLocalStorage = <T, R = T>(
 			const key = untracked(computedKey);
 			const newValue = goodTry(
 				() => (value === undefined ? null : untracked(() => stringify(value))),
-				null,
+				() => null,
 			);
 
 			try {
@@ -296,10 +295,14 @@ const internalInjectLocalStorage = <T, R = T>(
 				const key = untracked(computedKey);
 
 				if (event.storageArea === localStorage && event.key === key) {
-					const newValue =
-						event.newValue !== null
-							? (parse(event.newValue) as R)
-							: defaultValue;
+					const newValue = goodTry(
+						() =>
+							event.newValue !== null
+								? (parse(event.newValue) as R)
+								: getDefaultValue(defaultValue),
+						() => getDefaultValue(defaultValue),
+					);
+
 					state.set({
 						kind: Kind.COMPUTED,
 						key,
