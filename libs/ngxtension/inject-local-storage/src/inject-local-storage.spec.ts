@@ -288,7 +288,7 @@ describe('injectLocalStorage', () => {
 		});
 
 		it.injectable(
-			'should be reactive pure if signals reads in stringify function',
+			'should not track dependencies inside the stringify function',
 			() => {
 				const config = signal({ maxLength: 10 });
 				const value = injectLocalStorage<string[]>('test', {
