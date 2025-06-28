@@ -8,8 +8,10 @@ import {
 import { TestBed } from '@angular/core/testing';
 import {
 	FormControl,
+	FormGroup,
 	FormGroupDirective,
 	NgForm,
+	ReactiveFormsModule,
 	Validators,
 } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -39,13 +41,13 @@ describe('NgxControlError', () => {
 		await TestBed.runInInjectionContext(test);
 	};
 
-	const render = (
+	const render = <TInputs>(
 		template: string,
-		inputs?: Partial<NgxControlError> | undefined,
+		inputs?: Partial<TInputs> | undefined,
 		providers?: Provider[],
 	) => {
 		@Component({
-			imports: [CommonModule, NgxControlError],
+			imports: [CommonModule, ReactiveFormsModule, NgxControlError],
 			standalone: true,
 			template,
 			providers,
@@ -298,5 +300,36 @@ describe('NgxControlError', () => {
 		expect(fixture.debugElement.nativeElement.textContent).toEqual(
 			'INVALID - true',
 		);
+	});
+
+	it('should resolve a control by its name', () => {
+		const params = {
+			error: 'required',
+			form: new FormGroup({
+				name: new FormControl('', Validators.required),
+			}),
+			stateMatcher: () => of(true),
+		};
+
+		const [fixture, controlError] = render(
+			`<form [formGroup]="form">
+					<label>
+						<input formControlName="name" />
+						<span *ngxControlError="'name'; track: error, errorStateMatcher: stateMatcher">42</span>
+					</label>
+				</form>
+			`,
+			params,
+		);
+
+		fixture.detectChanges();
+
+		expect(fixture.debugElement.nativeElement.textContent).toBe('42');
+
+		controlError.errorStateMatcher = () => of(false);
+
+		fixture.detectChanges();
+
+		expect(fixture.debugElement.nativeElement.textContent).toBe('');
 	});
 });
