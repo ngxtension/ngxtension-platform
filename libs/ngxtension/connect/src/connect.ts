@@ -33,6 +33,31 @@ type ConnectedSignal<TSignalValue> = {
 };
 
 /**
+ * Connects a signal to another signal value.
+ * @param signal The signal to connect to.
+ * @param originSignal A callback fn that includes a signal call. The signal call will be tracked.
+ *
+ * Usage
+ * ```ts
+ * export class MyComponent {
+ *  private dataService = inject(DataService);
+ *
+ *  name = signal('');
+ *
+ *  constructor() {
+ *    connect(this.name, () => this.dataService.user().name);
+ *  }
+ * }
+ * ```
+ * @param options An object that includes an injector or DestroyRef and a sync flag.
+ */
+export function connect<TSignalValue>(
+	signal: WritableSignal<TSignalValue>,
+	originSignal: () => TSignalValue,
+	options?: { injectorOrDestroyRef?: Injector | DestroyRef; sync?: boolean },
+): EffectRef;
+
+/**
  * Connects a signal to an observable and returns a subscription. The subscription is automatically
  * unsubscribed when the component is destroyed. If it's not called in an injection context, it must
  * be called with an injector or DestroyRef.
@@ -58,29 +83,6 @@ export function connect<TSignalValue>(
 	useUntracked?: boolean,
 ): ConnectedSignal<TSignalValue>;
 
-/**
- * Connects a signal to another signal value.
- * @param signal The signal to connect to.
- * @param originSignal A callback fn that includes a signal call. The signal call will be tracked.
- *
- * Usage
- * ```ts
- * export class MyComponent {
- * 	private dataService = inject(DataService);
- *
- * 	name = signal('');
- *
- *  constructor() {
- *    connect(this.name, () => this.dataService.user().name);
- *  }
- * }
- * ```
- */
-export function connect<TSignalValue>(
-	signal: WritableSignal<TSignalValue>,
-	originSignal: () => TSignalValue,
-): EffectRef;
-
 export function connect<
 	TSignalValue,
 	TObservableValue extends PartialOrValue<TSignalValue>,
@@ -92,8 +94,10 @@ export function connect<
 ): Subscription;
 export function connect<TSignalValue, TObservableValue>(
 	signal: WritableSignal<TSignalValue>,
-	observable: Observable<TObservableValue>,
-	reducer: Reducer<TSignalValue, TObservableValue>,
+	observable: Observable<TObservableValue> | (() => TObservableValue),
+	reducer:
+		| Reducer<TSignalValue, TObservableValue>
+		| { injector?: Injector | DestroyRef; sync?: boolean },
 	injectorOrDestroyRef?: Injector | DestroyRef,
 	useUntracked?: boolean,
 ): Subscription;
@@ -104,6 +108,7 @@ export function connect(signal: WritableSignal<unknown>, ...args: any[]) {
 		injectorOrDestroyRef,
 		useUntracked,
 		originSignal,
+		isSync,
 	] = parseArgs(args);
 
 	if (observable) {
@@ -148,21 +153,21 @@ export function connect(signal: WritableSignal<unknown>, ...args: any[]) {
 				? assertInjector(connect, injectorOrDestroyRef)
 				: undefined;
 
-		return effect(
-			() => {
-				signal.update((prev) => {
-					if (!isObject(prev)) {
-						return originSignal();
-					}
+		const updateSignal = () => {
+			signal.update((prev) => {
+				if (!isObject(prev)) {
+					return originSignal();
+				}
+				return { ...prev, ...(originSignal() as object) };
+			});
+		};
 
-					return { ...prev, ...(originSignal() as object) };
-				});
-			},
-			{
-				allowSignalWrites: true,
-				injector,
-			},
-		);
+		if (isSync) {
+			// sync signals are updated immediately
+			updateSignal();
+		}
+
+		return effect(() => updateSignal(), { allowSignalWrites: true, injector });
 	}
 
 	return {
@@ -188,14 +193,13 @@ export function connect(signal: WritableSignal<unknown>, ...args: any[]) {
 }
 
 // TODO: there must be a way to parse the args more efficiently
-function parseArgs(
-	args: any[],
-): [
-	Observable<unknown> | null,
-	Reducer<unknown, unknown> | null,
-	Injector | DestroyRef | null,
-	boolean,
-	(() => unknown) | null,
+function parseArgs(args: any[]): [
+	Observable<unknown> | null, // observable
+	Reducer<unknown, unknown> | null, // reducer
+	Injector | DestroyRef | null, // injector or destroyRef
+	boolean, // useUntracked
+	(() => unknown) | null, // originSignal
+	boolean, // isSync
 ] {
 	if (args.length > 3) {
 		return [
@@ -204,6 +208,7 @@ function parseArgs(
 			args[2] as Injector | DestroyRef,
 			args[3] as boolean,
 			null,
+			false,
 		];
 	}
 
@@ -216,6 +221,7 @@ function parseArgs(
 					args[1] as Injector | DestroyRef,
 					args[2],
 					null,
+					false,
 				];
 			} else {
 				return [
@@ -224,6 +230,7 @@ function parseArgs(
 					args[1] as Injector | DestroyRef,
 					args[2],
 					args[0] as () => unknown,
+					false,
 				];
 			}
 		}
@@ -234,12 +241,20 @@ function parseArgs(
 			args[2] as Injector | DestroyRef,
 			false,
 			null,
+			false,
 		];
 	}
 
 	if (args.length === 2) {
 		if (typeof args[1] === 'boolean') {
-			return [null, null, args[0] as Injector | DestroyRef, args[1], null];
+			return [
+				null,
+				null,
+				args[0] as Injector | DestroyRef,
+				args[1],
+				null,
+				false,
+			];
 		}
 
 		if (typeof args[1] === 'function') {
@@ -249,6 +264,7 @@ function parseArgs(
 				null,
 				false,
 				null,
+				false,
 			];
 		}
 
@@ -258,19 +274,31 @@ function parseArgs(
 			args[1] as Injector | DestroyRef,
 			false,
 			null,
+			false,
 		];
 	}
 
 	if (isObservable(args[0])) {
-		return [args[0] as Observable<unknown>, null, null, false, null];
+		return [args[0] as Observable<unknown>, null, null, false, null, false];
 	}
 
 	// to connect signals to other signals, we need to use a callback that includes a signal call
 	if (typeof args[0] === 'function') {
-		return [null, null, null, false, args[0] as () => unknown];
+		const { injectorOrDestroyRef, sync } = (args[1] || {}) as {
+			injectorOrDestroyRef?: Injector | DestroyRef;
+			sync?: boolean;
+		};
+		return [
+			null,
+			null,
+			injectorOrDestroyRef || null,
+			false,
+			args[0] as () => unknown,
+			sync || false,
+		];
 	}
 
-	return [null, null, args[0] as Injector | DestroyRef, false, null];
+	return [null, null, args[0] as Injector | DestroyRef, false, null, false];
 }
 
 function isObject(val: any): val is object {
