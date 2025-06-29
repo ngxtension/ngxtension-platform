@@ -56,7 +56,7 @@ describe(CallPipe.name, () => {
 		expect(() => {
 			const fixture = TestBed.createComponent(FailDummy);
 			fixture.detectChanges();
-		}).toThrowError(
+		}).toThrow(
 			`DON'T USE this INSIDE A FUNCTION CALLED BY | call OR | apply IT MUST BE A PURE FUNCTION!`,
 		);
 	});
@@ -132,7 +132,7 @@ describe(ApplyPipe.name, () => {
 		expect(() => {
 			const fixture = TestBed.createComponent(FailDummy);
 			fixture.detectChanges();
-		}).toThrowError(
+		}).toThrow(
 			`DON'T USE this INSIDE A FUNCTION CALLED BY | call OR | apply IT MUST BE A PURE FUNCTION!`,
 		);
 	});
