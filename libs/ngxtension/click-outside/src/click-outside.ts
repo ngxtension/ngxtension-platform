@@ -1,13 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import type { OnInit } from '@angular/core';
-import {
-	Directive,
-	ElementRef,
-	EventEmitter,
-	inject,
-	NgZone,
-	Output,
-} from '@angular/core';
+import { Directive, ElementRef, inject, NgZone, output } from '@angular/core';
 import { createInjectionToken } from 'ngxtension/create-injection-token';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { filter, fromEvent, Subject, takeUntil } from 'rxjs';
@@ -45,7 +38,7 @@ export class ClickOutside implements OnInit {
 	/*
 	 * This event is emitted when a click occurs outside the element.
 	 */
-	@Output() clickOutside = new EventEmitter<Event>();
+	public clickOutside = output<Event>();
 
 	ngOnInit() {
 		this.documentClick$

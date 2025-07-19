@@ -1,10 +1,9 @@
 import {
 	Directive,
-	EventEmitter,
 	Injector,
 	Input,
-	Output,
 	inject,
+	output,
 	signal,
 	type OnInit,
 } from '@angular/core';
@@ -24,7 +23,7 @@ export class NgxScroll implements OnInit {
 		this.config.set(config);
 	}
 	@Input('ngxScrollZoneless') zoneless?: boolean;
-	@Output() ngxScroll = new EventEmitter<NgxInjectScroll['state']>();
+	public ngxScroll = output<NgxInjectScroll['state']>();
 
 	private injector = inject(Injector);
 
