@@ -1,10 +1,9 @@
 import {
 	Directive,
-	EventEmitter,
 	Injector,
 	Input,
-	Output,
 	inject,
+	output,
 	signal,
 	type OnInit,
 } from '@angular/core';
@@ -24,7 +23,7 @@ export class NgxMove implements OnInit {
 		this.config.set(config);
 	}
 	@Input('ngxMoveZoneless') zoneless?: boolean;
-	@Output() ngxMove = new EventEmitter<NgxInjectMove['state']>();
+	public ngxMove = output<NgxInjectMove['state']>();
 
 	private injector = inject(Injector);
 

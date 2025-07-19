@@ -1,10 +1,9 @@
 import {
 	Directive,
-	EventEmitter,
 	Injector,
 	Input,
-	Output,
 	inject,
+	output,
 	signal,
 	type OnInit,
 } from '@angular/core';
@@ -24,7 +23,7 @@ export class NgxWheel implements OnInit {
 		this.config.set(config);
 	}
 	@Input('ngxWheelZoneless') zoneless?: boolean;
-	@Output() ngxWheel = new EventEmitter<NgxInjectWheel['state']>();
+	public ngxWheel = output<NgxInjectWheel['state']>();
 
 	private injector = inject(Injector);
 
