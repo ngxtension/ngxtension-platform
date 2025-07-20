@@ -4,9 +4,11 @@ import {
 	AbstractControl,
 	ControlEvent,
 	FormControlStatus,
+	FormGroup,
 	PristineChangeEvent,
 	StatusChangeEvent,
 	TouchedChangeEvent,
+	ValidationErrors,
 	ValueChangeEvent,
 } from '@angular/forms';
 import {
@@ -16,7 +18,10 @@ import {
 	distinctUntilChanged,
 	filter,
 	map,
+	of,
 	startWith,
+	switchMap,
+	throwError,
 } from 'rxjs';
 
 function valueEvents$<T>(form: AbstractControl<T>) {
@@ -55,6 +60,35 @@ function pristineEvents$<T>(form: AbstractControl<T>) {
 	);
 }
 
+function errorsEvents$<T>(form: AbstractControl<T>) {
+	return form.valueChanges.pipe(
+		startWith(null),
+		switchMap(() => {
+			if (form instanceof FormGroup) {
+				return of(
+					Object.entries(form.controls).reduce(
+						(acc: ValidationErrors, [key, control]) => {
+							if (!acc[key]) {
+								acc[key];
+							}
+							acc[key] = control.errors;
+							return acc;
+						},
+						{},
+					),
+				);
+			}
+			if (form instanceof AbstractControl) {
+				return of(form.errors);
+			}
+			return throwError(
+				() =>
+					new Error('NGXTENSION: form is not a FormGroup or AbstractControl'),
+			);
+		}),
+	);
+}
+
 function isValueEvent<T>(
 	event: ControlEvent | T,
 ): event is ValueChangeEvent<T> {
@@ -84,6 +118,7 @@ type FormEventData<T> = {
 	pending: boolean;
 	dirty: boolean;
 	untouched: boolean;
+	controlErrors: ValidationErrors | null;
 };
 
 export function allEventsObservable<T>(
@@ -109,8 +144,9 @@ export function allEventsObservable<T>(
 			statusEvents$(form).pipe(startWith(form.status)),
 			touchedEvents$(form).pipe(startWith(form.touched)),
 			pristineEvents$(form).pipe(startWith(form.pristine)),
+			errorsEvents$(form),
 		]).pipe(
-			map(([valueParam, statusParam, touchedParam, pristineParam]) => {
+			map(([valueParam, statusParam, touchedParam, pristineParam, errors]) => {
 				// Original values (plus value)
 				const stat: FormControlStatus | StatusChangeEvent = isStatusEvent(
 					statusParam,
@@ -143,6 +179,7 @@ export function allEventsObservable<T>(
 					pending: pendingDerived,
 					dirty: dirtyDerived,
 					untouched: untouchedDerived,
+					controlErrors: errors,
 				};
 			}),
 		),
@@ -153,6 +190,7 @@ export function allEventsSignal<T>(
 	form: AbstractControl<T>,
 	injector?: Injector,
 ): Signal<FormEventData<T>>;
+
 export function allEventsSignal<T>(
 	form: AbstractControl,
 	injector?: Injector,
@@ -173,6 +211,7 @@ export function allEventsSignal<T>(
 			pending: form.pending,
 			dirty: form.dirty,
 			untouched: form.untouched,
+			controlErrors: form.errors,
 		},
 		injector: injector,
 	});
