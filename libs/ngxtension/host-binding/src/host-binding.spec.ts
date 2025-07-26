@@ -52,6 +52,14 @@ class TestHost {
 	// style binding with a style unit extension
 	width = hostBinding('style.width.px', signal(500));
 
+	style = hostBinding(
+		'style',
+		signal({
+			position: 'fixed',
+			top: '10px',
+		} satisfies Partial<CSSStyleDeclaration>),
+	);
+
 	// attribute binding
 	required = hostBinding(
 		'attr.aria-required',
@@ -151,6 +159,13 @@ describe(hostBinding.name, () => {
 			const { fixture } = setup();
 
 			expect(fixture.nativeElement.style.width).toEqual('500px');
+		});
+
+		it('should bind both position to "fixed" and top to "10px"', () => {
+			const { fixture } = setup();
+
+			expect(fixture.nativeElement.style.position).toEqual('fixed');
+			expect(fixture.nativeElement.style.top).toEqual('10px');
 		});
 	});
 
