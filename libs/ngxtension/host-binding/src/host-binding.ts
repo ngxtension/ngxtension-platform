@@ -71,11 +71,6 @@ export function hostBinding<T, S extends Signal<T> | WritableSignal<T>>(
 									: undefined,
 							);
 						}
-					} else {
-						throw new TypeError(
-							`Invalid value for style host binding. Got: ${JSON.stringify(value)}`,
-							{ cause: value },
-						);
 					}
 					break;
 				case 'attr':
