@@ -293,7 +293,6 @@ describe('injectLocalStorage', () => {
 				const config = signal({ maxLength: 10 });
 				const value = injectLocalStorage<string[]>('test', {
 					stringify: (items) =>
-						// @ts-expect-error https://github.com/ngxtension/ngxtension-platform/pull/596
 						JSON.stringify(items.slice(0, config().maxLength)),
 					defaultValue: [],
 				});
