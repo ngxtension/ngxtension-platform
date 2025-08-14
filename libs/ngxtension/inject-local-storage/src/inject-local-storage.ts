@@ -16,7 +16,7 @@ import { assertInjector } from 'ngxtension/assert-injector';
 export const NGXTENSION_LOCAL_STORAGE = new InjectionToken(
 	'NGXTENSION_LOCAL_STORAGE',
 	{
-		providedIn: 'root',
+		providedIn: 'platform',
 		factory: () => localStorage, // this would be the default
 	},
 );

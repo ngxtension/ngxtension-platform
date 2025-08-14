@@ -379,7 +379,9 @@ export class NgxSvgSpriteFragment implements OnInit {
 
 			// Cleanup: clear child nodes and remove old classes of this svg.
 			return () => {
-				element.replaceChildren();
+        while (element.firstChild) {
+            element.removeChild(element.firstChild);
+        }
 				element.classList.remove(...classes);
 			};
 		});
