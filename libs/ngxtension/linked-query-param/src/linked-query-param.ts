@@ -4,8 +4,10 @@ import {
 	Injectable,
 	InjectionToken,
 	Injector,
+	isSignal,
 	Provider,
 	runInInjectionContext,
+	Signal,
 	signal,
 	untracked,
 	WritableSignal,
@@ -21,7 +23,7 @@ import { assertInjector } from 'ngxtension/assert-injector';
 import { createNotifier } from 'ngxtension/create-notifier';
 import { explicitEffect } from 'ngxtension/explicit-effect';
 
-import { distinctUntilKeyChanged, map } from 'rxjs';
+import { map } from 'rxjs';
 
 /**
  * The type of the stringified value.
@@ -203,6 +205,11 @@ type StringifyFn<T> = (value: T) => StringifyReturnType;
 type SignalSetFn<T> = (value: T) => void;
 type SignalUpdateFn<T> = (fn: (value: T) => T) => void;
 
+type QueryParamKey =
+	| string
+	| Signal<string | undefined>
+	| (() => string | undefined);
+
 /**
  * Creates a signal that is linked to a query parameter.
  *
@@ -227,96 +234,7 @@ type SignalUpdateFn<T> = (fn: (value: T) => T) => void;
  * @returns A signal that is linked to the query parameter.
  */
 export function linkedQueryParam<T = string>(
-	key: string,
-	options: LinkedQueryParamOptions & {
-		parse: ParseFn<T>;
-		stringify: StringifyFn<T>;
-	},
-): WritableSignal<T> & {
-	set: SignalSetFn<T | null>;
-	update: SignalUpdateFn<T | null>;
-};
-
-/**
- * You cannot use both `defaultValue` and `parse` at the same time.
- * You should use `parse` instead to handle the default value.
- *
- * For example, you cannot do this:
- *
- * ```ts
- * linkedQueryParam('param', { defaultValue: 1, parse: (x) => x ? parseInt(x, 10) : x });
- * ```
- *
- * Instead, you should do this:
- *
- * ```ts
- * linkedQueryParam('param', { parse: (x) => x ? parseInt(x, 10) : 1 });
- * ```
- */
-export function linkedQueryParam<T = string>(
-	key: string,
-	options: LinkedQueryParamOptions & {
-		defaultValue: Exclude<T, undefined>;
-		parse: ParseFn<T>;
-		stringify?: StringifyFn<T>;
-	},
-): never;
-
-export function linkedQueryParam<T = string>(
-	key: string,
-	options: LinkedQueryParamOptions & {
-		defaultValue: T;
-		stringify: StringifyFn<T>;
-	},
-): WritableSignal<T | null>;
-
-export function linkedQueryParam<T>(
-	key: string,
-	options: LinkedQueryParamOptions & { defaultValue: T },
-): WritableSignal<T> & {
-	set: SignalSetFn<T | null>;
-	update: SignalUpdateFn<T | null>;
-};
-
-export function linkedQueryParam<T>(
-	key: string,
-	options: LinkedQueryParamOptions & { defaultValue: T | null },
-): WritableSignal<T | null>;
-
-export function linkedQueryParam<T>(
-	key: string,
-	options: LinkedQueryParamOptions & { defaultValue: T | undefined },
-): WritableSignal<T | undefined>;
-
-export function linkedQueryParam<T = string>(
-	key: string,
-	options: LinkedQueryParamOptions & { defaultValue: undefined },
-): WritableSignal<T | null>;
-
-export function linkedQueryParam<T>(
-	key: string,
-	options: LinkedQueryParamOptions & { parse: ParseFn<T> },
-): WritableSignal<T> & {
-	set: SignalSetFn<T | null>;
-	update: SignalUpdateFn<T | null>;
-};
-
-export function linkedQueryParam<T = string>(
-	key: string,
-	options: LinkedQueryParamOptions & { stringify: StringifyFn<T> },
-): WritableSignal<T | null>;
-
-export function linkedQueryParam<T = string>(
-	key: string,
-	options: LinkedQueryParamOptions,
-): WritableSignal<T | null>;
-
-export function linkedQueryParam<T = string>(
-	key: string,
-): WritableSignal<T | null>;
-
-export function linkedQueryParam<T>(
-	key: string,
+	key: QueryParamKey,
 	options?: LinkedQueryParamOptions & {
 		defaultValue?: T;
 		parse?: ParseFn<T>;
@@ -336,35 +254,24 @@ export function linkedQueryParam<T>(
 		const globalHandler = inject(LinkedQueryParamGlobalHandler);
 		const config = inject(_LINKED_QUERY_PARAM_CONFIG_TOKEN);
 
-		/**
-		 * Parses a parameter value based on provided configuration.
-		 * @param params - An object containing parameters.
-		 * @returns The parsed parameter value.
-		 */
 		const parseParamValue = (params: Params) => {
-			// Get the value from the params object.
-			const value: string | null = params[key] ?? null;
-			// If a parsing function is provided in the config, use it to parse the value.
+			const currentKey = getCurrentKey(key);
+			const value: string | null = params[currentKey] ?? null;
 			if (options?.parse) {
 				return options.parse(value);
 			}
-			// If the value is undefined or null and a default value is provided, return the default value.
 			if (
 				(value === undefined || value === null) &&
 				options?.defaultValue !== undefined
 			) {
 				return options.defaultValue;
 			}
-			// Otherwise, return the original value or the parsed value (if it was parsed).
 			return value;
 		};
 
-		// create a signal that is updated whenever the query param changes
+		// Create a signal that combines both the key changes and query param changes
 		const queryParamValue = toSignal(
-			route.queryParams.pipe(
-				distinctUntilKeyChanged(key), // skip if no changes on same key
-				map((x) => parseParamValue(x)),
-			),
+			route.queryParams.pipe(map((params) => parseParamValue(params))),
 			{ initialValue: parseParamValue(route.snapshot.queryParams) },
 		);
 
@@ -377,8 +284,20 @@ export function linkedQueryParam<T>(
 			originalSet(value as T);
 		});
 
+		//  TODO: HEAVILY test this one
+		// if (isSignal(key)) {
+		//   let prevQueryParamKeyName: string | null | undefined = undefined;
+		//   explicitEffect([key], ([value]) => {
+		//     if (prevQueryParamKeyName && prevQueryParamKeyName !== value) {
+		//       globalHandler.setParamKeyValue(prevQueryParamKeyName, null);
+		//       prevQueryParamKeyName = value;
+		//     }
+		//   }, { defer: true});
+		// }
+
 		const set = (value: T) => {
-			// first we check if the value is undefined or null so we can set the default value instead
+			const currentKey = getCurrentKey(key);
+
 			if (
 				(value === undefined || value === null) &&
 				options?.defaultValue !== undefined
@@ -386,11 +305,8 @@ export function linkedQueryParam<T>(
 				value = options.defaultValue;
 			}
 
-			// we first set the initial value so it synchronous (same as a normal signal)
 			originalSet(value);
 
-			// when the source signal changes, update the query param
-			// store the new value in the current keys so that we can coalesce the navigation
 			let valueToBeSet: any = value;
 			if (options?.stringify) {
 				valueToBeSet = options.stringify(value);
@@ -400,7 +316,7 @@ export function linkedQueryParam<T>(
 				valueToBeSet = typeof value === 'string' ? value : String(value);
 			}
 
-			globalHandler.setParamKeyValue(key, valueToBeSet);
+			globalHandler.setParamKeyValue(currentKey, valueToBeSet);
 			globalHandler.setCurrentNavigationExtras({
 				...defaultConfig,
 				...config,
@@ -417,6 +333,15 @@ export function linkedQueryParam<T>(
 		return Object.assign(source, { set, update });
 	});
 }
+
+// Get the current key value or throw an error if it's null or undefined
+const getCurrentKey = (key: QueryParamKey) => {
+	const queryParamName = isSignal(key) || isFunction(key) ? key() : key;
+	if (queryParamName === undefined) {
+		throw new Error('linkedQueryParam: key cannot be null or undefined');
+	}
+	return queryParamName;
+};
 
 /**
  * Can be used to parse a query param value to a number.
@@ -481,4 +406,8 @@ export function paramToBoolean(
 ) {
 	return (x: string | null) =>
 		x === undefined || x === null ? config.defaultValue : x === 'true';
+}
+
+function isFunction(value: any): value is Function {
+	return typeof value === 'function';
 }
