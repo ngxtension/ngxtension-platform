@@ -38,7 +38,7 @@ export class ClickOutside implements OnInit {
 	/*
 	 * This event is emitted when a click occurs outside the element.
 	 */
-	public clickOutside = output<Event>();
+	readonly clickOutside = output<Event>();
 
 	ngOnInit() {
 		this.documentClick$

@@ -23,7 +23,7 @@ export class NgxHover implements OnInit {
 		this.config.set(config);
 	}
 	@Input('ngxHoverZoneless') zoneless?: boolean;
-	public ngxHover = output<NgxInjectHover['state']>();
+	readonly ngxHover = output<NgxInjectHover['state']>();
 
 	private injector = inject(Injector);
 

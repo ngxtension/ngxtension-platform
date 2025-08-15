@@ -23,7 +23,7 @@ export class NgxWheel implements OnInit {
 		this.config.set(config);
 	}
 	@Input('ngxWheelZoneless') zoneless?: boolean;
-	public ngxWheel = output<NgxInjectWheel['state']>();
+	readonly ngxWheel = output<NgxInjectWheel['state']>();
 
 	private injector = inject(Injector);
 
