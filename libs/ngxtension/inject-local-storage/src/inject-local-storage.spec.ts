@@ -303,6 +303,74 @@ describe('injectLocalStorage', () => {
 				}).toBeReactivePure();
 			},
 		);
+
+		it.injectable(
+			'should create default value if invalid value was set to storage',
+			() => {
+				const defaultValueFactory = jest.fn(() => ({}));
+				const localStorageSignal = injectLocalStorage<Record<string, string>>(
+					key,
+					{
+						defaultValue: defaultValueFactory,
+					},
+				);
+
+				const firstDefaultValue = localStorageSignal();
+
+				expect(defaultValueFactory).toHaveBeenCalledTimes(1);
+
+				// Simulate an external change
+				window.dispatchEvent(
+					new StorageEvent('storage', {
+						storageArea: localStorage,
+						key,
+						newValue: `not a valid json`,
+					}),
+				);
+
+				const secondDefaultValue = localStorageSignal();
+
+				expect(defaultValueFactory).toHaveBeenCalledTimes(2);
+
+				expect(firstDefaultValue).toEqual({});
+				expect(secondDefaultValue).toEqual({});
+				expect(firstDefaultValue).not.toBe(secondDefaultValue);
+			},
+		);
+
+		it.injectable(
+			'should create default value if null was set to storage',
+			() => {
+				const defaultValueFactory = jest.fn(() => ({}));
+				const localStorageSignal = injectLocalStorage<Record<string, string>>(
+					key,
+					{
+						defaultValue: defaultValueFactory,
+					},
+				);
+
+				const firstDefaultValue = localStorageSignal();
+
+				expect(defaultValueFactory).toHaveBeenCalledTimes(1);
+
+				// Simulate an external change
+				window.dispatchEvent(
+					new StorageEvent('storage', {
+						storageArea: localStorage,
+						key,
+						newValue: null,
+					}),
+				);
+
+				const secondDefaultValue = localStorageSignal();
+
+				expect(defaultValueFactory).toHaveBeenCalledTimes(2);
+
+				expect(firstDefaultValue).toEqual({});
+				expect(secondDefaultValue).toEqual({});
+				expect(firstDefaultValue).not.toBe(secondDefaultValue);
+			},
+		);
 	});
 
 	describe('with computed key', () => {
@@ -472,5 +540,65 @@ describe('injectLocalStorage', () => {
 
 			expect(localStorage.getItem('k1')).toEqual(JSON.stringify('v1'));
 		});
+
+		it.injectable(
+			'should create default value to each keys if no value in storage',
+			() => {
+				const defaultValueFactory = jest.fn(() => ({}));
+				key = signal('k1');
+
+				const localStorageSignal = injectLocalStorage<Record<string, string>>(
+					key,
+					{
+						defaultValue: defaultValueFactory,
+					},
+				);
+
+				const k1DefaultValue = localStorageSignal();
+
+				expect(defaultValueFactory).toHaveBeenCalledTimes(1);
+
+				key.set('k2');
+
+				const k2DefaultValue = localStorageSignal();
+
+				expect(defaultValueFactory).toHaveBeenCalledTimes(2);
+
+				expect(k1DefaultValue).toEqual({});
+				expect(k2DefaultValue).toEqual({});
+				expect(k1DefaultValue).not.toBe(k2DefaultValue);
+			},
+		);
+
+		it.injectable(
+			'should create default value to each keys if error happens when read from storage',
+			() => {
+				const defaultValueFactory = jest.fn(() => ({}));
+				key = signal('k1');
+				localStorage.setItem('k1', 'not a valid json');
+				localStorage.setItem('k2', 'not a valid json');
+
+				const localStorageSignal = injectLocalStorage<Record<string, string>>(
+					key,
+					{
+						defaultValue: defaultValueFactory,
+					},
+				);
+
+				const k1DefaultValue = localStorageSignal();
+
+				expect(defaultValueFactory).toHaveBeenCalledTimes(1);
+
+				key.set('k2');
+
+				const k2DefaultValue = localStorageSignal();
+
+				expect(defaultValueFactory).toHaveBeenCalledTimes(2);
+
+				expect(k1DefaultValue).toEqual({});
+				expect(k2DefaultValue).toEqual({});
+				expect(k1DefaultValue).not.toBe(k2DefaultValue);
+			},
+		);
 	});
 });
