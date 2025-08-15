@@ -23,7 +23,7 @@ export class NgxScroll implements OnInit {
 		this.config.set(config);
 	}
 	@Input('ngxScrollZoneless') zoneless?: boolean;
-	public ngxScroll = output<NgxInjectScroll['state']>();
+	readonly ngxScroll = output<NgxInjectScroll['state']>();
 
 	private injector = inject(Injector);
 

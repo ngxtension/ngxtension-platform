@@ -93,7 +93,7 @@ export function injectResize(
 @Directive({ selector: '[ngxResize]', standalone: true })
 export class NgxResize implements OnInit {
 	@Input() ngxResizeOptions: Partial<ResizeOptions> = {};
-	public ngxResize = output<ResizeResult>();
+	readonly ngxResize = output<ResizeResult>();
 
 	private host = inject(ElementRef);
 	private zone = inject(NgZone);
@@ -110,7 +110,7 @@ export class NgxResize implements OnInit {
 			this.zone,
 		)
 			.pipe(takeUntilDestroyed(this.destroyRef))
-			.subscribe(this.ngxResize.emit.bind(this.ngxResize));
+			.subscribe((result) => this.ngxResize.emit(result));
 	}
 }
 

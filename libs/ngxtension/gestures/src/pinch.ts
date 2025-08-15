@@ -23,7 +23,7 @@ export class NgxPinch implements OnInit {
 		this.config.set(config);
 	}
 	@Input('ngxPinchZoneless') zoneless?: boolean;
-	public ngxPinch = output<NgxInjectPinch['state']>();
+	readonly ngxPinch = output<NgxInjectPinch['state']>();
 
 	private injector = inject(Injector);
 

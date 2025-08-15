@@ -23,7 +23,7 @@ export class NgxMove implements OnInit {
 		this.config.set(config);
 	}
 	@Input('ngxMoveZoneless') zoneless?: boolean;
-	public ngxMove = output<NgxInjectMove['state']>();
+	readonly ngxMove = output<NgxInjectMove['state']>();
 
 	private injector = inject(Injector);
 

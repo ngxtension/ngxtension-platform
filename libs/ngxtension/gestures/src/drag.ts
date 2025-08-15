@@ -23,7 +23,7 @@ export class NgxDrag implements OnInit {
 		this.config.set(config);
 	}
 	@Input('ngxDragZoneless') zoneless?: boolean;
-	public ngxDrag = output<NgxInjectDrag['state']>();
+	readonly ngxDrag = output<NgxInjectDrag['state']>();
 
 	private injector = inject(Injector);
 
