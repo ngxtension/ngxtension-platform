@@ -51,14 +51,27 @@ export function hostBinding<T, S extends Signal<T> | WritableSignal<T>>(
 
 			switch (binding) {
 				case 'style':
-					renderer.setStyle(
-						element,
-						property,
-						`${value}${unit ?? ''}`,
-						property.startsWith('--')
-							? RendererStyleFlags2.DashCase
-							: undefined,
-					);
+					if (property) {
+						renderer.setStyle(
+							element,
+							property,
+							`${value}${unit ?? ''}`,
+							property.startsWith('--')
+								? RendererStyleFlags2.DashCase
+								: undefined,
+						);
+					} else if (typeof value === 'object' && value !== null) {
+						for (const [style, val] of Object.entries(value)) {
+							renderer.setStyle(
+								element,
+								style,
+								val,
+								style.startsWith('--')
+									? RendererStyleFlags2.DashCase
+									: undefined,
+							);
+						}
+					}
 					break;
 				case 'attr':
 					if (value == null) {
