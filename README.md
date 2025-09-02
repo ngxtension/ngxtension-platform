@@ -7,7 +7,7 @@
 [![NPM](https://img.shields.io/npm/dw/ngxtension?logo=npm&style=flat-square)](https://npmjs.org/package/ngxtension)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-50-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-51-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A modern collection of utilities for [Angular](https://angular.dev) – signals, forms, effects, DOM helpers, and more.
@@ -156,6 +156,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/PForever"><img src="https://avatars.githubusercontent.com/u/24297126?v=4?s=100" width="100px;" alt="Igor Ganov"/><br /><sub><b>Igor Ganov</b></sub></a><br /><a href="https://github.com/ngxtension/ngxtension-platform/commits?author=PForever" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/edisonaugusthy"><img src="https://avatars.githubusercontent.com/u/22213856?v=4?s=100" width="100px;" alt="Edison Augusthy"/><br /><sub><b>Edison Augusthy</b></sub></a><br /><a href="https://github.com/ngxtension/ngxtension-platform/commits?author=edisonaugusthy" title="Code">💻</a></td>
     </tr>
   </tbody>
   <tfoot>
