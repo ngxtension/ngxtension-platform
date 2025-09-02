@@ -47,8 +47,14 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Push docs to astro-docs branch
+      - name: Prepare astro-docs branch
         run: |
+          # Create a temporary directory for the docs
+          mkdir -p /tmp/astro-docs
+
+          # Copy built docs to temp directory
+          cp -r docs/dist/* /tmp/astro-docs/
+
           # Check if astro-docs branch exists
           if git show-ref --verify --quiet refs/remotes/origin/astro-docs; then
             git checkout astro-docs
@@ -58,8 +64,8 @@ jobs:
             git rm -rf .
           fi
 
-          # Copy built docs
-          cp -r docs/dist/* .
+          # Copy docs from temp directory to current branch
+          cp -r /tmp/astro-docs/* .
 
           # Add and commit changes
           git add .
