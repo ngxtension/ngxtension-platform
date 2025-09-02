@@ -1,10 +1,9 @@
 import {
 	Directive,
-	EventEmitter,
 	Injector,
 	Input,
-	Output,
 	inject,
+	output,
 	signal,
 	type OnInit,
 } from '@angular/core';
@@ -24,7 +23,7 @@ export class NgxHover implements OnInit {
 		this.config.set(config);
 	}
 	@Input('ngxHoverZoneless') zoneless?: boolean;
-	@Output() ngxHover = new EventEmitter<NgxInjectHover['state']>();
+	readonly ngxHover = output<NgxInjectHover['state']>();
 
 	private injector = inject(Injector);
 

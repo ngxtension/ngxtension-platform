@@ -1,10 +1,9 @@
 import {
 	Directive,
-	EventEmitter,
 	Injector,
 	Input,
-	Output,
 	inject,
+	output,
 	signal,
 	type OnInit,
 } from '@angular/core';
@@ -24,7 +23,7 @@ export class NgxPinch implements OnInit {
 		this.config.set(config);
 	}
 	@Input('ngxPinchZoneless') zoneless?: boolean;
-	@Output() ngxPinch = new EventEmitter<NgxInjectPinch['state']>();
+	readonly ngxPinch = output<NgxInjectPinch['state']>();
 
 	private injector = inject(Injector);
 
