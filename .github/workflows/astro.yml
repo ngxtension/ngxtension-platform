@@ -11,9 +11,9 @@ jobs:
   build-docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
-          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       - uses: pnpm/action-setup@v2
@@ -41,12 +41,6 @@ jobs:
           ls -la
           ls -la docs
           ls -la docs/dist
-
-      - name: Push to astro-docs branch
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
 
       - name: Configure Git
         run: |
