@@ -236,50 +236,6 @@
 	color: #8b5cf6;
 } /* Code Migrations - Purple */
 
-/* Category-specific list arrow colors */
-.card:nth-child(1) .home-links li::before {
-	color: #3b82f6;
-}
-.card:nth-child(2) .home-links li::before {
-	color: #dc2626;
-}
-.card:nth-child(3) .home-links li::before {
-	color: #8b5cf6;
-}
-.card:nth-child(4) .home-links li::before {
-	color: #06b6d4;
-}
-.card:nth-child(5) .home-links li::before {
-	color: #10b981;
-}
-.card:nth-child(6) .home-links li::before {
-	color: #f59e0b;
-}
-.card:nth-child(7) .home-links li::before {
-	color: #ef4444;
-}
-.card:nth-child(8) .home-links li::before {
-	color: #6366f1;
-}
-.card:nth-child(9) .home-links li::before {
-	color: #ec4899;
-}
-.card:nth-child(10) .home-links li::before {
-	color: #84cc16;
-}
-.card:nth-child(11) .home-links li::before {
-	color: #f97316;
-}
-.card:nth-child(12) .home-links li::before {
-	color: #14b8a6;
-}
-.card:nth-child(13) .home-links li::before {
-	color: #6b7280;
-}
-.card:nth-child(14) .home-links li::before {
-	color: #8b5cf6;
-}
-
 /* Enhanced link styling within cards */
 .card .home-links a {
 	color: var(--sl-color-text);
@@ -485,6 +441,380 @@
 	animation-delay: 1.4s;
 }
 
+/* Professional Section Headers */
+h3 {
+	margin-top: 2.5rem;
+	margin-bottom: 1.5rem;
+	font-size: 1.5rem;
+	font-weight: 600;
+	color: var(--sl-color-text);
+	letter-spacing: -0.025em;
+}
+
+/* Features Grid Styling */
+.features-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 1.5rem;
+	margin: 2rem 0;
+	padding: 0 1rem;
+}
+
+.feature-card {
+	background: var(--sl-color-surface);
+	border: 1px solid var(--sl-color-border);
+	border-radius: 12px;
+	padding: 1.5rem;
+	text-align: center;
+	transition: all 0.2s ease;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.feature-card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+	border-color: var(--sl-color-accent);
+}
+
+.feature-icon {
+	font-size: 2rem;
+	margin-bottom: 1rem;
+	display: block;
+}
+
+.feature-card h3 {
+	margin: 0 0 0.75rem 0;
+	font-size: 1.125rem;
+	font-weight: 600;
+	color: var(--sl-color-text);
+	letter-spacing: -0.025em;
+}
+
+.feature-card p {
+	margin: 0;
+	font-size: 0.875rem;
+	color: var(--sl-color-text);
+	opacity: 0.8;
+	line-height: 1.5;
+}
+
+/* Modern Utilities Grid Styling */
+.utilities-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 1rem;
+	margin: 1.5rem 0;
+}
+
+.utility-card {
+	display: block;
+	text-decoration: none;
+	color: var(--sl-color-text);
+	background: var(--sl-color-surface);
+	border: 1px solid var(--sl-color-border);
+	border-radius: 8px;
+	padding: 1rem;
+	transition: all 0.2s ease;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+	position: relative;
+}
+
+.utility-card::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: #373737;
+	opacity: 0;
+	transition: opacity 0.2s ease;
+	border-radius: 8px;
+}
+
+.utility-card:hover {
+	border-color: var(--sl-color-accent);
+	text-decoration: none;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.utility-card:hover::before {
+	opacity: 0.02;
+}
+
+.utility-card .utility-name,
+.utility-card .utility-desc {
+	position: relative;
+	z-index: 1;
+}
+
+.utility-name {
+	display: block;
+	font-weight: 600;
+	color: var(--sl-color-accent);
+	font-size: 0.95rem;
+	margin-bottom: 0.5rem;
+	line-height: 1.3;
+}
+
+.utility-desc {
+	display: block;
+	font-size: 0.85rem;
+	color: var(--sl-color-text);
+	line-height: 1.4;
+	opacity: 0.8;
+}
+
+.utility-card:hover .utility-name {
+	color: var(--sl-color-accent-high);
+}
+
+.utility-card:hover .utility-desc {
+	opacity: 1;
+}
+
+/* Responsive design for features grid */
+@media (max-width: 900px) {
+	.features-grid {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1.25rem;
+	}
+}
+
+@media (max-width: 768px) {
+	.features-grid {
+		grid-template-columns: 1fr;
+		gap: 1rem;
+		padding: 0 0.5rem;
+	}
+
+	.feature-card {
+		padding: 1.25rem;
+	}
+
+	.feature-icon {
+		font-size: 1.75rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.feature-card h3 {
+		font-size: 1rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.feature-card p {
+		font-size: 0.8rem;
+	}
+}
+
+/* Quick Start Section Styling */
+.quick-start-section {
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+	margin: 2rem 0;
+}
+
+.install-section,
+.usage-section {
+	background: var(--sl-color-accent-low);
+	border: 1px solid var(--sl-color-accent);
+	border-radius: 12px;
+	padding: 1.5rem;
+}
+
+.install-section h4,
+.usage-section h4 {
+	margin: 0 0 1rem 0;
+	font-size: 1.25rem;
+	font-weight: 600;
+	color: var(--sl-color-accent);
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.install-commands {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+
+.command-group {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	background: var(--sl-color-bg);
+	border: 1px solid var(--sl-color-hairline);
+	border-radius: 8px;
+	padding: 0.75rem 1rem;
+	transition: all 0.2s ease;
+}
+
+.command-group:hover {
+	border-color: var(--sl-color-accent);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.package-manager {
+	background: var(--sl-color-accent);
+	color: var(--sl-color-bg);
+	padding: 0.25rem 0.75rem;
+	border-radius: 6px;
+	font-size: 0.875rem;
+	font-weight: 600;
+	min-width: 3.5rem;
+	text-align: center;
+}
+
+.install-command {
+	background: transparent;
+	border: none;
+	font-family: var(--sl-font-mono);
+	font-size: 0.9rem;
+	color: var(--sl-color-text);
+	flex: 1;
+	font-weight: 500;
+}
+
+.usage-description {
+	margin: 0 0 1.5rem 0;
+	color: var(--sl-color-text);
+	font-size: 1rem;
+	line-height: 1.6;
+}
+
+.code-example {
+	background: var(--sl-color-bg);
+	border: 1px solid var(--sl-color-hairline);
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+.code-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.75rem 1rem;
+	background: var(--sl-color-hairline-shade);
+	border-bottom: 1px solid var(--sl-color-hairline);
+}
+
+.code-title {
+	font-weight: 600;
+	color: var(--sl-color-text);
+	font-size: 0.9rem;
+}
+
+.code-lang {
+	background: var(--sl-color-accent);
+	color: var(--sl-color-bg);
+	padding: 0.25rem 0.5rem;
+	border-radius: 4px;
+	font-size: 0.75rem;
+	font-weight: 600;
+}
+
+.code-example pre {
+	margin: 0;
+	padding: 1rem;
+	background: transparent;
+	border: none;
+	overflow-x: auto;
+}
+
+.code-example code {
+	background: transparent;
+	border: none;
+	padding: 0;
+	font-family: var(--sl-font-mono);
+	font-size: 0.875rem;
+	line-height: 1.6;
+}
+
+/* Responsive design for quick start */
+@media (max-width: 768px) {
+	.quick-start-section {
+		gap: 1.5rem;
+		margin: 1.5rem 0;
+	}
+
+	.install-section,
+	.usage-section {
+		padding: 1rem;
+	}
+
+	.install-section h4,
+	.usage-section h4 {
+		font-size: 1.1rem;
+	}
+
+	.command-group {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.5rem;
+		padding: 0.75rem;
+	}
+
+	.package-manager {
+		min-width: auto;
+	}
+
+	.code-header {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.5rem;
+	}
+
+	.code-example pre {
+		padding: 0.75rem;
+	}
+
+	.code-example code {
+		font-size: 0.8rem;
+	}
+}
+
+/* Responsive design for utilities grid */
+@media (max-width: 1200px) {
+	.utilities-grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+@media (max-width: 900px) {
+	.utilities-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 768px) {
+	h3 {
+		font-size: 1.25rem;
+		margin-top: 2rem;
+		margin-bottom: 1.25rem;
+	}
+
+	.utilities-grid {
+		grid-template-columns: 1fr;
+		gap: 0.75rem;
+		padding: 0 0.5rem;
+	}
+
+	.utility-card {
+		padding: 0.875rem;
+	}
+
+	.utility-name {
+		font-size: 0.9rem;
+		margin-bottom: 0.375rem;
+	}
+
+	.utility-desc {
+		font-size: 0.8rem;
+	}
+}
+
 /* Dark mode enhancements */
 @media (prefers-color-scheme: dark) {
 	.card {
@@ -502,5 +832,38 @@
 		box-shadow:
 			0 20px 25px -5px rgba(0, 0, 0, 0.2),
 			0 10px 10px -5px rgba(0, 0, 0, 0.15);
+	}
+
+	.utility-card {
+		border-color: var(--sl-color-hairline);
+	}
+
+	.utility-card:hover {
+		box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+		border-color: var(--sl-color-accent);
+	}
+
+	/* Improve readability and elevation for cards in dark mode */
+	.feature-card {
+		background: var(--sl-color-surface-elevated);
+		border-color: var(--sl-color-hairline);
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+	}
+
+	.feature-card:hover {
+		box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+		border-color: var(--sl-color-accent);
+	}
+
+	.feature-card p {
+		opacity: 0.9;
+	}
+
+	.utility-card::before {
+		opacity: 0.08;
+	}
+
+	.utility-desc {
+		opacity: 0.9;
 	}
 }
