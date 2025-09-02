@@ -36,21 +36,42 @@ jobs:
           echo "Building documentation..."
           pnpm exec nx package docs --skip-nx-cache
 
-      - name: Init git and commit local artifacts
+      - name: Verify build artifacts
         run: |
           ls -la
           ls -la docs
-          cd docs/dist
-          git init
-          git add .
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git commit -am "docs: build doc"
+          ls -la docs/dist
 
-      - name: Push
-        uses: ad-m/github-push-action@master
+      - name: Push to astro-docs branch
+        uses: actions/checkout@v4
         with:
-          github_token: ${{ secrets.GH_ACTION_TOKEN }}
-          branch: astro-docs
-          force: true
-          directory: docs/dist
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Push docs to astro-docs branch
+        run: |
+          # Check if astro-docs branch exists
+          if git show-ref --verify --quiet refs/remotes/origin/astro-docs; then
+            git checkout astro-docs
+            git pull origin astro-docs
+          else
+            git checkout --orphan astro-docs
+            git rm -rf .
+          fi
+
+          # Copy built docs
+          cp -r docs/dist/* .
+
+          # Add and commit changes
+          git add .
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "docs: update documentation [skip ci]"
+            git push origin astro-docs
+          fi
