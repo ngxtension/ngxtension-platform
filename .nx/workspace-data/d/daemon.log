@@ -1,0 +1,11 @@
+[NX Daemon Server] - 2025-09-03T09:39:12.211Z - Started listening on: /tmp/76a83c09024df0a7db17/d.sock
+[NX Daemon Server] - 2025-09-03T09:39:12.215Z - [WATCHER]: Subscribed to changes within: /home/runner/work/ngxtension-platform/ngxtension-platform (native)
+[NX Daemon Server] - 2025-09-03T09:39:12.218Z - Established a connection. Number of open connections: 1
+[NX Daemon Server] - 2025-09-03T09:39:12.218Z - Established a connection. Number of open connections: 2
+[NX Daemon Server] - 2025-09-03T09:39:12.220Z - Closed a connection. Number of open connections: 1
+[NX Daemon Server] - 2025-09-03T09:39:12.222Z - [REQUEST]: Responding to the client. Shutdown initiated
+[NX Daemon Server] - 2025-09-03T09:39:12.223Z - Done responding to the client Shutdown initiated
+[NX Daemon Server] - 2025-09-03T09:39:12.223Z - Handled FORCE_SHUTDOWN. Handling time: 0. Response time: 1.
+[NX Daemon Server] - 2025-09-03T09:39:12.224Z - Closed a connection. Number of open connections: 0
+[NX Daemon Server] - 2025-09-03T09:39:12.224Z - [WATCHER]: Stopping the watcher for /home/runner/work/ngxtension-platform/ngxtension-platform (sources)
+[NX Daemon Server] - 2025-09-03T09:39:12.224Z - [WATCHER]: Stopping the watcher for /home/runner/work/ngxtension-platform/ngxtension-platform (outputs)

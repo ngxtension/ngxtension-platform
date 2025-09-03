@@ -1,0 +1,4328 @@
+{
+  "version": "6.0",
+  "nxVersion": "20.1.4",
+  "pathMappings": {
+    "local-plugin": [
+      "libs/local-plugin/src/index.ts"
+    ],
+    "ngxtension": [
+      "libs/ngxtension/src/index.ts"
+    ],
+    "ngxtension/active-element": [
+      "libs/ngxtension/active-element/src/index.ts"
+    ],
+    "ngxtension/assert-injector": [
+      "libs/ngxtension/assert-injector/src/index.ts"
+    ],
+    "ngxtension/auto-effect": [
+      "libs/ngxtension/auto-effect/src/index.ts"
+    ],
+    "ngxtension/call-apply": [
+      "libs/ngxtension/call-apply/src/index.ts"
+    ],
+    "ngxtension/click-outside": [
+      "libs/ngxtension/click-outside/src/index.ts"
+    ],
+    "ngxtension/computed": [
+      "libs/ngxtension/computed/src/index.ts"
+    ],
+    "ngxtension/computed-async": [
+      "libs/ngxtension/computed-async/src/index.ts"
+    ],
+    "ngxtension/computed-from": [
+      "libs/ngxtension/computed-from/src/index.ts"
+    ],
+    "ngxtension/computed-previous": [
+      "libs/ngxtension/computed-previous/src/index.ts"
+    ],
+    "ngxtension/connect": [
+      "libs/ngxtension/connect/src/index.ts"
+    ],
+    "ngxtension/control-error": [
+      "libs/ngxtension/control-error/src/index.ts"
+    ],
+    "ngxtension/control-value-accessor": [
+      "libs/ngxtension/control-value-accessor/src/index.ts"
+    ],
+    "ngxtension/create-effect": [
+      "libs/ngxtension/create-effect/src/index.ts"
+    ],
+    "ngxtension/create-injectable": [
+      "libs/ngxtension/create-injectable/src/index.ts"
+    ],
+    "ngxtension/create-injection-token": [
+      "libs/ngxtension/create-injection-token/src/index.ts"
+    ],
+    "ngxtension/create-notifier": [
+      "libs/ngxtension/create-notifier/src/index.ts"
+    ],
+    "ngxtension/create-repeat": [
+      "libs/ngxtension/create-repeat/src/index.ts"
+    ],
+    "ngxtension/create-signal": [
+      "libs/ngxtension/create-signal/src/index.ts"
+    ],
+    "ngxtension/debug": [
+      "libs/ngxtension/debug/src/index.ts"
+    ],
+    "ngxtension/derive-loading": [
+      "libs/ngxtension/derive-loading/src/index.ts"
+    ],
+    "ngxtension/derived-async": [
+      "libs/ngxtension/derived-async/src/index.ts"
+    ],
+    "ngxtension/derived-from": [
+      "libs/ngxtension/derived-from/src/index.ts"
+    ],
+    "ngxtension/effect-once-if": [
+      "libs/ngxtension/effect-once-if/src/index.ts"
+    ],
+    "ngxtension/explicit-effect": [
+      "libs/ngxtension/explicit-effect/src/index.ts"
+    ],
+    "ngxtension/filter-array": [
+      "libs/ngxtension/filter-array/src/index.ts"
+    ],
+    "ngxtension/filter-nil": [
+      "libs/ngxtension/filter-nil/src/index.ts"
+    ],
+    "ngxtension/form-events": [
+      "libs/ngxtension/form-events/src/index.ts"
+    ],
+    "ngxtension/gestures": [
+      "libs/ngxtension/gestures/src/index.ts"
+    ],
+    "ngxtension/host-binding": [
+      "libs/ngxtension/host-binding/src/index.ts"
+    ],
+    "ngxtension/if-validator": [
+      "libs/ngxtension/if-validator/src/index.ts"
+    ],
+    "ngxtension/inject-destroy": [
+      "libs/ngxtension/inject-destroy/src/index.ts"
+    ],
+    "ngxtension/inject-document-visibility": [
+      "libs/ngxtension/inject-document-visibility/src/index.ts"
+    ],
+    "ngxtension/inject-inputs": [
+      "libs/ngxtension/inject-inputs/src/index.ts"
+    ],
+    "ngxtension/inject-is-intersecting": [
+      "libs/ngxtension/inject-is-intersecting/src/index.ts"
+    ],
+    "ngxtension/inject-lazy": [
+      "libs/ngxtension/inject-lazy/src/index.ts"
+    ],
+    "ngxtension/inject-local-storage": [
+      "libs/ngxtension/inject-local-storage/src/index.ts"
+    ],
+    "ngxtension/inject-network": [
+      "libs/ngxtension/inject-network/src/index.ts"
+    ],
+    "ngxtension/inject-params": [
+      "libs/ngxtension/inject-params/src/index.ts"
+    ],
+    "ngxtension/inject-query-params": [
+      "libs/ngxtension/inject-query-params/src/index.ts"
+    ],
+    "ngxtension/inject-route-data": [
+      "libs/ngxtension/inject-route-data/src/index.ts"
+    ],
+    "ngxtension/inject-route-fragment": [
+      "libs/ngxtension/inject-route-fragment/src/index.ts"
+    ],
+    "ngxtension/inject-text-selection": [
+      "libs/ngxtension/inject-text-selection/src/index.ts"
+    ],
+    "ngxtension/intl": [
+      "libs/ngxtension/intl/src/index.ts"
+    ],
+    "ngxtension/linked-query-param": [
+      "libs/ngxtension/linked-query-param/src/index.ts"
+    ],
+    "ngxtension/map-array": [
+      "libs/ngxtension/map-array/src/index.ts"
+    ],
+    "ngxtension/map-skip-undefined": [
+      "libs/ngxtension/map-skip-undefined/src/index.ts"
+    ],
+    "ngxtension/merge-from": [
+      "libs/ngxtension/merge-from/src/index.ts"
+    ],
+    "ngxtension/merge-http-context": [
+      "libs/ngxtension/merge-http-context/src/index.ts"
+    ],
+    "ngxtension/navigation-end": [
+      "libs/ngxtension/navigation-end/src/index.ts"
+    ],
+    "ngxtension/not-pattern": [
+      "libs/ngxtension/not-pattern/src/index.ts"
+    ],
+    "ngxtension/poll": [
+      "libs/ngxtension/poll/src/index.ts"
+    ],
+    "ngxtension/repeat": [
+      "libs/ngxtension/repeat/src/index.ts"
+    ],
+    "ngxtension/repeat-pipe": [
+      "libs/ngxtension/repeat-pipe/src/index.ts"
+    ],
+    "ngxtension/resize": [
+      "libs/ngxtension/resize/src/index.ts"
+    ],
+    "ngxtension/rx-effect": [
+      "libs/ngxtension/rx-effect/src/index.ts"
+    ],
+    "ngxtension/shared": [
+      "libs/ngxtension/shared/src/index.ts"
+    ],
+    "ngxtension/signal-history": [
+      "libs/ngxtension/signal-history/src/index.ts"
+    ],
+    "ngxtension/signal-slice": [
+      "libs/ngxtension/signal-slice/src/index.ts"
+    ],
+    "ngxtension/singleton-proxy": [
+      "libs/ngxtension/singleton-proxy/src/index.ts"
+    ],
+    "ngxtension/svg-sprite": [
+      "libs/ngxtension/svg-sprite/src/index.ts"
+    ],
+    "ngxtension/to-lazy-signal": [
+      "libs/ngxtension/to-lazy-signal/src/index.ts"
+    ],
+    "ngxtension/to-observable-signal": [
+      "libs/ngxtension/to-observable-signal/src/index.ts"
+    ],
+    "ngxtension/trackby-id-prop": [
+      "libs/ngxtension/trackby-id-prop/src/index.ts"
+    ],
+    "ngxtension/when-document-visible": [
+      "libs/ngxtension/when-document-visible/src/index.ts"
+    ],
+    "plugin": [
+      "libs/plugin/src/index.ts"
+    ]
+  },
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "projectFileMap": {
+      "ngxtension/resize": [
+        {
+          "file": "libs/ngxtension/resize/README.md",
+          "hash": "15817583443567604880"
+        },
+        {
+          "file": "libs/ngxtension/resize/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/resize/project.json",
+          "hash": "4657480417931679973"
+        },
+        {
+          "file": "libs/ngxtension/resize/src/index.ts",
+          "hash": "1284496492396359115"
+        },
+        {
+          "file": "libs/ngxtension/resize/src/resize.ts",
+          "hash": "18400492551133860337",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "ngxtension/create-injection-token",
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "ngxtension/inject-text-selection": [
+        {
+          "file": "libs/ngxtension/inject-text-selection/README.md",
+          "hash": "6133418799541576788"
+        },
+        {
+          "file": "libs/ngxtension/inject-text-selection/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/inject-text-selection/project.json",
+          "hash": "5576192709799558141"
+        },
+        {
+          "file": "libs/ngxtension/inject-text-selection/src/index.ts",
+          "hash": "6183584238039945826"
+        },
+        {
+          "file": "libs/ngxtension/inject-text-selection/src/inject-text-selection.spec.ts",
+          "hash": "7829916779777566440",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/inject-text-selection/src/inject-text-selection.ts",
+          "hash": "2753416413145397602",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "ngxtension/explicit-effect"
+          ]
+        }
+      ],
+      "ngxtension/reduce-array": [
+        {
+          "file": "libs/ngxtension/reduce-array/README.md",
+          "hash": "3325075437626932374"
+        },
+        {
+          "file": "libs/ngxtension/reduce-array/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/reduce-array/project.json",
+          "hash": "7940468782696403813"
+        },
+        {
+          "file": "libs/ngxtension/reduce-array/src/index.ts",
+          "hash": "12609103224503403786"
+        },
+        {
+          "file": "libs/ngxtension/reduce-array/src/reduce-array.spec.ts",
+          "hash": "7500960815604142064",
+          "deps": [
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/reduce-array/src/reduce-array.ts",
+          "hash": "11172639452506305339",
+          "deps": [
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "ngxtension/repeat-pipe": [
+        {
+          "file": "libs/ngxtension/repeat-pipe/README.md",
+          "hash": "13747707612633725840"
+        },
+        {
+          "file": "libs/ngxtension/repeat-pipe/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/repeat-pipe/project.json",
+          "hash": "10322564455486587799"
+        },
+        {
+          "file": "libs/ngxtension/repeat-pipe/src/index.ts",
+          "hash": "3973516298147728948"
+        },
+        {
+          "file": "libs/ngxtension/repeat-pipe/src/repeat-pipe.spec.ts",
+          "hash": "2915368159445610954",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/platform-browser"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/repeat-pipe/src/repeat-pipe.ts",
+          "hash": "4042781137986918673",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        }
+      ],
+      "ngxtension/if-validator": [
+        {
+          "file": "libs/ngxtension/if-validator/README.md",
+          "hash": "6555789854388473883"
+        },
+        {
+          "file": "libs/ngxtension/if-validator/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/if-validator/project.json",
+          "hash": "16380212643897367970"
+        },
+        {
+          "file": "libs/ngxtension/if-validator/src/if-validator.spec.ts",
+          "hash": "2644000252577102354",
+          "deps": [
+            "npm:@angular/forms",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/if-validator/src/if-validator.ts",
+          "hash": "7706703721659238579",
+          "deps": [
+            "npm:@angular/forms",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/if-validator/src/index.ts",
+          "hash": "12720625801575215250"
+        }
+      ],
+      "ngxtension/computed-async": [
+        {
+          "file": "libs/ngxtension/computed-async/README.md",
+          "hash": "678386420457877382"
+        },
+        {
+          "file": "libs/ngxtension/computed-async/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/computed-async/project.json",
+          "hash": "7924059872440664610"
+        },
+        {
+          "file": "libs/ngxtension/computed-async/src/index.ts",
+          "hash": "4191768415346969270",
+          "deps": [
+            "ngxtension/derived-async"
+          ]
+        }
+      ],
+      "ngxtension/poll": [
+        {
+          "file": "libs/ngxtension/poll/README.md",
+          "hash": "1640197617781878561"
+        },
+        {
+          "file": "libs/ngxtension/poll/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/poll/project.json",
+          "hash": "14657431199038736090"
+        },
+        {
+          "file": "libs/ngxtension/poll/src/index.ts",
+          "hash": "12301168913124538621"
+        },
+        {
+          "file": "libs/ngxtension/poll/src/poll.spec.ts",
+          "hash": "12736784775888024069",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/poll/src/poll.ts",
+          "hash": "8539710052772913390",
+          "deps": [
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "ngxtension/repeat": [
+        {
+          "file": "libs/ngxtension/repeat/README.md",
+          "hash": "7531475359620698808"
+        },
+        {
+          "file": "libs/ngxtension/repeat/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/repeat/project.json",
+          "hash": "18280063343269328773"
+        },
+        {
+          "file": "libs/ngxtension/repeat/src/index.ts",
+          "hash": "4844367771018301443"
+        },
+        {
+          "file": "libs/ngxtension/repeat/src/repeat.spec.ts",
+          "hash": "13870106985125835541",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/platform-browser"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/repeat/src/repeat.ts",
+          "hash": "7984704087657767527",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core"
+          ]
+        }
+      ],
+      "ngxtension/svg-sprite": [
+        {
+          "file": "libs/ngxtension/svg-sprite/README.md",
+          "hash": "10766559706522872132"
+        },
+        {
+          "file": "libs/ngxtension/svg-sprite/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/svg-sprite/project.json",
+          "hash": "5428677476086822186"
+        },
+        {
+          "file": "libs/ngxtension/svg-sprite/src/index.ts",
+          "hash": "7224593763832814940"
+        },
+        {
+          "file": "libs/ngxtension/svg-sprite/src/svg-sprite.spec.ts",
+          "hash": "18281353442734988689",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/platform-browser",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/svg-sprite/src/svg-sprite.ts",
+          "hash": "15935046792813003547",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "ngxtension/auto-effect",
+            "ngxtension/derived-from",
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "ngxtension/filter-array": [
+        {
+          "file": "libs/ngxtension/filter-array/README.md",
+          "hash": "12745558819605556835"
+        },
+        {
+          "file": "libs/ngxtension/filter-array/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/filter-array/project.json",
+          "hash": "17052350470520058890"
+        },
+        {
+          "file": "libs/ngxtension/filter-array/src/filter-array.spec.ts",
+          "hash": "12034339665348663899",
+          "deps": [
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/filter-array/src/filter-array.ts",
+          "hash": "10909366717581452967",
+          "deps": [
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/filter-array/src/index.ts",
+          "hash": "14704568840155702653"
+        }
+      ],
+      "ngxtension/form-events": [
+        {
+          "file": "libs/ngxtension/form-events/README.md",
+          "hash": "17853294856215746052"
+        },
+        {
+          "file": "libs/ngxtension/form-events/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/form-events/project.json",
+          "hash": "5073324612336420595"
+        },
+        {
+          "file": "libs/ngxtension/form-events/src/form-events.spec.ts",
+          "hash": "15814530764394942849",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/platform-browser",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/form-events/src/form-events.ts",
+          "hash": "14397755742551216202",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/form-events/src/index.ts",
+          "hash": "6980144354059692353"
+        }
+      ],
+      "ngxtension/take-latest-from": [
+        {
+          "file": "libs/ngxtension/take-latest-from/README.md",
+          "hash": "12590094417383309212"
+        },
+        {
+          "file": "libs/ngxtension/take-latest-from/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/take-latest-from/project.json",
+          "hash": "10082509026161658387"
+        },
+        {
+          "file": "libs/ngxtension/take-latest-from/src/index.ts",
+          "hash": "14893877871397681094"
+        },
+        {
+          "file": "libs/ngxtension/take-latest-from/src/take-latest-from.spec.ts",
+          "hash": "10014508507855505435",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/take-latest-from/src/take-latest-from.ts",
+          "hash": "8815046573681280621",
+          "deps": [
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "docs": [
+        {
+          "file": "docs/.gitignore",
+          "hash": "15612394528433788405"
+        },
+        {
+          "file": "docs/.vscode/extensions.json",
+          "hash": "2751571684447562079"
+        },
+        {
+          "file": "docs/.vscode/launch.json",
+          "hash": "790687624723845883"
+        },
+        {
+          "file": "docs/README.md",
+          "hash": "4604750639710364004"
+        },
+        {
+          "file": "docs/astro.config.mjs",
+          "hash": "8673264458489538886"
+        },
+        {
+          "file": "docs/package.json",
+          "hash": "15009698570659018162",
+          "deps": [
+            "npm:sharp"
+          ]
+        },
+        {
+          "file": "docs/pnpm-lock.yaml",
+          "hash": "4483868095992390013"
+        },
+        {
+          "file": "docs/project.json",
+          "hash": "15492479452531178155"
+        },
+        {
+          "file": "docs/public/favicon.svg",
+          "hash": "4088241992915627650"
+        },
+        {
+          "file": "docs/public/logo.svg",
+          "hash": "4798504736570404277"
+        },
+        {
+          "file": "docs/public/ngxt-angular.svg",
+          "hash": "2341578025633240755"
+        },
+        {
+          "file": "docs/public/ngxt-black.svg",
+          "hash": "11383869025905644089"
+        },
+        {
+          "file": "docs/public/ngxt-blue.svg",
+          "hash": "1685494119865369623"
+        },
+        {
+          "file": "docs/public/ngxt-white.svg",
+          "hash": "248887412907356443"
+        },
+        {
+          "file": "docs/public/ngxtension-angular.svg",
+          "hash": "14275939116368161488"
+        },
+        {
+          "file": "docs/public/ngxtension-black.svg",
+          "hash": "612289817928536509"
+        },
+        {
+          "file": "docs/public/ngxtension-blue.svg",
+          "hash": "18415557171663922948"
+        },
+        {
+          "file": "docs/public/ngxtension-white.svg",
+          "hash": "14526592703343438811"
+        },
+        {
+          "file": "docs/src/components/Content.astro",
+          "hash": "11982403381710106795"
+        },
+        {
+          "file": "docs/src/components/Contributors.astro",
+          "hash": "3366674068322675016"
+        },
+        {
+          "file": "docs/src/components/PageTitle.astro",
+          "hash": "16545647284920552371"
+        },
+        {
+          "file": "docs/src/components/Sidebar.astro",
+          "hash": "12601123290374022365"
+        },
+        {
+          "file": "docs/src/content/config.ts",
+          "hash": "1916611632762817584"
+        },
+        {
+          "file": "docs/src/content/contributors/chau-tran.json",
+          "hash": "8191033221952364457"
+        },
+        {
+          "file": "docs/src/content/contributors/dafnik.json",
+          "hash": "13147949764296103327"
+        },
+        {
+          "file": "docs/src/content/contributors/dale-nguyen.json",
+          "hash": "2019313899314874125"
+        },
+        {
+          "file": "docs/src/content/contributors/daniele-morosinotto.json",
+          "hash": "13842651097216162005"
+        },
+        {
+          "file": "docs/src/content/contributors/enea-jahollari.json",
+          "hash": "12417942062699708975"
+        },
+        {
+          "file": "docs/src/content/contributors/evgeniy-oz.json",
+          "hash": "17253255600056223097"
+        },
+        {
+          "file": "docs/src/content/contributors/fabiendehopre.json",
+          "hash": "11603110557559844623"
+        },
+        {
+          "file": "docs/src/content/contributors/fiorelozere.json",
+          "hash": "3048576515393377444"
+        },
+        {
+          "file": "docs/src/content/contributors/ion-prodan.json",
+          "hash": "4839906092919953214"
+        },
+        {
+          "file": "docs/src/content/contributors/jeanmeche.json",
+          "hash": "6773564729843943226"
+        },
+        {
+          "file": "docs/src/content/contributors/josh-morony.json",
+          "hash": "17751049116829514555"
+        },
+        {
+          "file": "docs/src/content/contributors/kevinkreuzer.json",
+          "hash": "9330195511891231128"
+        },
+        {
+          "file": "docs/src/content/contributors/krzysztof-kachniarz.json",
+          "hash": "2302164389393211443"
+        },
+        {
+          "file": "docs/src/content/contributors/lilbeqiri.json",
+          "hash": "16068327498880886397"
+        },
+        {
+          "file": "docs/src/content/contributors/lorenzo-dianni.json",
+          "hash": "9150509551781711660"
+        },
+        {
+          "file": "docs/src/content/contributors/lucas-garcia.json",
+          "hash": "1170402642059818055"
+        },
+        {
+          "file": "docs/src/content/contributors/mateusz-stefanczyk.json",
+          "hash": "1755061786302538839"
+        },
+        {
+          "file": "docs/src/content/contributors/michael-berger.json",
+          "hash": "9688001881246438481"
+        },
+        {
+          "file": "docs/src/content/contributors/nevzat-topçu.json",
+          "hash": "5877918714100997521"
+        },
+        {
+          "file": "docs/src/content/contributors/pawel-ostromecki.json",
+          "hash": "6005493904329083012"
+        },
+        {
+          "file": "docs/src/content/contributors/robby-rabbitman.json",
+          "hash": "6411234619066447680"
+        },
+        {
+          "file": "docs/src/content/contributors/sergi-dote.json",
+          "hash": "17960134050408410486"
+        },
+        {
+          "file": "docs/src/content/contributors/thomas-laforge.json",
+          "hash": "996348623588061976"
+        },
+        {
+          "file": "docs/src/content/contributors/tomer.json",
+          "hash": "807583140484931155"
+        },
+        {
+          "file": "docs/src/content/docs/404.md",
+          "hash": "1424873201127824327"
+        },
+        {
+          "file": "docs/src/content/docs/es/getting-started/installation.mdx",
+          "hash": "12134777097451332123"
+        },
+        {
+          "file": "docs/src/content/docs/es/getting-started/introduction.md",
+          "hash": "14518286798902076801"
+        },
+        {
+          "file": "docs/src/content/docs/es/index.mdx",
+          "hash": "11792242295084868898"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Assets/svg-sprites.md",
+          "hash": "14254348277085439795"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Components/host-binding.md",
+          "hash": "11824245148442388071"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Directives/click-outside.md",
+          "hash": "4716447688999601027"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Directives/repeat.md",
+          "hash": "16132784174670894170"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Directives/resize.mdx",
+          "hash": "1390999655508636911"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Directives/trackby-id-prop.md",
+          "hash": "6973986121977483907"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Forms/control-error.md",
+          "hash": "13739053263708729994"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Forms/control-value-accessor.md",
+          "hash": "2487424786150710179"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Forms/if-validator.md",
+          "hash": "12041601360235970175"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Gesture/gesture.mdx",
+          "hash": "9811719711722554902"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Gesture/intro.md",
+          "hash": "11066969526868894354"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Injectors/active-element.md",
+          "hash": "17729448756606423489"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Injectors/assert-injector.md",
+          "hash": "13854625213020021511"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Injectors/auto-effect.md",
+          "hash": "6102300607368400906"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Injectors/create-injectable.md",
+          "hash": "14177195700597529052"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Injectors/create-injection-token.md",
+          "hash": "8859611791055120157"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Injectors/inject-destroy.md",
+          "hash": "15434377627979950304"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Injectors/inject-document-visibility.md",
+          "hash": "10208146720323278387"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Injectors/inject-is-intersecting.md",
+          "hash": "6903831170911424797"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Injectors/inject-lazy.md",
+          "hash": "6743373943767937845"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Injectors/inject-network.md",
+          "hash": "80377930307077518"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Injectors/inject-params.md",
+          "hash": "5173547801361532306"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Injectors/inject-query-params.md",
+          "hash": "7759151955677240194"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Injectors/inject-route-data.md",
+          "hash": "7325436686767170783"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Injectors/inject-route-fragment.md",
+          "hash": "2446543917056657101"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Injectors/navigation-end.md",
+          "hash": "3515497389790319379"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Intl/intl.md",
+          "hash": "15743145777879335241"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Migrations/inject-migration.md",
+          "hash": "627573692824456166"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Miscellaneous/singleton-proxy.md",
+          "hash": "8816234075556272916"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Operators/debug.md",
+          "hash": "6513689554603961910"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Operators/filter-array.md",
+          "hash": "8710986687463971772"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Operators/filter-nil.md",
+          "hash": "3669224167024818005"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Operators/map-array.md",
+          "hash": "1328964374204867323"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Operators/map-skip-undefined.md",
+          "hash": "14258061826071785370"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Operators/reduce-array.md",
+          "hash": "8483756170195483743"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Operators/rx-effect.md",
+          "hash": "12483273635060933538"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Signals/computed-async.md",
+          "hash": "185541603438057594"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Signals/computed-from.md",
+          "hash": "17420794852990964518"
+        },
+        {
+          "file": "docs/src/content/docs/es/utilities/Signals/computed-previous.md",
+          "hash": "8813135506777209773"
+        },
+        {
+          "file": "docs/src/content/docs/getting-started/installation.mdx",
+          "hash": "1263329825089247503"
+        },
+        {
+          "file": "docs/src/content/docs/getting-started/introduction.md",
+          "hash": "14657099773694272965"
+        },
+        {
+          "file": "docs/src/content/docs/index.mdx",
+          "hash": "3231887784561404504"
+        },
+        {
+          "file": "docs/src/content/docs/logos/logos.md",
+          "hash": "10965660392091957733"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Assets/svg-sprites.md",
+          "hash": "6046571354993797175"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Components/host-binding.md",
+          "hash": "1591993458468331189"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Directives/click-outside.md",
+          "hash": "12811402155862239425"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Directives/merge-inputs.md",
+          "hash": "4855918979595436051"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Directives/repeat.mdx",
+          "hash": "2665554144952619266"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Directives/resize.mdx",
+          "hash": "10316238487399283002"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Directives/trackby-id-prop.md",
+          "hash": "14207032600200949810"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Forms/control-error.md",
+          "hash": "14815253109648590103"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Forms/control-value-accessor.md",
+          "hash": "13216076786708008546"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Forms/form-events.md",
+          "hash": "15970064323729845654"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Forms/if-validator.md",
+          "hash": "11910898420682059690"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Forms/not-pattern.md",
+          "hash": "15282629698804923535"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Gesture/gesture.mdx",
+          "hash": "8311943415270827132"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Gesture/intro.md",
+          "hash": "10504763025850839183"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Http/merge-http-context.md",
+          "hash": "4637896388629971424"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Injectors/active-element.md",
+          "hash": "1612383231065907122"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Injectors/assert-injector.md",
+          "hash": "1390741579644919144"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Injectors/auto-effect.md",
+          "hash": "2447874907936110299"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Injectors/create-injectable.md",
+          "hash": "11950372865079604627"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Injectors/create-injection-token.md",
+          "hash": "9367334443564312751"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Injectors/inject-destroy.md",
+          "hash": "15249462716639881948"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Injectors/inject-document-visibility.md",
+          "hash": "8428013503554012923"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Injectors/inject-inputs.md",
+          "hash": "7516093759801349730"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Injectors/inject-is-intersecting.md",
+          "hash": "8982279871035992415"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Injectors/inject-lazy.md",
+          "hash": "11970987769285015030"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Injectors/inject-local-storage.md",
+          "hash": "12371542652723445407"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Injectors/inject-network.md",
+          "hash": "4770193768465762769"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Injectors/inject-params.md",
+          "hash": "9255801477031566665"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Injectors/inject-query-params.md",
+          "hash": "596396641813456867"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Injectors/inject-route-data.md",
+          "hash": "10084983291627073168"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Injectors/inject-route-fragment.md",
+          "hash": "13196537851914216644"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Injectors/inject-text-selection.md",
+          "hash": "9469490857383220655"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Injectors/linked-query-param.md",
+          "hash": "9487765443697875556"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Injectors/navigation-end.md",
+          "hash": "17573249710254427677"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Injectors/signal-history.md",
+          "hash": "10819464606882505482"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Intl/intl.md",
+          "hash": "16954189959966338011"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Migrations/host-binding-migration.md",
+          "hash": "16843666285375641845"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Migrations/inject-migration.md",
+          "hash": "8584090722258183449"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Migrations/new-outputs-migration.md",
+          "hash": "12772405008245925118"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Migrations/queries-migration.md",
+          "hash": "2519892563917945542"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Migrations/self-closing-tags.md",
+          "hash": "1448553746208194983"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Migrations/sfc-migration.md",
+          "hash": "1200863886256274220"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Migrations/signal-inputs-migration.md",
+          "hash": "14348893591612109437"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Miscellaneous/singleton-proxy.md",
+          "hash": "7069020467004415179"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Operators/create-repeat.md",
+          "hash": "9593278943166597301"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Operators/debug.md",
+          "hash": "9218869408446896902"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Operators/derive-loading.md",
+          "hash": "8623959797535915902"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Operators/filter-array.md",
+          "hash": "4353307002625484882"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Operators/filter-nil.md",
+          "hash": "1511561849038735440"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Operators/map-array.md",
+          "hash": "5123910469201900187"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Operators/map-skip-undefined.md",
+          "hash": "1492896776099143657"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Operators/poll.md",
+          "hash": "16067376868978579995"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Operators/reduce-array.md",
+          "hash": "6252290111028362029"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Operators/rx-effect.md",
+          "hash": "2351310817997563869"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Operators/take-latest-from.md",
+          "hash": "13881131790807735447"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Operators/when-document-visible.md",
+          "hash": "12397943148034737324"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Pipes/call-apply.md",
+          "hash": "6779098875878513505"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Pipes/repeat.mdx",
+          "hash": "6188767820687336260"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Signals/computed-async.md",
+          "hash": "7817884645695987691"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Signals/computed-from.md",
+          "hash": "14812482580667367915"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Signals/computed-previous.md",
+          "hash": "13815827852462247712"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Signals/computed.md",
+          "hash": "1708248201140732450"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Signals/connect.md",
+          "hash": "13008988064611680784"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Signals/create-notifier.md",
+          "hash": "13337363012701258291"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Signals/create-signal.md",
+          "hash": "17860658966276354755"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Signals/derived-async.md",
+          "hash": "14821731407418692278"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Signals/derived-from.md",
+          "hash": "15279185841904639153"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Signals/effect-once-if.md",
+          "hash": "6436848899234652689"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Signals/explicit-effect.md",
+          "hash": "10503744888932237517"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Signals/merge-from.md",
+          "hash": "10151002865660905351"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Signals/signal-slice.md",
+          "hash": "17056339174300413883"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Signals/to-lazy-signal.md",
+          "hash": "7983364555454622006"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Signals/to-observable-signal.md",
+          "hash": "12511995371616075089"
+        },
+        {
+          "file": "docs/src/content/docs/utilities/Stores/create-effect.md",
+          "hash": "13204796621663642780"
+        },
+        {
+          "file": "docs/src/content/i18n/en.json",
+          "hash": "16415637935453982282"
+        },
+        {
+          "file": "docs/src/env.d.ts",
+          "hash": "2755340118673137363"
+        },
+        {
+          "file": "docs/src/styles/custom.css",
+          "hash": "16087562651564577770"
+        },
+        {
+          "file": "docs/tsconfig.json",
+          "hash": "14977445182943204540"
+        }
+      ],
+      "test-app": [
+        {
+          "file": "apps/test-app/.eslintrc.json",
+          "hash": "12561809744174091372"
+        },
+        {
+          "file": "apps/test-app/project.json",
+          "hash": "6852649379145547188"
+        },
+        {
+          "file": "apps/test-app/src/app/active-element/active-element.component.ts",
+          "hash": "9656179757981188515",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "ngxtension/active-element"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/app/app.component.ts",
+          "hash": "13614197986316939661",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/app/app.config.ts",
+          "hash": "7625503695629591848",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router",
+            "ngxtension/svg-sprite"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/app/control-error/control-error.component.ts",
+          "hash": "7117555533282588162",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "ngxtension/control-error"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/app/control-value-accessor/control-value-accessor.ts",
+          "hash": "5662641592796086452",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "ngxtension/control-value-accessor"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/app/document-visibility-state/document-visibility-state.component.ts",
+          "hash": "7439273104498968056",
+          "deps": [
+            "npm:@angular/core",
+            "ngxtension/inject-document-visibility"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/app/drag/drag.component.ts",
+          "hash": "13974445178414857242",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@use-gesture/vanilla",
+            "ngxtension/gestures"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/app/form-events/form-events.component.ts",
+          "hash": "9415901292510166616",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "ngxtension/form-events"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/app/if-validator/if-validator.component.ts",
+          "hash": "13135789481082118169",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "ngxtension/if-validator"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/app/intl/intl.component.ts",
+          "hash": "12491441188166873772",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "ngxtension/intl"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/app/linked-query-param/linked-query-param-array.component.ts",
+          "hash": "16886280039906036941",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "ngxtension/linked-query-param"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/app/linked-query-param/linked-query-param-basic.component.ts",
+          "hash": "4016961850258263444",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/platform-browser",
+            "ngxtension/linked-query-param"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/app/linked-query-param/linked-query-param-booleans.component.ts",
+          "hash": "10852263481827835204",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "ngxtension/linked-query-param"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/app/linked-query-param/linked-query-param-insideObject.component.ts",
+          "hash": "10706432065046408364",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/router",
+            "ngxtension/linked-query-param"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/app/linked-query-param/linked-query-param-number.component.ts",
+          "hash": "15092475781551814002",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "ngxtension/linked-query-param"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/app/linked-query-param/linked-query-param-object.component.ts",
+          "hash": "11569374049363167831",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/router",
+            "ngxtension/linked-query-param"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/app/linked-query-param/linked-query-param.component.ts",
+          "hash": "15647865208881453218",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/app/linked-query-param/routes.ts",
+          "hash": "6939177986888324914",
+          "deps": [
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/app/resize/resize.component.ts",
+          "hash": "15835264221542579888",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "ngxtension/resize"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/app/signal-history/signal-history.component.ts",
+          "hash": "499748961110524912",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "ngxtension/signal-history"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/app/svg-sprite/svg-sprite.component.css",
+          "hash": "12466969559242977427"
+        },
+        {
+          "file": "apps/test-app/src/app/svg-sprite/svg-sprite.component.ts",
+          "hash": "16414524820672019025",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "ngxtension/svg-sprite"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/app/text-selection/text-selection.component.ts",
+          "hash": "6213439733829561454",
+          "deps": [
+            "npm:@angular/core",
+            "ngxtension/explicit-effect",
+            "ngxtension/inject-text-selection"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/app/track-by/track-by.component.ts",
+          "hash": "7468404918311534117",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "ngxtension/trackby-id-prop"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/assets/.gitkeep",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "apps/test-app/src/assets/fontawesome/LICENSE.txt",
+          "hash": "8806593756992783749"
+        },
+        {
+          "file": "apps/test-app/src/assets/fontawesome/sprites/brands.svg",
+          "hash": "16111652772588412755"
+        },
+        {
+          "file": "apps/test-app/src/assets/fontawesome/sprites/regular.svg",
+          "hash": "3748225303362167550"
+        },
+        {
+          "file": "apps/test-app/src/assets/fontawesome/sprites/solid.svg",
+          "hash": "2027421276724434881"
+        },
+        {
+          "file": "apps/test-app/src/favicon.ico",
+          "hash": "9303420814833116677"
+        },
+        {
+          "file": "apps/test-app/src/index.html",
+          "hash": "16663460410585109487"
+        },
+        {
+          "file": "apps/test-app/src/main.ts",
+          "hash": "5820911293985816677",
+          "deps": [
+            "npm:@angular/platform-browser"
+          ]
+        },
+        {
+          "file": "apps/test-app/src/styles.css",
+          "hash": "7934826804179138676"
+        },
+        {
+          "file": "apps/test-app/tsconfig.app.json",
+          "hash": "11795995879911801785"
+        },
+        {
+          "file": "apps/test-app/tsconfig.editor.json",
+          "hash": "14170969207727663304"
+        },
+        {
+          "file": "apps/test-app/tsconfig.json",
+          "hash": "17957215552358167556"
+        }
+      ],
+      "ngxtension/filter-nil": [
+        {
+          "file": "libs/ngxtension/filter-nil/README.md",
+          "hash": "14123619195173009720"
+        },
+        {
+          "file": "libs/ngxtension/filter-nil/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/filter-nil/project.json",
+          "hash": "4167174289193688488"
+        },
+        {
+          "file": "libs/ngxtension/filter-nil/src/filter-nil.spec.ts",
+          "hash": "16347201953775353571",
+          "deps": [
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/filter-nil/src/filter-nil.ts",
+          "hash": "10716588637900350811",
+          "deps": [
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/filter-nil/src/index.ts",
+          "hash": "13147547430257307486"
+        }
+      ],
+      "ngxtension/active-element": [
+        {
+          "file": "libs/ngxtension/active-element/README.md",
+          "hash": "5034299335573823278"
+        },
+        {
+          "file": "libs/ngxtension/active-element/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/active-element/project.json",
+          "hash": "3365540728712986827"
+        },
+        {
+          "file": "libs/ngxtension/active-element/src/active-element.spec.ts",
+          "hash": "1664974256008377854",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/platform-browser",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/active-element/src/active-element.ts",
+          "hash": "9141579168998295533",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "ngxtension/assert-injector",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/active-element/src/index.ts",
+          "hash": "16061167183650990545"
+        }
+      ],
+      "ngxtension/inject-lazy": [
+        {
+          "file": "libs/ngxtension/inject-lazy/README.md",
+          "hash": "1694899509644621721"
+        },
+        {
+          "file": "libs/ngxtension/inject-lazy/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/inject-lazy/project.json",
+          "hash": "10226831565604015582"
+        },
+        {
+          "file": "libs/ngxtension/inject-lazy/src/index.ts",
+          "hash": "9045866386893547253"
+        },
+        {
+          "file": "libs/ngxtension/inject-lazy/src/inject-lazy-impl.ts",
+          "hash": "11507062283215602230",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/inject-lazy/src/inject-lazy.spec.ts",
+          "hash": "10774282161566088426",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/inject-lazy/src/inject-lazy.ts",
+          "hash": "4673391243667755753",
+          "deps": [
+            "npm:@angular/core",
+            "ngxtension/assert-injector",
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "ngxtension/auto-effect": [
+        {
+          "file": "libs/ngxtension/auto-effect/README.md",
+          "hash": "1359557424702747067"
+        },
+        {
+          "file": "libs/ngxtension/auto-effect/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/auto-effect/project.json",
+          "hash": "6543857156895659627"
+        },
+        {
+          "file": "libs/ngxtension/auto-effect/src/auto-effect.spec.ts",
+          "hash": "18050776442979027526",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/auto-effect/src/auto-effect.ts",
+          "hash": "18061833918359228359",
+          "deps": [
+            "npm:@angular/core",
+            "ngxtension/assert-injector"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/auto-effect/src/index.ts",
+          "hash": "13668107382599289267"
+        }
+      ],
+      "ngxtension/inject-params": [
+        {
+          "file": "libs/ngxtension/inject-params/README.md",
+          "hash": "6738267748213480898"
+        },
+        {
+          "file": "libs/ngxtension/inject-params/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/inject-params/project.json",
+          "hash": "6410034716889678479"
+        },
+        {
+          "file": "libs/ngxtension/inject-params/src/index.ts",
+          "hash": "17640847516083493603"
+        },
+        {
+          "file": "libs/ngxtension/inject-params/src/inject-params.spec.ts",
+          "hash": "13638899280750327186",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/inject-params/src/inject-params.ts",
+          "hash": "5215276134868782684",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router",
+            "ngxtension/assert-injector",
+            "ngxtension/shared",
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "ngxtension/call-apply": [
+        {
+          "file": "libs/ngxtension/call-apply/README.md",
+          "hash": "4646394439659272480"
+        },
+        {
+          "file": "libs/ngxtension/call-apply/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/call-apply/project.json",
+          "hash": "4450140030901195485"
+        },
+        {
+          "file": "libs/ngxtension/call-apply/src/call-apply.spec.ts",
+          "hash": "6351646919541934795",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/platform-browser"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/call-apply/src/call-apply.ts",
+          "hash": "16088394925615935308",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/call-apply/src/index.ts",
+          "hash": "287038679027826453"
+        }
+      ],
+      "ngxtension/singleton-proxy": [
+        {
+          "file": "libs/ngxtension/singleton-proxy/README.md",
+          "hash": "13812776126548509240"
+        },
+        {
+          "file": "libs/ngxtension/singleton-proxy/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/singleton-proxy/project.json",
+          "hash": "3723885461171121818"
+        },
+        {
+          "file": "libs/ngxtension/singleton-proxy/src/index.ts",
+          "hash": "5228250736420564675"
+        },
+        {
+          "file": "libs/ngxtension/singleton-proxy/src/singleton-proxy.spec.ts",
+          "hash": "7887049828479550378"
+        },
+        {
+          "file": "libs/ngxtension/singleton-proxy/src/singleton-proxy.ts",
+          "hash": "4176212697819571979"
+        }
+      ],
+      "ngxtension/not-pattern": [
+        {
+          "file": "libs/ngxtension/not-pattern/README.md",
+          "hash": "6638434215107564986"
+        },
+        {
+          "file": "libs/ngxtension/not-pattern/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/not-pattern/project.json",
+          "hash": "14511376635341326349"
+        },
+        {
+          "file": "libs/ngxtension/not-pattern/src/index.ts",
+          "hash": "7747698038265878903"
+        },
+        {
+          "file": "libs/ngxtension/not-pattern/src/not-pattern.spec.ts",
+          "hash": "1714178592374735968",
+          "deps": [
+            "npm:@angular/forms"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/not-pattern/src/not-pattern.ts",
+          "hash": "12086050936706245824",
+          "deps": [
+            "npm:@angular/forms"
+          ]
+        }
+      ],
+      "local-plugin": [
+        {
+          "file": "libs/local-plugin/.eslintrc.json",
+          "hash": "8750818147171579092"
+        },
+        {
+          "file": "libs/local-plugin/README.md",
+          "hash": "9990650458448617090"
+        },
+        {
+          "file": "libs/local-plugin/generators.json",
+          "hash": "12705162950400262831"
+        },
+        {
+          "file": "libs/local-plugin/jest.config.ts",
+          "hash": "17543939140672639706"
+        },
+        {
+          "file": "libs/local-plugin/package.json",
+          "hash": "14503514047057715414",
+          "deps": [
+            "npm:@nx/devkit",
+            "npm:tslib"
+          ]
+        },
+        {
+          "file": "libs/local-plugin/project.json",
+          "hash": "4660815174273384314"
+        },
+        {
+          "file": "libs/local-plugin/src/generators/convert-entry-point-to-project/generator.spec.ts",
+          "hash": "4490748481054683977",
+          "deps": [
+            "npm:@nx/angular",
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/local-plugin/src/generators/convert-entry-point-to-project/generator.ts",
+          "hash": "10246010243778786764",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/local-plugin/src/generators/convert-entry-point-to-project/schema.d.ts",
+          "hash": "7550665329131087018"
+        },
+        {
+          "file": "libs/local-plugin/src/generators/convert-entry-point-to-project/schema.json",
+          "hash": "5453301963695360429"
+        },
+        {
+          "file": "libs/local-plugin/src/generators/entry-point/generator.spec.ts",
+          "hash": "6662658772756279545",
+          "deps": [
+            "npm:@nx/angular",
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/local-plugin/src/generators/entry-point/generator.ts",
+          "hash": "14982628136432198850",
+          "deps": [
+            "npm:@nx/angular",
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/local-plugin/src/generators/entry-point/schema.json",
+          "hash": "7012131527385066721"
+        },
+        {
+          "file": "libs/local-plugin/src/index.ts",
+          "hash": "7595797973715282662"
+        },
+        {
+          "file": "libs/local-plugin/tsconfig.json",
+          "hash": "8057024917990567424"
+        },
+        {
+          "file": "libs/local-plugin/tsconfig.lib.json",
+          "hash": "17681884671417091998"
+        },
+        {
+          "file": "libs/local-plugin/tsconfig.spec.json",
+          "hash": "7437180211937007775"
+        }
+      ],
+      "ngxtension/connect": [
+        {
+          "file": "libs/ngxtension/connect/README.md",
+          "hash": "848339524261298552"
+        },
+        {
+          "file": "libs/ngxtension/connect/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/connect/project.json",
+          "hash": "15294236966749848327"
+        },
+        {
+          "file": "libs/ngxtension/connect/src/connect.spec.ts",
+          "hash": "4420799980179375983",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/connect/src/connect.ts",
+          "hash": "17681338741856948033",
+          "deps": [
+            "npm:@angular/core",
+            "ngxtension/assert-injector",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/connect/src/index.ts",
+          "hash": "4463241492180265375"
+        }
+      ],
+      "ngxtension/assert-injector": [
+        {
+          "file": "libs/ngxtension/assert-injector/README.md",
+          "hash": "9789595325824113484"
+        },
+        {
+          "file": "libs/ngxtension/assert-injector/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/assert-injector/project.json",
+          "hash": "5968127692656124396"
+        },
+        {
+          "file": "libs/ngxtension/assert-injector/src/assert-injector.spec.ts",
+          "hash": "7205129224904393456",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/assert-injector/src/assert-injector.ts",
+          "hash": "2994034647886143102",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/assert-injector/src/index.ts",
+          "hash": "5814437825670660297"
+        }
+      ],
+      "ngxtension/create-injectable": [
+        {
+          "file": "libs/ngxtension/create-injectable/README.md",
+          "hash": "8205393373129941120"
+        },
+        {
+          "file": "libs/ngxtension/create-injectable/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/create-injectable/project.json",
+          "hash": "14214372059997473002"
+        },
+        {
+          "file": "libs/ngxtension/create-injectable/src/create-injectable.spec.ts",
+          "hash": "14547578525023477317",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/create-injectable/src/create-injectable.ts",
+          "hash": "1914676814083441478",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/create-injectable/src/index.ts",
+          "hash": "2738800455338045242"
+        }
+      ],
+      "ngxtension/navigation-end": [
+        {
+          "file": "libs/ngxtension/navigation-end/README.md",
+          "hash": "5803034475849727627"
+        },
+        {
+          "file": "libs/ngxtension/navigation-end/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/navigation-end/project.json",
+          "hash": "7194239517771514954"
+        },
+        {
+          "file": "libs/ngxtension/navigation-end/src/index.ts",
+          "hash": "11863735753175488632"
+        },
+        {
+          "file": "libs/ngxtension/navigation-end/src/navigation-end.spec.ts",
+          "hash": "11722160959333174560",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/navigation-end/src/navigation-end.ts",
+          "hash": "406950766788149262",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router",
+            "ngxtension/assert-injector",
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "ngxtension/inject-route-data": [
+        {
+          "file": "libs/ngxtension/inject-route-data/README.md",
+          "hash": "7527355929038413522"
+        },
+        {
+          "file": "libs/ngxtension/inject-route-data/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/inject-route-data/project.json",
+          "hash": "15151915338724451789"
+        },
+        {
+          "file": "libs/ngxtension/inject-route-data/src/index.ts",
+          "hash": "17320810787043949007"
+        },
+        {
+          "file": "libs/ngxtension/inject-route-data/src/inject-route-data.spec.ts",
+          "hash": "2490230543686720247",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/inject-route-data/src/inject-route-data.ts",
+          "hash": "5913433794684851973",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router",
+            "ngxtension/assert-injector",
+            "ngxtension/shared",
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "ngxtension/computed": [
+        {
+          "file": "libs/ngxtension/computed/README.md",
+          "hash": "11132931137783042930"
+        },
+        {
+          "file": "libs/ngxtension/computed/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/computed/project.json",
+          "hash": "1101029038201781300"
+        },
+        {
+          "file": "libs/ngxtension/computed/src/computed.spec.ts",
+          "hash": "10565051882335347588",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/computed/src/computed.ts",
+          "hash": "16052901080274238735",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/computed/src/index.ts",
+          "hash": "6302340859038037134"
+        }
+      ],
+      "ngxtension/inject-document-visibility": [
+        {
+          "file": "libs/ngxtension/inject-document-visibility/README.md",
+          "hash": "17054421023985024412"
+        },
+        {
+          "file": "libs/ngxtension/inject-document-visibility/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/inject-document-visibility/project.json",
+          "hash": "3945577841103757313"
+        },
+        {
+          "file": "libs/ngxtension/inject-document-visibility/src/index.ts",
+          "hash": "4975768655910339162"
+        },
+        {
+          "file": "libs/ngxtension/inject-document-visibility/src/inject-document-visibility.spec.ts",
+          "hash": "6043989171135357822",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/inject-document-visibility/src/inject-document-visibility.ts",
+          "hash": "5998131890594490967",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "ngxtension/assert-injector",
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "ngxtension/inject-network": [
+        {
+          "file": "libs/ngxtension/inject-network/README.md",
+          "hash": "12375984242017258657"
+        },
+        {
+          "file": "libs/ngxtension/inject-network/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/inject-network/project.json",
+          "hash": "15491861507342691248"
+        },
+        {
+          "file": "libs/ngxtension/inject-network/src/index.ts",
+          "hash": "14997355623540591284"
+        },
+        {
+          "file": "libs/ngxtension/inject-network/src/inject-network.spec.ts",
+          "hash": "1500007805234038254",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/inject-network/src/inject-network.ts",
+          "hash": "7846949457830762672",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "ngxtension/assert-injector",
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "ngxtension/host-binding": [
+        {
+          "file": "libs/ngxtension/host-binding/README.md",
+          "hash": "9203191232640340419"
+        },
+        {
+          "file": "libs/ngxtension/host-binding/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/host-binding/project.json",
+          "hash": "2531712401698238060"
+        },
+        {
+          "file": "libs/ngxtension/host-binding/src/host-binding.spec.ts",
+          "hash": "18046586054253562471",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/host-binding/src/host-binding.ts",
+          "hash": "17687405676649952664",
+          "deps": [
+            "npm:@angular/core",
+            "ngxtension/assert-injector"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/host-binding/src/index.ts",
+          "hash": "1375512555973562261"
+        }
+      ],
+      "ngxtension/click-outside": [
+        {
+          "file": "libs/ngxtension/click-outside/README.md",
+          "hash": "16828328364906899076"
+        },
+        {
+          "file": "libs/ngxtension/click-outside/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/click-outside/project.json",
+          "hash": "11285342309093086844"
+        },
+        {
+          "file": "libs/ngxtension/click-outside/src/click-outside.spec.ts",
+          "hash": "13216180597597547006",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/platform-browser"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/click-outside/src/click-outside.ts",
+          "hash": "7500351186799556881",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "ngxtension/create-injection-token",
+            "ngxtension/inject-destroy",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/click-outside/src/index.ts",
+          "hash": "3186465837186595878"
+        }
+      ],
+      "ngxtension/inject-local-storage": [
+        {
+          "file": "libs/ngxtension/inject-local-storage/README.md",
+          "hash": "14785298956487574781"
+        },
+        {
+          "file": "libs/ngxtension/inject-local-storage/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/inject-local-storage/project.json",
+          "hash": "14894222446325727037"
+        },
+        {
+          "file": "libs/ngxtension/inject-local-storage/src/index.ts",
+          "hash": "10096600798933260997"
+        },
+        {
+          "file": "libs/ngxtension/inject-local-storage/src/inject-local-storage.spec.ts",
+          "hash": "804381455898611702",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/inject-local-storage/src/inject-local-storage.ts",
+          "hash": "11403152688641354724",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "ngxtension/assert-injector"
+          ]
+        }
+      ],
+      "ngxtension/rx-effect": [
+        {
+          "file": "libs/ngxtension/rx-effect/README.md",
+          "hash": "3412568013714020117"
+        },
+        {
+          "file": "libs/ngxtension/rx-effect/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/rx-effect/project.json",
+          "hash": "14302400966484589106"
+        },
+        {
+          "file": "libs/ngxtension/rx-effect/src/index.ts",
+          "hash": "14972282556183977458"
+        },
+        {
+          "file": "libs/ngxtension/rx-effect/src/rx-effect.spec.ts",
+          "hash": "16006286463869015273",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/rx-effect/src/rx-effect.ts",
+          "hash": "1851915045786568063",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "ngxtension/create-repeat": [
+        {
+          "file": "libs/ngxtension/create-repeat/README.md",
+          "hash": "6082829515848929219"
+        },
+        {
+          "file": "libs/ngxtension/create-repeat/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/create-repeat/project.json",
+          "hash": "17844017903287021642"
+        },
+        {
+          "file": "libs/ngxtension/create-repeat/src/create-repeat.spec.ts",
+          "hash": "11376067993329402170",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/create-repeat/src/create-repeat.ts",
+          "hash": "4437433700260956535",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/create-repeat/src/index.ts",
+          "hash": "9182872542550966981"
+        }
+      ],
+      "ngxtension/inject-destroy": [
+        {
+          "file": "libs/ngxtension/inject-destroy/README.md",
+          "hash": "15103986949998720941"
+        },
+        {
+          "file": "libs/ngxtension/inject-destroy/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/inject-destroy/project.json",
+          "hash": "3086770846597877367"
+        },
+        {
+          "file": "libs/ngxtension/inject-destroy/src/index.ts",
+          "hash": "4451000667201502896"
+        },
+        {
+          "file": "libs/ngxtension/inject-destroy/src/inject-destroy.spec.ts",
+          "hash": "10536274569964035006",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/inject-destroy/src/inject-destroy.ts",
+          "hash": "12980076875696168813",
+          "deps": [
+            "npm:@angular/core",
+            "ngxtension/assert-injector",
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "ngxtension/control-error": [
+        {
+          "file": "libs/ngxtension/control-error/README.md",
+          "hash": "8071460507303267373"
+        },
+        {
+          "file": "libs/ngxtension/control-error/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/control-error/project.json",
+          "hash": "16474806693084604806"
+        },
+        {
+          "file": "libs/ngxtension/control-error/src/control-error.spec.ts",
+          "hash": "2792720839363039552",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/platform-browser",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/control-error/src/control-error.ts",
+          "hash": "16817112781151596281",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "ngxtension/filter-nil",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/control-error/src/index.ts",
+          "hash": "3261113041627781140"
+        }
+      ],
+      "ngxtension": [
+        {
+          "file": "libs/ngxtension/.eslintrc.json",
+          "hash": "13791865503991873482"
+        },
+        {
+          "file": "libs/ngxtension/README.md",
+          "hash": "12953854959551209076"
+        },
+        {
+          "file": "libs/ngxtension/jest.config.ts",
+          "hash": "10721249358929464603"
+        },
+        {
+          "file": "libs/ngxtension/ng-package.json",
+          "hash": "8396418844312091543"
+        },
+        {
+          "file": "libs/ngxtension/package.json",
+          "hash": "4187581250312380743",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@use-gesture/vanilla",
+            "npm:rxjs",
+            "npm:tslib"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/project.json",
+          "hash": "9148883851541582926"
+        },
+        {
+          "file": "libs/ngxtension/src/index.ts",
+          "hash": "7747505847823252959"
+        },
+        {
+          "file": "libs/ngxtension/src/test-setup.ts",
+          "hash": "2942035661537379244",
+          "deps": [
+            "npm:zone.js",
+            "npm:@angular/core",
+            "npm:jest-preset-angular"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/tsconfig.json",
+          "hash": "16966205107277045100"
+        },
+        {
+          "file": "libs/ngxtension/tsconfig.lib.json",
+          "hash": "558545359746344308"
+        },
+        {
+          "file": "libs/ngxtension/tsconfig.lib.prod.json",
+          "hash": "13600833355204729491"
+        },
+        {
+          "file": "libs/ngxtension/tsconfig.spec.json",
+          "hash": "7614441073480242462"
+        }
+      ],
+      "ngxtension/derived-async": [
+        {
+          "file": "libs/ngxtension/derived-async/README.md",
+          "hash": "1805608832602951367"
+        },
+        {
+          "file": "libs/ngxtension/derived-async/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/derived-async/project.json",
+          "hash": "14749741770298977929"
+        },
+        {
+          "file": "libs/ngxtension/derived-async/src/derived-async.spec.ts",
+          "hash": "11504190145783180215",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/derived-async/src/derived-async.ts",
+          "hash": "1720490171705967014",
+          "deps": [
+            "npm:@angular/core",
+            "ngxtension/assert-injector",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/derived-async/src/index.ts",
+          "hash": "11791360517773740030"
+        }
+      ],
+      "ngxtension/inject-route-fragment": [
+        {
+          "file": "libs/ngxtension/inject-route-fragment/README.md",
+          "hash": "11528696760150271220"
+        },
+        {
+          "file": "libs/ngxtension/inject-route-fragment/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/inject-route-fragment/project.json",
+          "hash": "15478538977292063572"
+        },
+        {
+          "file": "libs/ngxtension/inject-route-fragment/src/index.ts",
+          "hash": "15898641412267671118"
+        },
+        {
+          "file": "libs/ngxtension/inject-route-fragment/src/inject-route-fragment.spec.ts",
+          "hash": "418342458995639781",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/inject-route-fragment/src/inject-route-fragment.ts",
+          "hash": "16657820903098290539",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router",
+            "ngxtension/assert-injector",
+            "ngxtension/shared",
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "ngxtension/map-array": [
+        {
+          "file": "libs/ngxtension/map-array/README.md",
+          "hash": "15233762331705102246"
+        },
+        {
+          "file": "libs/ngxtension/map-array/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/map-array/project.json",
+          "hash": "5097874716134291561"
+        },
+        {
+          "file": "libs/ngxtension/map-array/src/index.ts",
+          "hash": "5617451810456392826"
+        },
+        {
+          "file": "libs/ngxtension/map-array/src/map-array.spec.ts",
+          "hash": "12889422906990006230",
+          "deps": [
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/map-array/src/map-array.ts",
+          "hash": "17790117889684105871",
+          "deps": [
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "test-app-e2e": [
+        {
+          "file": "apps/test-app-e2e/.eslintrc.json",
+          "hash": "4989715087622201609"
+        },
+        {
+          "file": "apps/test-app-e2e/cypress.config.ts",
+          "hash": "16370396994849208884",
+          "deps": [
+            "npm:@nx/cypress",
+            "npm:cypress"
+          ]
+        },
+        {
+          "file": "apps/test-app-e2e/project.json",
+          "hash": "6791021481494939373"
+        },
+        {
+          "file": "apps/test-app-e2e/src/e2e/active-element.cy.ts",
+          "hash": "519133348248150754"
+        },
+        {
+          "file": "apps/test-app-e2e/src/e2e/drag.cy.ts",
+          "hash": "12476172519597601259"
+        },
+        {
+          "file": "apps/test-app-e2e/src/e2e/if-validator.cy.ts",
+          "hash": "13043647000278024194"
+        },
+        {
+          "file": "apps/test-app-e2e/src/e2e/resize.cy.ts",
+          "hash": "9815308600790390095"
+        },
+        {
+          "file": "apps/test-app-e2e/src/e2e/track-by.cy.ts",
+          "hash": "12440199389570400289"
+        },
+        {
+          "file": "apps/test-app-e2e/src/support/app.po.ts",
+          "hash": "11157016311132186162"
+        },
+        {
+          "file": "apps/test-app-e2e/src/support/commands.ts",
+          "hash": "3833435253160308013"
+        },
+        {
+          "file": "apps/test-app-e2e/src/support/e2e.ts",
+          "hash": "3666078656922506009"
+        },
+        {
+          "file": "apps/test-app-e2e/tsconfig.json",
+          "hash": "13537535100220165730"
+        }
+      ],
+      "ngxtension/to-observable-signal": [
+        {
+          "file": "libs/ngxtension/to-observable-signal/README.md",
+          "hash": "16217463430330682569"
+        },
+        {
+          "file": "libs/ngxtension/to-observable-signal/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/to-observable-signal/project.json",
+          "hash": "16010433559874448000"
+        },
+        {
+          "file": "libs/ngxtension/to-observable-signal/src/index.ts",
+          "hash": "17125870884856111851"
+        },
+        {
+          "file": "libs/ngxtension/to-observable-signal/src/to-observable-signal.spec.ts",
+          "hash": "8880233387981549329",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/to-observable-signal/src/to-observable-signal.ts",
+          "hash": "15810786357591344366",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "ngxtension/inject-inputs": [
+        {
+          "file": "libs/ngxtension/inject-inputs/README.md",
+          "hash": "3342679272846371301"
+        },
+        {
+          "file": "libs/ngxtension/inject-inputs/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/inject-inputs/project.json",
+          "hash": "1942851812135704658"
+        },
+        {
+          "file": "libs/ngxtension/inject-inputs/src/index.ts",
+          "hash": "5696946640174786454"
+        },
+        {
+          "file": "libs/ngxtension/inject-inputs/src/lib/inject-inputs.spec.ts",
+          "hash": "4969167202671140119",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/inject-inputs/src/lib/inject-inputs.ts",
+          "hash": "4164716739511956652",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/inject-inputs/src/lib/merge-inputs.spec.ts",
+          "hash": "12932951645215125525",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/inject-inputs/src/lib/merge-inputs.ts",
+          "hash": "938797998502795164"
+        }
+      ],
+      "plugin": [
+        {
+          "file": "libs/plugin/.eslintrc.json",
+          "hash": "16756502162849421198"
+        },
+        {
+          "file": "libs/plugin/README.md",
+          "hash": "7347582540351143382"
+        },
+        {
+          "file": "libs/plugin/generators.json",
+          "hash": "12874094083190984867"
+        },
+        {
+          "file": "libs/plugin/jest.config.ts",
+          "hash": "12059691935094626568"
+        },
+        {
+          "file": "libs/plugin/migrations.json",
+          "hash": "8177747756002369043"
+        },
+        {
+          "file": "libs/plugin/package.json",
+          "hash": "9645321250830665760",
+          "deps": [
+            "npm:@angular-eslint/bundled-angular-compiler",
+            "npm:@nx/devkit",
+            "npm:nx",
+            "npm:ts-morph"
+          ]
+        },
+        {
+          "file": "libs/plugin/project.json",
+          "hash": "16766712889336872946"
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-di-to-inject/__snapshots__/generator.spec.ts.snap",
+          "hash": "10453673424031759856"
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-di-to-inject/compat.ts",
+          "hash": "13861843023605955917",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-di-to-inject/generator.spec.ts",
+          "hash": "6456739380039939216",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-di-to-inject/generator.ts",
+          "hash": "14762915778884793289",
+          "deps": [
+            "npm:@nx/devkit",
+            "npm:ts-morph"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-di-to-inject/schema.d.ts",
+          "hash": "14748707525419976640"
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-di-to-inject/schema.json",
+          "hash": "13568716727477152886"
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-host-binding/__snapshots__/generator.spec.ts.snap",
+          "hash": "8012991568870922711"
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-host-binding/compat.ts",
+          "hash": "8711688050794253697",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-host-binding/generator.spec.ts",
+          "hash": "18268317957788486169",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-host-binding/generator.ts",
+          "hash": "12781915501657213060",
+          "deps": [
+            "npm:@nx/devkit",
+            "npm:ts-morph"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-host-binding/schema.d.ts",
+          "hash": "4941690529810755021"
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-host-binding/schema.json",
+          "hash": "73968948277541992"
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-outputs/__snapshots__/generator.spec.ts.snap",
+          "hash": "5129979247845994607"
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-outputs/compat.ts",
+          "hash": "10728371409230130430",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-outputs/generator.spec.ts",
+          "hash": "2609603702681402656",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-outputs/generator.ts",
+          "hash": "18217887762194816039",
+          "deps": [
+            "npm:@nx/devkit",
+            "npm:ts-morph"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-outputs/schema.d.ts",
+          "hash": "8238835309300812975"
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-outputs/schema.json",
+          "hash": "12199153724527415526"
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-queries/__snapshots__/generator.spec.ts.snap",
+          "hash": "13348126402099925402"
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-queries/compat.ts",
+          "hash": "1434362556018539555",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-queries/generator.spec.ts",
+          "hash": "5896832778062206322",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-queries/generator.ts",
+          "hash": "3139997198491976089",
+          "deps": [
+            "npm:@nx/devkit",
+            "npm:ts-morph"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-queries/schema.d.ts",
+          "hash": "3598069394625749483"
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-queries/schema.json",
+          "hash": "13610184986577138311"
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-signal-inputs/__snapshots__/generator.spec.ts.snap",
+          "hash": "2255024937721366489"
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-signal-inputs/compat.ts",
+          "hash": "6885176410001809839",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-signal-inputs/generator.spec.ts",
+          "hash": "16295666531819080608",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-signal-inputs/generator.ts",
+          "hash": "11497332101224331872",
+          "deps": [
+            "npm:@nx/devkit",
+            "npm:ts-morph"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-signal-inputs/schema.d.ts",
+          "hash": "1969194420797553161"
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-signal-inputs/schema.json",
+          "hash": "18079488461360534010"
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-to-self-closing-tag/__snapshots__/generator.spec.ts.snap",
+          "hash": "15393250757774464826"
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-to-self-closing-tag/compat.ts",
+          "hash": "10534995780881783639",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-to-self-closing-tag/generator.spec.ts",
+          "hash": "6774347732120381734",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-to-self-closing-tag/generator.ts",
+          "hash": "10930302947945233573",
+          "deps": [
+            "npm:@angular-eslint/bundled-angular-compiler",
+            "npm:@angular/compiler",
+            "npm:@nx/devkit",
+            "npm:ts-morph"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-to-self-closing-tag/schema.d.ts",
+          "hash": "15341138249202086274"
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-to-self-closing-tag/schema.json",
+          "hash": "8845892969782404089"
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-to-sfc/__snapshots__/generator.spec.ts.snap",
+          "hash": "793805944579277917"
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-to-sfc/compat.ts",
+          "hash": "10534995780881783639",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-to-sfc/generator.spec.ts",
+          "hash": "13872745017254393035",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-to-sfc/generator.ts",
+          "hash": "15332906298640516708",
+          "deps": [
+            "npm:@nx/devkit",
+            "npm:ts-morph"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-to-sfc/schema.d.ts",
+          "hash": "166037543227162998"
+        },
+        {
+          "file": "libs/plugin/src/generators/convert-to-sfc/schema.json",
+          "hash": "3855342162952902655"
+        },
+        {
+          "file": "libs/plugin/src/generators/init/compat.ts",
+          "hash": "15270777611671700210",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/init/generator.spec.ts",
+          "hash": "11367725167684609572",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/init/generator.ts",
+          "hash": "7521113226869894634",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/init/schema.json",
+          "hash": "377487953572774122"
+        },
+        {
+          "file": "libs/plugin/src/generators/shared-utils/contents-store.ts",
+          "hash": "5157647358944314217",
+          "deps": [
+            "npm:ts-morph"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/shared-utils/import-utils.ts",
+          "hash": "10815643260932068426",
+          "deps": [
+            "npm:ts-morph"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/shared-utils/migrate-signals-in-template.ts",
+          "hash": "3476130243812077610",
+          "deps": [
+            "npm:@angular-eslint/bundled-angular-compiler"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/generators/shared-utils/migrate-signals-in-ts.ts",
+          "hash": "7183693712171595721",
+          "deps": [
+            "npm:@nx/devkit",
+            "npm:ts-morph"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/index.ts",
+          "hash": "10177291103048862675"
+        },
+        {
+          "file": "libs/plugin/src/migrations/rename-computeds/compat.ts",
+          "hash": "1037756987738973705",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/migrations/rename-computeds/rename-computeds.spec.ts",
+          "hash": "17338518260056405657",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/migrations/rename-computeds/rename-computeds.ts",
+          "hash": "15555395066448883178",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/migrations/rename-document-visibility/compat.ts",
+          "hash": "7391571260670083327",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/migrations/rename-document-visibility/rename-document-visibility.spec.ts",
+          "hash": "12293024689353906555",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/src/migrations/rename-document-visibility/rename-document-visibility.ts",
+          "hash": "12139888804094740112",
+          "deps": [
+            "npm:@nx/devkit"
+          ]
+        },
+        {
+          "file": "libs/plugin/tsconfig.json",
+          "hash": "8057024917990567424"
+        },
+        {
+          "file": "libs/plugin/tsconfig.lib.json",
+          "hash": "17681884671417091998"
+        },
+        {
+          "file": "libs/plugin/tsconfig.spec.json",
+          "hash": "7437180211937007775"
+        }
+      ],
+      "ngxtension/control-value-accessor": [
+        {
+          "file": "libs/ngxtension/control-value-accessor/README.md",
+          "hash": "7411097910109944132"
+        },
+        {
+          "file": "libs/ngxtension/control-value-accessor/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/control-value-accessor/project.json",
+          "hash": "5716153382165636359"
+        },
+        {
+          "file": "libs/ngxtension/control-value-accessor/src/control-value-accessor.spec.ts",
+          "hash": "16951674996068131950",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/platform-browser"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/control-value-accessor/src/control-value-accessor.ts",
+          "hash": "9202276783267784075",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "ngxtension/create-injection-token",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/control-value-accessor/src/index.ts",
+          "hash": "5125398567216612894"
+        }
+      ],
+      "ngxtension/derive-loading": [
+        {
+          "file": "libs/ngxtension/derive-loading/README.md",
+          "hash": "10372166452891006060"
+        },
+        {
+          "file": "libs/ngxtension/derive-loading/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/derive-loading/project.json",
+          "hash": "10949258579600377376"
+        },
+        {
+          "file": "libs/ngxtension/derive-loading/src/derive-loading.spec.ts",
+          "hash": "10913390565896697825",
+          "deps": [
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/derive-loading/src/derive-loading.ts",
+          "hash": "14559574588786962125",
+          "deps": [
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/derive-loading/src/index.ts",
+          "hash": "5127295629555524329"
+        }
+      ],
+      "ngxtension/merge-from": [
+        {
+          "file": "libs/ngxtension/merge-from/README.md",
+          "hash": "11540350286397671388"
+        },
+        {
+          "file": "libs/ngxtension/merge-from/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/merge-from/project.json",
+          "hash": "13103389484654379611"
+        },
+        {
+          "file": "libs/ngxtension/merge-from/src/index.ts",
+          "hash": "4204685702917723029"
+        },
+        {
+          "file": "libs/ngxtension/merge-from/src/lib/merge-from.spec.ts",
+          "hash": "8158139791276420100",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/merge-from/src/lib/merge-from.ts",
+          "hash": "16033567523778262045",
+          "deps": [
+            "npm:@angular/core",
+            "ngxtension/assert-injector",
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "ngxtension/linked-query-param": [
+        {
+          "file": "libs/ngxtension/linked-query-param/README.md",
+          "hash": "17172405366778912681"
+        },
+        {
+          "file": "libs/ngxtension/linked-query-param/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/linked-query-param/project.json",
+          "hash": "18137484497841898190"
+        },
+        {
+          "file": "libs/ngxtension/linked-query-param/src/index.ts",
+          "hash": "18036751815668172627"
+        },
+        {
+          "file": "libs/ngxtension/linked-query-param/src/linked-query-param.spec.ts",
+          "hash": "14271448525916864814",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router",
+            "ngxtension/inject-route-fragment"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/linked-query-param/src/linked-query-param.ts",
+          "hash": "9315151922391869311",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router",
+            "ngxtension/assert-injector",
+            "ngxtension/create-notifier",
+            "ngxtension/explicit-effect",
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "ngxtension/inject-query-params": [
+        {
+          "file": "libs/ngxtension/inject-query-params/README.md",
+          "hash": "10028150442488378422"
+        },
+        {
+          "file": "libs/ngxtension/inject-query-params/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/inject-query-params/project.json",
+          "hash": "4760471073913981252"
+        },
+        {
+          "file": "libs/ngxtension/inject-query-params/src/index.ts",
+          "hash": "6580646019430534528"
+        },
+        {
+          "file": "libs/ngxtension/inject-query-params/src/inject-query-params.spec.ts",
+          "hash": "14356483460455826017",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/inject-query-params/src/inject-query-params.ts",
+          "hash": "6590273977065328541",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/router",
+            "ngxtension/assert-injector",
+            "ngxtension/shared",
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "ngxtension/when-document-visible": [
+        {
+          "file": "libs/ngxtension/when-document-visible/README.md",
+          "hash": "5080545811778197392"
+        },
+        {
+          "file": "libs/ngxtension/when-document-visible/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/when-document-visible/project.json",
+          "hash": "8090735484423422405"
+        },
+        {
+          "file": "libs/ngxtension/when-document-visible/src/index.ts",
+          "hash": "17574199907157345231"
+        },
+        {
+          "file": "libs/ngxtension/when-document-visible/src/when-document-visible.spec.ts",
+          "hash": "14465103386242142759",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/when-document-visible/src/when-document-visible.ts",
+          "hash": "15864964195142676671",
+          "deps": [
+            "ngxtension/inject-document-visibility",
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "ngxtension/effect-once-if": [
+        {
+          "file": "libs/ngxtension/effect-once-if/README.md",
+          "hash": "16622161891152045105"
+        },
+        {
+          "file": "libs/ngxtension/effect-once-if/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/effect-once-if/project.json",
+          "hash": "12166902732192702113"
+        },
+        {
+          "file": "libs/ngxtension/effect-once-if/src/effect-once-if.spec.ts",
+          "hash": "16745984053382947627",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/effect-once-if/src/effect-once-if.ts",
+          "hash": "1490318611153345704",
+          "deps": [
+            "npm:@angular/core",
+            "ngxtension/assert-injector"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/effect-once-if/src/index.ts",
+          "hash": "6353553644087673992"
+        }
+      ],
+      "ngxtension/trackby-id-prop": [
+        {
+          "file": "libs/ngxtension/trackby-id-prop/README.md",
+          "hash": "9634236217779951837"
+        },
+        {
+          "file": "libs/ngxtension/trackby-id-prop/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/trackby-id-prop/project.json",
+          "hash": "9394089836105099416"
+        },
+        {
+          "file": "libs/ngxtension/trackby-id-prop/src/index.ts",
+          "hash": "11242304606363361676"
+        },
+        {
+          "file": "libs/ngxtension/trackby-id-prop/src/trackby-id-prop.spec.ts",
+          "hash": "5456900855189888737",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core",
+            "npm:@angular/platform-browser"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/trackby-id-prop/src/trackby-id-prop.ts",
+          "hash": "15923323797727756063",
+          "deps": [
+            "npm:@angular/common",
+            "npm:@angular/core"
+          ]
+        }
+      ],
+      "ngxtension/signal-history": [
+        {
+          "file": "libs/ngxtension/signal-history/README.md",
+          "hash": "14265434228949305654"
+        },
+        {
+          "file": "libs/ngxtension/signal-history/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/signal-history/project.json",
+          "hash": "2861144354356716894"
+        },
+        {
+          "file": "libs/ngxtension/signal-history/src/index.ts",
+          "hash": "6717988715671835229"
+        },
+        {
+          "file": "libs/ngxtension/signal-history/src/signal-history.spec.ts",
+          "hash": "7160784822483581252",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/signal-history/src/signal-history.ts",
+          "hash": "13180910231418110704",
+          "deps": [
+            "npm:@angular/core",
+            "ngxtension/assert-injector",
+            "ngxtension/explicit-effect"
+          ]
+        }
+      ],
+      "ngxtension/to-lazy-signal": [
+        {
+          "file": "libs/ngxtension/to-lazy-signal/README.md",
+          "hash": "1488319295887041733"
+        },
+        {
+          "file": "libs/ngxtension/to-lazy-signal/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/to-lazy-signal/project.json",
+          "hash": "10249142606913657783"
+        },
+        {
+          "file": "libs/ngxtension/to-lazy-signal/src/index.ts",
+          "hash": "308362420527758151"
+        },
+        {
+          "file": "libs/ngxtension/to-lazy-signal/src/to-lazy-signal.spec.ts",
+          "hash": "6935483540356477126",
+          "deps": [
+            "npm:@angular/core",
+            "ngxtension/create-effect",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/to-lazy-signal/src/to-lazy-signal.ts",
+          "hash": "18038934266681977792",
+          "deps": [
+            "npm:@angular/core",
+            "ngxtension/assert-injector",
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "ngxtension/computed-previous": [
+        {
+          "file": "libs/ngxtension/computed-previous/README.md",
+          "hash": "1158659159771558064"
+        },
+        {
+          "file": "libs/ngxtension/computed-previous/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/computed-previous/project.json",
+          "hash": "17565240263644848145"
+        },
+        {
+          "file": "libs/ngxtension/computed-previous/src/computed-previous.spec.ts",
+          "hash": "6731530481398860056",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/computed-previous/src/computed-previous.ts",
+          "hash": "17571245369585237454",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/computed-previous/src/index.ts",
+          "hash": "10051030955102524079"
+        }
+      ],
+      "ngxtension/derived-from": [
+        {
+          "file": "libs/ngxtension/derived-from/README.md",
+          "hash": "17176742780721144550"
+        },
+        {
+          "file": "libs/ngxtension/derived-from/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/derived-from/project.json",
+          "hash": "6832357946878312152"
+        },
+        {
+          "file": "libs/ngxtension/derived-from/src/derived-from.spec.ts",
+          "hash": "3392541017219135034",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/derived-from/src/derived-from.ts",
+          "hash": "14305668753445194613",
+          "deps": [
+            "npm:@angular/core",
+            "ngxtension/assert-injector",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/derived-from/src/index.ts",
+          "hash": "8213992891129386728"
+        }
+      ],
+      "ngxtension/explicit-effect": [
+        {
+          "file": "libs/ngxtension/explicit-effect/README.md",
+          "hash": "1753029446531740026"
+        },
+        {
+          "file": "libs/ngxtension/explicit-effect/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/explicit-effect/project.json",
+          "hash": "4116816464905156454"
+        },
+        {
+          "file": "libs/ngxtension/explicit-effect/src/explicit-effect.spec.ts",
+          "hash": "179120881777466785",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/explicit-effect/src/explicit-effect.ts",
+          "hash": "13848923708246280061",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/explicit-effect/src/index.ts",
+          "hash": "7769482694945007851"
+        }
+      ],
+      "ngxtension/create-effect": [
+        {
+          "file": "libs/ngxtension/create-effect/README.md",
+          "hash": "635804015116192366"
+        },
+        {
+          "file": "libs/ngxtension/create-effect/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/create-effect/project.json",
+          "hash": "15495962519466241521"
+        },
+        {
+          "file": "libs/ngxtension/create-effect/src/create-effect.spec.ts",
+          "hash": "2153040544474914143",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/create-effect/src/create-effect.ts",
+          "hash": "5950706163099104347",
+          "deps": [
+            "npm:@angular/core",
+            "ngxtension/assert-injector",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/create-effect/src/index.ts",
+          "hash": "343203927251877253"
+        }
+      ],
+      "ngxtension/create-notifier": [
+        {
+          "file": "libs/ngxtension/create-notifier/README.md",
+          "hash": "17597236393368042199"
+        },
+        {
+          "file": "libs/ngxtension/create-notifier/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/create-notifier/project.json",
+          "hash": "8118765964129806625"
+        },
+        {
+          "file": "libs/ngxtension/create-notifier/src/create-notifier.spec.ts",
+          "hash": "7042185056672810398",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/create-notifier/src/create-notifier.ts",
+          "hash": "4619702677706067321",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/create-notifier/src/index.ts",
+          "hash": "8648290443446508043"
+        }
+      ],
+      "ngxtension/merge-http-context": [
+        {
+          "file": "libs/ngxtension/merge-http-context/README.md",
+          "hash": "13810316707931568505"
+        },
+        {
+          "file": "libs/ngxtension/merge-http-context/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/merge-http-context/project.json",
+          "hash": "10996960960125061813"
+        },
+        {
+          "file": "libs/ngxtension/merge-http-context/src/index.ts",
+          "hash": "8807437703969386603"
+        },
+        {
+          "file": "libs/ngxtension/merge-http-context/src/merge-http-context.spec.ts",
+          "hash": "16191258631233490765",
+          "deps": [
+            "npm:@angular/common"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/merge-http-context/src/merge-http-context.ts",
+          "hash": "4974330377482071819",
+          "deps": [
+            "npm:@angular/common"
+          ]
+        }
+      ],
+      "ngxtension/intl": [
+        {
+          "file": "libs/ngxtension/intl/README.md",
+          "hash": "13947224074499456791"
+        },
+        {
+          "file": "libs/ngxtension/intl/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/intl/project.json",
+          "hash": "15040474878754459563"
+        },
+        {
+          "file": "libs/ngxtension/intl/src/display-names.pipe.ts",
+          "hash": "10538814196884351016",
+          "deps": [
+            "npm:@angular/core",
+            "ngxtension/create-injection-token"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/intl/src/display-names.spec.ts",
+          "hash": "10201468394152557067",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/platform-browser"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/intl/src/index.ts",
+          "hash": "17870905255680974421"
+        },
+        {
+          "file": "libs/ngxtension/intl/src/list-format.pipe.ts",
+          "hash": "14634097896138963361",
+          "deps": [
+            "npm:@angular/core",
+            "ngxtension/create-injection-token"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/intl/src/list-format.spec.ts",
+          "hash": "15743259977149048775",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/platform-browser"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/intl/src/plural-rules.pipe.ts",
+          "hash": "12585961042762365161",
+          "deps": [
+            "npm:@angular/core",
+            "ngxtension/create-injection-token"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/intl/src/plural-rules.spec.ts",
+          "hash": "7210649276674959493",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/platform-browser"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/intl/src/relative-time-format.pipe.ts",
+          "hash": "11378176459122548349",
+          "deps": [
+            "npm:@angular/core",
+            "ngxtension/create-injection-token"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/intl/src/relative-time-format.spec.ts",
+          "hash": "13261622647956814949",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/platform-browser"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/intl/src/supportedValuesOf.pipe.ts",
+          "hash": "16235887475192174989",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/intl/src/supportedValuesOf.spec.ts",
+          "hash": "7997512502989917879",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@angular/platform-browser"
+          ]
+        }
+      ],
+      "ngxtension/gestures": [
+        {
+          "file": "libs/ngxtension/gestures/README.md",
+          "hash": "5695795077074216794"
+        },
+        {
+          "file": "libs/ngxtension/gestures/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/gestures/project.json",
+          "hash": "17265070075433766897"
+        },
+        {
+          "file": "libs/ngxtension/gestures/src/drag.ts",
+          "hash": "16486655145403141171",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@use-gesture/vanilla"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/gestures/src/gesture.ts",
+          "hash": "10210819777616033216",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@use-gesture/vanilla",
+            "ngxtension/assert-injector"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/gestures/src/hover.ts",
+          "hash": "4713770009747143106",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@use-gesture/vanilla"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/gestures/src/index.ts",
+          "hash": "2681866375798262110"
+        },
+        {
+          "file": "libs/ngxtension/gestures/src/move.ts",
+          "hash": "14855057394144324521",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@use-gesture/vanilla"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/gestures/src/pinch.ts",
+          "hash": "9376423880715881405",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@use-gesture/vanilla"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/gestures/src/scroll.ts",
+          "hash": "11619273634421163497",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@use-gesture/vanilla"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/gestures/src/wheel.ts",
+          "hash": "1304310316412083466",
+          "deps": [
+            "npm:@angular/core",
+            "npm:@use-gesture/vanilla"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/gestures/src/zoneless-gesture.ts",
+          "hash": "14322770636529541701",
+          "deps": [
+            "ngxtension/create-injection-token"
+          ]
+        }
+      ],
+      "ngxtension/signal-slice": [
+        {
+          "file": "libs/ngxtension/signal-slice/README.md",
+          "hash": "10692612308748758471"
+        },
+        {
+          "file": "libs/ngxtension/signal-slice/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/signal-slice/project.json",
+          "hash": "4280914758235153819"
+        },
+        {
+          "file": "libs/ngxtension/signal-slice/src/index.ts",
+          "hash": "11511137005061181932"
+        },
+        {
+          "file": "libs/ngxtension/signal-slice/src/signal-slice.spec.ts",
+          "hash": "5451898596453246778",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/signal-slice/src/signal-slice.ts",
+          "hash": "12482017831684031432",
+          "deps": [
+            "npm:@angular/core",
+            "ngxtension/connect",
+            "ngxtension/create-notifier",
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "ngxtension/create-signal": [
+        {
+          "file": "libs/ngxtension/create-signal/README.md",
+          "hash": "9173815088512348218"
+        },
+        {
+          "file": "libs/ngxtension/create-signal/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/create-signal/project.json",
+          "hash": "4503235201668589782"
+        },
+        {
+          "file": "libs/ngxtension/create-signal/src/create-signal.spec.ts",
+          "hash": "17343073255966227472",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/create-signal/src/create-signal.ts",
+          "hash": "9069247764786852273",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/create-signal/src/index.ts",
+          "hash": "13862332416751988624"
+        }
+      ],
+      "@ngxtension-platform/source": [
+        {
+          "file": ".all-contributorsrc",
+          "hash": "12728713347272384503"
+        },
+        {
+          "file": ".cursor/mcp.json",
+          "hash": "2506987890262296516"
+        },
+        {
+          "file": ".editorconfig",
+          "hash": "5443105041930014821"
+        },
+        {
+          "file": ".eslintignore",
+          "hash": "7663861978715868291"
+        },
+        {
+          "file": ".eslintrc.json",
+          "hash": "18355967204439655474"
+        },
+        {
+          "file": ".github/scripts/merge-all-contributors.js",
+          "hash": "5456652706958935322"
+        },
+        {
+          "file": ".github/workflows/astro.yml",
+          "hash": "3522860992075361080"
+        },
+        {
+          "file": ".github/workflows/auto-approve.yml",
+          "hash": "11481829390924130755"
+        },
+        {
+          "file": ".github/workflows/ci.yml",
+          "hash": "7685784503332956895"
+        },
+        {
+          "file": ".github/workflows/merge-all-contributors.yml",
+          "hash": "11988533586093912580"
+        },
+        {
+          "file": ".gitignore",
+          "hash": "2245314578301650086"
+        },
+        {
+          "file": ".prettierignore",
+          "hash": "11332260395747836026"
+        },
+        {
+          "file": ".prettierrc",
+          "hash": "3810339594633543052"
+        },
+        {
+          "file": ".vscode/extensions.json",
+          "hash": "14277182067358208720"
+        },
+        {
+          "file": ".vscode/settings.json",
+          "hash": "15221913305186515487"
+        },
+        {
+          "file": "CHANGELOG.md",
+          "hash": "7654088600242066415"
+        },
+        {
+          "file": "CONTRIBUTING.md",
+          "hash": "8184629579064266603"
+        },
+        {
+          "file": "LICENSE",
+          "hash": "18147382466952887625"
+        },
+        {
+          "file": "README.md",
+          "hash": "12769003386450127104"
+        },
+        {
+          "file": "jest.config.ts",
+          "hash": "4349078734722606679",
+          "deps": [
+            "npm:@nx/jest"
+          ]
+        },
+        {
+          "file": "jest.preset.js",
+          "hash": "9430166341120122740",
+          "deps": [
+            "npm:@nx/jest"
+          ]
+        },
+        {
+          "file": "migrations.json",
+          "hash": "242941192259845575"
+        },
+        {
+          "file": "nx.json",
+          "hash": "3694498796223408841"
+        },
+        {
+          "file": "package.json",
+          "hash": "6066208625048320346",
+          "deps": [
+            "npm:@angular-devkit/build-angular",
+            "npm:@angular-devkit/core",
+            "npm:@angular-devkit/schematics",
+            "npm:@angular-eslint/eslint-plugin",
+            "npm:@angular-eslint/eslint-plugin-template",
+            "npm:@angular-eslint/template-parser",
+            "npm:@angular/cli",
+            "npm:@angular/compiler-cli",
+            "npm:@angular/language-service",
+            "npm:@nx/angular",
+            "npm:@nx/cypress",
+            "npm:@nx/devkit",
+            "npm:@nx/eslint",
+            "npm:@nx/eslint-plugin",
+            "npm:@nx/jest",
+            "npm:@nx/js",
+            "npm:@nx/plugin",
+            "npm:@nx/web",
+            "npm:@nx/workspace",
+            "npm:@schematics/angular",
+            "npm:@swc-node/register",
+            "npm:@swc/cli",
+            "npm:@swc/core",
+            "npm:@types/jest",
+            "npm:@types/node",
+            "npm:@typescript-eslint/eslint-plugin",
+            "npm:@typescript-eslint/parser",
+            "npm:@typescript-eslint/utils",
+            "npm:all-contributors-cli",
+            "npm:autoprefixer",
+            "npm:cypress",
+            "npm:dotenv-cli",
+            "npm:eslint",
+            "npm:eslint-config-prettier",
+            "npm:eslint-plugin-cypress",
+            "npm:jest",
+            "npm:jest-environment-jsdom",
+            "npm:jest-preset-angular",
+            "npm:jsonc-eslint-parser",
+            "npm:lint-staged",
+            "npm:ng-packagr",
+            "npm:nx",
+            "npm:postcss",
+            "npm:postcss-import",
+            "npm:postcss-preset-env",
+            "npm:postcss-url",
+            "npm:prettier",
+            "npm:prettier-plugin-astro",
+            "npm:prettier-plugin-organize-imports",
+            "npm:sharp",
+            "npm:simple-git-hooks",
+            "npm:ts-jest",
+            "npm:ts-morph",
+            "npm:ts-node",
+            "npm:typescript",
+            "npm:@angular/animations",
+            "npm:@angular/cdk",
+            "npm:@angular/common",
+            "npm:@angular/compiler",
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/platform-browser",
+            "npm:@angular/platform-browser-dynamic",
+            "npm:@angular/router",
+            "npm:@swc/helpers",
+            "npm:@use-gesture/vanilla",
+            "npm:rxjs",
+            "npm:tslib",
+            "npm:zone.js"
+          ]
+        },
+        {
+          "file": "pnpm-lock.yaml",
+          "hash": "11401294522064520492"
+        },
+        {
+          "file": "tsconfig.base.json",
+          "hash": "10717970299675388146"
+        }
+      ],
+      "ngxtension/debug": [
+        {
+          "file": "libs/ngxtension/debug/README.md",
+          "hash": "7014475850415933975"
+        },
+        {
+          "file": "libs/ngxtension/debug/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/debug/project.json",
+          "hash": "7821359000665849394"
+        },
+        {
+          "file": "libs/ngxtension/debug/src/debug.spec.ts",
+          "hash": "6708069341581654208",
+          "deps": [
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/debug/src/debug.ts",
+          "hash": "15346156049502497234",
+          "deps": [
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/debug/src/index.ts",
+          "hash": "17606352712902775030"
+        }
+      ],
+      "ngxtension/create-injection-token": [
+        {
+          "file": "libs/ngxtension/create-injection-token/README.md",
+          "hash": "241386345522123186"
+        },
+        {
+          "file": "libs/ngxtension/create-injection-token/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/create-injection-token/project.json",
+          "hash": "16337994879530072582"
+        },
+        {
+          "file": "libs/ngxtension/create-injection-token/src/create-injection-token.spec.ts",
+          "hash": "3817089899547320870",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/create-injection-token/src/create-injection-token.ts",
+          "hash": "9231607765765161434",
+          "deps": [
+            "npm:@angular/core",
+            "ngxtension/assert-injector"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/create-injection-token/src/index.ts",
+          "hash": "5951643670558071970"
+        }
+      ],
+      "ngxtension/map-skip-undefined": [
+        {
+          "file": "libs/ngxtension/map-skip-undefined/README.md",
+          "hash": "12202022017618416644"
+        },
+        {
+          "file": "libs/ngxtension/map-skip-undefined/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/map-skip-undefined/project.json",
+          "hash": "7144374357532755144"
+        },
+        {
+          "file": "libs/ngxtension/map-skip-undefined/src/index.ts",
+          "hash": "5410047709243822605"
+        },
+        {
+          "file": "libs/ngxtension/map-skip-undefined/src/map-skip-undefined.spec.ts",
+          "hash": "3338369076950800303",
+          "deps": [
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/map-skip-undefined/src/map-skip-undefined.ts",
+          "hash": "6424176358401992938",
+          "deps": [
+            "npm:rxjs"
+          ]
+        }
+      ],
+      "ngxtension/shared": [
+        {
+          "file": "libs/ngxtension/shared/README.md",
+          "hash": "11646156809531933612"
+        },
+        {
+          "file": "libs/ngxtension/shared/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/shared/project.json",
+          "hash": "1087391865257182325"
+        },
+        {
+          "file": "libs/ngxtension/shared/src/index.ts",
+          "hash": "11915725029543952958"
+        },
+        {
+          "file": "libs/ngxtension/shared/src/options/default-value.ts",
+          "hash": "10663833613151554279"
+        },
+        {
+          "file": "libs/ngxtension/shared/src/options/index.ts",
+          "hash": "7800090390273095441"
+        },
+        {
+          "file": "libs/ngxtension/shared/src/options/injector.ts",
+          "hash": "5850567175084262152",
+          "deps": [
+            "npm:@angular/core"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/shared/src/options/parse.ts",
+          "hash": "11141996488624211631"
+        }
+      ],
+      "ngxtension/computed-from": [
+        {
+          "file": "libs/ngxtension/computed-from/README.md",
+          "hash": "17235341245418686040"
+        },
+        {
+          "file": "libs/ngxtension/computed-from/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/computed-from/project.json",
+          "hash": "8600673284424769677"
+        },
+        {
+          "file": "libs/ngxtension/computed-from/src/index.ts",
+          "hash": "3946188575638905976",
+          "deps": [
+            "ngxtension/derived-from"
+          ]
+        }
+      ],
+      "ngxtension/inject-is-intersecting": [
+        {
+          "file": "libs/ngxtension/inject-is-intersecting/README.md",
+          "hash": "15115461035974629783"
+        },
+        {
+          "file": "libs/ngxtension/inject-is-intersecting/ng-package.json",
+          "hash": "15003135373382051695"
+        },
+        {
+          "file": "libs/ngxtension/inject-is-intersecting/project.json",
+          "hash": "8817602372897723908"
+        },
+        {
+          "file": "libs/ngxtension/inject-is-intersecting/src/index.ts",
+          "hash": "2502142199272760966"
+        },
+        {
+          "file": "libs/ngxtension/inject-is-intersecting/src/inject-is-intersecting.spec.ts",
+          "hash": "13640972402608568012",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/inject-is-intersecting/src/inject-is-intersecting.ts",
+          "hash": "13913362168777719648",
+          "deps": [
+            "npm:@angular/core",
+            "ngxtension/assert-injector",
+            "ngxtension/inject-destroy"
+          ]
+        },
+        {
+          "file": "libs/ngxtension/inject-is-intersecting/src/is-in-viewport.service.ts",
+          "hash": "16031318050749707665",
+          "deps": [
+            "npm:@angular/core",
+            "npm:rxjs"
+          ]
+        }
+      ]
+    },
+    "nonProjectFiles": []
+  }
+}

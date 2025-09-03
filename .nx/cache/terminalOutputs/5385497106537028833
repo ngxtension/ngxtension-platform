@@ -1,0 +1,435 @@
+> pnpm nx run docs:build-docs
+
+
+[0m[7m[1m[33m NX [39m[22m[27m[0m  [33m--skip-nx-cache disables the connection to Nx Cloud for the current run.[39m
+
+The remote cache will not be read from or written to during this run.
+
+[1m[33mNx is configured to use the legacy cache. This cache will be removed in Nx 21. Read more at https://nx.dev/deprecated/legacy-cache.[39m[22m
+
+[2m> [22m[2mnx run[22m docs:build-docs
+
+[2m> [22mpnpm exec nx build docs
+
+
+[0m[7m[1m[33m NX [39m[22m[27m[0m  [33m--skip-nx-cache disables the connection to Nx Cloud for the current run.[39m
+
+The remote cache will not be read from or written to during this run.
+
+[1m[33mNx is configured to use the legacy cache. This cache will be removed in Nx 21. Read more at https://nx.dev/deprecated/legacy-cache.[39m[22m
+
+[2m> [22m[2mnx run[22m docs:build
+
+> docs@0.0.1 build /home/runner/work/ngxtension-platform/ngxtension-platform/docs
+> astro build
+[2m09:39:28[22m [34m[build][39m output: [34m"static"[39m
+[2m09:39:28[22m [34m[build][39m directory: [34m/home/runner/work/ngxtension-platform/ngxtension-platform/docs/dist/[39m
+[2m09:39:28[22m [34m[build][39m Collecting build info...
+[2m09:39:28[22m [34m[build][39m [32m✓ Completed in 638ms.[39m
+[2m09:39:28[22m [34m[build][39m Building static entrypoints...
+[2m09:39:41[22m [34m[vite][39m [32m✓ built in 13.00s[39m
+[2m09:39:41[22m [34m[build][39m [32m✓ Completed in 13.03s.[39m
+[42m[30m building client (vite) [39m[49m
+[2m09:39:41[22m [34m[vite][39m transforming...
+[2m09:39:41[22m [34m[vite][39m [32m✓[39m 24 modules transformed.
+[2m09:39:41[22m [34m[vite][39m rendering chunks...
+[2m09:39:41[22m [34m[vite][39m computing gzip size...
+[2m09:39:41[22m [34m[vite][39m [2mdist/[22m[2m_astro/[22m[32mec.3zb7u.js                                            [39m[1m[2m 2.31 kB[22m[1m[22m
+[2m09:39:41[22m [34m[vite][39m [2mdist/[22m[2m_astro/[22m[35mec.d6kn2.css                                           [39m[1m[2m18.16 kB[22m[1m[22m[2m │ gzip:  3.84 kB[22m
+[2m09:39:41[22m [34m[vite][39m [2mdist/[22m[2m_astro/[22m[36mpage.BOzSQxG5.js                                       [39m[1m[2m 0.04 kB[22m[1m[22m[2m │ gzip:  0.06 kB[22m
+[2m09:39:41[22m [34m[vite][39m [2mdist/[22m[2m_astro/[22m[36mTabs.astro_astro_type_script_index_0_lang.Bm-WZ1bf.js  [39m[1m[2m 1.45 kB[22m[1m[22m[2m │ gzip:  0.71 kB[22m
+[2m09:39:41[22m [34m[vite][39m [2mdist/[22m[2m_astro/[22m[36mindex.DImtQWSj.js                                      [39m[1m[2m 2.26 kB[22m[1m[22m[2m │ gzip:  1.00 kB[22m
+[2m09:39:41[22m [34m[vite][39m [2mdist/[22m[2m_astro/[22m[36mhoisted.mdiJ0jF4.js                                    [39m[1m[2m18.10 kB[22m[1m[22m[2m │ gzip:  6.37 kB[22m
+[2m09:39:41[22m [34m[vite][39m [2mdist/[22m[2m_astro/[22m[36mui-core.C9Y76X7A.js                                    [39m[1m[2m57.07 kB[22m[1m[22m[2m │ gzip: 18.96 kB[22m
+[2m09:39:41[22m [34m[vite][39m [32m✓ built in 229ms[39m
+[42m[30m generating static routes [39m[49m
+[2m09:39:41[22m [32m▶[39m @astrojs/starlight/404.astro
+[2m09:39:41[22m   [34m└─[39m [2m/404.html[22m
+ [2m(+50ms)[22m
+[2m09:39:41[22m [32m▶[39m @astrojs/starlight/index.astro
+[2m09:39:41[22m   [34m├─[39m [2m/es/getting-started/installation/index.html[22m
+ [2m(+2.01s)[22m
+[2m09:39:43[22m   [34m├─[39m [2m/es/getting-started/introduction/index.html[22m
+ [2m(+2.19s)[22m
+[2m09:39:45[22m   [34m├─[39m [2m/es/index.html[22m
+ [2m(+23ms)[22m
+[2m09:39:45[22m   [34m├─[39m [2m/es/utilities/assets/svg-sprites/index.html[22m
+ [2m(+24.49s)[22m
+[2m09:40:10[22m   [34m├─[39m [2m/es/utilities/components/host-binding/index.html[22m
+ [2m(+1.43s)[22m
+[2m09:40:11[22m   [34m├─[39m [2m/es/utilities/directives/click-outside/index.html[22m
+ [2m(+483ms)[22m
+[2m09:40:12[22m   [34m├─[39m [2m/es/utilities/directives/repeat/index.html[22m
+ [2m(+570ms)[22m
+[2m09:40:12[22m   [34m├─[39m [2m/es/utilities/directives/resize/index.html[22m
+ [2m(+984ms)[22m
+[2m09:40:13[22m   [34m├─[39m [2m/es/utilities/directives/trackby-id-prop/index.html[22m
+ [2m(+1.38s)[22m
+[2m09:40:15[22m   [34m├─[39m [2m/es/utilities/forms/control-error/index.html[22m
+ [2m(+309ms)[22m
+[2m09:40:15[22m   [34m├─[39m [2m/es/utilities/forms/control-value-accessor/index.html[22m
+ [2m(+1.15s)[22m
+[2m09:40:16[22m   [34m├─[39m [2m/es/utilities/forms/if-validator/index.html[22m
+ [2m(+1.32s)[22m
+[2m09:40:18[22m   [34m├─[39m [2m/es/utilities/gesture/gesture/index.html[22m
+ [2m(+486ms)[22m
+[2m09:40:18[22m   [34m├─[39m [2m/es/utilities/gesture/intro/index.html[22m
+ [2m(+321ms)[22m
+[2m09:40:18[22m   [34m├─[39m [2m/es/utilities/injectors/active-element/index.html[22m
+ [2m(+1.39s)[22m
+[2m09:40:20[22m   [34m├─[39m [2m/es/utilities/injectors/assert-injector/index.html[22m
+ [2m(+1.54s)[22m
+[2m09:40:21[22m   [34m├─[39m [2m/es/utilities/injectors/auto-effect/index.html[22m
+ [2m(+1.48s)[22m
+[2m09:40:23[22m   [34m├─[39m [2m/es/utilities/injectors/create-injectable/index.html[22m
+ [2m(+1.36s)[22m
+[2m09:40:24[22m   [34m├─[39m [2m/es/utilities/injectors/create-injection-token/index.html[22m
+ [2m(+1.57s)[22m
+[2m09:40:26[22m   [34m├─[39m [2m/es/utilities/injectors/inject-destroy/index.html[22m
+ [2m(+1.17s)[22m
+[2m09:40:27[22m   [34m├─[39m [2m/es/utilities/injectors/inject-document-visibility/index.html[22m
+ [2m(+1.19s)[22m
+[2m09:40:28[22m   [34m├─[39m [2m/es/utilities/injectors/inject-is-intersecting/index.html[22m
+ [2m(+1.46s)[22m
+[2m09:40:30[22m   [34m├─[39m [2m/es/utilities/injectors/inject-lazy/index.html[22m
+ [2m(+1.30s)[22m
+[2m09:40:31[22m   [34m├─[39m [2m/es/utilities/injectors/inject-network/index.html[22m
+ [2m(+1.18s)[22m
+[2m09:40:32[22m   [34m├─[39m [2m/es/utilities/injectors/inject-params/index.html[22m
+ [2m(+359ms)[22m
+[2m09:40:32[22m   [34m├─[39m [2m/es/utilities/injectors/inject-query-params/index.html[22m
+ [2m(+1.14s)[22m
+[2m09:40:33[22m   [34m├─[39m [2m/es/utilities/injectors/inject-route-data/index.html[22m
+ [2m(+1.41s)[22m
+[2m09:40:35[22m   [34m├─[39m [2m/es/utilities/injectors/inject-route-fragment/index.html[22m
+ [2m(+1.37s)[22m
+[2m09:40:36[22m   [34m├─[39m [2m/es/utilities/injectors/navigation-end/index.html[22m
+ [2m(+1.35s)[22m
+[2m09:40:38[22m   [34m├─[39m [2m/es/utilities/intl/intl/index.html[22m
+ [2m(+237ms)[22m
+[2m09:40:38[22m   [34m├─[39m [2m/es/utilities/migrations/inject-migration/index.html[22m
+ [2m(+1.44s)[22m
+[2m09:40:39[22m   [34m├─[39m [2m/es/utilities/miscellaneous/singleton-proxy/index.html[22m
+ [2m(+486ms)[22m
+[2m09:40:40[22m   [34m├─[39m [2m/es/utilities/operators/debug/index.html[22m
+ [2m(+250ms)[22m
+[2m09:40:40[22m   [34m├─[39m [2m/es/utilities/operators/filter-array/index.html[22m
+ [2m(+246ms)[22m
+[2m09:40:40[22m   [34m├─[39m [2m/es/utilities/operators/filter-nil/index.html[22m
+ [2m(+466ms)[22m
+[2m09:40:41[22m   [34m├─[39m [2m/es/utilities/operators/map-array/index.html[22m
+ [2m(+469ms)[22m
+[2m09:40:41[22m   [34m├─[39m [2m/es/utilities/operators/map-skip-undefined/index.html[22m
+ [2m(+1.41s)[22m
+[2m09:40:43[22m   [34m├─[39m [2m/es/utilities/operators/reduce-array/index.html[22m
+ [2m(+1.21s)[22m
+[2m09:40:44[22m   [34m├─[39m [2m/es/utilities/operators/rx-effect/index.html[22m
+ [2m(+1.19s)[22m
+[2m09:40:45[22m   [34m├─[39m [2m/es/utilities/signals/computed-async/index.html[22m
+ [2m(+471ms)[22m
+[2m09:40:46[22m   [34m├─[39m [2m/es/utilities/signals/computed-from/index.html[22m
+ [2m(+1.13s)[22m
+[2m09:40:47[22m   [34m├─[39m [2m/es/utilities/signals/computed-previous/index.html[22m
+ [2m(+1.32s)[22m
+[2m09:40:48[22m   [34m├─[39m [2m/getting-started/installation/index.html[22m
+ [2m(+327ms)[22m
+[2m09:40:48[22m   [34m├─[39m [2m/getting-started/introduction/index.html[22m
+ [2m(+321ms)[22m
+[2m09:40:49[22m   [34m├─[39m [2m/index.html[22m
+ [2m(+20ms)[22m
+[2m09:40:49[22m   [34m├─[39m [2m/logos/logos/index.html[22m
+ [2m(+325ms)[22m
+[2m09:40:49[22m   [34m├─[39m [2m/utilities/assets/svg-sprites/index.html[22m
+ [2m(+338ms)[22m
+[2m09:40:49[22m   [34m├─[39m [2m/utilities/components/host-binding/index.html[22m
+ [2m(+254ms)[22m
+[2m09:40:50[22m   [34m├─[39m [2m/utilities/directives/click-outside/index.html[22m
+ [2m(+235ms)[22m
+[2m09:40:50[22m   [34m├─[39m [2m/utilities/directives/merge-inputs/index.html[22m
+ [2m(+252ms)[22m
+[2m09:40:50[22m   [34m├─[39m [2m/utilities/directives/repeat/index.html[22m
+ [2m(+243ms)[22m
+[2m09:40:50[22m   [34m├─[39m [2m/utilities/directives/resize/index.html[22m
+ [2m(+242ms)[22m
+[2m09:40:51[22m   [34m├─[39m [2m/utilities/directives/trackby-id-prop/index.html[22m
+ [2m(+242ms)[22m
+[2m09:40:51[22m   [34m├─[39m [2m/utilities/forms/control-error/index.html[22m
+ [2m(+242ms)[22m
+[2m09:40:51[22m   [34m├─[39m [2m/utilities/forms/control-value-accessor/index.html[22m
+ [2m(+247ms)[22m
+[2m09:40:51[22m   [34m├─[39m [2m/utilities/forms/form-events/index.html[22m
+ [2m(+244ms)[22m
+[2m09:40:51[22m   [34m├─[39m [2m/utilities/forms/if-validator/index.html[22m
+ [2m(+297ms)[22m
+[2m09:40:52[22m   [34m├─[39m [2m/utilities/forms/not-pattern/index.html[22m
+ [2m(+241ms)[22m
+[2m09:40:52[22m   [34m├─[39m [2m/utilities/gesture/gesture/index.html[22m
+ [2m(+236ms)[22m
+[2m09:40:52[22m   [34m├─[39m [2m/utilities/gesture/intro/index.html[22m
+ [2m(+348ms)[22m
+[2m09:40:53[22m   [34m├─[39m [2m/utilities/http/merge-http-context/index.html[22m
+ [2m(+1.42s)[22m
+[2m09:40:54[22m   [34m├─[39m [2m/utilities/injectors/active-element/index.html[22m
+ [2m(+243ms)[22m
+[2m09:40:54[22m   [34m├─[39m [2m/utilities/injectors/assert-injector/index.html[22m
+ [2m(+241ms)[22m
+[2m09:40:55[22m   [34m├─[39m [2m/utilities/injectors/auto-effect/index.html[22m
+ [2m(+254ms)[22m
+[2m09:40:55[22m   [34m├─[39m [2m/utilities/injectors/create-injectable/index.html[22m
+ [2m(+259ms)[22m
+[2m09:40:55[22m   [34m├─[39m [2m/utilities/injectors/create-injection-token/index.html[22m
+ [2m(+253ms)[22m
+[2m09:40:55[22m   [34m├─[39m [2m/utilities/injectors/inject-destroy/index.html[22m
+ [2m(+250ms)[22m
+[2m09:40:56[22m   [34m├─[39m [2m/utilities/injectors/inject-document-visibility/index.html[22m
+ [2m(+249ms)[22m
+[2m09:40:56[22m   [34m├─[39m [2m/utilities/injectors/inject-inputs/index.html[22m
+ [2m(+282ms)[22m
+[2m09:40:56[22m   [34m├─[39m [2m/utilities/injectors/inject-is-intersecting/index.html[22m
+ [2m(+308ms)[22m
+[2m09:40:56[22m   [34m├─[39m [2m/utilities/injectors/inject-lazy/index.html[22m
+ [2m(+256ms)[22m
+[2m09:40:57[22m   [34m├─[39m [2m/utilities/injectors/inject-local-storage/index.html[22m
+ [2m(+257ms)[22m
+[2m09:40:57[22m   [34m├─[39m [2m/utilities/injectors/inject-network/index.html[22m
+ [2m(+242ms)[22m
+[2m09:40:57[22m   [34m├─[39m [2m/utilities/injectors/inject-params/index.html[22m
+ [2m(+263ms)[22m
+[2m09:40:57[22m   [34m├─[39m [2m/utilities/injectors/inject-query-params/index.html[22m
+ [2m(+331ms)[22m
+[2m09:40:58[22m   [34m├─[39m [2m/utilities/injectors/inject-route-data/index.html[22m
+ [2m(+241ms)[22m
+[2m09:40:58[22m   [34m├─[39m [2m/utilities/injectors/inject-route-fragment/index.html[22m
+ [2m(+241ms)[22m
+[2m09:40:58[22m   [34m├─[39m [2m/utilities/injectors/inject-text-selection/index.html[22m
+ [2m(+233ms)[22m
+[2m09:40:58[22m   [34m├─[39m [2m/utilities/injectors/linked-query-param/index.html[22m
+ [2m(+241ms)[22m
+[2m09:40:59[22m   [34m├─[39m [2m/utilities/injectors/navigation-end/index.html[22m
+ [2m(+235ms)[22m
+[2m09:40:59[22m   [34m├─[39m [2m/utilities/injectors/signal-history/index.html[22m
+ [2m(+234ms)[22m
+[2m09:40:59[22m   [34m├─[39m [2m/utilities/intl/intl/index.html[22m
+ [2m(+239ms)[22m
+[2m09:40:59[22m   [34m├─[39m [2m/utilities/migrations/host-binding-migration/index.html[22m
+ [2m(+911ms)[22m
+[2m09:41:00[22m   [34m├─[39m [2m/utilities/migrations/inject-migration/index.html[22m
+ [2m(+198ms)[22m
+[2m09:41:00[22m   [34m├─[39m [2m/utilities/migrations/new-outputs-migration/index.html[22m
+ [2m(+770ms)[22m
+[2m09:41:01[22m   [34m├─[39m [2m/utilities/migrations/queries-migration/index.html[22m
+ [2m(+784ms)[22m
+[2m09:41:02[22m   [34m├─[39m [2m/utilities/migrations/self-closing-tags/index.html[22m
+ [2m(+1.28s)[22m
+[2m09:41:03[22m   [34m├─[39m [2m/utilities/migrations/sfc-migration/index.html[22m
+ [2m(+1.25s)[22m
+[2m09:41:05[22m   [34m├─[39m [2m/utilities/migrations/signal-inputs-migration/index.html[22m
+ [2m(+742ms)[22m
+[2m09:41:05[22m   [34m├─[39m [2m/utilities/miscellaneous/singleton-proxy/index.html[22m
+ [2m(+264ms)[22m
+[2m09:41:06[22m   [34m├─[39m [2m/utilities/operators/create-repeat/index.html[22m
+ [2m(+1.37s)[22m
+[2m09:41:07[22m   [34m├─[39m [2m/utilities/operators/debug/index.html[22m
+ [2m(+256ms)[22m
+[2m09:41:07[22m   [34m├─[39m [2m/utilities/operators/derive-loading/index.html[22m
+ [2m(+239ms)[22m
+[2m09:41:07[22m   [34m├─[39m [2m/utilities/operators/filter-array/index.html[22m
+ [2m(+241ms)[22m
+[2m09:41:08[22m   [34m├─[39m [2m/utilities/operators/filter-nil/index.html[22m
+ [2m(+239ms)[22m
+[2m09:41:08[22m   [34m├─[39m [2m/utilities/operators/map-array/index.html[22m
+ [2m(+245ms)[22m
+[2m09:41:08[22m   [34m├─[39m [2m/utilities/operators/map-skip-undefined/index.html[22m
+ [2m(+251ms)[22m
+[2m09:41:08[22m   [34m├─[39m [2m/utilities/operators/poll/index.html[22m
+ [2m(+248ms)[22m
+[2m09:41:09[22m   [34m├─[39m [2m/utilities/operators/reduce-array/index.html[22m
+ [2m(+241ms)[22m
+[2m09:41:09[22m   [34m├─[39m [2m/utilities/operators/rx-effect/index.html[22m
+ [2m(+242ms)[22m
+[2m09:41:09[22m   [34m├─[39m [2m/utilities/operators/take-latest-from/index.html[22m
+ [2m(+254ms)[22m
+[2m09:41:09[22m   [34m├─[39m [2m/utilities/operators/when-document-visible/index.html[22m
+ [2m(+253ms)[22m
+[2m09:41:10[22m   [34m├─[39m [2m/utilities/pipes/call-apply/index.html[22m
+ [2m(+242ms)[22m
+[2m09:41:10[22m   [34m├─[39m [2m/utilities/pipes/repeat/index.html[22m
+ [2m(+244ms)[22m
+[2m09:41:10[22m   [34m├─[39m [2m/utilities/signals/computed-async/index.html[22m
+ [2m(+249ms)[22m
+[2m09:41:10[22m   [34m├─[39m [2m/utilities/signals/computed-from/index.html[22m
+ [2m(+239ms)[22m
+[2m09:41:11[22m   [34m├─[39m [2m/utilities/signals/computed-previous/index.html[22m
+ [2m(+238ms)[22m
+[2m09:41:11[22m   [34m├─[39m [2m/utilities/signals/computed/index.html[22m
+ [2m(+247ms)[22m
+[2m09:41:11[22m   [34m├─[39m [2m/utilities/signals/connect/index.html[22m
+ [2m(+243ms)[22m
+[2m09:41:11[22m   [34m├─[39m [2m/utilities/signals/create-notifier/index.html[22m
+ [2m(+240ms)[22m
+[2m09:41:12[22m   [34m├─[39m [2m/utilities/signals/create-signal/index.html[22m
+ [2m(+235ms)[22m
+[2m09:41:12[22m   [34m├─[39m [2m/utilities/signals/derived-async/index.html[22m
+ [2m(+247ms)[22m
+[2m09:41:12[22m   [34m├─[39m [2m/utilities/signals/derived-from/index.html[22m
+ [2m(+244ms)[22m
+[2m09:41:12[22m   [34m├─[39m [2m/utilities/signals/effect-once-if/index.html[22m
+ [2m(+1.17s)[22m
+[2m09:41:13[22m   [34m├─[39m [2m/utilities/signals/explicit-effect/index.html[22m
+ [2m(+242ms)[22m
+[2m09:41:14[22m   [34m├─[39m [2m/utilities/signals/merge-from/index.html[22m
+ [2m(+249ms)[22m
+[2m09:41:14[22m   [34m├─[39m [2m/utilities/signals/signal-slice/index.html[22m
+ [2m(+236ms)[22m
+[2m09:41:14[22m   [34m├─[39m [2m/utilities/signals/to-lazy-signal/index.html[22m
+ [2m(+253ms)[22m
+[2m09:41:14[22m   [34m├─[39m [2m/utilities/signals/to-observable-signal/index.html[22m
+ [2m(+245ms)[22m
+[2m09:41:15[22m   [34m├─[39m [2m/utilities/stores/create-effect/index.html[22m
+ [2m(+239ms)[22m
+[2m09:41:15[22m   [34m├─[39m [2m/es/404/index.html[22m
+ [2m(+18ms)[22m
+[2m09:41:15[22m   [34m├─[39m [2m/es/logos/logos/index.html[22m
+ [2m(+314ms)[22m
+[2m09:41:15[22m   [34m├─[39m [2m/es/utilities/directives/merge-inputs/index.html[22m
+ [2m(+234ms)[22m
+[2m09:41:16[22m   [34m├─[39m [2m/es/utilities/forms/form-events/index.html[22m
+ [2m(+236ms)[22m
+[2m09:41:16[22m   [34m├─[39m [2m/es/utilities/forms/not-pattern/index.html[22m
+ [2m(+243ms)[22m
+[2m09:41:16[22m   [34m├─[39m [2m/es/utilities/http/merge-http-context/index.html[22m
+ [2m(+380ms)[22m
+[2m09:41:16[22m   [34m├─[39m [2m/es/utilities/injectors/inject-inputs/index.html[22m
+ [2m(+232ms)[22m
+[2m09:41:17[22m   [34m├─[39m [2m/es/utilities/injectors/inject-local-storage/index.html[22m
+ [2m(+241ms)[22m
+[2m09:41:17[22m   [34m├─[39m [2m/es/utilities/injectors/inject-text-selection/index.html[22m
+ [2m(+234ms)[22m
+[2m09:41:17[22m   [34m├─[39m [2m/es/utilities/injectors/linked-query-param/index.html[22m
+ [2m(+231ms)[22m
+[2m09:41:17[22m   [34m├─[39m [2m/es/utilities/injectors/signal-history/index.html[22m
+ [2m(+242ms)[22m
+[2m09:41:18[22m   [34m├─[39m [2m/es/utilities/migrations/host-binding-migration/index.html[22m
+ [2m(+317ms)[22m
+[2m09:41:18[22m   [34m├─[39m [2m/es/utilities/migrations/new-outputs-migration/index.html[22m
+ [2m(+325ms)[22m
+[2m09:41:18[22m   [34m├─[39m [2m/es/utilities/migrations/queries-migration/index.html[22m
+ [2m(+311ms)[22m
+[2m09:41:19[22m   [34m├─[39m [2m/es/utilities/migrations/self-closing-tags/index.html[22m
+ [2m(+404ms)[22m
+[2m09:41:19[22m   [34m├─[39m [2m/es/utilities/migrations/sfc-migration/index.html[22m
+ [2m(+414ms)[22m
+[2m09:41:19[22m   [34m├─[39m [2m/es/utilities/migrations/signal-inputs-migration/index.html[22m
+ [2m(+335ms)[22m
+[2m09:41:20[22m   [34m├─[39m [2m/es/utilities/operators/create-repeat/index.html[22m
+ [2m(+404ms)[22m
+[2m09:41:20[22m   [34m├─[39m [2m/es/utilities/operators/derive-loading/index.html[22m
+ [2m(+253ms)[22m
+[2m09:41:20[22m   [34m├─[39m [2m/es/utilities/operators/poll/index.html[22m
+ [2m(+254ms)[22m
+[2m09:41:21[22m   [34m├─[39m [2m/es/utilities/operators/take-latest-from/index.html[22m
+ [2m(+304ms)[22m
+[2m09:41:21[22m   [34m├─[39m [2m/es/utilities/operators/when-document-visible/index.html[22m
+ [2m(+233ms)[22m
+[2m09:41:21[22m   [34m├─[39m [2m/es/utilities/pipes/call-apply/index.html[22m
+ [2m(+236ms)[22m
+[2m09:41:21[22m   [34m├─[39m [2m/es/utilities/pipes/repeat/index.html[22m
+ [2m(+241ms)[22m
+[2m09:41:22[22m   [34m├─[39m [2m/es/utilities/signals/computed/index.html[22m
+ [2m(+248ms)[22m
+[2m09:41:22[22m   [34m├─[39m [2m/es/utilities/signals/connect/index.html[22m
+ [2m(+234ms)[22m
+[2m09:41:22[22m   [34m├─[39m [2m/es/utilities/signals/create-notifier/index.html[22m
+ [2m(+242ms)[22m
+[2m09:41:22[22m   [34m├─[39m [2m/es/utilities/signals/create-signal/index.html[22m
+ [2m(+247ms)[22m
+[2m09:41:23[22m   [34m├─[39m [2m/es/utilities/signals/derived-async/index.html[22m
+ [2m(+231ms)[22m
+[2m09:41:23[22m   [34m├─[39m [2m/es/utilities/signals/derived-from/index.html[22m
+ [2m(+234ms)[22m
+[2m09:41:23[22m   [34m├─[39m [2m/es/utilities/signals/effect-once-if/index.html[22m
+ [2m(+397ms)[22m
+[2m09:41:23[22m   [34m├─[39m [2m/es/utilities/signals/explicit-effect/index.html[22m
+ [2m(+235ms)[22m
+[2m09:41:24[22m   [34m├─[39m [2m/es/utilities/signals/merge-from/index.html[22m
+ [2m(+242ms)[22m
+[2m09:41:24[22m   [34m├─[39m [2m/es/utilities/signals/signal-slice/index.html[22m
+ [2m(+239ms)[22m
+[2m09:41:24[22m   [34m├─[39m [2m/es/utilities/signals/to-lazy-signal/index.html[22m
+ [2m(+238ms)[22m
+[2m09:41:24[22m   [34m├─[39m [2m/es/utilities/signals/to-observable-signal/index.html[22m
+ [2m(+257ms)[22m
+[2m09:41:25[22m   [34m└─[39m [2m/es/utilities/stores/create-effect/index.html[22m
+ [2m(+246ms)[22m
+[2m09:41:25[22m [32m✓ Completed in 103.84s.
+[39m
+[42m[30m generating optimized images [39m[49m
+[2m09:41:25[22m   [32m▶[39m /_astro/ngxt-blue.XxJXN-BN_beY8A.svg [2m(before: 3kB, after: 3kB)[22m [2m(+29ms)[22m [2m(1/1)[22m
+[2m09:41:25[22m [32m✓ Completed in 30ms.
+[39m
+Running Pagefind v1.0.4 (Extended)
+Running from: "/home/runner/work/ngxtension-platform/ngxtension-platform/docs/node_modules/.pnpm/@astrojs+starlight@0.22.0_astro@4.7.0/node_modules/@astrojs/starlight"
+Source:       "../../../../../../dist"
+Output:       "../../../../../../dist/pagefind"
+[Walking source directory]
+Found 158 files matching **/*.{html}
+[Parsing files]
+Found a data-pagefind-body element on the site.
+↳ Ignoring pages without this tag.
+[Reading languages]
+Discovered 2 languages: en, es
+[Building search indexes]
+Total: 
+  Indexed 2 languages
+  Indexed 156 pages
+  Indexed 6147 words
+  Indexed 0 filters
+  Indexed 0 sorts
+Finished in 1.067 seconds
+[33m[1m09:41:28[22m [WARN] [@astrojs/sitemap][39m The Sitemap integration requires the `site` astro.config option. Skipping.
+[2m09:41:28[22m [34m[build][39m 158 page(s) built in [1m120.79s[22m
+[2m09:41:28[22m [34m[build][39m [1mComplete![22m
+
+
+
+[0m[7m[1m[32m NX [39m[22m[27m[0m  [32mSuccessfully ran target [1mbuild[22m for project docs[39m
+
+
+[2m> [22mpnpm exec nx graph --file=docs/dist/dep-graph/index.html
+
+
+[0m[7m[1m[32m NX [39m[22m[27m[0m  [32mHTML output created in /home/runner/work/ngxtension-platform/ngxtension-platform/docs/dist/dep-graph[39m
+
+/home/runner/work/ngxtension-platform/ngxtension-platform/docs/dist/dep-graph
+/home/runner/work/ngxtension-platform/ngxtension-platform/docs/dist/dep-graph/static/styles.js
+/home/runner/work/ngxtension-platform/ngxtension-platform/docs/dist/dep-graph/static/runtime.js
+/home/runner/work/ngxtension-platform/ngxtension-platform/docs/dist/dep-graph/static/environment.js
+/home/runner/work/ngxtension-platform/ngxtension-platform/docs/dist/dep-graph/static/favicon.ico
+/home/runner/work/ngxtension-platform/ngxtension-platform/docs/dist/dep-graph/static/styles.css
+/home/runner/work/ngxtension-platform/ngxtension-platform/docs/dist/dep-graph/static/main.js
+
+
+
+
+[0m[7m[1m[32m NX [39m[22m[27m[0m  [32mSuccessfully ran target [1mbuild-docs[22m for project docs[39m
+
+
+> pnpm nx run docs:copy-static
+
+
+[0m[7m[1m[33m NX [39m[22m[27m[0m  [33m--skip-nx-cache disables the connection to Nx Cloud for the current run.[39m
+
+The remote cache will not be read from or written to during this run.
+
+[1m[33mNx is configured to use the legacy cache. This cache will be removed in Nx 21. Read more at https://nx.dev/deprecated/legacy-cache.[39m[22m
+
+[2m> [22m[2mnx run[22m docs:copy-static
+
+[2m> [22mcp -r dep-graph/static static
+
+
+
+
+[0m[7m[1m[32m NX [39m[22m[27m[0m  [32mSuccessfully ran target [1mcopy-static[22m for project docs[39m
+
+

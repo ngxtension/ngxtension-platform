@@ -1,0 +1,21 @@
+{
+  "run": {
+    "command": "nx package docs --skip-nx-cache",
+    "startTime": "2025-09-03T09:39:23.108Z",
+    "endTime": "2025-09-03T09:41:34.873Z",
+    "inner": false
+  },
+  "tasks": [
+    {
+      "taskId": "docs:package",
+      "target": "package",
+      "projectName": "docs",
+      "hash": "5385497106537028833",
+      "startTime": "2025-09-03T09:39:23.115Z",
+      "endTime": "2025-09-03T09:41:34.873Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 0
+    }
+  ]
+}
