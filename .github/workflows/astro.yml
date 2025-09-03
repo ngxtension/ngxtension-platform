@@ -61,7 +61,7 @@ jobs:
 
           # Check if astro-docs branch exists
           if git show-ref --verify --quiet refs/remotes/origin/astro-docs; then
-            git checkout astro-docs
+            git checkout --force astro-docs
             git pull origin astro-docs
           else
             git checkout --orphan astro-docs
