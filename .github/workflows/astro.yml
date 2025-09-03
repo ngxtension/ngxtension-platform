@@ -72,6 +72,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "docs: update documentation [skip ci]"
+            git commit --no-verify -m "docs: update documentation [skip ci]"
             git push origin astro-docs
           fi
