@@ -72,6 +72,9 @@ jobs:
           # Copy docs from temp directory to current branch
           rsync -av --exclude 'node_modules' /tmp/astro-docs/ .
 
+          rm -rf node_modules
+          rm -rf docs/node_modules
+
           # Add and commit changes
           git add .
           if git diff --staged --quiet; then
