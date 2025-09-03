@@ -57,6 +57,8 @@ jobs:
           # Copy built docs to temp directory
           cp -r docs/dist/* /tmp/astro-docs/
 
+          echo "node_modules" > .gitignore
+
           # Check if astro-docs branch exists
           if git show-ref --verify --quiet refs/remotes/origin/astro-docs; then
             git checkout astro-docs
