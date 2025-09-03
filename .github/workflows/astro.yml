@@ -55,7 +55,7 @@ jobs:
           mkdir -p /tmp/astro-docs
 
           # Copy built docs to temp directory
-          cp -r docs/dist/* /tmp/astro-docs/
+          rsync -av --exclude 'node_modules' docs/dist/ /tmp/astro-docs/
 
           echo "node_modules" > .gitignore
 
