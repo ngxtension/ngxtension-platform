@@ -70,7 +70,7 @@ jobs:
           fi
 
           # Copy docs from temp directory to current branch
-          cp -r /tmp/astro-docs/* .
+          rsync -av --exclude 'node_modules' /tmp/astro-docs/ .
 
           # Add and commit changes
           git add .
