@@ -5,6 +5,11 @@ entryPoint: ngxtension/inject-route-data
 contributors: ['krzysztof-kachniarz']
 ---
 
+:::note[Router outlet is required]
+`injectRouteData` works on all components that are inside routing context. Make sure the component you are using `injectRouteData` in, is part of your routes.
+For the same reason - `injectRouteData` will not work correctly inside your root component (usually `AppComponent`)
+:::
+
 `injectRouteData` is a helper function that allows us to inject data from the current route as a signal.
 
 Having route data as a signal helps in a modern angular signals based architecture.
