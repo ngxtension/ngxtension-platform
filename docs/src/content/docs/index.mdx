@@ -382,7 +382,7 @@ yarn add ngxtension
 
 Import only what you need. **ngxtension** is built with tree-shaking in mind.
 
-```typescript
+```angular-ts
 import { linkedQueryParam, paramToNumber } from 'ngxtension/linked-query-param';
 import { derivedFrom } from 'ngxtension/derived-from';
 
@@ -403,8 +403,8 @@ export class MyComponent {
 		parse: paramToNumber({ defaultValue: 1 }),
 	});
 
-	readonly results = derivedFrom(this.searchQuery, (query) =>
-		this.searchService.search(query),
-	);
+	readonly results = derivedFrom([this.searchQuery], pipe(
+		switchMap((query) => this.searchService.search(query)),
+	));
 }
 ```
