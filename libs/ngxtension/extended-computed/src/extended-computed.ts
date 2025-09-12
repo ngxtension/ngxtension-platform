@@ -1,11 +1,11 @@
 import type { CreateComputedOptions } from '@angular/core';
-import { computed as ngComputed } from '@angular/core';
+import { computed } from '@angular/core';
 
 /**
- * @deprecated Use `linkedSignal`. Will be removed in v5
+ * @deprecated Use `linkedSignal`.
  * @since v4
  */
-export function computed<TValue>(
+export function extendedComputed<TValue>(
 	computedCallback: (currentValue: TValue) => TValue,
 	options?: CreateComputedOptions<TValue>,
 ) {
@@ -14,13 +14,7 @@ export function computed<TValue>(
 	}
 
 	let currentValue: TValue = undefined!;
-	return ngComputed(() => {
+	return computed(() => {
 		return (currentValue = computedCallback(currentValue));
 	}, options);
 }
-
-/**
- * @deprecated Use `linkedSignal`. Will be removed in v5
- * @since v4
- */
-export const extendedComputed = computed;
