@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { linkedQueryParam } from 'ngxtension/linked-query-param';
 
 @Component({
-	standalone: true,
 	template: `
 		<div>
 			@for (id of IDs; track $index) {

@@ -1,12 +1,12 @@
 import {
 	DestroyRef,
-	ENVIRONMENT_INITIALIZER,
 	EnvironmentInjector,
 	Injectable,
 	Injector,
 	Type,
 	createEnvironmentInjector,
 	inject,
+	provideEnvironmentInitializer,
 	type Provider,
 	type ProviderToken,
 } from '@angular/core';
@@ -85,12 +85,8 @@ export class InjectLazyImpl<T> {
  */
 export function mockLazyProvider<T>(type: Type<T>, mock: Type<unknown>) {
 	return [
-		{
-			provide: ENVIRONMENT_INITIALIZER,
-			multi: true,
-			useValue: () => {
-				inject(InjectLazyImpl).override(type, mock);
-			},
-		},
+		provideEnvironmentInitializer(() => {
+			inject(InjectLazyImpl).override(type, mock);
+		}),
 	];
 }

@@ -14,7 +14,6 @@ interface MyFilters {
 }
 
 @Component({
-	standalone: true,
 	template: `
 		<div>
 			MyFilters:
