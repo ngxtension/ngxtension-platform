@@ -6,7 +6,7 @@
 		"node": ">=18"
 	},
 	"repository": "ngxtension/ngxtension-platform",
-	"homepage": "https://ngxtension.netlify.app",
+	"homepage": "https://ngxtension.dev",
 	"license": "MIT",
 	"keywords": [
 		"ng2",

@@ -65,7 +65,7 @@ All utilities are tree-shakable and designed for Angular 16+.
 
 ## 📚 Documentation
 
-- **Full API & Guides:** [ngxtension.netlify.app](https://ngxtension.netlify.app/)
+- **Full API & Guides:** [ngxtension.dev](https://ngxtension.dev/)
 - **Changelog:** [CHANGELOG.md](https://github.com/ngxtension/ngxtension-platform/blob/main/CHANGELOG.md)
 
 ---
