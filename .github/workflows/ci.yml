@@ -35,8 +35,9 @@ jobs:
           version: 9
           run_install: false
 
-      - name: Start CI run
-        run: npx nx-cloud start-ci-run --distribute-on="8 linux-medium-js" --stop-agents-after=build
+      # Start CI run disabled
+      # - name: Start CI run
+      #   run: npx nx-cloud start-ci-run --distribute-on="8 linux-medium-js" --stop-agents-after=build
 
       - name: Restore cached npm dependencies
         id: cache-dependencies-restore
