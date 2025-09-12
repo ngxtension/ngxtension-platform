@@ -1,3 +1,47 @@
+## 5.2.0 (2025-09-12)
+
+### Features
+
+- outputs are migrated to signals ([#614](https://github.com/ngxtension/ngxtension-platform/pull/614))
+- **inject-local-storage:** promote NGXTENSION_LOCAL_STORAGE token to platform level ([#620](https://github.com/ngxtension/ngxtension-platform/pull/620))
+- **ngxtension:** update docs ([b84f9a8](https://github.com/ngxtension/ngxtension-platform/commit/b84f9a8))
+
+### Bug Fixes
+
+- use removeChild() loop instead of replaceChildren() ([#619](https://github.com/ngxtension/ngxtension-platform/pull/619))
+- replace deprecated toThrowError with toThrow in 3 tests ([#612](https://github.com/ngxtension/ngxtension-platform/pull/612))
+- **host-binding:** allow to bind the style property with an object to set multiple CSS properties (including variables) at once ([#617](https://github.com/ngxtension/ngxtension-platform/pull/617))
+- **inject-local-storage:** fix reactive purity if signals reads inside stringify function ([#608](https://github.com/ngxtension/ngxtension-platform/pull/608))
+- ⚠️  **inject-local-storage:** fix typing ([#596](https://github.com/ngxtension/ngxtension-platform/pull/596))
+- **inject-local-storage:** fix default value creation ([#609](https://github.com/ngxtension/ngxtension-platform/pull/609))
+
+### Refactor
+
+- **ngx-control-value-accessor:** use normal effect instead of rxEffect ([#556](https://github.com/ngxtension/ngxtension-platform/pull/556))
+
+### Documentation
+
+- add version compatibility table to README.md ([6e3da4f](https://github.com/ngxtension/ngxtension-platform/commit/6e3da4f))
+- update homepage design ([807029b](https://github.com/ngxtension/ngxtension-platform/commit/807029b))
+- enhance README.md with updated features, installation instructions, and usage examples for ngxtension ([2e5c5b3](https://github.com/ngxtension/ngxtension-platform/commit/2e5c5b3))
+- update README.md to reflect new branding, enhanced features, and improved installation instructions for ngxtension ([3909037](https://github.com/ngxtension/ngxtension-platform/commit/3909037))
+- add edisonaugusthy as a contributor for code ([#623](https://github.com/ngxtension/ngxtension-platform/pull/623))
+- fixes ([72a935b](https://github.com/ngxtension/ngxtension-platform/commit/72a935b))
+
+### ⚠️  Breaking Changes
+
+- ⚠️  **inject-local-storage:** fix typing ([#596](https://github.com/ngxtension/ngxtension-platform/pull/596))
+
+### ❤️ Thank You
+
+- Denis Yılmaz
+- Edison Augusthy @edisonaugusthy
+- Enea Jahollari @eneajaho
+- Fabien Dehopré
+- J. Degand @jdegand
+- Robby Rabbitman @RobbyRabbitman
+- Svyatoslav Zaytsev @MillerSvt
+
 ## 5.1.0 (2025-06-22)
 
 ### Features
