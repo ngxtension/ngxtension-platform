@@ -1,3 +1,17 @@
+# 6.0.0 (2025-09-12)
+
+### Features
+
+- ⚠️  code fixes and deprecations ([#627](https://github.com/ngxtension/ngxtension-platform/pull/627))
+
+### ⚠️  Breaking Changes
+
+- ⚠️  code fixes and deprecations ([#627](https://github.com/ngxtension/ngxtension-platform/pull/627))
+
+### ❤️ Thank You
+
+- Enea Jahollari @eneajaho
+
 ## 5.2.0 (2025-09-12)
 
 ### Features
