@@ -20,7 +20,7 @@
 - **Internationalization**: Utilities for i18n and formatting.
 - **SVG & UI**: SVG sprite helpers, repeat pipe, trackBy helpers, and more.
 
-> **See the [full documentation](https://ngxtension.netlify.app/) for a complete list and usage examples.**
+> **See the [full documentation](https://ngxtension.dev/) for a complete list and usage examples.**
 
 ---
 
@@ -59,7 +59,7 @@ All utilities are tree-shakable and designed for Angular 16+.
 
 ## 📚 Documentation
 
-- **Full API & Guides:** [ngxtension.netlify.app](https://ngxtension.netlify.app/)
+- **Full API & Guides:** [ngxtension.dev](https://ngxtension.dev/)
 - **Changelog:** [CHANGELOG.md](https://github.com/ngxtension/ngxtension-platform/blob/main/CHANGELOG.md)
 
 ---
@@ -80,4 +80,4 @@ MIT
 
 ---
 
-**Ready to supercharge your Angular app? [Get started with ngxtension!](https://ngxtension.netlify.app/)**
+**Ready to supercharge your Angular app? [Get started with ngxtension!](https://ngxtension.dev/)**
