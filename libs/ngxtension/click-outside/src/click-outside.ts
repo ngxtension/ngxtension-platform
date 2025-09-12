@@ -1,6 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import type { OnInit } from '@angular/core';
 import { Directive, ElementRef, inject, NgZone, output } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { createInjectionToken } from 'ngxtension/create-injection-token';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { filter, fromEvent, Subject, takeUntil } from 'rxjs';
@@ -14,7 +15,7 @@ const [injectDocumentClick] = createInjectionToken(() => {
 	const [ngZone, document] = [inject(NgZone), inject(DOCUMENT)];
 
 	ngZone.runOutsideAngular(() => {
-		fromEvent(document, 'click').subscribe(click$);
+		fromEvent(document, 'click').pipe(takeUntilDestroyed()).subscribe(click$);
 	});
 
 	return click$;
@@ -49,7 +50,6 @@ export class ClickOutside implements OnInit {
 						!this.elementRef.nativeElement.contains(event.target),
 				),
 			)
-
 			.subscribe((event: Event) => {
 				this.ngZone.run(() => this.clickOutside.emit(event));
 			});
