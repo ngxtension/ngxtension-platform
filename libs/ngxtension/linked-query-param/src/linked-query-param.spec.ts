@@ -586,6 +586,767 @@ describe(linkedQueryParam.name, () => {
 			);
 		}));
 	});
+
+	describe('source field tests', () => {
+		it('should work with signal inputs using linkedSignal', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal',
+				WithSourceSignalComponent,
+			);
+
+			// Test input with value - source is set to null initially (no query param)
+			expect(instance.paramFromInputWithValue()).toBe(null);
+			expect(instance.localSourceInputWithValue()).toBe(null);
+			expect(
+				instance.route.snapshot.queryParams['paramFromInputWithValue'],
+			).toBe(undefined);
+
+			// When source changes, query param should be updated
+			instance.localSourceInputWithValue.set('test-value');
+			tick();
+			expect(instance.paramFromInputWithValue()).toBe('test-value');
+			expect(
+				instance.route.snapshot.queryParams['paramFromInputWithValue'],
+			).toBe('test-value');
+
+			// Test input without value
+			expect(instance.paramFromInputWithoutValue()).toBe(null);
+			instance.localSourceInputWithoutValue.set('test-value-2');
+			tick();
+			expect(instance.paramFromInputWithoutValue()).toBe('test-value-2');
+			expect(
+				instance.route.snapshot.queryParams['paramFromInputWithoutValue'],
+			).toBe('test-value-2');
+
+			// Test input required
+			expect(instance.paramFromInputRequired()).toBe(null);
+			instance.localSourceInputRequired.set('test-value-3');
+			tick();
+			expect(instance.paramFromInputRequired()).toBe('test-value-3');
+			expect(
+				instance.route.snapshot.queryParams['paramFromInputRequired'],
+			).toBe('test-value-3');
+		}));
+
+		it('should work with model inputs', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal',
+				WithSourceSignalComponent,
+			);
+
+			// Test model with value - source is set to null initially (no query param)
+			expect(instance.paramFromModelInputWithValue()).toBe(null);
+			expect(instance.modelInputWithValue()).toBe(null);
+			expect(
+				instance.route.snapshot.queryParams['paramFromModelInputWithValue'],
+			).toBe(undefined);
+
+			// When model changes, query param should be updated
+			instance.modelInputWithValue.set('model-value');
+			tick();
+			expect(instance.paramFromModelInputWithValue()).toBe('model-value');
+			expect(
+				instance.route.snapshot.queryParams['paramFromModelInputWithValue'],
+			).toBe('model-value');
+
+			// Test model without value
+			expect(instance.paramFromModelInputWithoutValue()).toBe(null);
+			instance.modelInputWithoutValue.set('model-value-2');
+			tick();
+			expect(instance.paramFromModelInputWithoutValue()).toBe('model-value-2');
+			expect(
+				instance.route.snapshot.queryParams['paramFromModelInputWithoutValue'],
+			).toBe('model-value-2');
+
+			// Test model required
+			expect(instance.paramFromModelSignalRequired()).toBe(null);
+			instance.modelSignalRequired.set('model-value-3');
+			tick();
+			expect(instance.paramFromModelSignalRequired()).toBe('model-value-3');
+			expect(
+				instance.route.snapshot.queryParams['paramFromModelSignalRequired'],
+			).toBe('model-value-3');
+		}));
+
+		it('should work with regular signals', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal',
+				WithSourceSignalComponent,
+			);
+
+			// Source is set to null initially (no query param)
+			expect(instance.paramFromSignal()).toBe(null);
+			expect(instance.sourceSignal()).toBe(null);
+			expect(instance.route.snapshot.queryParams['paramFromSignal']).toBe(
+				undefined,
+			);
+
+			// When source signal changes, query param should be updated
+			instance.sourceSignal.set('new-source-value');
+			tick();
+			expect(instance.paramFromSignal()).toBe('new-source-value');
+			expect(instance.route.snapshot.queryParams['paramFromSignal']).toBe(
+				'new-source-value',
+			);
+		}));
+
+		it('should set initial value from query param when source is provided', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal?paramFromInputWithValue=initial-value&paramFromSignal=initial-signal',
+				WithSourceSignalComponent,
+			);
+
+			// Source should be set to the query param value
+			expect(instance.paramFromInputWithValue()).toBe('initial-value');
+			expect(instance.localSourceInputWithValue()).toBe('initial-value');
+			expect(instance.paramFromSignal()).toBe('initial-signal');
+			expect(instance.sourceSignal()).toBe('initial-signal');
+		}));
+
+		it('should set default value when query param is not present and source is provided', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal',
+				WithSourceSignalComponent,
+			);
+
+			// Source signals are set to null initially (no query param)
+			expect(instance.paramFromInputWithValue()).toBe(null);
+			expect(instance.localSourceInputWithValue()).toBe(null);
+
+			// Source without default should be null
+			expect(instance.paramFromInputWithoutValue()).toBe(null);
+			expect(instance.localSourceInputWithoutValue()).toBe(null);
+		}));
+
+		it('should update query param when source value changes', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal',
+				WithSourceSignalComponent,
+			);
+
+			// Change source value directly
+			instance.localSourceInputWithValue.set('direct-change');
+			tick();
+			expect(instance.paramFromInputWithValue()).toBe('direct-change');
+			expect(
+				instance.route.snapshot.queryParams['paramFromInputWithValue'],
+			).toBe('direct-change');
+
+			// Change model value directly
+			instance.modelInputWithValue.set('model-direct-change');
+			tick();
+			expect(instance.paramFromModelInputWithValue()).toBe(
+				'model-direct-change',
+			);
+			expect(
+				instance.route.snapshot.queryParams['paramFromModelInputWithValue'],
+			).toBe('model-direct-change');
+		}));
+
+		it('should handle null values correctly with source', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal',
+				WithSourceSignalComponent,
+			);
+
+			// Set initial value using model (which can be null)
+			instance.modelInputWithoutValue.set('initial');
+			tick();
+			expect(instance.paramFromModelInputWithoutValue()).toBe('initial');
+			expect(
+				instance.route.snapshot.queryParams['paramFromModelInputWithoutValue'],
+			).toBe('initial');
+
+			// Set to undefined
+			instance.modelInputWithoutValue.set(undefined);
+			tick();
+			expect(instance.paramFromModelInputWithoutValue()).toBe(null);
+			expect(
+				instance.route.snapshot.queryParams['paramFromModelInputWithoutValue'],
+			).toBe(undefined);
+		}));
+
+		it('should work with dynamic key and source', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal',
+				WithSourceSignalComponent,
+			);
+
+			// Test that the source functionality works with regular signals
+			expect(instance.paramFromSignal()).toBe(null);
+			expect(instance.route.snapshot.queryParams['paramFromSignal']).toBe(
+				undefined,
+			);
+
+			// Set value on source signal
+			instance.sourceSignal.set('dynamic-value');
+			tick();
+			expect(instance.paramFromSignal()).toBe('dynamic-value');
+			expect(instance.route.snapshot.queryParams['paramFromSignal']).toBe(
+				'dynamic-value',
+			);
+
+			// Change the value
+			instance.sourceSignal.set('new-value');
+			tick();
+			expect(instance.paramFromSignal()).toBe('new-value');
+			expect(instance.route.snapshot.queryParams['paramFromSignal']).toBe(
+				'new-value',
+			);
+		}));
+
+		it('should remove previous query param when key changes with source', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal',
+				WithSourceSignalComponent,
+			);
+
+			// Set initial value on source signal
+			instance.sourceSignal.set('initial-value');
+			tick();
+			expect(instance.route.snapshot.queryParams['paramFromSignal']).toBe(
+				'initial-value',
+			);
+
+			// Change value
+			instance.sourceSignal.set('new-value');
+			tick();
+			expect(instance.route.snapshot.queryParams['paramFromSignal']).toBe(
+				'new-value',
+			);
+		}));
+
+		it('should handle key change with existing query param value', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal?paramFromSignal=existing-value',
+				WithSourceSignalComponent,
+			);
+
+			// Source should be set to existing query param value
+			expect(instance.paramFromSignal()).toBe('existing-value');
+			expect(instance.sourceSignal()).toBe('existing-value');
+
+			// Set new value
+			instance.sourceSignal.set('new-value');
+			tick();
+			expect(instance.paramFromSignal()).toBe('new-value');
+			expect(instance.route.snapshot.queryParams['paramFromSignal']).toBe(
+				'new-value',
+			);
+		}));
+
+		it('should coalesce multiple source changes', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal',
+				WithSourceSignalComponent,
+			);
+
+			// Make multiple changes synchronously
+			instance.localSourceInputWithValue.set('value1');
+			instance.localSourceInputWithValue.set('value2');
+			instance.localSourceInputWithValue.set('value3');
+
+			instance.localSourceInputRequired.set('value4');
+			instance.localSourceInputRequired.set('value5');
+
+			// Should only have the last value
+			expect(instance.paramFromInputWithValue()).toBe('value3');
+			expect(instance.paramFromInputRequired()).toBe('value5');
+			expect(
+				instance.route.snapshot.queryParams['paramFromInputWithValue'],
+			).toBe(undefined);
+			expect(
+				instance.route.snapshot.queryParams['paramFromInputRequired'],
+			).toBe(undefined);
+
+			tick();
+			expect(
+				instance.route.snapshot.queryParams['paramFromInputWithValue'],
+			).toBe('value3');
+			expect(
+				instance.route.snapshot.queryParams['paramFromInputRequired'],
+			).toBe('value5');
+		}));
+
+		it('should work with both dynamic key and source signals', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal',
+				WithSourceSignalComponent,
+			);
+
+			// Initial state - source is set to null (no query param), key is set to initial value
+			expect(instance.paramWithDynamicKeyAndSource()).toBe(null);
+			expect(instance.dynamicKeySignal()).toBe('dynamicKey1');
+			expect(instance.dynamicSourceSignal()).toBe(null); // Source is set to null initially
+			expect(instance.route.snapshot.queryParams['dynamicKey1']).toBe(
+				undefined,
+			);
+
+			// Set value on source signal
+			instance.dynamicSourceSignal.set('test-value');
+			tick();
+			expect(instance.paramWithDynamicKeyAndSource()).toBe('test-value');
+			expect(instance.route.snapshot.queryParams['dynamicKey1']).toBe(
+				'test-value',
+			);
+
+			// Change the key signal
+			instance.dynamicKeySignal.set('dynamicKey2');
+			tick();
+			expect(instance.paramWithDynamicKeyAndSource()).toBe('test-value');
+			// The old key should still have the value until the navigation happens
+			expect(instance.route.snapshot.queryParams['dynamicKey1']).toBe(
+				'test-value',
+			);
+			expect(instance.route.snapshot.queryParams['dynamicKey2']).toBe(
+				undefined,
+			);
+
+			// Change the source signal with new key
+			instance.dynamicSourceSignal.set('new-value');
+			tick();
+			expect(instance.paramWithDynamicKeyAndSource()).toBe('new-value');
+			expect(instance.route.snapshot.queryParams['dynamicKey2']).toBe(
+				'new-value',
+			);
+		}));
+
+		it('should handle key changes with existing query param value and source', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal?dynamicKey1=existing-value',
+				WithSourceSignalComponent,
+			);
+
+			// Source should be set to existing query param value
+			expect(instance.paramWithDynamicKeyAndSource()).toBe('existing-value');
+			expect(instance.dynamicSourceSignal()).toBe('existing-value');
+
+			// Change key to new one
+			instance.dynamicKeySignal.set('dynamicKey2');
+			tick();
+			expect(instance.paramWithDynamicKeyAndSource()).toBe('existing-value');
+			// The old key should still have the value until the navigation happens
+			expect(instance.route.snapshot.queryParams['dynamicKey1']).toBe(
+				'existing-value',
+			);
+			expect(instance.route.snapshot.queryParams['dynamicKey2']).toBe(
+				undefined,
+			);
+
+			// Set new value on new key
+			instance.dynamicSourceSignal.set('new-value');
+			tick();
+			expect(instance.paramWithDynamicKeyAndSource()).toBe('new-value');
+			expect(instance.route.snapshot.queryParams['dynamicKey2']).toBe(
+				'new-value',
+			);
+		}));
+
+		it('should handle source changes with dynamic key', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal',
+				WithSourceSignalComponent,
+			);
+
+			// Set initial value
+			instance.dynamicSourceSignal.set('initial-value');
+			tick();
+			expect(instance.paramWithDynamicKeyAndSource()).toBe('initial-value');
+			expect(instance.route.snapshot.queryParams['dynamicKey1']).toBe(
+				'initial-value',
+			);
+
+			// Change source value
+			instance.dynamicSourceSignal.set('updated-value');
+			tick();
+			expect(instance.paramWithDynamicKeyAndSource()).toBe('updated-value');
+			expect(instance.route.snapshot.queryParams['dynamicKey1']).toBe(
+				'updated-value',
+			);
+
+			// Change key and source simultaneously
+			instance.dynamicKeySignal.set('dynamicKey3');
+			instance.dynamicSourceSignal.set('simultaneous-value');
+			tick();
+			expect(instance.paramWithDynamicKeyAndSource()).toBe(
+				'simultaneous-value',
+			);
+			expect(instance.route.snapshot.queryParams['dynamicKey1']).toBe(
+				undefined,
+			);
+			expect(instance.route.snapshot.queryParams['dynamicKey3']).toBe(
+				'simultaneous-value',
+			);
+		}));
+
+		it('should handle multiple linkedQueryParams with different key and source combinations', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal',
+				WithSourceSignalComponent,
+			);
+
+			// Test param with static key and dynamic source
+			expect(instance.paramWithStaticKeyDynamicSource()).toBe(null);
+			instance.anotherSourceSignal.set('static-key-value');
+			tick();
+			expect(instance.paramWithStaticKeyDynamicSource()).toBe(
+				'static-key-value',
+			);
+			expect(instance.route.snapshot.queryParams['staticKeyParam']).toBe(
+				'static-key-value',
+			);
+
+			// Test param with dynamic key but no source
+			expect(instance.paramWithDynamicKeyNoSource()).toBe(null);
+			instance.paramWithDynamicKeyNoSource.set('dynamic-key-no-source');
+			tick();
+			expect(instance.paramWithDynamicKeyNoSource()).toBe(
+				'dynamic-key-no-source',
+			);
+			expect(instance.route.snapshot.queryParams['dynamicKey1']).toBe(
+				'dynamic-key-no-source',
+			);
+
+			// Change the key for the no-source param
+			instance.dynamicKeySignal.set('dynamicKey4');
+			tick();
+			expect(instance.paramWithDynamicKeyNoSource()).toBe(
+				'dynamic-key-no-source',
+			);
+			// The old key should still have the value until the navigation happens
+			expect(instance.route.snapshot.queryParams['dynamicKey1']).toBe(
+				'dynamic-key-no-source',
+			);
+			expect(instance.route.snapshot.queryParams['dynamicKey4']).toBe(
+				undefined,
+			);
+		}));
+
+		it('should handle complex scenarios with multiple key and source changes', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal',
+				WithSourceSignalComponent,
+			);
+
+			// Set initial values
+			instance.dynamicSourceSignal.set('initial-source');
+			instance.anotherSourceSignal.set('another-source');
+			tick();
+			expect(instance.paramWithDynamicKeyAndSource()).toBe('initial-source');
+			expect(instance.paramWithStaticKeyDynamicSource()).toBe('another-source');
+			expect(instance.route.snapshot.queryParams['dynamicKey1']).toBe(
+				'initial-source',
+			);
+			expect(instance.route.snapshot.queryParams['staticKeyParam']).toBe(
+				'another-source',
+			);
+
+			// Change both key and source for the dynamic key param
+			instance.dynamicKeySignal.set('dynamicKey5');
+			instance.dynamicSourceSignal.set('updated-source');
+			tick();
+			expect(instance.paramWithDynamicKeyAndSource()).toBe('updated-source');
+			expect(instance.route.snapshot.queryParams['dynamicKey1']).toBe(
+				undefined,
+			);
+			expect(instance.route.snapshot.queryParams['dynamicKey5']).toBe(
+				'updated-source',
+			);
+
+			// Change source for static key param
+			instance.anotherSourceSignal.set('updated-another-source');
+			tick();
+			expect(instance.paramWithStaticKeyDynamicSource()).toBe(
+				'updated-another-source',
+			);
+			expect(instance.route.snapshot.queryParams['staticKeyParam']).toBe(
+				'updated-another-source',
+			);
+		}));
+
+		it('should handle null values with dynamic key and source', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal',
+				WithSourceSignalComponent,
+			);
+
+			// Set initial value
+			instance.dynamicSourceSignal.set('initial-value');
+			tick();
+			expect(instance.paramWithDynamicKeyAndSource()).toBe('initial-value');
+			expect(instance.route.snapshot.queryParams['dynamicKey1']).toBe(
+				'initial-value',
+			);
+
+			// Set to null
+			instance.dynamicSourceSignal.set(null);
+			tick();
+			expect(instance.paramWithDynamicKeyAndSource()).toBe(null);
+			expect(instance.route.snapshot.queryParams['dynamicKey1']).toBe(
+				undefined,
+			);
+
+			// Change key while source is null
+			instance.dynamicKeySignal.set('dynamicKey6');
+			tick();
+			expect(instance.paramWithDynamicKeyAndSource()).toBe(null);
+			expect(instance.route.snapshot.queryParams['dynamicKey1']).toBe(
+				undefined,
+			);
+			expect(instance.route.snapshot.queryParams['dynamicKey6']).toBe(
+				undefined,
+			);
+		}));
+
+		it('should coalesce multiple changes with dynamic key and source', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal',
+				WithSourceSignalComponent,
+			);
+
+			// Make multiple changes synchronously
+			instance.dynamicKeySignal.set('dynamicKey7');
+			instance.dynamicSourceSignal.set('value1');
+			instance.dynamicSourceSignal.set('value2');
+			instance.dynamicSourceSignal.set('value3');
+
+			// Should only have the last value
+			expect(instance.paramWithDynamicKeyAndSource()).toBe('value3');
+			expect(instance.route.snapshot.queryParams['dynamicKey7']).toBe(
+				undefined,
+			);
+
+			tick();
+			expect(instance.route.snapshot.queryParams['dynamicKey7']).toBe('value3');
+		}));
+	});
+
+	describe('automaticallySynchronizeOnKeyChange option', () => {
+		it('should synchronize source value when key changes with automaticallySynchronizeOnKeyChange: true', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal',
+				WithSourceSignalComponent,
+			);
+
+			// Set initial values
+			instance.syncSourceSignal.set('sync-value');
+			instance.syncKeySignal.set('syncKey1');
+			tick();
+			expect(instance.paramWithSyncEnabled()).toBe('sync-value');
+			expect(instance.route.snapshot.queryParams['syncKey1']).toBe(
+				'sync-value',
+			);
+
+			// Change the key - source value should be synchronized to new key
+			instance.syncKeySignal.set('syncKey2');
+			tick();
+			expect(instance.paramWithSyncEnabled()).toBe('sync-value');
+			expect(instance.route.snapshot.queryParams['syncKey1']).toBe(
+				'sync-value',
+			);
+			expect(instance.route.snapshot.queryParams['syncKey2']).toBe(undefined);
+
+			// Set a new value on the source with the new key
+			instance.syncSourceSignal.set('new-sync-value');
+			tick();
+			expect(instance.paramWithSyncEnabled()).toBe('new-sync-value');
+			expect(instance.route.snapshot.queryParams['syncKey2']).toBe(
+				'new-sync-value',
+			);
+		}));
+
+		it('should not synchronize source value when key changes with automaticallySynchronizeOnKeyChange: false', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal',
+				WithSourceSignalComponent,
+			);
+
+			// Set initial values
+			instance.noSyncSourceSignal.set('no-sync-value');
+			instance.noSyncKeySignal.set('noSyncKey1');
+			tick();
+			expect(instance.paramWithSyncDisabled()).toBe('no-sync-value');
+			expect(instance.route.snapshot.queryParams['noSyncKey1']).toBe(
+				'no-sync-value',
+			);
+
+			// Change the key - source value should NOT be synchronized to new key
+			instance.noSyncKeySignal.set('noSyncKey2');
+			tick();
+			expect(instance.paramWithSyncDisabled()).toBe('no-sync-value'); // Source value is preserved
+			expect(instance.route.snapshot.queryParams['noSyncKey1']).toBe(
+				'no-sync-value',
+			);
+			expect(instance.route.snapshot.queryParams['noSyncKey2']).toBe(undefined);
+
+			// Set a new value on the source with the new key
+			instance.noSyncSourceSignal.set('new-no-sync-value');
+			tick();
+			expect(instance.paramWithSyncDisabled()).toBe('new-no-sync-value');
+			expect(instance.route.snapshot.queryParams['noSyncKey2']).toBe(
+				'new-no-sync-value',
+			);
+		}));
+
+		it('should handle key changes with existing query param values and automaticallySynchronizeOnKeyChange: true', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal?syncKey1=existing-value',
+				WithSourceSignalComponent,
+			);
+
+			// Source should be set to existing query param value
+			expect(instance.paramWithSyncEnabled()).toBe('existing-value');
+			expect(instance.syncSourceSignal()).toBe('existing-value');
+
+			// Change key - source value should be synchronized
+			instance.syncKeySignal.set('syncKey2');
+			tick();
+			expect(instance.paramWithSyncEnabled()).toBe('existing-value');
+			expect(instance.route.snapshot.queryParams['syncKey1']).toBe(
+				'existing-value',
+			);
+			expect(instance.route.snapshot.queryParams['syncKey2']).toBe(undefined);
+
+			// Set new value on new key
+			instance.syncSourceSignal.set('new-value');
+			tick();
+			expect(instance.paramWithSyncEnabled()).toBe('new-value');
+			expect(instance.route.snapshot.queryParams['syncKey2']).toBe('new-value');
+		}));
+
+		it('should handle key changes with existing query param values and automaticallySynchronizeOnKeyChange: false', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal?noSyncKey1=existing-value',
+				WithSourceSignalComponent,
+			);
+
+			// Source should be set to existing query param value
+			expect(instance.paramWithSyncDisabled()).toBe('existing-value');
+			expect(instance.noSyncSourceSignal()).toBe('existing-value');
+
+			// Change key - source value should NOT be synchronized
+			instance.noSyncKeySignal.set('noSyncKey2');
+			tick();
+			expect(instance.paramWithSyncDisabled()).toBe('existing-value'); // Source value is preserved
+			expect(instance.route.snapshot.queryParams['noSyncKey1']).toBe(
+				'existing-value',
+			);
+			expect(instance.route.snapshot.queryParams['noSyncKey2']).toBe(undefined);
+
+			// Set new value on new key
+			instance.noSyncSourceSignal.set('new-value');
+			tick();
+			expect(instance.paramWithSyncDisabled()).toBe('new-value');
+			expect(instance.route.snapshot.queryParams['noSyncKey2']).toBe(
+				'new-value',
+			);
+		}));
+
+		it('should work with static keys and automaticallySynchronizeOnKeyChange option', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal',
+				WithSourceSignalComponent,
+			);
+
+			// Test with static key - option should not affect behavior
+			instance.syncSourceSignal.set('static-key-value');
+			tick();
+			expect(instance.paramWithSyncEnabled()).toBe('static-key-value');
+			expect(instance.route.snapshot.queryParams['syncKey1']).toBe(
+				'static-key-value',
+			);
+
+			// Change source value
+			instance.syncSourceSignal.set('updated-static-value');
+			tick();
+			expect(instance.paramWithSyncEnabled()).toBe('updated-static-value');
+			expect(instance.route.snapshot.queryParams['syncKey1']).toBe(
+				'updated-static-value',
+			);
+		}));
+
+		it('should handle null values correctly with automaticallySynchronizeOnKeyChange', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal',
+				WithSourceSignalComponent,
+			);
+
+			// Set initial value
+			instance.syncSourceSignal.set('initial-value');
+			instance.syncKeySignal.set('syncKey1');
+			tick();
+			expect(instance.paramWithSyncEnabled()).toBe('initial-value');
+
+			// Set source to null
+			instance.syncSourceSignal.set(null);
+			tick();
+			expect(instance.paramWithSyncEnabled()).toBe(null);
+			expect(instance.route.snapshot.queryParams['syncKey1']).toBe(undefined);
+
+			// Change key with null source - should synchronize null value
+			instance.syncKeySignal.set('syncKey2');
+			tick();
+			expect(instance.paramWithSyncEnabled()).toBe(null);
+			expect(instance.route.snapshot.queryParams['syncKey2']).toBe(undefined);
+		}));
+
+		it('should coalesce multiple key changes with automaticallySynchronizeOnKeyChange', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal',
+				WithSourceSignalComponent,
+			);
+
+			// Set initial values
+			instance.syncSourceSignal.set('coalesce-value');
+			instance.syncKeySignal.set('syncKey1');
+			tick();
+			expect(instance.paramWithSyncEnabled()).toBe('coalesce-value');
+
+			// Make multiple key changes rapidly
+			instance.syncKeySignal.set('syncKey2');
+			instance.syncKeySignal.set('syncKey3');
+			instance.syncKeySignal.set('syncKey4');
+			tick();
+			expect(instance.paramWithSyncEnabled()).toBe('coalesce-value');
+			expect(instance.route.snapshot.queryParams['syncKey1']).toBe(
+				'coalesce-value',
+			);
+			expect(instance.route.snapshot.queryParams['syncKey4']).toBe(undefined);
+
+			// Set new value on final key
+			instance.syncSourceSignal.set('final-value');
+			tick();
+			expect(instance.paramWithSyncEnabled()).toBe('final-value');
+			expect(instance.route.snapshot.queryParams['syncKey4']).toBe(
+				'final-value',
+			);
+		}));
+	});
 });
 
 @Component({ standalone: true, template: `` })
@@ -689,5 +1450,49 @@ export class WithSourceSignalComponent {
 
 	readonly paramFromSignal = linkedQueryParam('paramFromSignal', {
 		source: this.sourceSignal,
+	});
+
+	// Dynamic key signal for testing
+	readonly dynamicKeySignal = signal('dynamicKey1');
+
+	// Source signal for dynamic key testing
+	readonly dynamicSourceSignal = signal<string | null>('dynamicSourceValue');
+
+	// Combined source and key signal tests
+	readonly paramWithDynamicKeyAndSource = linkedQueryParam(
+		this.dynamicKeySignal,
+		{ source: this.dynamicSourceSignal },
+	);
+
+	// Another source signal for testing multiple sources
+	readonly anotherSourceSignal = signal('anotherSourceValue');
+
+	// Param with static key but dynamic source
+	readonly paramWithStaticKeyDynamicSource = linkedQueryParam(
+		'staticKeyParam',
+		{
+			source: this.anotherSourceSignal,
+		},
+	);
+
+	// Param with dynamic key but no source (for comparison)
+	readonly paramWithDynamicKeyNoSource = linkedQueryParam(
+		this.dynamicKeySignal,
+	);
+
+	// Test automaticallySynchronizeOnKeyChange: true (default behavior)
+	readonly syncKeySignal = signal('syncKey1');
+	readonly syncSourceSignal = signal<string | null>('syncSourceValue');
+	readonly paramWithSyncEnabled = linkedQueryParam(this.syncKeySignal, {
+		source: this.syncSourceSignal,
+		automaticallySynchronizeOnKeyChange: true,
+	});
+
+	// Test automaticallySynchronizeOnKeyChange: false
+	readonly noSyncKeySignal = signal('noSyncKey1');
+	readonly noSyncSourceSignal = signal<string | null>('noSyncSourceValue');
+	readonly paramWithSyncDisabled = linkedQueryParam(this.noSyncKeySignal, {
+		source: this.noSyncSourceSignal,
+		automaticallySynchronizeOnKeyChange: false,
 	});
 }

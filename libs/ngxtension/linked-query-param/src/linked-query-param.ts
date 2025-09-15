@@ -52,12 +52,15 @@ type NavigateMethodFields = Pick<
 	| 'preserveFragment'
 >;
 
-const defaultConfig: Partial<NavigateMethodFields> = {
+const defaultConfig: Partial<NavigateMethodFields> &
+	LinkedQueryParamOptions<string> = {
 	queryParamsHandling: 'merge',
+	automaticallySynchronizeOnKeyChange: true,
 };
 
 const _LINKED_QUERY_PARAM_CONFIG_TOKEN = new InjectionToken<
-	Partial<NavigateMethodFields>
+	Partial<NavigateMethodFields> &
+		Exclude<LinkedQueryParamOptions<string>, 'injector' | 'equal' | 'source'>
 >('LinkedQueryParamConfig', {
 	providedIn: 'root',
 	factory: () => defaultConfig,
@@ -205,6 +208,16 @@ type LinkedQueryParamOptions<T> = {
 	 * The source signal to use to update the query param when it changes (two-way binding between this source and the query param).
 	 */
 	source?: WritableSignal<T>;
+
+	/**
+	 * Controls whether the query param value should be synchronized with the source signal when the key changes.
+	 * When true, if the key changes (e.g. from 'key1' to 'key2'), the value from the source signal will be used to set the new query param.
+	 * When false, the new query param will be initialized as null/undefined when the key changes.
+	 * Default is true.
+	 *
+	 * This is useful when you want to preserve the source signal's value across key changes, rather than resetting the query param.
+	 */
+	automaticallySynchronizeOnKeyChange?: boolean;
 } & Partial<NavigateMethodFields>;
 
 /**
@@ -361,6 +374,10 @@ export function linkedQueryParam<T>(
 		const globalHandler = inject(LinkedQueryParamGlobalHandler);
 		const config = inject(_LINKED_QUERY_PARAM_CONFIG_TOKEN);
 
+		const automaticallySynchronizeOnKeyChange =
+			options?.automaticallySynchronizeOnKeyChange ??
+			config.automaticallySynchronizeOnKeyChange;
+
 		// create a signal updated whenever the query param changes
 		// const queryParamValue = signal(parseParamValue(route.snapshot.queryParams, key, options));
 
@@ -491,6 +508,20 @@ export function linkedQueryParam<T>(
 			);
 		}
 
+		if (automaticallySynchronizeOnKeyChange && isSignalOrFunction(key)) {
+			// we want to register the effect when the key is dynamic and the automaticallySynchronizeOnKeyChange is true
+			explicitEffect(
+				[source, queryParamKey, previousQueryParamKey],
+				([sourceValue, queryParamKeyValue, previousQueryParamKeyValue]) => {
+					if (queryParamKeyValue === previousQueryParamKeyValue) {
+						// if the query param key is the same as the previous one, we can skip the update
+						return;
+					}
+					setSourceValueAndScheduleNavigation(sourceValue as T);
+				},
+			);
+		}
+
 		return Object.assign(source, {
 			set: setSourceValueAndScheduleNavigation,
 			update,
@@ -506,6 +537,10 @@ const getValue = <T>(value: T | (() => T) | Signal<T>) => {
 		return (value as () => T)();
 	}
 	return value;
+};
+
+const isSignalOrFunction = <T>(value: T | (() => T) | Signal<T>) => {
+	return isSignal(value) || (value && typeof value === 'function');
 };
 
 // Get the current key value or throw an error if it's null or undefined
