@@ -359,6 +359,7 @@ export function linkedQueryParam<T>(
 		parse?: ParseFn<T>;
 		stringify?: StringifyFn<T>;
 		source?: WritableSignal<T>;
+		automaticallySynchronizeOnKeyChange?: boolean;
 	},
 ): WritableSignal<T> {
 	if (options?.defaultValue !== undefined && options?.parse) {
@@ -374,28 +375,19 @@ export function linkedQueryParam<T>(
 		const globalHandler = inject(LinkedQueryParamGlobalHandler);
 		const config = inject(_LINKED_QUERY_PARAM_CONFIG_TOKEN);
 
-		const automaticallySynchronizeOnKeyChange =
-			options?.automaticallySynchronizeOnKeyChange ??
-			config.automaticallySynchronizeOnKeyChange;
-
 		// create a signal updated whenever the query param changes
 		// const queryParamValue = signal(parseParamValue(route.snapshot.queryParams, key, options));
 
 		// We have a dynamic key, so everytime the key changes, we need to make sure we remove the old one from the the params
 		const queryParamKey = computed(() => getCurrentKey(key));
 		// We keep track of the previous queryParam key to remove the old one from the params
-		const previousQueryParamKey = computedPrevious(() => queryParamKey());
+		const previousQueryParamKey = computedPrevious(queryParamKey);
 
 		const parsedInitialValue = parseParamValue(
 			route.snapshot.queryParams,
 			queryParamKey(),
 			options,
 		);
-
-		// TODO: this probably will change when support for source field is added
-		// before -> signal + explicitEffect | after -> linkedSignal
-		// this change fixes racing conditions, where the router queryParam is the source of truth always
-		// const source = linkedSignal<T>(() => queryParamValue() as T);
 
 		let source!: WritableSignal<T>;
 
@@ -405,6 +397,7 @@ export function linkedQueryParam<T>(
 		} else {
 			source = signal<T>(parsedInitialValue as T, {
 				equal: options?.equal ?? undefined,
+				debugName: `linkedQueryParam-${queryParamKey()}`,
 			});
 		}
 
@@ -424,10 +417,6 @@ export function linkedQueryParam<T>(
 			)
 			.subscribe((value) => {
 				if (value === source() && !options?.equal) {
-					console.log(
-						'DEBUG: value is the same as the internal source, skipping',
-						value,
-					);
 					return;
 				}
 
@@ -438,8 +427,6 @@ export function linkedQueryParam<T>(
 			});
 
 		const setSourceValueAndScheduleNavigation = (value: T) => {
-			const currentKey = getCurrentKey(key);
-
 			// first we check if the value is undefined or null so we can set the default value instead
 			if (
 				(value === undefined || value === null) &&
@@ -470,7 +457,7 @@ export function linkedQueryParam<T>(
 				globalHandler.setParamKeyValue(previousQueryParamKey(), null);
 			}
 
-			globalHandler.setParamKeyValue(currentKey, valueToBeSet);
+			globalHandler.setParamKeyValue(queryParamKey(), valueToBeSet);
 			globalHandler.setCurrentNavigationExtras({
 				...defaultConfig,
 				...config,
@@ -494,12 +481,7 @@ export function linkedQueryParam<T>(
 				[options.source],
 				([value]) => {
 					if (value === source()) {
-						console.log(
-							'DEBUG: value is the same as the external source',
-							value,
-						);
-						// TODO: uncomment this when we release this. We don't want to set the value again as it's already the same
-						// return;
+						return;
 					}
 
 					setSourceValueAndScheduleNavigation(value as T);
@@ -508,17 +490,22 @@ export function linkedQueryParam<T>(
 			);
 		}
 
+		const automaticallySynchronizeOnKeyChange =
+			options?.automaticallySynchronizeOnKeyChange ??
+			config.automaticallySynchronizeOnKeyChange;
+
 		if (automaticallySynchronizeOnKeyChange && isSignalOrFunction(key)) {
 			// we want to register the effect when the key is dynamic and the automaticallySynchronizeOnKeyChange is true
+
 			explicitEffect(
-				[source, queryParamKey, previousQueryParamKey],
-				([sourceValue, queryParamKeyValue, previousQueryParamKeyValue]) => {
-					if (queryParamKeyValue === previousQueryParamKeyValue) {
-						// if the query param key is the same as the previous one, we can skip the update
-						return;
+				[queryParamKey],
+				([key]) => {
+					if (key !== previousQueryParamKey()) {
+						// only when queryParamKey changes we want to schedule a navigation
+						setSourceValueAndScheduleNavigation(source() as T);
 					}
-					setSourceValueAndScheduleNavigation(sourceValue as T);
 				},
+				{ defer: true },
 			);
 		}
 
@@ -540,11 +527,11 @@ const getValue = <T>(value: T | (() => T) | Signal<T>) => {
 };
 
 const isSignalOrFunction = <T>(value: T | (() => T) | Signal<T>) => {
-	return isSignal(value) || (value && typeof value === 'function');
+	return isSignal(value) || typeof value === 'function';
 };
 
 // Get the current key value or throw an error if it's null or undefined
-const getCurrentKey = (key: QueryParamKeyType) => {
+const getCurrentKey = (key: QueryParamKeyType): string => {
 	const queryParamName = getValue(key);
 	if (queryParamName === undefined) {
 		throw new Error(
