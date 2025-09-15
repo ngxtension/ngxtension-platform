@@ -493,14 +493,11 @@ export function linkedQueryParam<T>(
 
 		if (automaticallySynchronizeOnKeyChange && isSignalOrFunction(key)) {
 			// we want to register the effect when the key is dynamic and the automaticallySynchronizeOnKeyChange is true
-
 			explicitEffect(
 				[queryParamKey],
-				([key]) => {
-					if (key !== previousQueryParamKey()) {
-						// only when queryParamKey changes we want to schedule a navigation
-						setSourceValueAndScheduleNavigation(source() as T);
-					}
+				() => {
+					// only when queryParamKey changes we want to schedule a navigation
+					setSourceValueAndScheduleNavigation(source() as T);
 				},
 				{ defer: true },
 			);
