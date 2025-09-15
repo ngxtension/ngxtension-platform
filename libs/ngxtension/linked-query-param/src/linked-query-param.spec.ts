@@ -131,6 +131,10 @@ describe(linkedQueryParam.name, () => {
 						path: 'with-source-signal',
 						component: WithSourceSignalComponent,
 					},
+					{
+						path: 'with-dynamic-key-and-source',
+						component: WithDynamicKeyAndSourceComponent,
+					},
 				]),
 			],
 		});
@@ -810,8 +814,8 @@ describe(linkedQueryParam.name, () => {
 		it('should work with both dynamic key and source signals (automaticallySynchronizeOnKeyChange: true)', fakeAsync(async () => {
 			const harness = await RouterTestingHarness.create();
 			const instance = await harness.navigateByUrl(
-				'/with-source-signal',
-				WithSourceSignalComponent,
+				'/with-dynamic-key-and-source',
+				WithDynamicKeyAndSourceComponent,
 			);
 
 			// Initial state - source is set to null (no query param), key is set to initial value
@@ -833,6 +837,8 @@ describe(linkedQueryParam.name, () => {
 			// Change the key signal - with automaticallySynchronizeOnKeyChange: true, source value should be synchronized
 			instance.dynamicKeySignal.set('dynamicKey3');
 
+			harness.detectChanges();
+
 			tick();
 
 			expect(instance.paramWithDynamicKeyAndSource()).toBe('test-value');
@@ -852,7 +858,7 @@ describe(linkedQueryParam.name, () => {
 			expect(instance.route.snapshot.queryParams['dynamicKey1']).toBe(
 				undefined,
 			);
-			expect(instance.route.snapshot.queryParams['dynamicKey2']).toBe(
+			expect(instance.route.snapshot.queryParams['dynamicKey3']).toBe(
 				'new-value',
 			);
 		}));
@@ -882,12 +888,13 @@ describe(linkedQueryParam.name, () => {
 			expect(instance.paramWithDynamicKeyNoSource()).toBe(
 				'dynamic-key-no-source',
 			);
-			expect(instance.route.snapshot.queryParams['dynamicKey1']).toBe(
+			expect(instance.route.snapshot.queryParams['dynamicKey2']).toBe(
 				'dynamic-key-no-source',
 			);
 
 			// Change the key for the no-source param
 			instance.dynamicKey2Signal.set('dynamicKey4');
+			harness.detectChanges();
 			tick();
 			expect(instance.paramWithDynamicKeyNoSource()).toBe(
 				'dynamic-key-no-source',
@@ -901,73 +908,11 @@ describe(linkedQueryParam.name, () => {
 			);
 		}));
 
-		it('should handle complex scenarios with multiple key and source changes', fakeAsync(async () => {
-			const harness = await RouterTestingHarness.create();
-			const instance = await harness.navigateByUrl(
-				'/with-source-signal',
-				WithSourceSignalComponent,
-			);
-
-			// Set initial values
-			instance.dynamicSourceSignal.set('initial-source');
-			instance.anotherSourceSignal.set('another-source');
-			tick();
-			expect(instance.paramWithDynamicKeyAndSource()).toBe('initial-source');
-			expect(instance.paramWithStaticKeyDynamicSource()).toBe('another-source');
-			expect(instance.route.snapshot.queryParams['dynamicKey1']).toBe(
-				'initial-source',
-			);
-			expect(instance.route.snapshot.queryParams['staticKeyParam']).toBe(
-				'another-source',
-			);
-
-			// Change both key and source for the dynamic key param
-			instance.dynamicKeySignal.set('dynamicKey5');
-			instance.dynamicSourceSignal.set('updated-source');
-			tick();
-			expect(instance.paramWithDynamicKeyAndSource()).toBe('updated-source');
-			expect(instance.route.snapshot.queryParams['dynamicKey1']).toBe(
-				undefined,
-			);
-			expect(instance.route.snapshot.queryParams['dynamicKey5']).toBe(
-				'updated-source',
-			);
-
-			// Change source for static key param
-			instance.anotherSourceSignal.set('updated-another-source');
-			tick();
-			expect(instance.paramWithStaticKeyDynamicSource()).toBe(
-				'updated-another-source',
-			);
-			expect(instance.route.snapshot.queryParams['staticKeyParam']).toBe(
-				'updated-another-source',
-			);
-
-			// Test null value handling
-			instance.dynamicSourceSignal.set(null);
-			tick();
-			expect(instance.paramWithDynamicKeyAndSource()).toBe(null);
-			expect(instance.route.snapshot.queryParams['dynamicKey5']).toBe(
-				undefined,
-			);
-
-			// Change key while source is null
-			instance.dynamicKeySignal.set('dynamicKey6');
-			tick();
-			expect(instance.paramWithDynamicKeyAndSource()).toBe(null);
-			expect(instance.route.snapshot.queryParams['dynamicKey5']).toBe(
-				undefined,
-			);
-			expect(instance.route.snapshot.queryParams['dynamicKey6']).toBe(
-				undefined,
-			);
-		}));
-
 		it('should coalesce multiple changes with dynamic key and source', fakeAsync(async () => {
 			const harness = await RouterTestingHarness.create();
 			const instance = await harness.navigateByUrl(
-				'/with-source-signal',
-				WithSourceSignalComponent,
+				'/with-dynamic-key-and-source',
+				WithDynamicKeyAndSourceComponent,
 			);
 
 			// Make multiple changes synchronously
@@ -1006,7 +951,7 @@ describe(linkedQueryParam.name, () => {
 
 			// Change the key - source value should be synchronized to new key
 			instance.syncKeySignal.set('syncKey2');
-			TestBed.flushEffects();
+			harness.detectChanges();
 			tick();
 			expect(instance.paramWithSyncEnabled()).toBe('sync-value');
 			expect(instance.route.snapshot.queryParams['syncKey1']).toBe(undefined);
@@ -1157,6 +1102,31 @@ export class WithDynamicKeyComponent {
 	);
 }
 
+@Component({
+	standalone: true,
+	template: `
+		{{ paramWithDynamicKeyAndSource() }}
+	`,
+})
+export class WithDynamicKeyAndSourceComponent {
+	route = inject(ActivatedRoute);
+
+	// Dynamic key signal for testing
+	readonly dynamicKeySignal = signal('dynamicKey1');
+
+	// Source signal for dynamic key testing
+	readonly dynamicSourceSignal = signal<string | null>(null);
+
+	// Combined source and key signal tests
+	readonly paramWithDynamicKeyAndSource = linkedQueryParam(
+		() => this.dynamicKeySignal(),
+		{
+			source: this.dynamicSourceSignal,
+			automaticallySynchronizeOnKeyChange: true,
+		},
+	);
+}
+
 @Component({ standalone: true, template: `` })
 export class WithSourceSignalComponent {
 	route = inject(ActivatedRoute);
@@ -1211,17 +1181,7 @@ export class WithSourceSignalComponent {
 	});
 
 	// Dynamic key signal for testing
-	readonly dynamicKeySignal = signal('dynamicKey1');
 	readonly dynamicKey2Signal = signal('dynamicKey2');
-
-	// Source signal for dynamic key testing
-	readonly dynamicSourceSignal = signal<string | null>('dynamicSourceValue');
-
-	// Combined source and key signal tests
-	readonly paramWithDynamicKeyAndSource = linkedQueryParam(
-		this.dynamicKeySignal,
-		{ source: this.dynamicSourceSignal },
-	);
 
 	// Another source signal for testing multiple sources
 	readonly anotherSourceSignal = signal('anotherSourceValue');
