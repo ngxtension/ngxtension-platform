@@ -2,6 +2,9 @@ import {
 	Component,
 	inject,
 	Injector,
+	input,
+	linkedSignal,
+	model,
 	numberAttribute,
 	OnInit,
 	signal,
@@ -63,9 +66,7 @@ export class SearchComponent {
 
 	withBuiltInBooleanParamWithDefault = linkedQueryParam(
 		'withBooleanWithDefault',
-		{
-			parse: paramToBoolean({ defaultValue: true }),
-		},
+		{ parse: paramToBoolean({ defaultValue: true }) },
 	); // WritableSignal<boolean>
 
 	withNumberParams = linkedQueryParam('withNumberParams', {
@@ -86,9 +87,7 @@ export class SearchComponent {
 
 	withBuiltInNumberParamWithDefault = linkedQueryParam(
 		'withNumberWithDefault',
-		{
-			parse: paramToNumber({ defaultValue: 1 }),
-		},
+		{ parse: paramToNumber({ defaultValue: 1 }) },
 	); // WritableSignal<number>
 
 	withObjectParams = linkedQueryParam<MyParams>('withObjectParams', {
@@ -123,6 +122,14 @@ describe(linkedQueryParam.name, () => {
 					{
 						path: 'with-preserve-fragment',
 						component: WithPreserveFragmentComponent,
+					},
+					{
+						path: 'with-dynamic-key',
+						component: WithDynamicKeyComponent,
+					},
+					{
+						path: 'with-source-signal',
+						component: WithSourceSignalComponent,
 					},
 				]),
 			],
@@ -371,6 +378,7 @@ describe(linkedQueryParam.name, () => {
 
 		instance.withBuiltInBooleanParamWithDefault.set(null);
 		tick();
+		TestBed.flushEffects();
 		expect(instance.withBuiltInBooleanParamWithDefault()).toBe(true);
 		expect(instance.route.snapshot.queryParams['withBooleanWithDefault']).toBe(
 			undefined,
@@ -451,6 +459,7 @@ describe(linkedQueryParam.name, () => {
 		);
 
 		instance.withBuiltInNumberParamWithDefault.set(null);
+		TestBed.flushEffects();
 		tick();
 		expect(instance.withBuiltInNumberParamWithDefault()).toBe(1);
 		expect(instance.route.snapshot.queryParams['withNumberWithDefault']).toBe(
@@ -513,6 +522,70 @@ describe(linkedQueryParam.name, () => {
 		expect(instance.route.snapshot.queryParams['searchQuery']).toBe('baz');
 		expect(instance.route.snapshot.fragment).toBe('foo3');
 	}));
+
+	describe('dynamic key', () => {
+		it('should work with dynamic key', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-dynamic-key',
+				WithDynamicKeyComponent,
+			);
+
+			// default value is null
+			expect(instance.keySignal()).toBe('dynamicKey');
+			expect(instance.dynamicKeyParam()).toBe(null);
+			expect(instance.route.snapshot.queryParams['dynamicKey']).toBe(undefined);
+
+			// changing the query param value to something else
+			instance.dynamicKeyParam.set('dynamicKeyNewValue');
+			tick();
+			expect(instance.dynamicKeyParam()).toBe('dynamicKeyNewValue');
+			expect(instance.route.snapshot.queryParams['dynamicKey']).toBe(
+				'dynamicKeyNewValue',
+			);
+
+			// changing the query param value back to null
+			instance.dynamicKeyParam.set(null);
+			tick();
+			expect(instance.dynamicKeyParam()).toBe(null);
+			expect(instance.route.snapshot.queryParams['dynamicKey']).toBe(undefined);
+
+			// changing the key signal value to something else should
+			// remove the old query param key-value pair and add the new one, with null value by default
+			instance.keySignal.set('dynamicKey2');
+			tick();
+			expect(instance.dynamicKeyParam()).toBe(null);
+			expect(instance.route.snapshot.queryParams['dynamicKey']).toBe(undefined);
+			expect(instance.route.snapshot.queryParams['dynamicKey2']).toBe(
+				undefined,
+			);
+
+			// changing the signal again to some new value should update the query param
+			expect(instance.dynamicKeyParam()).toBe(null);
+			instance.dynamicKeyParam.set('dynamicKey2NewValue');
+			tick();
+
+			expect(instance.dynamicKeyParam()).toBe('dynamicKey2NewValue');
+
+			expect(instance.route.snapshot.queryParams['dynamicKey']).toBe(undefined);
+			expect(instance.route.snapshot.queryParams['dynamicKey2']).toBe(
+				'dynamicKey2NewValue',
+			);
+
+			// changing the key signal and the dynamicKeyParam value to something else should
+			// remove the old param but also have the new value immediately on the same tick
+			instance.keySignal.set('dynamicKey3');
+			instance.dynamicKeyParam.set('dynamicKey3NewValue');
+			tick();
+			expect(instance.dynamicKeyParam()).toBe('dynamicKey3NewValue');
+			expect(instance.route.snapshot.queryParams['dynamicKey2']).toBe(
+				undefined,
+			);
+			expect(instance.route.snapshot.queryParams['dynamicKey3']).toBe(
+				'dynamicKey3NewValue',
+			);
+		}));
+	});
 });
 
 @Component({ standalone: true, template: `` })
@@ -550,4 +623,71 @@ export class WithDefaultAndParseComponent {
 		// @ts-expect-error Type 'never' is not assignable to type 'WritableSignal<number>'.
 		this.parseBehaviorWithDefault = signal(1);
 	}
+}
+
+@Component({ standalone: true, template: `` })
+export class WithDynamicKeyComponent {
+	route = inject(ActivatedRoute);
+
+	readonly keySignal = signal('dynamicKey');
+	keyAsFunction = () => 'functionKey';
+
+	readonly dynamicKeyParam = linkedQueryParam<string | null>(this.keySignal);
+	readonly dynamicKeyAsFunctionParam = linkedQueryParam(() =>
+		this.keyAsFunction(),
+	);
+}
+
+@Component({ standalone: true, template: `` })
+export class WithSourceSignalComponent {
+	route = inject(ActivatedRoute);
+
+	readonly sourceInputWithValue = input<string>('');
+	readonly sourceInputWithoutValue = input<string>();
+	readonly sourceInputRequired = input<string>();
+
+	readonly localSourceInputWithValue = linkedSignal(() =>
+		this.sourceInputWithValue(),
+	);
+	readonly localSourceInputWithoutValue = linkedSignal(() =>
+		this.sourceInputWithoutValue(),
+	);
+	readonly localSourceInputRequired = linkedSignal(() =>
+		this.sourceInputRequired(),
+	);
+
+	readonly modelInputWithValue = model<string>('');
+	readonly modelInputWithoutValue = model<string>();
+	readonly modelSignalRequired = model<string>();
+
+	readonly sourceSignal = signal('sourceKey');
+
+	readonly paramFromInputWithValue = linkedQueryParam(
+		'paramFromInputWithValue',
+		{ source: this.localSourceInputWithValue },
+	);
+	readonly paramFromInputWithoutValue = linkedQueryParam(
+		'paramFromInputWithoutValue',
+		{ source: this.localSourceInputWithoutValue },
+	);
+	readonly paramFromInputRequired = linkedQueryParam('paramFromInputRequired', {
+		source: this.localSourceInputRequired,
+	});
+
+	readonly paramFromModelInputWithValue = linkedQueryParam(
+		'paramFromModelInputWithValue',
+		{ source: this.modelInputWithValue },
+	);
+	readonly paramFromModelInputWithoutValue = linkedQueryParam(
+		'paramFromModelInputWithoutValue',
+		{ source: this.modelInputWithoutValue },
+	);
+	readonly paramFromModelSignalRequired = linkedQueryParam(
+		'paramFromModelSignalRequired',
+		{ source: this.modelSignalRequired },
+	);
+
+	readonly paramFromSignal = linkedQueryParam('paramFromSignal', {
+		source: this.sourceSignal,
+	});
 }

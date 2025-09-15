@@ -93,7 +93,9 @@ page = linkedQueryParam('page', {
 });
 ```
 
-Note: You cannot use both `defaultValue` and `parse` at the same time. If you need to parse the value and provide a default, use the parse function to handle both cases.
+:::note[You cannot use both `defaultValue` and `parse` at the same time]
+If you need to parse the value and provide a default, use the parse function to handle both cases.
+:::
 
 ### Built-in Parsers
 

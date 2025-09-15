@@ -22,6 +22,20 @@ import { linkedQueryParam, paramToNumber } from 'ngxtension/linked-query-param';
 
 			<div>
 				<label>
+					Page Number (same param 'page') (parse: paramToNumber(&#123;
+					defaultValue: 1 &#125;):
+					<input
+						[(ngModel)]="withBuiltinNumberParse"
+						name="pageNumber1"
+						placeholder="pageNumber1"
+					/>
+
+					(value: {{ withBuiltinNumberParse() }})
+				</label>
+			</div>
+
+			<div>
+				<label>
 					Page Size:
 					<input
 						[(ngModel)]="pageSize"
@@ -55,9 +69,10 @@ export default class LinkedQueryParamNumberCmp {
 	pageNumber = linkedQueryParam('page', { parse: (x) => (x ? +x : null) });
 	pageSize = linkedQueryParam('pageSize', { parse: (x) => (x ? +x : null) });
 
-	_withBuiltinNumberParse = linkedQueryParam('page', {
+	withBuiltinNumberParse = linkedQueryParam('page', {
 		parse: paramToNumber({ defaultValue: 1 }),
 	});
+
 	_withBuiltinNoDefaultNumberParse = linkedQueryParam('page', {
 		parse: paramToNumber(),
 	});
@@ -66,6 +81,10 @@ export default class LinkedQueryParamNumberCmp {
 		effect(() => {
 			console.log('pageNumber Type: ', typeof this.pageNumber());
 			console.log('pageNumber Value: ', this.pageNumber());
+		});
+
+		effect(() => {
+			console.log('_withBuiltinNumberParse: ', this.withBuiltinNumberParse());
 		});
 	}
 
