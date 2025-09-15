@@ -476,14 +476,11 @@ export function linkedQueryParam<T>(
 			// When the source signal changes from outside
 			// (lets say someone changes the form field and doesn't use the signal returned from linkedQueryParam),
 			// we want to schedule a navigation event to update the query param
-			// We use defer in order to skip the initial effect run as the initial value is already handled
+			// We use defer to skip the initial effect run as the initial value is already handled
 			explicitEffect(
 				[options.source],
 				([value]) => {
-					if (value === source()) {
-						return;
-					}
-
+					if (value === source()) return;
 					setSourceValueAndScheduleNavigation(value as T);
 				},
 				{ defer: true },

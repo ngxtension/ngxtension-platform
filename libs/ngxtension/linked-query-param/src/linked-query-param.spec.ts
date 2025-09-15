@@ -834,8 +834,6 @@ describe(linkedQueryParam.name, () => {
 			instance.dynamicKeySignal.set('dynamicKey3');
 
 			tick();
-			TestBed.flushEffects();
-			tick();
 
 			expect(instance.paramWithDynamicKeyAndSource()).toBe('test-value');
 
@@ -889,7 +887,7 @@ describe(linkedQueryParam.name, () => {
 			);
 
 			// Change the key for the no-source param
-			instance.dynamicKeySignal.set('dynamicKey4');
+			instance.dynamicKey2Signal.set('dynamicKey4');
 			tick();
 			expect(instance.paramWithDynamicKeyNoSource()).toBe(
 				'dynamic-key-no-source',
@@ -1085,6 +1083,7 @@ describe(linkedQueryParam.name, () => {
 			instance.noSyncSourceSignal.set('new-no-sync-value');
 			tick();
 			expect(instance.paramWithSyncDisabled()).toBe('new-no-sync-value');
+			expect(instance.route.snapshot.queryParams['noSyncKey1']).toBe(undefined);
 			expect(instance.route.snapshot.queryParams['noSyncKey2']).toBe(
 				'new-no-sync-value',
 			);
@@ -1094,19 +1093,16 @@ describe(linkedQueryParam.name, () => {
 			instance.noSyncKeySignal.set('noSyncKey1');
 			tick();
 			expect(instance.paramWithSyncDisabled()).toBe('existing-value');
-			// Note: Query param may not be set immediately due to async router navigation
 
 			// Change key - source value should NOT be synchronized
 			instance.noSyncKeySignal.set('noSyncKey3');
 			tick();
 			expect(instance.paramWithSyncDisabled()).toBe('existing-value'); // Source value is preserved
-			// Note: Query params may not be updated immediately due to async router navigation
 
 			// Set new value on new key
 			instance.noSyncSourceSignal.set('new-value');
 			tick();
 			expect(instance.paramWithSyncDisabled()).toBe('new-value');
-			// Note: Query param may not be set immediately due to async router navigation
 		}));
 	});
 });
@@ -1216,6 +1212,7 @@ export class WithSourceSignalComponent {
 
 	// Dynamic key signal for testing
 	readonly dynamicKeySignal = signal('dynamicKey1');
+	readonly dynamicKey2Signal = signal('dynamicKey2');
 
 	// Source signal for dynamic key testing
 	readonly dynamicSourceSignal = signal<string | null>('dynamicSourceValue');
@@ -1223,10 +1220,7 @@ export class WithSourceSignalComponent {
 	// Combined source and key signal tests
 	readonly paramWithDynamicKeyAndSource = linkedQueryParam(
 		this.dynamicKeySignal,
-		{
-			source: this.dynamicSourceSignal,
-			automaticallySynchronizeOnKeyChange: true,
-		},
+		{ source: this.dynamicSourceSignal },
 	);
 
 	// Another source signal for testing multiple sources
@@ -1240,7 +1234,7 @@ export class WithSourceSignalComponent {
 
 	// Param with dynamic key but no source (for comparison)
 	readonly paramWithDynamicKeyNoSource = linkedQueryParam(
-		this.dynamicKeySignal,
+		this.dynamicKey2Signal,
 	);
 
 	// Test automaticallySynchronizeOnKeyChange: true (default behavior)
