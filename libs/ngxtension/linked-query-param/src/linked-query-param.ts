@@ -454,7 +454,10 @@ export function linkedQueryParam<T>(
 				// this way the url is cleaned up and also the update is scheduled on the same tick as the current one
 				// NOTE: If the user wants to set a value on the previous queryParam key,
 				// they should do it synchronously after setting this linkedQueryParam value (check setParamKeyValue for more)
-				globalHandler.setParamKeyValue(previousQueryParamKey(), null);
+				if (previousQueryParamKey()) {
+					// we want to prevent setting the param if the previous key is === "", null or undefined
+					globalHandler.setParamKeyValue(previousQueryParamKey(), null);
+				}
 			}
 
 			globalHandler.setParamKeyValue(queryParamKey(), valueToBeSet);
