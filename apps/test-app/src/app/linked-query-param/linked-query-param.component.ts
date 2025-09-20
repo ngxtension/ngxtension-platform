@@ -30,6 +30,10 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 			<a routerLink="/linked-query-param/array" routerLinkActive="active">
 				Array based
 			</a>
+
+			<a routerLink="/linked-query-param/dynamic" routerLinkActive="active">
+				Dynamic
+			</a>
 		</div>
 
 		<div style="border: 1px solid black; padding: 10px;">

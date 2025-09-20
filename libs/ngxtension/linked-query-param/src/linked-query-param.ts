@@ -88,7 +88,8 @@ const _LINKED_QUERY_PARAM_CONFIG_TOKEN = new InjectionToken<
  *
  */
 export function provideLinkedQueryParamConfig(
-	config: Partial<NavigateMethodFields>,
+	config: Partial<NavigateMethodFields> &
+		Exclude<LinkedQueryParamOptions<string>, 'injector' | 'equal' | 'source'>,
 ): Provider {
 	return {
 		provide: _LINKED_QUERY_PARAM_CONFIG_TOKEN,
@@ -483,7 +484,6 @@ export function linkedQueryParam<T>(
 			explicitEffect(
 				[options.source],
 				([value]) => {
-					if (value === source()) return;
 					setSourceValueAndScheduleNavigation(value as T);
 				},
 				{ defer: true },
