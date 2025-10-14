@@ -608,6 +608,7 @@ describe(linkedQueryParam.name, () => {
 
 			// When source changes, query param should be updated
 			instance.localSourceInputWithValue.set('test-value');
+			TestBed.flushEffects();
 			tick();
 			expect(instance.paramFromInputWithValue()).toBe('test-value');
 			expect(
@@ -649,6 +650,7 @@ describe(linkedQueryParam.name, () => {
 
 			// When model changes, query param should be updated
 			instance.modelInputWithValue.set('model-value');
+			TestBed.flushEffects();
 			tick();
 			expect(instance.paramFromModelInputWithValue()).toBe('model-value');
 			expect(
@@ -690,6 +692,7 @@ describe(linkedQueryParam.name, () => {
 
 			// When source signal changes, query param should be updated
 			instance.sourceSignal.set('new-source-value');
+			TestBed.flushEffects();
 			tick();
 			expect(instance.paramFromSignal()).toBe('new-source-value');
 			expect(instance.route.snapshot.queryParams['paramFromSignal']).toBe(
@@ -705,6 +708,13 @@ describe(linkedQueryParam.name, () => {
 			);
 
 			// Source should be set to the query param value
+			expect(instance.paramFromInputWithValue()).toBe('initial-value');
+			expect(instance.localSourceInputWithValue()).toBe('initial-value');
+			expect(instance.paramFromSignal()).toBe('initial-signal');
+			expect(instance.sourceSignal()).toBe('initial-signal');
+
+			tick();
+
 			expect(instance.paramFromInputWithValue()).toBe('initial-value');
 			expect(instance.localSourceInputWithValue()).toBe('initial-value');
 			expect(instance.paramFromSignal()).toBe('initial-signal');
@@ -736,7 +746,9 @@ describe(linkedQueryParam.name, () => {
 
 			// Change source value directly
 			instance.localSourceInputWithValue.set('direct-change');
+			TestBed.flushEffects();
 			tick();
+
 			expect(instance.paramFromInputWithValue()).toBe('direct-change');
 			expect(
 				instance.route.snapshot.queryParams['paramFromInputWithValue'],
@@ -762,6 +774,7 @@ describe(linkedQueryParam.name, () => {
 
 			// Set initial value using model (which can be null)
 			instance.modelInputWithoutValue.set('initial');
+			TestBed.flushEffects();
 			tick();
 			expect(instance.paramFromModelInputWithoutValue()).toBe('initial');
 			expect(
@@ -802,6 +815,7 @@ describe(linkedQueryParam.name, () => {
 				instance.route.snapshot.queryParams['paramFromInputRequired'],
 			).toBe(undefined);
 
+			TestBed.flushEffects();
 			tick();
 			expect(
 				instance.route.snapshot.queryParams['paramFromInputWithValue'],
@@ -828,6 +842,7 @@ describe(linkedQueryParam.name, () => {
 
 			// Set value on source signal
 			instance.dynamicSourceSignal.set('test-value');
+			TestBed.flushEffects();
 			tick();
 			expect(instance.paramWithDynamicKeyAndSource()).toBe('test-value');
 			expect(instance.route.snapshot.queryParams['dynamicKey1']).toBe(
@@ -838,7 +853,6 @@ describe(linkedQueryParam.name, () => {
 			instance.dynamicKeySignal.set('dynamicKey3');
 
 			harness.detectChanges();
-
 			tick();
 
 			expect(instance.paramWithDynamicKeyAndSource()).toBe('test-value');
@@ -873,6 +887,7 @@ describe(linkedQueryParam.name, () => {
 			// Test param with static key and dynamic source
 			expect(instance.paramWithStaticKeyDynamicSource()).toBe(null);
 			instance.anotherSourceSignal.set('static-key-value');
+			TestBed.flushEffects();
 			tick();
 			expect(instance.paramWithStaticKeyDynamicSource()).toBe(
 				'static-key-value',
@@ -926,7 +941,7 @@ describe(linkedQueryParam.name, () => {
 			expect(instance.route.snapshot.queryParams['dynamicKey7']).toBe(
 				undefined,
 			);
-
+			TestBed.flushEffects();
 			tick();
 			expect(instance.route.snapshot.queryParams['dynamicKey7']).toBe('value3');
 		}));
@@ -943,6 +958,7 @@ describe(linkedQueryParam.name, () => {
 			// Set initial values
 			instance.syncSourceSignal.set('sync-value');
 			instance.syncKeySignal.set('syncKey1');
+			TestBed.flushEffects();
 			tick();
 			expect(instance.paramWithSyncEnabled()).toBe('sync-value');
 			expect(instance.route.snapshot.queryParams['syncKey1']).toBe(
@@ -1009,6 +1025,7 @@ describe(linkedQueryParam.name, () => {
 			// Set initial values
 			instance.noSyncSourceSignal.set('no-sync-value');
 			instance.noSyncKeySignal.set('noSyncKey1');
+			TestBed.flushEffects();
 			tick();
 			expect(instance.paramWithSyncDisabled()).toBe('no-sync-value');
 			expect(instance.route.snapshot.queryParams['noSyncKey1']).toBe(

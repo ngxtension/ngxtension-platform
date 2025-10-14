@@ -52,7 +52,9 @@ export default class LinkedQueryParamStringCmp {
 
 	dynamicKey = signal('searchQuery');
 
-	searchQuery = linkedQueryParam(this.dynamicKey);
+	searchQuery = linkedQueryParam(this.dynamicKey, {
+		// source: this.form.user.name
+	});
 
 	differentSignalWithSearchQuery = linkedQueryParam('searchQuery', {
 		defaultValue: 'default',

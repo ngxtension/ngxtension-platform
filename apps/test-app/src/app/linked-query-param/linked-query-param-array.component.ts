@@ -1,4 +1,3 @@
-import { JsonPipe } from '@angular/common';
 import { Component, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { linkedQueryParam } from 'ngxtension/linked-query-param';
@@ -18,7 +17,7 @@ import { linkedQueryParam } from 'ngxtension/linked-query-param';
 			}
 		</div>
 	`,
-	imports: [FormsModule, JsonPipe],
+	imports: [FormsModule],
 	styles: `
 		div {
 			padding: 20px;

@@ -1,4 +1,4 @@
-import { Component, effect, input, model, signal } from '@angular/core';
+import { Component, effect, model, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { linkedQueryParam, paramToNumber } from 'ngxtension/linked-query-param';
 
@@ -106,12 +106,11 @@ import { linkedQueryParam, paramToNumber } from 'ngxtension/linked-query-param';
 })
 export class PaginationComponent {
 	// Model signal for two-way binding
-	readonly pageKey = input<string>('page');
-	readonly page = model<number>(1);
+	readonly pageKey = model<string>('');
+	readonly page = model<number>(0);
 
-	pages = signal<number[]>([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+	readonly pages = signal<number[]>([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 
-	// Link the model signal to a query parameter with number parsing
 	readonly pageParam = linkedQueryParam(this.pageKey, {
 		source: this.page,
 		parse: paramToNumber({ defaultValue: 1 }),
@@ -121,9 +120,7 @@ export class PaginationComponent {
 		effect(() => {
 			console.log('pageKey: ', this.pageKey());
 			console.log('page: ', this.page());
-			console.log('pageParam: ', this.pageParam());
 			console.log('type of page: ', typeof this.page());
-			console.log('type of pageParam: ', typeof this.pageParam());
 		});
 	}
 }
@@ -147,7 +144,10 @@ export class PaginationComponent {
 				/>
 			</label>
 
-			<app-pagination [pageKey]="pageKey()" [(page)]="pageValue" />
+			<hr />
+			<br />
+
+			<app-pagination [(pageKey)]="pageKey" [(page)]="pageValue" />
 		</div>
 	`,
 	imports: [FormsModule, PaginationComponent],
@@ -158,6 +158,8 @@ export class PaginationComponent {
 	`,
 })
 export default class LinkedQueryParamDynamicCmp {
-	readonly pageKey = signal<string>('page');
-	readonly pageValue = signal<number>(1);
+	readonly pageKey = linkedQueryParam<string>('pageKey', {
+		defaultValue: 'page',
+	});
+	readonly pageValue = signal<number>(3);
 }

@@ -18,43 +18,56 @@ The `linkedQueryParam` utility function creates a signal that is linked to a que
 Key Features:
 
 - **Two-way binding**: Changes to the signal are reflected in the URL, and changes to the URL are reflected in the signal.
-- **Dynamic keys**: Support for dynamic query parameter keys using signals, functions, or static strings.
-- **Source signal integration**: Link existing signals (including input signals, model signals, and regular signals) to query parameters.
-- **Automatic synchronization**: Automatically synchronize source values when dynamic keys change.
 - **Parsing and stringification**: You can provide functions to parse the query parameter value when reading it from the URL and stringify it when writing it to the URL.
 - **Built-in parsers**: The library provides built-in parsers for common data types, such as numbers and booleans.
 - **Default values**: You can provide a default value to be used if the query parameter is not present in the URL.
 - **Coalesced updates**: Multiple updates to the signal within the same browser task are coalesced into a single URL update, improving performance.
 - **Supports Navigation Extras**: The function supports navigation extras like `queryParamsHandling`, `onSameUrlNavigation`, `replaceUrl`, and `skipLocationChange`.
 - **Global configuration**: Configure default behavior for all `linkedQueryParam` instances using providers.
+- **Dynamic keys**: Support for dynamic query parameter keys using signals, functions, or static strings.
+- **Source signal integration**: Link existing signals (including input signals, model signals, and regular signals) to query parameters.
+- **Automatic synchronization**: Automatically synchronize source values when dynamic keys change.
 - **Testable**: The function is easy to test thanks to its reliance on Angular's dependency injection system.
 
 ## Usage
 
 Here's a basic example of how to use `linkedQueryParam`:
 
-```ts
+```angular-ts
 import { Component, inject } from '@angular/core';
 import { linkedQueryParam } from 'ngxtension/linked-query-param';
 
 @Component({
 	template: `
+	  <label>
+	    Search:
+	    <input name="search" [(ngModel)]="searchQuery" />
+    </label>
+
 		<p>Page: {{ currentPage() }}</p>
-		<button (click)="currentPage.set(currentPage() + 1)">Next Page</button>
+		<button (click)="currentPage.set(currentPage() + 1)">
+		  Next Page
+    </button>
 	`,
 })
 export class MyComponent {
+	readonly searchQuery = linkedQueryParam('search');
+
 	readonly currentPage = linkedQueryParam('page', {
-		parse: (value) => parseInt(value ?? '1', 10),
+		parse: (x) => parseInt(x ?? '1', 10),
 	});
 }
 ```
 
-In this example, the page signal is linked to the page query parameter. The parse function ensures that the value is always a number, defaulting to 1 if the parameter is not present or cannot be parsed. Clicking the "Next Page" button increments the page signal, which in turn updates the URL to `/search?page=2`, `/search?page=3`, and so on.
+In this example, the `currentPage` signal is linked to the `page` query parameter and the `searchQuery` is linked to the `search` query param.
+The parse function ensures that the value is always a number, defaulting to 1 if the parameter is not present or cannot be parsed.
+Clicking the "Next Page" button increments the page signal, which in turn updates the URL to `/search?page=2`, `/search?page=3`, and so on.
 
 ### Parsing and Stringification
 
 You can provide `parse` and `stringify` functions to transform the query parameter value between the URL and the signal. This is useful for handling different data types, such as booleans, numbers, and objects.
+
+> Check out built-in parsers at [API Reference] # TODO
 
 ```ts
 export class MyCmp {
@@ -100,85 +113,6 @@ page = linkedQueryParam('page', {
 :::note[You cannot use both `defaultValue` and `parse` at the same time]
 If you need to parse the value and provide a default, use the parse function to handle both cases.
 :::
-
-### Dynamic Keys
-
-The `linkedQueryParam` function supports dynamic query parameter keys. You can use signals, functions (that use signals), or static strings as the key parameter.
-
-```ts
-export class DynamicKeyComponent {
-	// Dynamic key using a signal
-	readonly keySignal = signal('search');
-	readonly searchParam = linkedQueryParam(this.keySignal);
-
-	// Dynamic key using a function (is reactive only with signals)
-	readonly getKey = () => 'page';
-	readonly pageParam = linkedQueryParam(this.getKey);
-
-	// Static key (most common)
-	readonly staticParam = linkedQueryParam('filter');
-}
-```
-
-When using dynamic keys, the query parameter will automatically update when the key changes. The old parameter will be removed from the URL and the new one will be added (with the current value of the signal).
-
-### Source Signal Integration
-
-You can link existing signals to query parameters using the `source` option. This is particularly useful when working with input signals, model signals, or any other writable signals.
-
-```ts
-export class SourceSignalComponent {
-	// Model signal as source
-	readonly pageModel = model<number>(1);
-	readonly pageParam = linkedQueryParam('page', {
-		source: this.pageModel,
-		parse: paramToNumber({ defaultValue: 1 }),
-	});
-
-	// Input signal as source
-	readonly searchInput = input<string>('');
-	// We convert it to a local writable signal
-	readonly localSearchInput = linkedSignal(() => this.searchInput());
-	readonly searchParam = linkedQueryParam('search', {
-		source: this.localSearchInput, // <- we use the local writable signal
-	});
-
-	// Regular signal as source
-	readonly filterSignal = signal<string | null>(null);
-	readonly filterParam = linkedQueryParam('filter', {
-		source: this.filterSignal,
-	});
-}
-```
-
-When using a source signal, the query parameter will be updated whenever the source signal changes, and the source signal will be updated when the query parameter changes (two-way binding).
-
-### Automatic Synchronization on Key Change
-
-When using dynamic keys with source signals, you can control whether the source value should be synchronized to the new key when the key changes.
-
-```ts
-export class SyncComponent {
-	readonly keySignal = signal('param1');
-	readonly sourceSignal = signal('value');
-
-	// Automatically synchronize source value when key changes (default: true)
-	readonly syncParam = linkedQueryParam(this.keySignal, {
-		source: this.sourceSignal,
-		automaticallySynchronizeOnKeyChange: true, // This is the default
-	});
-
-	// Don't synchronize source value when key changes
-	readonly noSyncParam = linkedQueryParam(this.keySignal, {
-		source: this.sourceSignal,
-		automaticallySynchronizeOnKeyChange: false,
-	});
-}
-```
-
-With `automaticallySynchronizeOnKeyChange: true` (default), when the key changes from 'param1' to 'param2', the source value 'value' will be automatically set to the new query parameter 'param2'.
-
-With `automaticallySynchronizeOnKeyChange: false`, when the key changes, the new query parameter won't be applied directly, but will wait until the next signal update. This is useful when you want to change multiple params at the same time.
 
 ### Built-in Parsers
 
@@ -343,6 +277,91 @@ export class MyComponent {
 	readonly param2 = linkedQueryParam('param2', { skipLocationChange: true });
 }
 ```
+
+### Dynamic Keys
+
+The `linkedQueryParam` function supports dynamic query parameter keys. You can use signals, functions (that use signals), or static strings as the key parameter.
+
+```ts
+export class DynamicKeyComponent {
+	// Dynamic key using a signal
+	readonly keySignal = signal('search');
+	readonly searchParam = linkedQueryParam(this.keySignal);
+
+	// Dynamic key using a function (is reactive only with signals)
+	readonly getKey = () => 'page';
+	readonly pageParam = linkedQueryParam(this.getKey);
+
+	// Static key (most common)
+	readonly staticParam = linkedQueryParam('filter');
+}
+```
+
+:::note[You cannot use `input.required()` and `model.required()` as keys]
+Using required `input`/`model` won't work as they require everything to be lazy evaluated, but linkedQueryParam calls those signals synchronously to provide the initial value synchronously
+You can safely use normal `input`/`model`. Keep in mind that the initial value will come from the router data instead of the initial value that you pass to those inputs.
+:::
+
+When using dynamic keys, the query parameter will automatically update when the key changes. The old parameter will be removed from the URL and the new one will be added (with the current value of the signal).
+
+### Source Signal Integration
+
+You can link existing signals to query parameters using the `source` option. This is particularly useful when working with input signals, model signals, signal forms, or any other writable signals.
+
+```ts
+export class SearchPageComponent {
+	// Model signal as source
+	readonly page = model<number>(1);
+	readonly pageParam = linkedQueryParam('page', {
+		source: this.page,
+		parse: paramToNumber({ defaultValue: 1 }),
+	});
+
+	// Regular signal as source
+	readonly filterSignal = signal<string | null>(null);
+	readonly filterParam = linkedQueryParam('filter', {
+		source: this.filterSignal,
+	});
+
+	// Input signal as source -> not recommended, but there's always a way
+	// TODO should we even include this?
+	readonly searchInput = input<string>('');
+	// We convert it to a local writable signal
+	readonly localSearchInput = linkedSignal(() => this.searchInput());
+	readonly searchParam = linkedQueryParam('search', {
+		source: this.localSearchInput, // <- we use the local writable signal
+	});
+}
+```
+
+When using a source signal, the query parameter will be updated whenever the source signal changes, and the source signal will be updated when the query parameter changes (two-way binding).
+
+### Automatic Synchronization on Key Change
+
+When using dynamic keys with source signals, you can control whether the source value should be synchronized to the new key when the key changes.
+
+```ts
+export class SyncComponent {
+	readonly keySignal = signal('param1');
+	readonly sourceSignal = signal('value');
+
+	// Automatically synchronize source value when key changes (default: true)
+	readonly syncParam = linkedQueryParam(this.keySignal, {
+		source: this.sourceSignal,
+		automaticallySynchronizeOnKeyChange: true, // This is the default
+	});
+
+	// Don't synchronize source value when key changes
+	readonly noSyncParam = linkedQueryParam(this.keySignal, {
+		source: this.sourceSignal,
+		automaticallySynchronizeOnKeyChange: false,
+	});
+}
+```
+
+With `automaticallySynchronizeOnKeyChange: true` (default), when the key changes from 'param1' to 'param2', the source value 'value' will be automatically set to the new query parameter 'param2'.
+
+With `automaticallySynchronizeOnKeyChange: false`, when the key changes, the new query parameter won't be applied directly, but will wait until the next signal update. This is useful when you want to change multiple params at the same time.
 
 ### Advanced Usage Examples
 
