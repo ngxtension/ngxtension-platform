@@ -5,6 +5,11 @@ entryPoint: ngxtension/inject-route-fragment
 contributors: ['krzysztof-kachniarz']
 ---
 
+:::note[Router outlet is required]
+`injectRouteFragment` works on all components that are inside routing context. Make sure the component you are using `injectRouteFragment` in, is part of your routes.
+For the same reason - `injectRouteFragment` will not work correctly inside your root component (usually `AppComponent`)
+:::
+
 `injectRouteFragment` is a helper function that allows you to inject url fragment from the current route as a signal.
 
 ```ts

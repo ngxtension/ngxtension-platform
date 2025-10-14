@@ -6,6 +6,11 @@ badge: experimental
 contributors: ['enea-jahollari']
 ---
 
+:::note[Router outlet is required]
+`linkedQueryParam` works on all components that are inside routing context. Make sure the component you are using `linkedQueryParam` in, is part of your routes.
+For the same reason - `linkedQueryParam` will not work correctly inside your root component (usually `AppComponent`)
+:::
+
 ## `linkedQueryParam` - Two-way binding for query parameters
 
 The `linkedQueryParam` utility function creates a signal that is linked to a query parameter in the URL. This allows you to easily keep your Angular application's state in sync with the URL, making it easier to share and bookmark specific views.
