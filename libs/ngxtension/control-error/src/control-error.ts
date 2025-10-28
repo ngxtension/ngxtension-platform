@@ -17,6 +17,7 @@ import {
 } from '@angular/core/rxjs-interop';
 import {
 	AbstractControl,
+	ControlContainer,
 	FormGroupDirective,
 	NgForm,
 	type ValidationErrors,
@@ -299,10 +300,23 @@ export class NgxControlError {
 			return;
 		}
 
-		/**
-		 * TODO: throw an error if the control is not found?
-		 */
-		this.control$.set(this.parent$()?.control.get(control) ?? undefined);
+		const directParentControl = this.controlContainer?.control;
+
+		if (!directParentControl) {
+			throw new Error(
+				`[NgxControlError]: A control name cannot be specified without a parent FormGroup.`,
+			);
+		}
+
+		const controlInstance = directParentControl.get(control);
+
+		if (!controlInstance) {
+			throw new Error(
+				`[NgxControlError]: Cannot find control with name '${control}'.`,
+			);
+		}
+
+		this.control$.set(controlInstance);
 	}
 
 	/**
@@ -321,7 +335,7 @@ export class NgxControlError {
 	}
 
 	/**
-	 * The parent of this {@link control$ control}.
+	 * The top level parent of this {@link control$ control}.
 	 *
 	 * NOTE: Might not be the control referenced by {@link AbstractControl.parent parent} of this {@link control$ control}.
 	 */
@@ -340,7 +354,7 @@ export class NgxControlError {
 	public readonly track$ = signal<undefined | string | string[]>(undefined);
 
 	/**
-	 * The parent of this {@link control$ control}.
+	 * The top level parent of this {@link control$ control}.
 	 *
 	 * NOTE: Might not be the control referenced by {@link AbstractControl.parent parent} of this {@link control$ control}.
 	 */
@@ -350,6 +364,13 @@ export class NgxControlError {
 			inject(NgForm, { optional: true }) ??
 			undefined,
 	);
+
+	/**
+	 * The direct parent form group directive of this control.
+	 */
+	private readonly controlContainer = inject(ControlContainer, {
+		optional: true,
+	});
 
 	/**
 	 * The control which `errors` are tracked.
