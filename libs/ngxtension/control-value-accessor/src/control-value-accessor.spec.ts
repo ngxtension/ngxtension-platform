@@ -8,7 +8,10 @@ import {
 	ReactiveFormsModule,
 } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { NgxControlValueAccessor } from './control-value-accessor';
+import {
+	NgxControlValueAccessor,
+	provideCvaTransform,
+} from './control-value-accessor';
 
 describe('NgxControlValueAccessor', () => {
 	@Component({
@@ -475,6 +478,82 @@ describe('NgxControlValueAccessor', () => {
 				fixture.detectChanges();
 				expect(ngControl?.disabled).toEqual(true);
 				expect(input.disabled).toEqual(true);
+			});
+		});
+
+		describe('transform', () => {
+			it('should be a no-op by default', async () => {
+				const params = {
+					value: 'foo',
+				};
+
+				const { fixture, cva, ngControl } = render(
+					`<custom-input [ngModel]="value" />`,
+					params,
+				);
+				fixture.detectChanges();
+				await fixture.whenStable();
+				expect(cva.value).toEqual('foo');
+				expect(ngControl!.value).toEqual('foo');
+			});
+
+			it('should transform incoming model values', async () => {
+				const params = {
+					value: '',
+				};
+
+				const { fixture, cva, ngControl, input } = render(
+					`<custom-input [ngModel]="value" />`,
+					params,
+				);
+				cva.transform = (v: string) => v.toUpperCase();
+				params.value = 'foo';
+				fixture.detectChanges();
+				await fixture.whenStable();
+				expect(cva.value).toEqual('FOO');
+				expect(ngControl!.value).toEqual('FOO');
+
+				params.value = 'bar';
+				fixture.detectChanges();
+				await fixture.whenStable();
+				expect(cva.value).toEqual('BAR');
+				expect(ngControl!.value).toEqual('BAR');
+
+				input.value = 'baz';
+				input.dispatchEvent(new Event('input'));
+				fixture.detectChanges();
+				await fixture.whenStable();
+				expect(cva.value).toEqual('baz');
+				expect(ngControl!.value).toEqual('baz');
+			});
+
+			it('should transform incoming model values when provided', async () => {
+				const params = {
+					value: 'foo',
+				};
+
+				const { fixture, cva, ngControl, input } = render(
+					`<custom-input [ngModel]="value" />`,
+					params,
+					[provideCvaTransform((v: string) => v.toUpperCase(), true)],
+				);
+				fixture.detectChanges();
+				await fixture.whenStable();
+				expect(cva.value).toEqual('FOO');
+				expect(ngControl!.value).toEqual('FOO');
+
+				params.value = 'bar';
+				fixture.detectChanges();
+				await fixture.whenStable();
+				expect(cva.value).toEqual('BAR');
+				expect(ngControl!.value).toEqual('BAR');
+
+				input.value = 'baz';
+				input.dispatchEvent(new Event('input'));
+				fixture.detectChanges();
+				await fixture.whenStable();
+				expect(cva.value).toEqual('baz');
+				expect(ngControl!.value).toEqual('baz');
 			});
 		});
 	});
