@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 @Component({
-	standalone: true,
 	imports: [RouterLink, RouterOutlet, RouterLinkActive],
 	selector: 'ngxtension-platform-root',
 	template: `
@@ -81,7 +80,6 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 			</div>
 		</div>
 	`,
-
 	styles: `
 		ul {
 			display: flex;

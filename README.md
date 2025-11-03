@@ -74,6 +74,8 @@ All utilities are tree-shakable and designed for Angular 16+.
 
 | ngxtension Version | Release Date | Angular Version Support |
 |-------------------|--------------|------------------------|
+| **7.x** | 2025-09-12 | >=19.0.0 |
+| **6.x** | 2025-09-12 | >=16.0.0 |
 | **5.x** | 2025-03-14 | >=16.0.0 |
 | **4.x** | 2024-07-15 | >=16.0.0 |
 | **3.x** | 2024-04-24 | >=16.0.0 |

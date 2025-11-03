@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 @Component({
-	standalone: true,
 	template: `
 		<div>
 			<a routerLink="/linked-query-param/string" routerLinkActive="active">
@@ -30,6 +29,10 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 			<a routerLink="/linked-query-param/array" routerLinkActive="active">
 				Array based
+			</a>
+
+			<a routerLink="/linked-query-param/dynamic" routerLinkActive="active">
+				Dynamic
 			</a>
 		</div>
 

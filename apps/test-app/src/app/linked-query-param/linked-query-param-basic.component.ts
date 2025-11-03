@@ -1,14 +1,20 @@
 import { JsonPipe } from '@angular/common';
-import { Component, effect, inject } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { linkedQueryParam } from 'ngxtension/linked-query-param';
 
 @Component({
-	standalone: true,
 	template: `
 		<div>
 			<pre>SearchQuery: {{ searchQuery() | json }}</pre>
+
+			<div>
+				<label>
+					Key:
+					<input [(ngModel)]="dynamicKey" name="a" placeholder="Key" />
+				</label>
+			</div>
 
 			<div>
 				<label>
@@ -44,10 +50,10 @@ import { linkedQueryParam } from 'ngxtension/linked-query-param';
 export default class LinkedQueryParamStringCmp {
 	private titleService = inject(Title);
 
-	searchQuery = linkedQueryParam('searchQuery', {
-		// NOTE in docs that serialize should come after parse in order for types to work correctly
-		// stringify: (x) => `${x}`,
-		// parse: (x) => x ? parseInt(x, 10) : null,
+	dynamicKey = signal('searchQuery');
+
+	searchQuery = linkedQueryParam(this.dynamicKey, {
+		// source: this.form.user.name
 	});
 
 	differentSignalWithSearchQuery = linkedQueryParam('searchQuery', {

@@ -9,7 +9,6 @@ import { NgxControlError } from 'ngxtension/control-error';
 
 @Component({
 	selector: 'ngxtension-platform-control-error',
-	standalone: true,
 	imports: [NgxControlError, FormsModule, ReactiveFormsModule],
 	template: `
 		<form [formGroup]="form">

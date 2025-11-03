@@ -71,7 +71,6 @@ export class Box {
 }
 
 @Component({
-	standalone: true,
 	imports: [Box, BoxWithHost, NgxDrag],
 	template: `
 		<app-box />
