@@ -135,6 +135,18 @@ describe(linkedQueryParam.name, () => {
 						path: 'with-dynamic-key-and-source',
 						component: WithDynamicKeyAndSourceComponent,
 					},
+					{
+						path: 'with-multiple-dynamic-keys',
+						component: WithMultipleDynamicKeysComponent,
+					},
+					{
+						path: 'with-dynamic-key-with-default',
+						component: WithDynamicKeyWithDefaultComponent,
+					},
+					{
+						path: 'with-dynamic-key-and-inputs',
+						component: WithDynamicKeyAndInputsComponent,
+					},
 				]),
 			],
 		});
@@ -589,6 +601,116 @@ describe(linkedQueryParam.name, () => {
 				'dynamicKey3NewValue',
 			);
 		}));
+
+		it('should not remove previous query param when another linkedQueryParam sets a value on it', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-multiple-dynamic-keys',
+				WithMultipleDynamicKeysComponent,
+			);
+
+			// Set initial values
+			instance.keySignal1.set('key1');
+			instance.keySignal2.set('key2');
+			instance.param1.set('value1');
+			instance.param2.set('value2');
+			tick();
+
+			expect(instance.route.snapshot.queryParams['key1']).toBe('value1');
+			expect(instance.route.snapshot.queryParams['key2']).toBe('value2');
+
+			// Change key1 to key3, which schedules key1 to be removed
+			instance.keySignal1.set('key3');
+			// Explicitly set param1 value on the new key (since there's no source, auto-sync doesn't apply)
+			instance.param1.set('value1');
+			// But synchronously, another linkedQueryParam (param2) changes its key to key1
+			// and sets a value on key1, which should prevent key1 from being removed
+			instance.keySignal2.set('key1');
+			instance.param2.set('value2-on-key1');
+			harness.detectChanges();
+			tick();
+
+			// key1 should NOT be removed because param2 set a value on it synchronously
+			// The last value set for key1 wins due to coalescing
+			expect(instance.route.snapshot.queryParams['key1']).toBe(
+				'value2-on-key1',
+			);
+			// key3 should have the value from param1 (synchronized automatically)
+			expect(instance.param1()).toBe('value1');
+			// Query param key3 should be set after navigation (due to automaticallySynchronizeOnKeyChange)
+			expect(instance.route.snapshot.queryParams['key3']).toBe('value1');
+		}));
+
+		it('should use existing query param value when new key already has a value', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-dynamic-key?existingKey=existing-value',
+				WithDynamicKeyComponent,
+			);
+
+			// Set initial value on dynamicKey
+			instance.keySignal.set('dynamicKey');
+			instance.dynamicKeyParam.set('initial-value');
+			tick();
+			expect(instance.route.snapshot.queryParams['dynamicKey']).toBe(
+				'initial-value',
+			);
+
+			// Change key to existingKey which already has a value in URL
+			instance.keySignal.set('existingKey');
+			tick();
+			// Should use the existing value from query params
+			expect(instance.dynamicKeyParam()).toBe('existing-value');
+			expect(instance.route.snapshot.queryParams['existingKey']).toBe(
+				'existing-value',
+			);
+
+			// Now set a new value on the new key
+			instance.dynamicKeyParam.set('new-value');
+			tick();
+			expect(instance.dynamicKeyParam()).toBe('new-value');
+			expect(instance.route.snapshot.queryParams['existingKey']).toBe(
+				'new-value',
+			);
+		}));
+
+		it('should use default value or signal current value when key changes and new key has no value', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-dynamic-key-with-default',
+				WithDynamicKeyWithDefaultComponent,
+			);
+
+			// Set initial value
+			instance.keySignal.set('key1');
+			instance.paramWithDefault.set('value1');
+			tick();
+			expect(instance.route.snapshot.queryParams['key1']).toBe('value1');
+
+			// Change key to key2 which has no value
+			// With automaticallySynchronizeOnKeyChange: true (default), it uses signal's current value
+			instance.keySignal.set('key2');
+			harness.detectChanges();
+			tick();
+			// Signal's current value is 'value1', which gets synchronized to new key
+			expect(instance.paramWithDefault()).toBe('value1');
+			expect(instance.route.snapshot.queryParams['key2']).toBe('value1');
+
+			// Test without default - should use signal current value
+			instance.paramWithoutDefault.set('current-value');
+			instance.keySignalWithoutDefault.set('key3');
+			harness.detectChanges();
+			tick();
+			expect(instance.paramWithoutDefault()).toBe('current-value');
+			expect(instance.route.snapshot.queryParams['key3']).toBe('current-value');
+
+			// Reset and test that default value is used when query param is not present initially
+			instance.keySignal.set('newKey');
+			instance.paramWithDefault.set(null);
+			tick();
+			// After setting to null, it should use default value
+			expect(instance.paramWithDefault()).toBe('default-value');
+		}));
 	});
 
 	describe('source field tests', () => {
@@ -735,6 +857,88 @@ describe(linkedQueryParam.name, () => {
 			// Source without default should be null
 			expect(instance.paramFromInputWithoutValue()).toBe(null);
 			expect(instance.localSourceInputWithoutValue()).toBe(null);
+		}));
+
+		it('should set source value to default value when query param is not present and defaultValue is provided', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-source-signal',
+				WithSourceSignalComponent,
+			);
+
+			// Test with defaultValue - source should be set to default value
+			// The source signal initial value is set to the query param value (if present) or default value
+			// Since query param is not present, it should use the default
+			expect(instance.paramWithDefaultValue()).toBe('default-for-source');
+			expect(instance.sourceWithDefaultValue()).toBe('default-for-source');
+			// Query param should not be in URL initially - it's only written when source changes or explicitly set
+			// However, if source has an initial value and changes, it might trigger navigation
+			// So we check the signal value matches default, but query param may or may not be set yet
+			// The important thing is that the source was initialized with the default value
+
+			// When query param is present, source should use that value
+			await harness.navigateByUrl(
+				'/with-source-signal?paramWithDefaultValue=query-value',
+			);
+			TestBed.flushEffects();
+			expect(instance.paramWithDefaultValue()).toBe('query-value');
+			expect(instance.sourceWithDefaultValue()).toBe('query-value');
+		}));
+
+		it('should work with dynamic key and signal input', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-dynamic-key-and-inputs',
+				WithDynamicKeyAndInputsComponent,
+			);
+
+			// Test with signal input
+			expect(instance.dynamicKeySignal()).toBe('key1');
+			expect(instance.paramWithInputSource()).toBe(null);
+			expect(instance.localSourceInput()).toBe(null);
+
+			// Set value on source
+			instance.localSourceInput.set('input-value');
+			TestBed.flushEffects();
+			tick();
+			expect(instance.paramWithInputSource()).toBe('input-value');
+			expect(instance.route.snapshot.queryParams['key1']).toBe('input-value');
+
+			// Change the key - should still work
+			instance.dynamicKeySignal.set('key2');
+			harness.detectChanges();
+			tick();
+			expect(instance.paramWithInputSource()).toBe('input-value');
+			expect(instance.route.snapshot.queryParams['key1']).toBe(undefined);
+			expect(instance.route.snapshot.queryParams['key2']).toBe('input-value');
+		}));
+
+		it('should work with dynamic key and model input', fakeAsync(async () => {
+			const harness = await RouterTestingHarness.create();
+			const instance = await harness.navigateByUrl(
+				'/with-dynamic-key-and-inputs',
+				WithDynamicKeyAndInputsComponent,
+			);
+
+			// Test with model input
+			expect(instance.dynamicKeyModel()).toBe('key3');
+			expect(instance.paramWithModelSource()).toBe(null);
+			expect(instance.sourceModel()).toBe(null);
+
+			// Set value on source
+			instance.sourceModel.set('model-value');
+			TestBed.flushEffects();
+			tick();
+			expect(instance.paramWithModelSource()).toBe('model-value');
+			expect(instance.route.snapshot.queryParams['key3']).toBe('model-value');
+
+			// Change the key - should still work
+			instance.dynamicKeyModel.set('key4');
+			harness.detectChanges();
+			tick();
+			expect(instance.paramWithModelSource()).toBe('model-value');
+			expect(instance.route.snapshot.queryParams['key3']).toBe(undefined);
+			expect(instance.route.snapshot.queryParams['key4']).toBe('model-value');
 		}));
 
 		it('should update query param when source value changes', fakeAsync(async () => {
@@ -1228,5 +1432,56 @@ export class WithSourceSignalComponent {
 	readonly paramWithSyncDisabled = linkedQueryParam(this.noSyncKeySignal, {
 		source: this.noSyncSourceSignal,
 		automaticallySynchronizeOnKeyChange: false,
+	});
+
+	// Test with defaultValue and source
+	readonly sourceWithDefaultValue = signal<string>('initial-source');
+	readonly paramWithDefaultValue = linkedQueryParam('paramWithDefaultValue', {
+		source: this.sourceWithDefaultValue,
+		defaultValue: 'default-for-source',
+	});
+}
+
+@Component({ standalone: true, template: `` })
+export class WithMultipleDynamicKeysComponent {
+	route = inject(ActivatedRoute);
+
+	readonly keySignal1 = signal('key1');
+	readonly keySignal2 = signal('key2');
+
+	readonly param1 = linkedQueryParam(this.keySignal1);
+	readonly param2 = linkedQueryParam(this.keySignal2);
+}
+
+@Component({ standalone: true, template: `` })
+export class WithDynamicKeyWithDefaultComponent {
+	route = inject(ActivatedRoute);
+
+	readonly keySignal = signal('key1');
+	readonly paramWithDefault = linkedQueryParam(this.keySignal, {
+		defaultValue: 'default-value',
+	});
+
+	readonly keySignalWithoutDefault = signal('key1');
+	readonly paramWithoutDefault = linkedQueryParam(this.keySignalWithoutDefault);
+}
+
+@Component({ standalone: true, template: `` })
+export class WithDynamicKeyAndInputsComponent {
+	route = inject(ActivatedRoute);
+
+	// For signal input
+	readonly sourceInput = input<string>();
+	readonly localSourceInput = linkedSignal(() => this.sourceInput());
+	readonly dynamicKeySignal = signal('key1');
+	readonly paramWithInputSource = linkedQueryParam(this.dynamicKeySignal, {
+		source: this.localSourceInput,
+	});
+
+	// For model input - models are already writable signals, so we can use them directly
+	readonly sourceModel = model<string>();
+	readonly dynamicKeyModel = signal('key3');
+	readonly paramWithModelSource = linkedQueryParam(this.dynamicKeyModel, {
+		source: this.sourceModel,
 	});
 }
