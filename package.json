@@ -4,7 +4,7 @@
 	"license": "MIT",
 	"scripts": {
 		"postinstall": "simple-git-hooks",
-		"package": "nx run-many -t build --projects=ngxtension,plugin"
+		"package": "nx run-many -t build --projects=ngxtension,plugin --skip-nx-cache"
 	},
 	"private": true,
 	"engines": {
