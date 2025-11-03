@@ -1,3 +1,40 @@
+# 7.0.0 (2025-11-03)
+
+### Features
+
+- enhance linkedQueryParam utility and add dynamic key support and source signal ([2916367](https://github.com/ngxtension/ngxtension-platform/commit/2916367))
+- add dynamic key route and enhance `linkedQueryParam` documentation ([affd47a](https://github.com/ngxtension/ngxtension-platform/commit/affd47a))
+- ⚠️  Support Angular v19 and stabilize linkedQueryParam utility ([a7db908](https://github.com/ngxtension/ngxtension-platform/commit/a7db908))
+
+### Bug Fixes
+
+- prevent setting null for invalid `previousQueryParamKey` in `linkedQueryParam` ([3ca2456](https://github.com/ngxtension/ngxtension-platform/commit/3ca2456))
+
+### Refactor
+
+- ⚠️  remove deprecated options across components and library ([3234c40](https://github.com/ngxtension/ngxtension-platform/commit/3234c40))
+- streamline `linkedQueryParam` tests and code for dynamic keys and synchronization ([9183367](https://github.com/ngxtension/ngxtension-platform/commit/9183367))
+- clean up `linkedQueryParam` tests and enhance dynamic key handling ([b47c424](https://github.com/ngxtension/ngxtension-platform/commit/b47c424))
+- simplify effect registration in `linkedQueryParam` for dynamic keys ([3b997d9](https://github.com/ngxtension/ngxtension-platform/commit/3b997d9))
+- integrate dynamic key into `linkedQueryParam` and enhance binding logic ([8599ff0](https://github.com/ngxtension/ngxtension-platform/commit/8599ff0))
+- clean up imports and enhance `linkedQueryParam` with source signal handling ([0598cc3](https://github.com/ngxtension/ngxtension-platform/commit/0598cc3))
+
+### Documentation
+
+- add note about required router outlet for params, query params, fragment etc. ([#626](https://github.com/ngxtension/ngxtension-platform/pull/626))
+- update linked query param docs to clarify input signal usage warning ([cae3c34](https://github.com/ngxtension/ngxtension-platform/commit/cae3c34))
+- mark `linkedQueryParam` as stable and expand documentation ([48873e8](https://github.com/ngxtension/ngxtension-platform/commit/48873e8))
+
+### ⚠️  Breaking Changes
+
+- ⚠️  Support Angular v19 and stabilize linkedQueryParam utility ([a7db908](https://github.com/ngxtension/ngxtension-platform/commit/a7db908))
+- ⚠️  remove deprecated options across components and library ([3234c40](https://github.com/ngxtension/ngxtension-platform/commit/3234c40))
+
+### ❤️ Thank You
+
+- Enea Jahollari @eneajaho
+- montella1507 @montella1507
+
 # 6.0.0 (2025-09-12)
 
 ### Features
