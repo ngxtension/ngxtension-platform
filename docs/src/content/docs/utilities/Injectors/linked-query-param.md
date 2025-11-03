@@ -323,8 +323,7 @@ export class SearchPageComponent {
 		source: this.filterSignal,
 	});
 
-	// Input signal as source -> not recommended, but there's always a way
-	// TODO should we even include this?
+	// Input signal as source -> NOT RECOMMENDED, but there's always a way
 	readonly searchInput = input<string>('');
 	// We convert it to a local writable signal
 	readonly localSearchInput = linkedSignal(() => this.searchInput());
