@@ -2,7 +2,7 @@
 title: linkedQueryParam
 description: ngxtension/linked-query-param
 entryPoint: ngxtension/linked-query-param
-badge: experimental
+badge: stable
 contributors: ['enea-jahollari']
 ---
 
@@ -14,6 +14,16 @@ For the same reason - `linkedQueryParam` will not work correctly inside your roo
 ## `linkedQueryParam` - Two-way binding for query parameters
 
 The `linkedQueryParam` utility function creates a signal that is linked to a query parameter in the URL. This allows you to easily keep your Angular application's state in sync with the URL, making it easier to share and bookmark specific views.
+
+### Why Use `linkedQueryParam`?
+
+Instead of manually reading from `ActivatedRoute.queryParams` and manually updating the router, `linkedQueryParam` provides:
+
+- **Automatic synchronization** between your component state and URL query parameters
+- **Reactive updates** - changes in either direction (signal ↔ URL) happen automatically
+- **Type-safe** - full TypeScript support with proper typing
+- **Performance optimized** - batched updates prevent unnecessary navigation
+- **Easy to use** - works seamlessly with template-driven forms, reactive forms, and signals
 
 Key Features:
 
@@ -27,11 +37,33 @@ Key Features:
 - **Dynamic keys**: Support for dynamic query parameter keys using signals, functions, or static strings.
 - **Source signal integration**: Link existing signals (including input signals, model signals, and regular signals) to query parameters.
 - **Automatic synchronization**: Automatically synchronize source values when dynamic keys change.
+- **Initial value from URL**: When using source signals, they automatically initialize from query parameters if present.
 - **Testable**: The function is easy to test thanks to its reliance on Angular's dependency injection system.
+
+## Quick Start
+
+Here's the simplest possible example:
+
+```ts
+import { Component } from '@angular/core';
+import { linkedQueryParam } from 'ngxtension/linked-query-param';
+
+@Component({
+	template: `
+		<input [(ngModel)]="search" placeholder="Search" />
+		<p>Searching for: {{ search() }}</p>
+	`,
+})
+export class SearchComponent {
+	readonly search = linkedQueryParam('search');
+}
+```
+
+That's it! The `search` signal is now automatically synced with the `?search=` query parameter in your URL.
 
 ## Usage
 
-Here's a basic example of how to use `linkedQueryParam`:
+Here's a more complete example showing basic usage with parsing:
 
 ```angular-ts
 import { Component, inject } from '@angular/core';
@@ -67,7 +99,7 @@ Clicking the "Next Page" button increments the page signal, which in turn update
 
 You can provide `parse` and `stringify` functions to transform the query parameter value between the URL and the signal. This is useful for handling different data types, such as booleans, numbers, and objects.
 
-> Check out built-in parsers at [API Reference] # TODO
+> Check out built-in parsers in the [Built-in Parsers](#built-in-parsers) section below.
 
 ```ts
 export class MyCmp {
@@ -116,74 +148,144 @@ If you need to parse the value and provide a default, use the parse function to 
 
 ### Built-in Parsers
 
-The `ngxtension` library provides some built-in parsers for common data types:
+The `ngxtension` library provides built-in parsers for common data types:.
 
-- `paramToNumber`: Parses a number from a string.
-- `paramToBoolean`: Parses a boolean from a string.
+#### Available Parsers
+
+- **`paramToNumber`**: Parses a number from a string query parameter
+- **`paramToBoolean`**: Parses a boolean from a string query parameter
 
 ```ts
+import {
+	linkedQueryParam,
+	paramToNumber,
+	paramToBoolean,
+} from 'ngxtension/linked-query-param';
+
 export class MyDataComponent {
-	// Parse a number query parameter, defaults to null if the param is not available
+	// Using paramToNumber - returns number | null if param is not available
 	readonly page = linkedQueryParam('page', {
 		parse: paramToNumber(),
 	});
 
+	// Using paramToNumber with default - returns number (never null)
 	readonly pageWithDefault = linkedQueryParam('page', {
-		// Default to 1 if the param is not available
 		parse: paramToNumber({ defaultValue: 1 }),
 	});
 
-	// Parse a boolean query parameter with a default value of false
+	// Using paramToBoolean - returns boolean | null if param is not available
 	readonly showHidden = linkedQueryParam('showHidden', {
-		parse: paramToBoolean({ defaultValue: false }),
+		parse: paramToBoolean(),
 	});
 
-	// Parse a boolean query parameter, defaults to null if the param is not available
+	// Using paramToBoolean with default - returns boolean (never null)
 	readonly isVisible = linkedQueryParam('visible', {
-		parse: paramToBoolean(),
+		parse: paramToBoolean({ defaultValue: false }),
 	});
 }
 ```
 
 #### `paramToNumber` Parser
 
-The `paramToNumber` parser converts string query parameters to numbers:
+The `paramToNumber` parser converts string query parameters to numbers. It handles invalid values gracefully by returning `null` (or the default value if provided).
 
 ```ts
+import { linkedQueryParam, paramToNumber } from 'ngxtension/linked-query-param';
+
 // Returns number | null if param is not present or invalid
 const page = linkedQueryParam('page', {
 	parse: paramToNumber(),
 });
+// URL: ?page=5 → signal: 5
+// URL: ?page=abc → signal: null
+// URL: (no param) → signal: null
 
 // Returns number (never null) with default value
 const pageWithDefault = linkedQueryParam('page', {
 	parse: paramToNumber({ defaultValue: 1 }),
 });
+// URL: (no param) → signal: 1
+// URL: ?page=abc → signal: 1 (invalid value falls back to default)
+// URL: ?page=5 → signal: 5
 ```
 
 #### `paramToBoolean` Parser
 
-The `paramToBoolean` parser converts string query parameters to booleans:
+The `paramToBoolean` parser converts string query parameters to booleans. The parser considers the string `'true'` (case-sensitive) as `true` and any other value (including empty string, `'false'`, `'0'`, etc.) as `false`.
 
 ```ts
+import {
+	linkedQueryParam,
+	paramToBoolean,
+} from 'ngxtension/linked-query-param';
+
 // Returns boolean | null if param is not present
 const showHidden = linkedQueryParam('showHidden', {
 	parse: paramToBoolean(),
 });
+// URL: ?showHidden=true → signal: true
+// URL: ?showHidden=false → signal: false
+// URL: ?showHidden=anything → signal: false
+// URL: (no param) → signal: null
 
 // Returns boolean (never null) with default value
 const showHiddenWithDefault = linkedQueryParam('showHidden', {
 	parse: paramToBoolean({ defaultValue: true }),
 });
+// URL: (no param) → signal: true (default)
+// URL: ?showHidden=true → signal: true
 ```
-
-The boolean parser considers the string 'true' as `true` and any other value as `false`.
 
 ### Handling Null and Undefined Values
 
-The `linkedQueryParam` function handles null and undefined values gracefully.
-If the query parameter is not present in the URL, the signal will be initialized with null.
-You can also set the signal to null to remove the query parameter from the URL.
+The `linkedQueryParam` function handles null and undefined values gracefully:
+
+- **When query parameter is missing**: The signal will be initialized with `null` (unless a `defaultValue` or `parse` with default is provided)
+- **When query parameter exists but is empty** (`?param=`): The signal will be initialized with an empty string `''`
+- **Setting signal to null**: Removes the query parameter from the URL
+- **Setting signal to undefined**: Treated the same as `null`, removes the query parameter from the URL
+
+```ts
+export class MyComponent {
+	readonly search = linkedQueryParam('search');
+
+	// URL: /page → search() = null
+	// URL: /page?search= → search() = ''
+	// URL: /page?search=hello → search() = 'hello'
+
+	clearSearch() {
+		this.search.set(null); // Removes ?search from URL
+	}
+}
+```
+
+### Coalesced Updates (Performance Optimization)
+
+Multiple updates to `linkedQueryParam` signals within the same browser task are automatically coalesced into a single URL update. This improves performance by preventing unnecessary navigation.
+
+```ts
+export class MyComponent {
+	readonly page = linkedQueryParam('page');
+	readonly search = linkedQueryParam('search');
+
+	updateBoth() {
+		// All three updates happen synchronously
+		this.page.set(1);
+		this.page.set(2);
+		this.search.set('query');
+
+		// Only ONE navigation will occur with the final values:
+		// URL will be updated to: ?page=2&search=query
+		// All intermediate values (page=1) are skipped
+	}
+}
+```
+
+This coalescing works for:
+
+- Multiple updates to the same signal
+- Updates to different `linkedQueryParam` signals
+- Source signal updates (when using the `source` option)
 
 ### Navigation extras
 
@@ -308,7 +410,15 @@ When using dynamic keys, the query parameter will automatically update when the 
 
 You can link existing signals to query parameters using the `source` option. This is particularly useful when working with input signals, model signals, signal forms, or any other writable signals.
 
+**Key Behavior:**
+
+- **Two-way binding**: Changes to the source signal update the URL, and URL changes update the source signal
+- **Initial value from URL**: If a query parameter exists in the URL, the source signal is automatically initialized with that value (after parsing)
+
 ```ts
+import { input, model, linkedSignal, signal } from '@angular/core';
+import { linkedQueryParam, paramToNumber } from 'ngxtension/linked-query-param';
+
 export class SearchPageComponent {
 	// Model signal as source
 	readonly page = model<number>(1);
@@ -316,28 +426,120 @@ export class SearchPageComponent {
 		source: this.page,
 		parse: paramToNumber({ defaultValue: 1 }),
 	});
+	// If URL has ?page=5, this.page() will be 5
+	// If URL has no page param, this.page() will be 1 (default)
 
 	// Regular signal as source
 	readonly filterSignal = signal<string | null>(null);
 	readonly filterParam = linkedQueryParam('filter', {
 		source: this.filterSignal,
 	});
+	// If URL has ?filter=active, this.filterSignal() will be 'active'
+	// If URL has no filter param, this.filterSignal() will be null
 
-	// Input signal as source -> NOT RECOMMENDED, but there's always a way
+	// Input signal as source -> requires conversion to writable signal
 	readonly searchInput = input<string>('');
-	// We convert it to a local writable signal
+	// Convert input to writable signal using linkedSignal
 	readonly localSearchInput = linkedSignal(() => this.searchInput());
 	readonly searchParam = linkedQueryParam('search', {
-		source: this.localSearchInput, // <- we use the local writable signal
+		source: this.localSearchInput,
 	});
 }
 ```
 
-When using a source signal, the query parameter will be updated whenever the source signal changes, and the source signal will be updated when the query parameter changes (two-way binding).
+#### Working with Input Signals
+
+Input signals are read-only, so you need to convert them to writable signals first using `linkedSignal`:
+
+```ts
+import { input, linkedSignal } from '@angular/core';
+import { linkedQueryParam } from 'ngxtension/linked-query-param';
+
+export class MyComponent {
+	// Input signal (read-only)
+	readonly initialValue = input<string>('');
+
+	// Convert to writable signal
+	readonly writableValue = linkedSignal(() => this.initialValue());
+
+	// Use as source
+	readonly queryParam = linkedQueryParam('value', {
+		source: this.writableValue,
+	});
+}
+```
+
+#### Working with Model Signals
+
+Model signals are already writable, making them perfect for two-way binding:
+
+```ts
+import { model } from '@angular/core';
+import { linkedQueryParam, paramToNumber } from 'ngxtension/linked-query-param';
+
+@Component({
+	template: `
+		<input [(ngModel)]="pageModel" type="number" />
+		<p>Page: {{ pageModel() }}</p>
+	`,
+})
+export class PaginationComponent {
+	// Model signal - perfect for two-way binding
+	readonly pageModel = model<number>(1);
+
+	// Link to query parameter
+	readonly pageParam = linkedQueryParam('page', {
+		source: this.pageModel,
+		parse: paramToNumber({ defaultValue: 1 }),
+	});
+
+	// Now pageModel and URL are always in sync!
+}
+```
+
+#### Initialization Behavior
+
+When using source signals, here's how initialization works:
+
+```ts
+export class ExampleComponent {
+	readonly data = signal<string>('initial');
+	readonly param = linkedQueryParam('data', {
+		source: this.data,
+	});
+}
+
+// Scenario 1: URL has ?data=hello
+// → this.data() will be 'hello' (URL value overrides initial value)
+
+// Scenario 2: URL has no data param
+// → this.data() will be 'initial' (keeps initial value)
+
+// Scenario 3: URL has no data param, but default is provided
+readonly dataWithDefault = signal<string>('initial');
+readonly paramWithDefault = linkedQueryParam('data', {
+	source: this.dataWithDefault,
+	defaultValue: 'default',
+});
+// → this.dataWithDefault() will be 'default' (uses default)
+```
 
 ### Automatic Synchronization on Key Change
 
 When using dynamic keys with source signals, you can control whether the source value should be synchronized to the new key when the key changes.
+
+#### How It Works
+
+**When `automaticallySynchronizeOnKeyChange: true` (default):**
+
+- When the key changes, the source signal's current value is automatically written to the new query parameter key
+- If the new key already exists in the URL, that existing value is used instead (source signal gets the URL value)
+
+**When `automaticallySynchronizeOnKeyChange: false`:**
+
+- When the key changes, the new query parameter is not immediately set
+- The query parameter will only update when the source signal changes next
+- Useful when you want to change multiple parameters atomically or avoid intermediate URL states
 
 ```ts
 export class SyncComponent {
@@ -358,9 +560,159 @@ export class SyncComponent {
 }
 ```
 
-With `automaticallySynchronizeOnKeyChange: true` (default), when the key changes from 'param1' to 'param2', the source value 'value' will be automatically set to the new query parameter 'param2'.
+#### Example: With Automatic Synchronization (default)
 
-With `automaticallySynchronizeOnKeyChange: false`, when the key changes, the new query parameter won't be applied directly, but will wait until the next signal update. This is useful when you want to change multiple params at the same time.
+```ts
+export class ExampleComponent {
+	readonly keySignal = signal('search');
+	readonly searchValue = signal<string | null>(null);
+
+	readonly searchParam = linkedQueryParam(this.keySignal, {
+		source: this.searchValue,
+		automaticallySynchronizeOnKeyChange: true, // default
+	});
+
+	// Initial: key = 'search', searchValue = null, URL: no param
+
+	// User types 'hello'
+	searchValue.set('hello');
+	// → URL: ?search=hello
+
+	// Change key to 'query'
+	keySignal.set('query');
+	// → URL: ?query=hello (value automatically moved to new key)
+	// → searchValue() = 'hello' (unchanged)
+}
+```
+
+#### Example: Without Automatic Synchronization
+
+```ts
+export class ExampleComponent {
+	readonly keySignal = signal('param1');
+	readonly valueSignal = signal('value1');
+
+	readonly param = linkedQueryParam(this.keySignal, {
+		source: this.valueSignal,
+		automaticallySynchronizeOnKeyChange: false,
+	});
+
+	// Initial: key = 'param1', value = 'value1', URL: ?param1=value1
+
+	// Change key to 'param2'
+	keySignal.set('param2');
+	// → URL: ?param1=value1 (unchanged, param2 not yet set)
+	// → valueSignal() = 'value1' (unchanged)
+
+	// Now update the value
+	valueSignal.set('value2');
+	// → URL: ?param2=value2 (now updates to new key)
+	// → Old param1 is removed
+}
+```
+
+#### Using Existing Query Parameter Values
+
+When a dynamic key changes to a key that already exists in the URL, `linkedQueryParam` automatically uses that existing value:
+
+```ts
+export class ExampleComponent {
+	readonly keySignal = signal('key1');
+	readonly valueSignal = signal<string | null>(null);
+
+	readonly param = linkedQueryParam(this.keySignal, {
+		source: this.valueSignal,
+	});
+}
+
+// Start with URL: ?existingKey=existing-value
+// keySignal starts as 'key1', valueSignal is null
+
+// Change key to 'existingKey' (which already has a value in URL)
+keySignal.set('existingKey');
+// → valueSignal() becomes 'existing-value' (uses existing URL value)
+// → URL: ?existingKey=existing-value (unchanged)
+```
+
+This behavior works whether `automaticallySynchronizeOnKeyChange` is `true` or `false`.
+
+### Working with Multiple `linkedQueryParam` Instances
+
+You can use multiple `linkedQueryParam` instances in the same component. They work independently and can safely interact with each other, even when using dynamic keys.
+
+```ts
+export class FilterComponent {
+	readonly search = linkedQueryParam('search');
+	readonly page = linkedQueryParam('page', {
+		parse: paramToNumber({ defaultValue: 1 }),
+	});
+	readonly sort = linkedQueryParam('sort');
+
+	// All three can update simultaneously, and only ONE navigation will occur
+	// (thanks to coalescing)
+	resetFilters() {
+		this.search.set(null);
+		this.page.set(1);
+		this.sort.set('name');
+	}
+}
+```
+
+#### Multiple Dynamic Keys
+
+When using multiple `linkedQueryParam` instances with dynamic keys, they can safely change keys simultaneously:
+
+```ts
+export class AdvancedFilterComponent {
+	readonly key1Signal = signal('filter1');
+	readonly key2Signal = signal('filter2');
+
+	readonly param1 = linkedQueryParam(this.key1Signal);
+	readonly param2 = linkedQueryParam(this.key2Signal);
+
+	// Even if keys change simultaneously and overlap,
+	// linkedQueryParam handles it correctly
+	swapKeys() {
+		this.key1Signal.set('filter2');
+		this.key2Signal.set('filter1');
+		// Updates are coalesced and handled safely
+	}
+}
+```
+
+### Custom Injector
+
+If you need to use `linkedQueryParam` in a context where dependency injection isn't available (like in `ngOnInit`), you can provide a custom injector:
+
+```ts
+import { Component, Injector, OnInit, inject } from '@angular/core';
+import { linkedQueryParam } from 'ngxtension/linked-query-param';
+
+@Component({
+	template: ``,
+})
+export class MyComponent implements OnInit {
+	private injector = inject(Injector);
+
+	// Declare the property
+	param!: ReturnType<typeof linkedQueryParam<string | null>>;
+
+	ngOnInit() {
+		// Create linkedQueryParam with custom injector
+		this.param = linkedQueryParam('testParam', {
+			injector: this.injector,
+		});
+	}
+}
+```
+
+:::tip[When to Use Custom Injector]
+Most of the time, you don't need a custom injector. Only use it when:
+
+- Creating `linkedQueryParam` inside lifecycle hooks like `ngOnInit`
+- You need a specific injector context for testing
+- Working with complex dependency injection scenarios
+  :::
 
 ### Advanced Usage Examples
 
@@ -720,16 +1072,31 @@ type StringifyFn<T> = (
 
 ## Best Practices
 
-1. **Use built-in parsers** when possible (`paramToNumber`, `paramToBoolean`) instead of custom parse functions for common types.
+1. **Use built-in parsers** when possible (`paramToNumber`, `paramToBoolean`, or Angular's `numberAttribute`) instead of custom parse functions for common types. They handle edge cases and provide consistent behavior.
 
-2. **Prefer `parse` over `defaultValue`** when you need both parsing and default values, as they cannot be used together.
+2. **Prefer `parse` with default over `defaultValue`** when you need both parsing and default values, as `defaultValue` cannot be used together with `parse`.
 
-3. **Use source signals** when you have existing signals that should be linked to query parameters, especially with input signals and model signals.
+3. **Convert input signals to writable** when using them as source. Use `linkedSignal()` to convert read-only input signals to writable signals.
 
 4. **Configure globally** when you want consistent behavior across your application using `provideLinkedQueryParamConfig`.
 
-5. **Handle null values** appropriately - setting a signal to `null` will remove the query parameter from the URL.
+5. **Handle null values appropriately** - setting a signal to `null` will remove the query parameter from the URL. This is useful for optional filters and search parameters.
 
-6. **Use dynamic keys sparingly** - they add complexity and should only be used when the key truly needs to change at runtime.
+6. **Use dynamic keys sparingly** - they add complexity and should only be used when the key truly needs to change at runtime. Consider if a static key with conditional logic might be simpler.
 
-7. **Test your implementations** - the function is designed to be testable with Angular's testing utilities.
+7. **Leverage coalescing** - Don't worry about performance when making multiple updates. All updates within the same task are automatically batched into a single navigation.
+
+8. **Understand initialization order** - When using source signals, remember that URL values override initial signal values. If a query parameter exists in the URL, the source signal will be initialized with that value.
+
+9. **Use `automaticallySynchronizeOnKeyChange: false`** when you need to change multiple dynamic keys atomically or avoid intermediate URL states.
+
+10. **Test your implementations** - The function is designed to be testable with Angular's testing utilities. Use `RouterTestingHarness` for integration tests.
+
+11. **Consider URL structure** - Query parameters are best for:
+
+    - Filtering and search parameters
+    - Pagination state
+    - View preferences (sort order, view mode)
+    - Sharing/bookmarking specific views
+
+    Avoid storing sensitive data or complex nested objects in query parameters.

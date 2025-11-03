@@ -551,10 +551,7 @@ const parseParamValue = <T>(
 		return options.parse(value);
 	}
 	// If the value is undefined or null and a default value is provided, return the default value.
-	if (
-		(value === undefined || value === null) &&
-		options?.defaultValue !== undefined
-	) {
+	if (isNil(value) && options?.defaultValue !== undefined) {
 		return getValueOrReactiveValue(options.defaultValue);
 	}
 	// Otherwise, return the original value or the parsed value (if it was parsed).
