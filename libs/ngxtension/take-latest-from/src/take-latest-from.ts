@@ -25,7 +25,7 @@ export function takeLatestFrom<T extends Observable<unknown>, V>(
  * Let's say we have a source observable `src$` and a provided observable `data$`.
  *
  * ```ts
- * src$.pipe(whitLatestFrom(data$)).subscribe();
+ * src$.pipe(withLatestFrom(data$)).subscribe();
  * ```
  *
  * Cases when `withLatestFrom()` will not emit when `src$` emits:
