@@ -5,11 +5,11 @@ import {
 	ElementRef,
 	ViewChild,
 	inject,
+	signal,
 } from '@angular/core';
 import { TrackById, TrackByProp } from 'ngxtension/trackby-id-prop';
 
 @Component({
-	standalone: true,
 	template: `
 		<ul #parentNoTrackBy>
 			<li *ngFor="let person of people">
@@ -30,13 +30,13 @@ import { TrackById, TrackByProp } from 'ngxtension/trackby-id-prop';
 		<button (click)="add()">add</button>
 		<hr />
 		<p id="without-track-by">
-			Without TrackBy mutations: {{ mutationsLength.withoutTrackBy }}
+			Without TrackBy mutations: {{ mutationsLength.withoutTrackBy() }}
 		</p>
 		<p id="with-track-by">
-			With TrackBy mutations: {{ mutationsLength.withTrackBy }}
+			With TrackBy mutations: {{ mutationsLength.withTrackBy() }}
 		</p>
 		<p id="with-track-by-prop">
-			With TrackBy prop mutations: {{ mutationsLength.withTrackByProp }}
+			With TrackBy prop mutations: {{ mutationsLength.withTrackByProp() }}
 		</p>
 	`,
 	imports: [NgFor, TrackById, TrackByProp],
@@ -47,13 +47,17 @@ export default class TrackByTest {
 		{ id: 2, firstName: 'Enea', lastName: 'Jahollari' },
 		{ id: 3, firstName: 'Daniele', lastName: 'Morosinotto' },
 	];
-	mutationsLength = { withTrackBy: 0, withTrackByProp: 0, withoutTrackBy: 0 };
+	mutationsLength = {
+		withTrackBy: signal(0),
+		withTrackByProp: signal(0),
+		withoutTrackBy: signal(0),
+	};
 
 	private destroyRef = inject(DestroyRef);
 	private mutationCallback =
 		(type: keyof typeof this.mutationsLength): MutationCallback =>
 		(mutations) => {
-			this.mutationsLength[type] += mutations.length;
+			this.mutationsLength[type].update((prev) => prev + mutations.length);
 		};
 
 	@ViewChild('parentNoTrackBy', { static: true }) set parentNoTrackBy({

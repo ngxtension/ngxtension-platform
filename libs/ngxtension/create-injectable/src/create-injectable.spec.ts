@@ -62,4 +62,30 @@ describe(createInjectable.name, () => {
 				expect(service.someProp).toEqual(1);
 			});
 	});
+
+	it('should be able to return proxy from factory function', () => {
+		const MyInjectable = createInjectable(() => {
+			const test = () => {
+				void 0;
+			};
+
+			Object.defineProperty(test, 'name', {
+				value: 'josh',
+			});
+
+			return new Proxy(test, {
+				get(target, property, receiver) {
+					return Reflect.get(target, property, receiver);
+				},
+				apply(target, thisArg, argumentsList) {
+					return Reflect.apply(target, thisArg, argumentsList);
+				},
+			});
+		});
+
+		TestBed.runInInjectionContext(() => {
+			const service = inject(MyInjectable);
+			expect(service.name).toEqual('josh');
+		});
+	});
 });

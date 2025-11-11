@@ -1,18 +1,16 @@
 import {
 	Directive,
-	Injector,
 	Input,
 	Output,
 	booleanAttribute,
+	effect,
 	inject,
-	runInInjectionContext,
 	signal,
-	type OnInit,
+	untracked,
 } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { NgControl, NgModel, type ControlValueAccessor } from '@angular/forms';
 import { createInjectionToken } from 'ngxtension/create-injection-token';
-import { rxEffect } from 'ngxtension/rx-effect';
 import { skip } from 'rxjs';
 
 const noop = () => undefined;
@@ -47,11 +45,11 @@ export const provideCvaCompareToByProp = <T>(prop: keyof T) =>
 	provideCvaCompareTo((a, b) => Object.is(a?.[prop], b?.[prop]), true);
 
 /**
- * `NgxControlValueAccessor` is a directive to reduce boilerplate when building components, which implement the [ControlValueAccessor](https://angular.io/api/forms/ControlValueAccessor) interface.
+ * `NgxControlValueAccessor` is a directive to reduce boilerplate when building components, which implement the [ControlValueAccessor](https://angular.dev/api/forms/ControlValueAccessor) interface.
  *
  * ## Usage
  *
- * `NgxControlValueAccessor` implements the [ControlValueAccessor](https://angular.io/api/forms/ControlValueAccessor) interface and exposes a _simpler_ api. Declare `NgxControlValueAccessor` in the `hostDirectives` section of your component and inject the instance in order to wire up your template:
+ * `NgxControlValueAccessor` implements the [ControlValueAccessor](https://angular.dev/api/forms/ControlValueAccessor) interface and exposes a _simpler_ api. Declare `NgxControlValueAccessor` in the `hostDirectives` section of your component and inject the instance in order to wire up your template:
  *
  * - `NgxControlValueAccessor.value` for syncing the value
  * - `NgxControlValueAccessor.disabled` for syncing the disabled state
@@ -195,14 +193,14 @@ export const provideCvaCompareToByProp = <T>(prop: keyof T) =>
 @Directive({
 	standalone: true,
 })
-export class NgxControlValueAccessor<T = any>
-	implements ControlValueAccessor, OnInit
-{
-	/** @ignore */
-	private readonly injector = inject(Injector);
-
-	/** @ignore */
-	private readonly ngControl = inject(NgControl, {
+export class NgxControlValueAccessor<T = any> implements ControlValueAccessor {
+	/**
+	 * The `NgControl` instance on this host element. If present, this `NgxControlValueAccessor` instance will be its value accessor.
+	 *
+	 * @see {@link NgControl}
+	 * @see {@link NgControl.valueAccessor}
+	 */
+	public readonly ngControl = inject(NgControl, {
 		self: true,
 		optional: true,
 	});
@@ -234,30 +232,38 @@ export class NgxControlValueAccessor<T = any>
 	public readonly compareTo$ =
 		signal<NgxControlValueAccessorCompareTo<T>>(injectCvaCompareTo());
 
-	/** @ignore */
-	public ngOnInit(): void {
-		if (this.ngControl != null) {
-			runInInjectionContext(this.injector, () => {
-				// NOTE: Don't use 'effect' because we have no idea if we are setting other signals here.
+	protected readonly notifyNgControlOnValueChanges = effect(() => {
+		const value = this.value$();
 
-				// sync value
-				rxEffect(toObservable(this.value$), (value) => {
-					if (!this.compareTo(this.ngControl?.value, value))
-						this.onChange(value);
-				});
-
-				// sync disabled state
-				rxEffect(toObservable(this.disabled$), (disabled) => {
-					if (
-						this.ngControl != null &&
-						this.ngControl.control != null &&
-						this.ngControl.disabled !== disabled
-					)
-						this.ngControl.control[disabled ? 'disable' : 'enable']();
-				});
-			});
+		/**
+		 * no-op if THIS value is already _equal_ to the value of the control => we dont need to notify the control.
+		 */
+		if (this.compareTo(this.ngControl?.value, value)) {
+			return;
 		}
-	}
+
+		untracked(() => {
+			this.onChange(value);
+		});
+	});
+
+	protected readonly notifyNgControlOnDisabledChanges = effect(() => {
+		const disabled = this.disabled$();
+
+		untracked(() => {
+			/**
+			 * no-op if THIS disabled state is already _equal_ to the disabled state of the control  or there is no control
+			 */
+			if (
+				this.ngControl?.control == null ||
+				this.ngControl.disabled === disabled
+			) {
+				return;
+			}
+
+			this.ngControl.control[disabled ? 'disable' : 'enable']();
+		});
+	});
 
 	/** The value of this. If a control is present, it reflects it's value. */
 	@Input()
@@ -266,7 +272,7 @@ export class NgxControlValueAccessor<T = any>
 	}
 
 	public get value() {
-		return this.value$();
+		return untracked(this.value$);
 	}
 
 	/** Whether this is disabled. If a control is present, it reflects it's disabled state. */
@@ -276,7 +282,7 @@ export class NgxControlValueAccessor<T = any>
 	}
 
 	public get disabled() {
-		return this.disabled$();
+		return untracked(this.disabled$);
 	}
 
 	/**
@@ -290,7 +296,7 @@ export class NgxControlValueAccessor<T = any>
 	}
 
 	public get compareTo() {
-		return this.compareTo$();
+		return untracked(this.compareTo$);
 	}
 
 	/**

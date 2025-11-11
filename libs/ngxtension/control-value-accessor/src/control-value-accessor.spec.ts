@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Provider, inject } from '@angular/core';
+import { Component, Provider, effect, inject } from '@angular/core';
 import { TestBed, fakeAsync, flush } from '@angular/core/testing';
 import {
 	FormControl,
@@ -210,6 +210,80 @@ describe('NgxControlValueAccessor', () => {
 		);
 	});
 
+	describe('accessing properties should be outside a reactive context', () => {
+		it('value', () => {
+			const { cva, fixture } = render(`<custom-input />`);
+
+			let effectCallCount = 0;
+
+			TestBed.runInInjectionContext(() => {
+				effect(() => {
+					effectCallCount++;
+
+					// accessing the value property should not register the internal signal
+					cva.value;
+				});
+			});
+
+			// initial effect execution
+			fixture.detectChanges();
+			expect(effectCallCount).toEqual(1);
+
+			// setting the value should not trigger the effect
+			cva.value = '123';
+			fixture.detectChanges();
+			expect(effectCallCount).toEqual(1);
+		});
+
+		it('disabled', () => {
+			const { cva, fixture } = render(`<custom-input />`);
+
+			let effectCallCount = 0;
+
+			TestBed.runInInjectionContext(() => {
+				effect(() => {
+					effectCallCount++;
+
+					// accessing the disabled property should not register the internal signal
+					cva.disabled;
+				});
+			});
+
+			// initial effect execution
+			fixture.detectChanges();
+			expect(effectCallCount).toEqual(1);
+
+			// setting the value should not trigger the effect
+			cva.disabled = !cva.disabled;
+			fixture.detectChanges();
+			expect(effectCallCount).toEqual(1);
+		});
+
+		it('compareTo', () => {
+			const { cva, fixture } = render(`<custom-input />`);
+
+			let effectCallCount = 0;
+
+			TestBed.runInInjectionContext(() => {
+				effect(() => {
+					effectCallCount++;
+
+					// accessing the compareTo property should not register the internal signal
+					cva.compareTo;
+				});
+			});
+
+			// initial effect execution
+			fixture.detectChanges();
+			expect(effectCallCount).toEqual(1);
+
+			// setting the value should not trigger the effect
+			cva.compareTo = () => true;
+			fixture.detectChanges();
+			expect(effectCallCount).toEqual(1);
+		});
+	});
+
 	describe('with a NgControl', () => {
 		it('should be the control value accessor', () => {
 			const { ngControl, cva } = render(`<custom-input ngModel />`);
@@ -284,6 +358,7 @@ describe('NgxControlValueAccessor', () => {
 				expect(cva.disabled).toEqual(true);
 				expect(input.disabled).toEqual(true);
 
+				// verify sync of control.disabled => cva.disabled
 				params.control.enable();
 				fixture.detectChanges();
 
@@ -294,6 +369,17 @@ describe('NgxControlValueAccessor', () => {
 				fixture.detectChanges();
 
 				expect(cva.disabled).toEqual(true);
+				expect(input.disabled).toEqual(true);
+
+				// verify sync of cva.disabled => control.disabled
+				cva.disabled = false;
+				fixture.detectChanges();
+				expect(params.control.disabled).toEqual(false);
+				expect(input.disabled).toEqual(false);
+
+				cva.disabled = true;
+				fixture.detectChanges();
+				expect(params.control.disabled).toEqual(true);
 				expect(input.disabled).toEqual(true);
 			});
 		});
@@ -366,6 +452,7 @@ describe('NgxControlValueAccessor', () => {
 				expect(cva.disabled).toEqual(true);
 				expect(input.disabled).toEqual(true);
 
+				// verify sync of control.disabled => cva.disabled
 				ngControl?.control!.enable();
 				fixture.detectChanges();
 
@@ -376,6 +463,17 @@ describe('NgxControlValueAccessor', () => {
 				fixture.detectChanges();
 
 				expect(cva.disabled).toEqual(true);
+				expect(input.disabled).toEqual(true);
+
+				// verify sync of cva.disabled => control.disabled
+				cva.disabled = false;
+				fixture.detectChanges();
+				expect(ngControl?.disabled).toEqual(false);
+				expect(input.disabled).toEqual(false);
+
+				cva.disabled = true;
+				fixture.detectChanges();
+				expect(ngControl?.disabled).toEqual(true);
 				expect(input.disabled).toEqual(true);
 			});
 		});

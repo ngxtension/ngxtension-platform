@@ -5,14 +5,17 @@ on:
     branches: [main]
     paths:
       - 'docs/**'
+      - '.github/workflows/astro.yml'
 
 jobs:
   build-docs:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
-          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       - uses: pnpm/action-setup@v2
@@ -33,21 +36,50 @@ jobs:
       - name: Create local build artifacts
         run: |
           echo "Building documentation..."
-          pnpm exec nx package docs
+          pnpm exec nx package docs --skip-nx-cache
 
-      - name: Init git and commit local artifacts
+      - name: Verify build artifacts
         run: |
-          cd docs/dist
-          git init
-          git add .
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git commit -am "docs: build doc"
+          ls -la
+          ls -la docs
+          ls -la docs/dist
 
-      - name: Push
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: astro-docs
-          force: true
-          directory: docs/dist
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Prepare astro-docs branch
+        run: |
+          # Create a temporary directory for the docs
+          mkdir -p /tmp/astro-docs
+
+          # Copy built docs to temp directory
+          rsync -av --exclude 'node_modules' docs/dist/ /tmp/astro-docs/
+
+          echo "node_modules" > .gitignore
+          echo "docs/node_modules/" >> .gitignore
+
+          # Check if astro-docs branch exists
+          if git show-ref --verify --quiet refs/remotes/origin/astro-docs; then
+            git checkout --force astro-docs
+            git pull origin astro-docs
+          else
+            git checkout --orphan astro-docs
+            git rm -rf .
+          fi
+
+          # Copy docs from temp directory to current branch
+          rsync -av --exclude 'node_modules' /tmp/astro-docs/ .
+
+          rm -rf node_modules
+          rm -rf docs/node_modules
+
+          # Add and commit changes
+          git add .
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit --no-verify -m "docs: update documentation [skip ci]"
+            git push origin astro-docs
+          fi

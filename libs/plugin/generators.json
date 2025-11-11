@@ -5,36 +5,32 @@
 			"schema": "./src/generators/init/schema.json",
 			"description": "Init ngxtension"
 		},
-		"convert-signal-inputs": {
-			"factory": "./src/generators/convert-signal-inputs/generator",
-			"aliases": ["signal-inputs"],
-			"schema": "./src/generators/convert-signal-inputs/schema.json",
-			"description": "libs/plugin/src/generators/convert-signal-inputs/ generator"
+		"convert-to-sfc": {
+			"factory": "./src/generators/convert-to-sfc/generator",
+			"schema": "./src/generators/convert-to-sfc/schema.json",
+			"description": "libs/plugin/src/generators/convert-to-sfc/ generator"
 		},
-		"convert-outputs": {
-			"factory": "./src/generators/convert-outputs/generator",
-			"aliases": ["signal-outputs"],
-			"schema": "./src/generators/convert-outputs/schema.json",
-			"description": "libs/plugin/src/generators/convert-outputs/ generator"
+		"convert-host-binding": {
+			"factory": "./src/generators/convert-host-binding/generator",
+			"schema": "./src/generators/convert-host-binding/schema.json",
+			"description": "libs/plugin/src/generators/convert-host-binding/ generator"
 		}
 	},
 	"schematics": {
-		"ng-add": {
+		"init": {
 			"factory": "./src/generators/init/compat",
 			"schema": "./src/generators/init/schema.json",
 			"description": "Init ngxtension"
 		},
-		"convert-signal-inputs": {
-			"factory": "./src/generators/convert-signal-inputs/compat",
-			"aliases": ["signal-inputs"],
-			"schema": "./src/generators/convert-signal-inputs/schema.json",
-			"description": "libs/plugin/src/generators/convert-signal-inputs/ generator"
+		"convert-to-sfc": {
+			"factory": "./src/generators/convert-to-sfc/compat",
+			"schema": "./src/generators/convert-to-sfc/schema.json",
+			"description": "libs/plugin/src/generators/convert-to-sfc/ generator"
 		},
-		"convert-outputs": {
-			"factory": "./src/generators/convert-outputs/generator",
-			"aliases": ["signal-outputs"],
-			"schema": "./src/generators/convert-outputs/schema.json",
-			"description": "libs/plugin/src/generators/convert-outputs/ generator"
+		"convert-host-binding": {
+			"factory": "./src/generators/convert-host-binding/compat",
+			"schema": "./src/generators/convert-host-binding/schema.json",
+			"description": "libs/plugin/src/generators/convert-host-binding/ generator"
 		}
 	}
 }

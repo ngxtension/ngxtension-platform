@@ -43,6 +43,7 @@ export type CreateInjectionTokenOptions<
 		? { deps?: never }
 		: { deps: CreateInjectionTokenDeps<TFactory, TFactoryDeps> }) & {
 		isRoot?: boolean;
+		isFunctionValue?: boolean;
 		multi?: boolean;
 		token?: InjectionToken<ReturnType<TFactory>>;
 		extraProviders?: Provider | EnvironmentProviders;
@@ -53,7 +54,7 @@ type CreateProvideFnOptions<
 	TFactoryDeps extends Parameters<TFactory> = Parameters<TFactory>,
 > = Pick<
 	CreateInjectionTokenOptions<TFactory, TFactoryDeps>,
-	'deps' | 'extraProviders' | 'multi'
+	'deps' | 'extraProviders' | 'multi' | 'isFunctionValue'
 >;
 
 type InjectFn<TFactoryReturn> = {
@@ -113,8 +114,16 @@ function createProvideFn<
 	factory: (...args: any[]) => TValue,
 	opts: CreateProvideFnOptions<TFactory, TFactoryDeps> = {},
 ) {
-	const { deps = [], multi = false, extraProviders = [] } = opts;
-	return (value?: TValue | (() => TValue), isFunctionValue = false) => {
+	const {
+		deps = [],
+		multi = false,
+		extraProviders = [],
+		isFunctionValue: isFunctionValueFromOpts = false,
+	} = opts;
+	return (
+		value?: TValue | (() => TValue),
+		isFunctionValue = isFunctionValueFromOpts,
+	) => {
 		let provider: Provider;
 		if (typeof value !== 'undefined') {
 			// TODO: (chau) maybe this can be made better
@@ -197,7 +206,14 @@ createInjectionToken is creating a root InjectionToken but an external token is 
 		const token = new InjectionToken<TFactoryReturn>(`Token for ${tokenName}`, {
 			factory: () => {
 				if (opts.deps && Array.isArray(opts.deps)) {
-					return factory(...opts.deps.map((dep) => inject(dep)));
+					return factory(
+						...opts.deps.map((dep) => {
+							dep = (
+								Array.isArray(dep) ? dep.at(-1) : dep
+							) as CreateInjectionTokenDep<any>;
+							return inject(dep);
+						}),
+					);
 				}
 				return factory();
 			},
@@ -244,7 +260,10 @@ export function createNoopInjectionToken<
 		CreateInjectionTokenOptions<() => void, []>,
 		'extraProviders'
 	> &
-		(TMulti extends true ? { multi: true } : Record<string, never>),
+		(TValue extends (...args: any[]) => any
+			? { isFunctionValue: true }
+			: { isFunctionValue?: never }) &
+		(TMulti extends true ? { multi: true } : { multi?: never }),
 >(description: string, options?: TOptions) {
 	type TReturn = TMulti extends true ? Array<TValue> : TValue;
 
@@ -259,6 +278,6 @@ export function createNoopInjectionToken<
 			(options || {}) as CreateProvideFnOptions<() => void, []>,
 		) as CreateInjectionTokenReturn<TReturn, true>[1],
 		token,
-		() => {},
+		() => [],
 	] as CreateInjectionTokenReturn<TReturn, true>;
 }

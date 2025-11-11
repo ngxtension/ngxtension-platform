@@ -1,7 +1,7 @@
 ---
 title: createInjectable
 description: A function based approach for creating Injectable services
-entryPoint: create-injectable
+entryPoint: ngxtension/create-injectable
 badge: experimental
 contributors: ['josh-morony', 'chau-tran']
 ---

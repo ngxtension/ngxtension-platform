@@ -7,7 +7,6 @@
 		"moduleResolution": "node",
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
-		"verbatimModuleSyntax": true,
 		"importHelpers": true,
 		"target": "es2015",
 		"module": "esnext",
@@ -28,13 +27,6 @@
 			"ngxtension/call-apply": ["libs/ngxtension/call-apply/src/index.ts"],
 			"ngxtension/click-outside": [
 				"libs/ngxtension/click-outside/src/index.ts"
-			],
-			"ngxtension/computed": ["libs/ngxtension/computed/src/index.ts"],
-			"ngxtension/computed-async": [
-				"libs/ngxtension/computed-async/src/index.ts"
-			],
-			"ngxtension/computed-from": [
-				"libs/ngxtension/computed-from/src/index.ts"
 			],
 			"ngxtension/computed-previous": [
 				"libs/ngxtension/computed-previous/src/index.ts"
@@ -58,12 +50,32 @@
 			"ngxtension/create-notifier": [
 				"libs/ngxtension/create-notifier/src/index.ts"
 			],
+			"ngxtension/create-repeat": [
+				"libs/ngxtension/create-repeat/src/index.ts"
+			],
 			"ngxtension/create-signal": [
 				"libs/ngxtension/create-signal/src/index.ts"
 			],
 			"ngxtension/debug": ["libs/ngxtension/debug/src/index.ts"],
+			"ngxtension/derive-loading": [
+				"libs/ngxtension/derive-loading/src/index.ts"
+			],
+			"ngxtension/derived-async": [
+				"libs/ngxtension/derived-async/src/index.ts"
+			],
+			"ngxtension/derived-from": ["libs/ngxtension/derived-from/src/index.ts"],
+			"ngxtension/effect-once-if": [
+				"libs/ngxtension/effect-once-if/src/index.ts"
+			],
+			"ngxtension/explicit-effect": [
+				"libs/ngxtension/explicit-effect/src/index.ts"
+			],
+			"ngxtension/extended-computed": [
+				"libs/ngxtension/extended-computed/src/index.ts"
+			],
 			"ngxtension/filter-array": ["libs/ngxtension/filter-array/src/index.ts"],
 			"ngxtension/filter-nil": ["libs/ngxtension/filter-nil/src/index.ts"],
+			"ngxtension/form-events": ["libs/ngxtension/form-events/src/index.ts"],
 			"ngxtension/gestures": ["libs/ngxtension/gestures/src/index.ts"],
 			"ngxtension/host-binding": ["libs/ngxtension/host-binding/src/index.ts"],
 			"ngxtension/if-validator": ["libs/ngxtension/if-validator/src/index.ts"],
@@ -73,10 +85,16 @@
 			"ngxtension/inject-document-visibility": [
 				"libs/ngxtension/inject-document-visibility/src/index.ts"
 			],
+			"ngxtension/inject-inputs": [
+				"libs/ngxtension/inject-inputs/src/index.ts"
+			],
 			"ngxtension/inject-is-intersecting": [
 				"libs/ngxtension/inject-is-intersecting/src/index.ts"
 			],
 			"ngxtension/inject-lazy": ["libs/ngxtension/inject-lazy/src/index.ts"],
+			"ngxtension/inject-local-storage": [
+				"libs/ngxtension/inject-local-storage/src/index.ts"
+			],
 			"ngxtension/inject-network": [
 				"libs/ngxtension/inject-network/src/index.ts"
 			],
@@ -89,18 +107,37 @@
 			"ngxtension/inject-route-data": [
 				"libs/ngxtension/inject-route-data/src/index.ts"
 			],
+			"ngxtension/inject-route-fragment": [
+				"libs/ngxtension/inject-route-fragment/src/index.ts"
+			],
+			"ngxtension/inject-text-selection": [
+				"libs/ngxtension/inject-text-selection/src/index.ts"
+			],
 			"ngxtension/intl": ["libs/ngxtension/intl/src/index.ts"],
+			"ngxtension/linked-query-param": [
+				"libs/ngxtension/linked-query-param/src/index.ts"
+			],
 			"ngxtension/map-array": ["libs/ngxtension/map-array/src/index.ts"],
 			"ngxtension/map-skip-undefined": [
 				"libs/ngxtension/map-skip-undefined/src/index.ts"
 			],
 			"ngxtension/merge-from": ["libs/ngxtension/merge-from/src/index.ts"],
+			"ngxtension/merge-http-context": [
+				"libs/ngxtension/merge-http-context/src/index.ts"
+			],
 			"ngxtension/navigation-end": [
 				"libs/ngxtension/navigation-end/src/index.ts"
 			],
+			"ngxtension/not-pattern": ["libs/ngxtension/not-pattern/src/index.ts"],
+			"ngxtension/poll": ["libs/ngxtension/poll/src/index.ts"],
 			"ngxtension/repeat": ["libs/ngxtension/repeat/src/index.ts"],
+			"ngxtension/repeat-pipe": ["libs/ngxtension/repeat-pipe/src/index.ts"],
 			"ngxtension/resize": ["libs/ngxtension/resize/src/index.ts"],
 			"ngxtension/rx-effect": ["libs/ngxtension/rx-effect/src/index.ts"],
+			"ngxtension/shared": ["libs/ngxtension/shared/src/index.ts"],
+			"ngxtension/signal-history": [
+				"libs/ngxtension/signal-history/src/index.ts"
+			],
 			"ngxtension/signal-slice": ["libs/ngxtension/signal-slice/src/index.ts"],
 			"ngxtension/singleton-proxy": [
 				"libs/ngxtension/singleton-proxy/src/index.ts"
@@ -114,6 +151,9 @@
 			],
 			"ngxtension/trackby-id-prop": [
 				"libs/ngxtension/trackby-id-prop/src/index.ts"
+			],
+			"ngxtension/when-document-visible": [
+				"libs/ngxtension/when-document-visible/src/index.ts"
 			],
 			"plugin": ["libs/plugin/src/index.ts"]
 		}

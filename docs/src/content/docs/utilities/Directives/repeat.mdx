@@ -1,0 +1,80 @@
+---
+title: repeat
+description: An Angular directive extending NgFor to allow iteration over a fixed number of iterations.
+entryPoint: ngxtension/repeat
+badge: stable
+contributors: ['chau-tran']
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+## Import
+
+```ts
+import { Repeat } from 'ngxtension/repeat';
+```
+
+## Usage
+
+<Aside type="tip">
+
+If you wish to use the Angular built-in control flow, check out the [`Repeat Pipe`](/utilities/pipes/repeat) as an alternative.
+
+```ts
+import { Component } from '@angular/core';
+import { RepeatPipe } from 'ngxtension/repeat-pipe';
+
+@Component({
+	imports: [RepeatPipe],
+	template: `
+		<ul>
+			@for (i of 3 | repeat: 10; track i) {
+				<li>{{ i }}</li>
+			}
+		</ul>
+	`,
+})
+export class App {}
+```
+
+This will produce the same output as the directive variant.
+
+</Aside>
+
+### Basic
+
+Use the `Repeat` directive as an extension of Angular's `NgFor` to iterate over a fixed number of iterations. The [`TrackByFunction`](https://angular.dev/api/core/TrackByFunction) is automatically set to efficiently iterate.
+
+```ts
+import { Component } from '@angular/core';
+import { Repeat } from 'ngxtension/repeat';
+
+@Component({
+	imports: [Repeat],
+	template: `
+		<ul>
+			<li *ngFor="let i; repeat: 3">{{ i }}</li>
+		</ul>
+	`,
+})
+export class App {}
+```
+
+This will produce the following output:
+
+```html
+<!-- Output -->
+<!-- <li>0</li> -->
+<!-- <li>1</li> -->
+<!-- <li>2</li> -->
+```
+
+## API
+
+### Inputs
+
+- `n: number` - A non-negative integer, specifying the number of iterations.
+
+### Validation
+
+- An error is thrown if the input is either negative or not an integer.

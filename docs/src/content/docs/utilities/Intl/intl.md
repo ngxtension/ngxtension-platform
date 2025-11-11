@@ -1,7 +1,7 @@
 ---
 title: Intl
 description: Additional Intl Utilities for formatting numbers, strings, and other objects.
-entryPoint: intl
+entryPoint: ngxtension/intl
 badge: stable
 contributors: ['ion-prodan']
 ---
@@ -10,7 +10,7 @@ This is a collection of pipes designed for Angular applications that leverage th
 
 While it's not intended to fully replace Angular's standard pipes for `currency`, `date`, and `number`, it serves as a supplemental toolkit to enhance existing functionalities.
 
-The default locale is determined by the [`LOCALE_ID` token](https://angular.io/api/core/LOCALE_ID). Altering this will change the locale for all included pipes.
+The default locale is determined by the [`LOCALE_ID` token](https://angular.dev/api/core/LOCALE_ID). Altering this will change the locale for all included pipes.
 
 Alternatively, you can specify the locale directly as the **final parameter to any pipe, thereby overriding the default setting**.
 

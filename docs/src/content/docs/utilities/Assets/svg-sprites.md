@@ -1,7 +1,7 @@
 ---
 title: Svg Sprites
 description: A directive for rendering symbols of svg sprites.
-entryPoint: svg-sprite
+entryPoint: ngxtension/svg-sprite
 badge: stable
 contributors: ['robby-rabbitman']
 ---
@@ -32,7 +32,7 @@ Without `NgxSvgSpriteFragment`:
 
 ### With Directive Composition Api
 
-In your project you can utilize the [Directive Composition Api](https://angular.io/guide/directive-composition-api) to create specific svg sprites.
+In your project you can utilize the [Directive Composition Api](https://angular.dev/guide/directives/directive-composition-api) to create specific svg sprites.
 
 In this example a _fontawesome brands_ svg sprite is created.
 

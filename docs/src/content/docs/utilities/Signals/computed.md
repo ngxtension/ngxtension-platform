@@ -1,22 +1,21 @@
 ---
-title: computed/extendedComputed
-description: ngxtension/computed
-entryPoint: computed
+title: extendedComputed
+description: ngxtension/extended-computed
+entryPoint: ngxtension/extended-computed
 badge: deprecated
 contributors: ['chau-tran']
 ---
 
-`computed` / `extendedComputed` is an extension of Angular's `computed`. The main difference is `extendedComputed` callback is invoked with the previously computed value. This providers better DX for cases where the consumers need conditional computed and the result should have the previously computed value when a condition does not pass.
+`extendedComputed` is an extension of Angular's `computed`. The main difference is `extendedComputed` callback is invoked with the previously computed value. This providers better DX for cases where the consumers need conditional computed and the result should have the previously computed value when a condition does not pass.
 
 ```ts
-import { computed } from 'ngxtension/computed';
-// or import { extendedComputed } from 'ngxtension/computed';
+import { extendedComputed } from 'ngxtension/extended-computed';
 ```
 
 ## Usage
 
 ```ts
-import { extendedComputed } from 'ngxtension/computed';
+import { extendedComputed } from 'ngxtension/extended-computed';
 
 const multiplier = signal(2);
 const count = signal(1);

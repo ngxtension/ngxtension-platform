@@ -32,7 +32,7 @@ Sin `NgxSvgSpriteFragment`:
 
 ### Con la API de Composición de Directivas
 
-En tu proyecto, puedes utilizar la [API de Composición de Directivas](https://angular.io/guide/directive-composition-api) para crear sprites de svg específicos.
+En tu proyecto, puedes utilizar la [API de Composición de Directivas](https://angular.dev/guide/directives/directive-composition-api) para crear sprites de svg específicos.
 
 En este ejemplo, se crea un sprite svg de las _marcas de fontawesome_.
 

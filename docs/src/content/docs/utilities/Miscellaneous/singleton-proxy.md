@@ -1,7 +1,7 @@
 ---
 title: createSingletonProxy
 description: ngxtension/singleton-proxy
-entryPoint: singleton-proxy
+entryPoint: ngxtension/singleton-proxy
 badge: stable
 contributors: ['chau-tran']
 ---

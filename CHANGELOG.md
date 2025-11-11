@@ -1,4 +1,596 @@
+## 7.0.2 (2025-11-05)
 
+This was a version bump only, there were no code changes.
+
+## 7.0.1 (2025-11-03)
+
+This was a version bump only, there were no code changes.
+
+# 7.0.0 (2025-11-03)
+
+### Features
+
+- enhance linkedQueryParam utility and add dynamic key support and source signal ([2916367](https://github.com/ngxtension/ngxtension-platform/commit/2916367))
+- add dynamic key route and enhance `linkedQueryParam` documentation ([affd47a](https://github.com/ngxtension/ngxtension-platform/commit/affd47a))
+- ⚠️  Support Angular v19 and stabilize linkedQueryParam utility ([a7db908](https://github.com/ngxtension/ngxtension-platform/commit/a7db908))
+
+### Bug Fixes
+
+- prevent setting null for invalid `previousQueryParamKey` in `linkedQueryParam` ([3ca2456](https://github.com/ngxtension/ngxtension-platform/commit/3ca2456))
+
+### Refactor
+
+- ⚠️  remove deprecated options across components and library ([3234c40](https://github.com/ngxtension/ngxtension-platform/commit/3234c40))
+- streamline `linkedQueryParam` tests and code for dynamic keys and synchronization ([9183367](https://github.com/ngxtension/ngxtension-platform/commit/9183367))
+- clean up `linkedQueryParam` tests and enhance dynamic key handling ([b47c424](https://github.com/ngxtension/ngxtension-platform/commit/b47c424))
+- simplify effect registration in `linkedQueryParam` for dynamic keys ([3b997d9](https://github.com/ngxtension/ngxtension-platform/commit/3b997d9))
+- integrate dynamic key into `linkedQueryParam` and enhance binding logic ([8599ff0](https://github.com/ngxtension/ngxtension-platform/commit/8599ff0))
+- clean up imports and enhance `linkedQueryParam` with source signal handling ([0598cc3](https://github.com/ngxtension/ngxtension-platform/commit/0598cc3))
+
+### Documentation
+
+- add note about required router outlet for params, query params, fragment etc. ([#626](https://github.com/ngxtension/ngxtension-platform/pull/626))
+- update linked query param docs to clarify input signal usage warning ([cae3c34](https://github.com/ngxtension/ngxtension-platform/commit/cae3c34))
+- mark `linkedQueryParam` as stable and expand documentation ([48873e8](https://github.com/ngxtension/ngxtension-platform/commit/48873e8))
+
+### ⚠️  Breaking Changes
+
+- ⚠️  Support Angular v19 and stabilize linkedQueryParam utility ([a7db908](https://github.com/ngxtension/ngxtension-platform/commit/a7db908))
+- ⚠️  remove deprecated options across components and library ([3234c40](https://github.com/ngxtension/ngxtension-platform/commit/3234c40))
+
+### ❤️ Thank You
+
+- Enea Jahollari @eneajaho
+- montella1507 @montella1507
+
+# 6.0.0 (2025-09-12)
+
+### Features
+
+- ⚠️  code fixes and deprecations ([#627](https://github.com/ngxtension/ngxtension-platform/pull/627))
+
+### ⚠️  Breaking Changes
+
+- ⚠️  code fixes and deprecations ([#627](https://github.com/ngxtension/ngxtension-platform/pull/627))
+
+### ❤️ Thank You
+
+- Enea Jahollari @eneajaho
+
+## 5.2.0 (2025-09-12)
+
+### Features
+
+- outputs are migrated to signals ([#614](https://github.com/ngxtension/ngxtension-platform/pull/614))
+- **inject-local-storage:** promote NGXTENSION_LOCAL_STORAGE token to platform level ([#620](https://github.com/ngxtension/ngxtension-platform/pull/620))
+- **ngxtension:** update docs ([b84f9a8](https://github.com/ngxtension/ngxtension-platform/commit/b84f9a8))
+
+### Bug Fixes
+
+- use removeChild() loop instead of replaceChildren() ([#619](https://github.com/ngxtension/ngxtension-platform/pull/619))
+- replace deprecated toThrowError with toThrow in 3 tests ([#612](https://github.com/ngxtension/ngxtension-platform/pull/612))
+- **host-binding:** allow to bind the style property with an object to set multiple CSS properties (including variables) at once ([#617](https://github.com/ngxtension/ngxtension-platform/pull/617))
+- **inject-local-storage:** fix reactive purity if signals reads inside stringify function ([#608](https://github.com/ngxtension/ngxtension-platform/pull/608))
+- ⚠️  **inject-local-storage:** fix typing ([#596](https://github.com/ngxtension/ngxtension-platform/pull/596))
+- **inject-local-storage:** fix default value creation ([#609](https://github.com/ngxtension/ngxtension-platform/pull/609))
+
+### Refactor
+
+- **ngx-control-value-accessor:** use normal effect instead of rxEffect ([#556](https://github.com/ngxtension/ngxtension-platform/pull/556))
+
+### Documentation
+
+- add version compatibility table to README.md ([6e3da4f](https://github.com/ngxtension/ngxtension-platform/commit/6e3da4f))
+- update homepage design ([807029b](https://github.com/ngxtension/ngxtension-platform/commit/807029b))
+- enhance README.md with updated features, installation instructions, and usage examples for ngxtension ([2e5c5b3](https://github.com/ngxtension/ngxtension-platform/commit/2e5c5b3))
+- update README.md to reflect new branding, enhanced features, and improved installation instructions for ngxtension ([3909037](https://github.com/ngxtension/ngxtension-platform/commit/3909037))
+- add edisonaugusthy as a contributor for code ([#623](https://github.com/ngxtension/ngxtension-platform/pull/623))
+- fixes ([72a935b](https://github.com/ngxtension/ngxtension-platform/commit/72a935b))
+
+### ⚠️  Breaking Changes
+
+- ⚠️  **inject-local-storage:** fix typing ([#596](https://github.com/ngxtension/ngxtension-platform/pull/596))
+
+### ❤️ Thank You
+
+- Denis Yılmaz
+- Edison Augusthy @edisonaugusthy
+- Enea Jahollari @eneajaho
+- Fabien Dehopré
+- J. Degand @jdegand
+- Robby Rabbitman @RobbyRabbitman
+- Svyatoslav Zaytsev @MillerSvt
+
+## 5.1.0 (2025-06-22)
+
+### Features
+
+- **computed-previous:** lazy computed previous ([#590](https://github.com/ngxtension/ngxtension-platform/pull/590), [#591](https://github.com/ngxtension/ngxtension-platform/pull/591))
+- **form-events:** provide optional injector for both form event utils ([#585](https://github.com/ngxtension/ngxtension-platform/pull/585))
+- **inject-local-storage:** computed key support ([#569](https://github.com/ngxtension/ngxtension-platform/pull/569), [#593](https://github.com/ngxtension/ngxtension-platform/pull/593))
+- **merge-http-context:** add mergeHttpContext utility function ([#587](https://github.com/ngxtension/ngxtension-platform/pull/587))
+
+### Documentation
+
+- add PForever as a contributor for code ([#583](https://github.com/ngxtension/ngxtension-platform/pull/583))
+
+### ❤️ Thank You
+
+- Krzysztof Kachniarz @kkachniarz220
+- michael-small @michael-small
+- Svyatoslav Zaytsev @MillerSvt
+
+# 5.0.0 (2025-03-14)
+
+### Features
+
+- notPattern ([#564](https://github.com/ngxtension/ngxtension-platform/pull/564))
+- ⚠️  publish ngxtension-plugin separately ([#581](https://github.com/ngxtension/ngxtension-platform/pull/581))
+
+### Documentation
+
+- add endlacer as a contributor for code ([#576](https://github.com/ngxtension/ngxtension-platform/pull/576))
+- form-events ([#577](https://github.com/ngxtension/ngxtension-platform/pull/577))
+
+### ⚠️  Breaking Changes
+
+- ⚠️  publish ngxtension-plugin separately ([#581](https://github.com/ngxtension/ngxtension-platform/pull/581))
+
+### ❤️ Thank You
+
+- Andreas Dorner @endlacer
+- Chau Tran
+
+## 4.5.0 (2025-03-11)
+
+### Features
+
+- introduce takeLatestFrom() ([#571](https://github.com/ngxtension/ngxtension-platform/pull/571))
+
+### Refactor
+
+- Handle getting value from disabled form controls in `form-events` util ([#499](https://github.com/ngxtension/ngxtension-platform/pull/499))
+
+### ❤️ Thank You
+
+- Evgeniy OZ @e-oz
+- michael-small @michael-small
+
+## 4.4.0 (2025-03-11)
+
+### Features
+
+- unify inject route utilities ([#450](https://github.com/ngxtension/ngxtension-platform/pull/450))
+- add host binding migration ([#528](https://github.com/ngxtension/ngxtension-platform/pull/528))
+- **inject-text-selection:** added the function, docs, tests and created sample app ([#559](https://github.com/ngxtension/ngxtension-platform/pull/559))
+
+### Bug Fixes
+
+- **docs:** correct typo in retryOnError field ([#534](https://github.com/ngxtension/ngxtension-platform/pull/534))
+- **ngx-control-value-accessor:** accessing properties is outside of the reactive context ([#555](https://github.com/ngxtension/ngxtension-platform/pull/555))
+
+### Documentation
+
+- add szheleshchenko as a contributor for doc ([#560](https://github.com/ngxtension/ngxtension-platform/pull/560))
+- Add missing entry in contributors ([#568](https://github.com/ngxtension/ngxtension-platform/pull/568))
+
+### ❤️  Thank You
+
+- Dominik @Dafnik
+- Fiorelo Zere @fiorelozere
+- Paweł Ostromecki @ostromeckyp
+- Robby Rabbitman @RobbyRabbitman
+- Sergei Zheleshchenko @szheleshchenko
+
+## 4.3.2 (2025-01-31)
+
+This was a version bump only, there were no code changes.
+
+## 4.3.1 (2025-01-31)
+
+### Bug Fixes
+
+- update provideLinkedQueryParamConfig function to override the default ([#552](https://github.com/ngxtension/ngxtension-platform/pull/552))
+
+### ❤️  Thank You
+
+- Enea Jahollari @eneajaho
+
+## 4.3.0 (2025-01-31)
+
+### Features
+
+- add injectSignalHistory implementation, tests and docs ([#543](https://github.com/ngxtension/ngxtension-platform/pull/543))
+- add provideLinkedQueryParamConfig function and updated the beha… ([#542](https://github.com/ngxtension/ngxtension-platform/pull/542))
+
+### ❤️  Thank You
+
+- Enea Jahollari @eneajaho
+
+## 4.2.1 (2025-01-16)
+
+### Bug Fixes
+
+- add preserveFragment to linkedQueryParam navigation extras ([#540](https://github.com/ngxtension/ngxtension-platform/pull/540))
+
+### ❤️ Thank You
+
+- Enea Jahollari @eneajaho
+
+## 4.2.0 (2024-12-09)
+
+### Features
+
+- add linkedQueryParam implementation, tests and docs ([#526](https://github.com/nartc/ngxtension-platform/pull/526))
+- **inject-local-storage:** dispatch storage event on change ([#523](https://github.com/nartc/ngxtension-platform/pull/523), [#525](https://github.com/nartc/ngxtension-platform/pull/525))
+
+### Bug Fixes
+
+- **signal-slice:** add initial state stream typing to state object ([#521](https://github.com/nartc/ngxtension-platform/pull/521))
+
+### ❤️  Thank You
+
+- Enea Jahollari @eneajaho
+- Josh Morony
+- Svyatoslav Zaytsev @MillerSvt
+
+## 4.1.0 (2024-11-01)
+
+### Features
+
+- handle defaultValue type in injectLocalStorage ([#508](https://github.com/ngxtension/ngxtension-platform/pull/508))
+- **computed:** deprecated for linkedSignal ([e38b946](https://github.com/ngxtension/ngxtension-platform/commit/e38b946))
+- **inject-inputs:** deprecated injectInputs in favor of inputs() ([2b131af](https://github.com/ngxtension/ngxtension-platform/commit/2b131af))
+- **ngx-control-value-accessor:** expose the NgControl instance of the host ([#479](https://github.com/ngxtension/ngxtension-platform/pull/479))
+- **resize:** add orientation handler ([f78b124](https://github.com/ngxtension/ngxtension-platform/commit/f78b124))
+- **signal-slice:** add "Updated" signal for action sources ([#363](https://github.com/ngxtension/ngxtension-platform/pull/363))
+- **signal-slice:** pass initial state streams to source functions ([#486](https://github.com/ngxtension/ngxtension-platform/pull/486))
+
+### Bug Fixes
+
+- typo ([#471](https://github.com/ngxtension/ngxtension-platform/pull/471))
+- update migration entry points ([#448](https://github.com/ngxtension/ngxtension-platform/pull/448))
+- inject typo in rx-affect.md ([#480](https://github.com/ngxtension/ngxtension-platform/pull/480))
+- **derived-async:** fix unsubscribing from old observable when new value is not observable ([#487](https://github.com/ngxtension/ngxtension-platform/pull/487))
+- **docs:** fix incorrect derive loading entrypoint ([#512](https://github.com/ngxtension/ngxtension-platform/pull/512))
+- **host-binding:** ensure previous classes are removed when class binding changes ([#473](https://github.com/ngxtension/ngxtension-platform/pull/473))
+- **plugin:** support outputs without inline initialization ([#497](https://github.com/ngxtension/ngxtension-platform/pull/497))
+- **signal-input-migration:** skip inputs with @HostBinding() decorator ([#460](https://github.com/ngxtension/ngxtension-platform/pull/460))
+- **signal-slice:** fix action streams being infered as never ([#472](https://github.com/ngxtension/ngxtension-platform/pull/472))
+
+### Documentation
+
+- add @mauriziocescon as a contributor ([d6c3165](https://github.com/ngxtension/ngxtension-platform/commit/d6c3165))
+- add @leonelvsc as a contributor ([a4f07da](https://github.com/ngxtension/ngxtension-platform/commit/a4f07da))
+- add @lorenzodianni  as a contributor ([460a94f](https://github.com/ngxtension/ngxtension-platform/commit/460a94f))
+- enhance CONTRIBUTING.md with some hint where to add documentation for a new utility ([#455](https://github.com/ngxtension/ngxtension-platform/pull/455))
+- add if-validator readme ([#452](https://github.com/ngxtension/ngxtension-platform/pull/452))
+- add Michael Berger as contributor ([#457](https://github.com/ngxtension/ngxtension-platform/pull/457))
+- Added docs for injectLocalStorage #464 ([#478](https://github.com/ngxtension/ngxtension-platform/pull/478), [#464](https://github.com/ngxtension/ngxtension-platform/issues/464))
+- add illunix as a contributor for doc ([#482](https://github.com/ngxtension/ngxtension-platform/pull/482))
+- Migrate links to angular.dev ([#503](https://github.com/ngxtension/ngxtension-platform/pull/503))
+- add Ostromecky as a contributor for code ([#511](https://github.com/ngxtension/ngxtension-platform/pull/511))
+- add mattmoos as a contributor for code ([#514](https://github.com/ngxtension/ngxtension-platform/pull/514))
+- add ShacharHarshuv as a contributor for code ([#515](https://github.com/ngxtension/ngxtension-platform/pull/515))
+- add MillerSvt as a contributor for code ([#516](https://github.com/ngxtension/ngxtension-platform/pull/516))
+- **inject-local-storage:** Add missing title ([#502](https://github.com/ngxtension/ngxtension-platform/pull/502))
+
+### ❤️  Thank You
+
+- Enea Jahollari @eneajaho
+- Evan Trimboli
+- Fiorelo Zere @fiorelozere
+- GU55555 @GU55555
+- J. Degand @jdegand
+- Jakub Meinlschmidt
+- Josh Morony
+- Maksymilian Szokalski @illunix
+- Michael Be
+- nartc
+- Paweł Ostromecki @Ostromecky
+- Robby Rabbitman @RobbyRabbitman
+- Shahar Har-Shuv
+- Svyatoslav Zaytsev @MillerSvt
+- Sylvain Autran
+
+# 4.0.0 (2024-07-15)
+
+
+### Features
+
+- add deriveLoading RxJs-Operator ([#439](https://github.com/ngxtension/ngxtension-platform/pull/439))
+- add migration for self-closing tags ([#416](https://github.com/ngxtension/ngxtension-platform/pull/416))
+- add effectOnceIf helper function ([#419](https://github.com/ngxtension/ngxtension-platform/pull/419))
+- add migration for sfc components ([#420](https://github.com/ngxtension/ngxtension-platform/pull/420))
+- **create-repeat:** implement the function, docs and tests ([#380](https://github.com/ngxtension/ngxtension-platform/pull/380))
+- **explicitEffect:** addition of defer parameter; this parameter allows the computation not to execute immediately and only run on first deps change. ([#431](https://github.com/ngxtension/ngxtension-platform/pull/431))
+- **form events:** Create unified observable and signal data accessors for form events ([#391](https://github.com/ngxtension/ngxtension-platform/pull/391))
+
+### Bug Fixes
+
+- **computed-previous:** Don't return null for initial value, but return the current value of the source signal instead ([#281](https://github.com/ngxtension/ngxtension-platform/pull/281))
+- **plugin:** update all assignments ([#444](https://github.com/ngxtension/ngxtension-platform/pull/444))
+- **signal-input-migration:** preserve line endings ([#432](https://github.com/ngxtension/ngxtension-platform/pull/432))
+- ⚠️  **signal-slice:** simplify api to deal with typing issues ([#361](https://github.com/ngxtension/ngxtension-platform/pull/361))
+- **when-document-visible:** export the `whenDocumentVisible` operator… ([#425](https://github.com/ngxtension/ngxtension-platform/pull/425))
+
+### Documentation
+
+- add Kiskae as a contributor for code ([#436](https://github.com/ngxtension/ngxtension-platform/pull/436))
+- **signals:** some spanish translations ([#441](https://github.com/ngxtension/ngxtension-platform/pull/441))
+
+#### ⚠️  Breaking Changes
+
+- **signal-slice:** experimental actionEffects API has been removed from signalSlice
+
+### ❤️  Thank You
+
+- Enea Jahollari @eneajaho
+- Fabien Dehopré
+- Josh Morony
+- Kiskae @Kiskae
+- Lorenzo D'Ianni
+- Lucas Garcia @LcsGa
+- Maurizio Cescon
+- Michael Be
+- michael-small @michael-small
+- Sergi Dote Teixidor
+- Tim Deschryver @timdeschryver
+
+## 3.5.5 (2024-06-18)
+
+
+### Bug Fixes
+
+- **create-injection-token:** more type ([d1d9206](https://github.com/ngxtension/ngxtension-platform/commit/d1d9206))
+
+### ❤️  Thank You
+
+- ctran
+
+## 3.5.4 (2024-06-18)
+
+
+### Bug Fixes
+
+- **create-injection-token:** type ([792bff1](https://github.com/ngxtension/ngxtension-platform/commit/792bff1))
+
+### ❤️  Thank You
+
+- ctran
+
+## 3.5.3 (2024-06-18)
+
+
+### Bug Fixes
+
+- **create-injection-token:** allow createNoopInjectionToken pass in isFunctionVAlue ([d990892](https://github.com/ngxtension/ngxtension-platform/commit/d990892))
+
+### ❤️  Thank You
+
+- ctran
+
+## 3.5.2 (2024-06-17)
+
+
+### Bug Fixes
+
+- **inputs:** ensure the type has '' for mergeInputs ([06bc0fd](https://github.com/ngxtension/ngxtension-platform/commit/06bc0fd))
+
+### ❤️  Thank You
+
+- ctran
+
+## 3.5.1 (2024-06-17)
+
+
+### Features
+
+- add rxjs operators `poll` and `whenDocumentVisible` ([#404](https://github.com/ngxtension/ngxtension-platform/pull/404))
+- **inputs:** add mergeInputs transform fn ([29b8f7b](https://github.com/ngxtension/ngxtension-platform/commit/29b8f7b))
+- **to-observable-signal:** refactor toObservableSignal to handle Obs… ([#408](https://github.com/ngxtension/ngxtension-platform/pull/408))
+
+### Bug Fixes
+
+- **inputs:** allow mergeInputs to also accept '' as value ([c45f74e](https://github.com/ngxtension/ngxtension-platform/commit/c45f74e))
+
+### Documentation
+
+- add nguyenphutrong as a contributor for code ([#414](https://github.com/ngxtension/ngxtension-platform/pull/414))
+
+### ❤️  Thank You
+
+- ctran
+- Fabien Dehopré
+- Trong Nguyen @nguyenphutrong
+
+## 3.5.0 (2024-06-16)
+
+
+### Features
+
+- add rxjs operators `poll` and `whenDocumentVisible` ([#404](https://github.com/ngxtension/ngxtension-platform/pull/404))
+- **inputs:** add mergeInputs transform fn ([29b8f7b](https://github.com/ngxtension/ngxtension-platform/commit/29b8f7b))
+- **to-observable-signal:** refactor toObservableSignal to handle Obs… ([#408](https://github.com/ngxtension/ngxtension-platform/pull/408))
+
+### Documentation
+
+- add nguyenphutrong as a contributor for code ([#414](https://github.com/ngxtension/ngxtension-platform/pull/414))
+
+### ❤️  Thank You
+
+- ctran
+- Fabien Dehopré
+- Trong Nguyen @nguyenphutrong
+
+## 3.5.0-beta.0 (2024-06-10)
+
+
+### Bug Fixes
+
+- **inject-migration:** update option name and add proper aliases ([#403](https://github.com/ngxtension/ngxtension-platform/pull/403))
+
+### Documentation
+
+- add `explicitEffect` to the homepage ([#394](https://github.com/ngxtension/ngxtension-platform/pull/394))
+- add new logo ([#406](https://github.com/ngxtension/ngxtension-platform/pull/406))
+- **inject-di-migration:** remove extra not needed word ([#402](https://github.com/ngxtension/ngxtension-platform/pull/402))
+
+### ❤️  Thank You
+
+- Enea Jahollari @eneajaho
+- Ilir Beqiri @ilirbeqirii
+- Matthieu Riegler @JeanMeche
+
+## 3.3.0 (2024-05-24)
+
+
+### Features
+
+- **inject-inputs:** add injectInputs ([851c644](https://github.com/ngxtension/ngxtension-platform/commit/851c644))
+
+### Bug Fixes
+
+- **plugin:** add and remove this keyword correctly ([#370](https://github.com/ngxtension/ngxtension-platform/pull/370))
+- **plugin:** remove additional semicolumns for input and output generator ([#371](https://github.com/ngxtension/ngxtension-platform/pull/371))
+- **plugin:** add string to input generic ([#375](https://github.com/ngxtension/ngxtension-platform/pull/375))
+
+### Documentation
+
+- update inject migration example ([#379](https://github.com/ngxtension/ngxtension-platform/pull/379))
+- **inject-inputs:** add injectInputs ([05d0f0a](https://github.com/ngxtension/ngxtension-platform/commit/05d0f0a))
+- **injectors:** spanish translation for createInjectable function ([#316](https://github.com/ngxtension/ngxtension-platform/pull/316))
+- **injectors:** Spanish translation for injectROuteData ([#383](https://github.com/ngxtension/ngxtension-platform/pull/383))
+- **injectors:** Spanish translation for injectRouteFragment ([#385](https://github.com/ngxtension/ngxtension-platform/pull/385))
+- **migrations:** Spanish translation inject migration ([#386](https://github.com/ngxtension/ngxtension-platform/pull/386))
+
+### ❤️  Thank You
+
+- Chau Tran @nartc
+- Sergi Dote Teixidor
+- Tim Deschryver @timdeschryver
+
+## 3.2.0 (2024-05-10)
+
+
+### Features
+
+- support changes observable by converting it to use toObservable with signals ([#364](https://github.com/ngxtension/ngxtension-platform/pull/364))
+
+### Bug Fixes
+
+- **signal-input-migration:** fix two-way bindings and interpolations inside attribute values ([#369](https://github.com/ngxtension/ngxtension-platform/pull/369))
+
+### ❤️  Thank You
+
+- Enea Jahollari @eneajaho
+
+
+
+## [3.1.2](https://github.com/ngxtension/ngxtension-platform/compare/3.1.1...3.1.2) (2024-05-01)
+
+
+### Bug Fixes
+
+* add proper typing for contentChildren and viewChildren ([#359](https://github.com/ngxtension/ngxtension-platform/issues/359)) ([f31dd8c](https://github.com/ngxtension/ngxtension-platform/commit/f31dd8c7ea0e57d9f9202b1a5d62498e14b5e16b))
+
+## [3.1.1](https://github.com/ngxtension/ngxtension-platform/compare/3.1.0...3.1.1) (2024-05-01)
+
+
+### Bug Fixes
+
+* fix forgotten node ([#358](https://github.com/ngxtension/ngxtension-platform/issues/358)) ([9954cf8](https://github.com/ngxtension/ngxtension-platform/commit/9954cf8514ae1e3900e22650f11da18638784e9b))
+
+
+### Documentations
+
+* update homepage ([#357](https://github.com/ngxtension/ngxtension-platform/issues/357)) ([fb36f8b](https://github.com/ngxtension/ngxtension-platform/commit/fb36f8b7e39341f59454b3a6d1b7059ebb4c65b0))
+
+## [3.1.0](https://github.com/ngxtension/ngxtension-platform/compare/3.0.1...3.1.0) (2024-05-01)
+
+
+### Features
+
+* **convert-queries:** initial implementation for content queries migration to signals ([#355](https://github.com/ngxtension/ngxtension-platform/issues/355)) ([a5f003f](https://github.com/ngxtension/ngxtension-platform/commit/a5f003fc7ee7bfae40adbbaa88e374b73b16513c))
+* input migration enhancements ([#353](https://github.com/ngxtension/ngxtension-platform/issues/353)) ([2def810](https://github.com/ngxtension/ngxtension-platform/commit/2def8106df65f8b2d6d161af21e922282fcd1dba))
+
+
+### Bug Fixes
+
+* **create-injectable:** allow returning proxies from factory function ([#352](https://github.com/ngxtension/ngxtension-platform/issues/352)) ([8e22eeb](https://github.com/ngxtension/ngxtension-platform/commit/8e22eeb47ddbc159299f6c70b7ab171ca855de98))
+* inject migration should take into account missing types for tokens ([#351](https://github.com/ngxtension/ngxtension-platform/issues/351)) ([56f8bdb](https://github.com/ngxtension/ngxtension-platform/commit/56f8bdb6ae1cf17f180b18c64b9b48443319b102))
+* make @use-gesture/vanilla optional dependency ([#349](https://github.com/ngxtension/ngxtension-platform/issues/349)) ([7291426](https://github.com/ngxtension/ngxtension-platform/commit/729142659bd370c9132a797e93012419129daf2a))
+
+
+### Documentations
+
+* convert queries ([#356](https://github.com/ngxtension/ngxtension-platform/issues/356)) ([a0a4f33](https://github.com/ngxtension/ngxtension-platform/commit/a0a4f330fdb885bd18672ee90a40e65c0c4e4869))
+
+## [3.0.1](https://github.com/ngxtension/ngxtension-platform/compare/3.0.0...3.0.1) (2024-04-24)
+
+
+### Bug Fixes
+
+* typo in migrations.json file ([b42cd21](https://github.com/ngxtension/ngxtension-platform/commit/b42cd21138165baedd9274889da4cca95ffbf633))
+
+## [3.0.0](https://github.com/ngxtension/ngxtension-platform/compare/2.3.1...3.0.0) (2024-04-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* computedFrom and computedAsync are removed, ng update ngxtension should update all usages to use derivedFrom and derivedAsync
+
+### Features
+
+* enhancements for inject() migration ([#344](https://github.com/ngxtension/ngxtension-platform/issues/344)) ([1d16488](https://github.com/ngxtension/ngxtension-platform/commit/1d16488f8870e62b9c18d487d378a93399053b92))
+* remove deprecated computedFrom and computedAsync  ([#343](https://github.com/ngxtension/ngxtension-platform/issues/343)) ([5f18b72](https://github.com/ngxtension/ngxtension-platform/commit/5f18b724b6f43968b4127f3e6df0636464560818))
+
+## [2.3.1](https://github.com/ngxtension/ngxtension-platform/compare/2.3.0...2.3.1) (2024-04-24)
+
+
+### Bug Fixes
+
+* ng update wasn't working because of broken path ([#345](https://github.com/ngxtension/ngxtension-platform/issues/345)) ([f3225a0](https://github.com/ngxtension/ngxtension-platform/commit/f3225a0d14fb1b71ff38e20aaa16a77b483fd95c))
+* reintroduce computedAsync which reexports and shows a deprecation notice ([#342](https://github.com/ngxtension/ngxtension-platform/issues/342)) ([3de9e09](https://github.com/ngxtension/ngxtension-platform/commit/3de9e093a421ae4efccf9c86d6c8b08b3e0292e8))
+* update docs for inject migration ([#340](https://github.com/ngxtension/ngxtension-platform/issues/340)) ([f3670b9](https://github.com/ngxtension/ngxtension-platform/commit/f3670b97ac465dbb587cbebd09cc9ea9339aac8b))
+
+## [2.3.0](https://github.com/nartc/ngxtension-platform/compare/2.2.1...2.3.0) (2024-04-23)
+
+
+### Features
+
+* add homepage blocks to showcase everything the library offers ([#327](https://github.com/nartc/ngxtension-platform/issues/327)) ([74064d5](https://github.com/nartc/ngxtension-platform/commit/74064d5f70887cab3aa84bd89322806213f026e7)), closes [#329](https://github.com/nartc/ngxtension-platform/issues/329)
+* added inject migration ([#326](https://github.com/nartc/ngxtension-platform/issues/326)) ([a46fdcd](https://github.com/nartc/ngxtension-platform/commit/a46fdcd13c767a8ed2daf9a849332551debaa81d))
+* **computed-from:** rename computedFrom and computedAsync to derivedFrom and derivedAsync and added migration schematics ([#303](https://github.com/nartc/ngxtension-platform/issues/303)) ([05d994f](https://github.com/nartc/ngxtension-platform/commit/05d994f51b55c3c5271a6b4b7a476a3a53fb38c5))
+* **inject-route-fragment:** implementation of injectRouteFragment ([#318](https://github.com/nartc/ngxtension-platform/issues/318)) ([2bf2546](https://github.com/nartc/ngxtension-platform/commit/2bf254626954cf82994b39ecff4750d2d62cca0c))
+* **injectLocalStorage:** initial implementation of injectLocalStorage  ([#295](https://github.com/nartc/ngxtension-platform/issues/295)) ([e995dcb](https://github.com/nartc/ngxtension-platform/commit/e995dcb3a215d3b85a0c03bac70166215572e16a))
+* **output-migration:** enhancements ([#337](https://github.com/nartc/ngxtension-platform/issues/337)) ([5542a8c](https://github.com/nartc/ngxtension-platform/commit/5542a8cd7ab38d573de897a50054004b5c84e9d5))
+* **repeat-pipe:** initial version ([#320](https://github.com/nartc/ngxtension-platform/issues/320)) ([70abad3](https://github.com/nartc/ngxtension-platform/commit/70abad3a5e1549c79390cfe509c7255f4b15aaa5))
+
+
+### Bug Fixes
+
+* **click-outside:** remove memory leak ([#319](https://github.com/nartc/ngxtension-platform/issues/319)) ([49bff56](https://github.com/nartc/ngxtension-platform/commit/49bff569ce0ab171928a912ad66acd6c58140443))
+* **create-injection-token:** only inject the actual dep ([1299f80](https://github.com/nartc/ngxtension-platform/commit/1299f80354270d8cd95ae59955e3baa71ada002c))
+* **plugin:** bump deps ([7185c79](https://github.com/nartc/ngxtension-platform/commit/7185c7989d48ab0b78af0955e9c331a2a671662c))
+* use snapshot instead of requireSync for route injections ([#339](https://github.com/nartc/ngxtension-platform/issues/339)) ([c40187e](https://github.com/nartc/ngxtension-platform/commit/c40187e9ff4da7743f2051481f5f6dba348b0899))
+
+
+### Documentations
+
+* add a code to source code button to the content with entryPoints ([#323](https://github.com/nartc/ngxtension-platform/issues/323)) ([8570f68](https://github.com/nartc/ngxtension-platform/commit/8570f6837e6ce735dd2cd1e5ae0163dd40919b9b))
+* add bun add command to install section ([#324](https://github.com/nartc/ngxtension-platform/issues/324)) ([b068d19](https://github.com/nartc/ngxtension-platform/commit/b068d198aafc02525e28faba5518858bcbe3355e))
+* add npm downloads and version badges to README.md ([#314](https://github.com/nartc/ngxtension-platform/issues/314)) ([4fdfaf3](https://github.com/nartc/ngxtension-platform/commit/4fdfaf36242bc3d7781250201b57eba893943b25))
+* contributor badges fixes ([#322](https://github.com/nartc/ngxtension-platform/issues/322)) ([20479f4](https://github.com/nartc/ngxtension-platform/commit/20479f40181dab6d7558f170c83125accab473b8))
+* update astro ([dd8da83](https://github.com/nartc/ngxtension-platform/commit/dd8da8379e3bb42ba239dbc545216a6b2f7ef5ca))
+
+## [2.2.1](https://github.com/nartc/ngxtension-platform/compare/2.2.0...2.2.1) (2024-03-28)
+
+
+### Bug Fixes
+
+* **create-injection-token:** empty function ([aa41390](https://github.com/nartc/ngxtension-platform/commit/aa413901c5c38891c734a01b3be5e02afa986d71))
+* fix output migrations issue ([#311](https://github.com/nartc/ngxtension-platform/issues/311)) ([3f7c0bb](https://github.com/nartc/ngxtension-platform/commit/3f7c0bb92e65bf3d9c903898144cc995a4620368))
 
 ## [2.2.0](https://github.com/nartc/ngxtension-platform/compare/2.1.0...2.2.0) (2024-03-28)
 

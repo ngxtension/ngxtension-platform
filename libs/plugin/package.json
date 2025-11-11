@@ -1,14 +1,32 @@
 {
+	"name": "ngxtension-plugin",
+	"version": "0.0.0-replace",
 	"type": "commonjs",
+	"dependencies": {
+		"@angular-eslint/bundled-angular-compiler": "^18.0.1",
+		"@nx/devkit": "^20.0.0",
+		"nx": "^20.0.0",
+		"ts-morph": "^22.0.0"
+	},
+	"main": "./src/index.js",
+	"types": "./src/index.d.ts",
+	"exports": {
+		"./package.json": "./package.json",
+		".": {
+			"types": "./src/index.d.ts",
+			"default": "./src/index.js"
+		},
+		"./generators": {
+			"types": "./src/generators/index.d.ts",
+			"default": "./src/generators/index.js"
+		}
+	},
 	"generators": "./generators.json",
+	"schematics": "./generators.json",
 	"nx-migrations": {
 		"migrations": "./migrations.json"
 	},
 	"ng-update": {
 		"migrations": "./migrations.json"
-	},
-	"dependencies": {
-		"@nx/devkit": "17.2.0",
-		"ts-morph": "21.0.1"
 	}
 }

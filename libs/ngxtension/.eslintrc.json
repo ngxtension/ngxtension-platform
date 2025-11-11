@@ -13,6 +13,7 @@
 				"@angular-eslint/component-class-suffix": 0,
 				"@angular-eslint/no-input-rename": 0,
 				"@typescript-eslint/no-explicit-any": 0,
+				"@typescript-eslint/no-namespace": 0,
 				"@typescript-eslint/ban-types": [
 					"error",
 					{
@@ -27,7 +28,9 @@
 		},
 		{
 			"files": ["*.html"],
+			"excludedFiles": ["*inline-template-*.component.html"],
 			"extends": ["plugin:@nx/angular-template"],
+			"excludedFiles": ["*inline-template-*.component.html"],
 			"rules": {}
 		},
 		{
@@ -45,7 +48,8 @@
 							"rxjs",
 							"@nx/devkit",
 							"nx",
-							"ts-morph"
+							"ts-morph",
+							"@angular-eslint/bundled-angular-compiler"
 						]
 					}
 				]

@@ -8,18 +8,40 @@ export const locales = {
 
 // https://astro.build/config
 export default defineConfig({
+	markdown: {
+		syntaxHighlight: 'shiki',
+		shikiConfig: {
+			theme: 'tokyo-night',
+			wrap: true,
+			themes: {
+				light: 'github-light',
+				dark: 'tokyo-night',
+			},
+		},
+	},
 	integrations: [
 		starlight({
 			title: 'ngxtension',
 			logo: {
-				src: './public/logo.svg',
+				light: './public/ngxtension-blue.svg',
+				dark: './public/ngxtension-white.svg',
 				alt: 'ngxtension logo',
+				replacesTitle: true,
 			},
-			favicon: './logo.svg',
-			social: {
-				github: 'https://github.com/nartc/ngxtension-platform',
-				twitter: 'https://twitter.com/Nartc1410',
-			},
+			favicon: './ngxt-blue.svg',
+			social: [
+				{
+					label: 'GitHub',
+					icon: 'github',
+					href: 'https://github.com/ngxtension/ngxtension-platform',
+				},
+				{
+					label: 'Twitter',
+					icon: 'twitter',
+					href: 'https://twitter.com/Nartc1410',
+				},
+			],
+			customCss: ['./src/styles/custom.css'],
 			lastUpdated: true,
 			sidebar: [
 				{
@@ -42,6 +64,10 @@ export default defineConfig({
 						es: 'Gráfico de Proyecto',
 					},
 					link: '/dep-graph',
+				},
+				{
+					label: 'Press Kit',
+					link: '/logos/logos',
 				},
 			],
 			components: {

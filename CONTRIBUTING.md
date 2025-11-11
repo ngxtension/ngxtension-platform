@@ -47,6 +47,7 @@ To contribute code to ngxtension, follow these steps:
 6. Create a pull request (PR) from your branch to the `main` branch of the `ngxtension-platform` repository on GitHub.
 7. Commit your changes following the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) convention.
 8. Provide a clear title and description for your PR, explaining the purpose and scope of your changes.
+9. In order that your changes are also publicly visible on our website make sure that you also add docs to the respective category in `docs/src/content/docs/utilities`.
 
 We will review your PR as soon as possible, and your contribution will be greatly appreciated!
 

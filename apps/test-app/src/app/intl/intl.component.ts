@@ -8,7 +8,6 @@ import {
 
 @Component({
 	selector: 'ngxtension-platform-intl',
-	standalone: true,
 	imports: [
 		CommonModule,
 		DisplayNamesPipe,
@@ -42,8 +41,8 @@ import {
 			=> {{ 'en' | displayNames: 'language' }}
 		</p>
 		<p>
-			<strong ngNonBindable>{{ 'en' | displayNames: 'script' }}</strong>
-			=> {{ 'en' | displayNames: 'script' }}
+			<strong ngNonBindable>{{ 'Hang' | displayNames: 'script' }}</strong>
+			=> {{ 'Hang' | displayNames: 'script' }}
 		</p>
 		<p>
 			<strong ngNonBindable>{{ 'en' | displayNames: 'region' }}</strong>

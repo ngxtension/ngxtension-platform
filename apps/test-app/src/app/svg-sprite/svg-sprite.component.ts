@@ -46,7 +46,6 @@ export class FaBrandDirective {
 
 @Component({
 	selector: 'ngxtension-platform-svg-sprite',
-	standalone: true,
 	imports: [
 		NgxSvgSpriteFragment,
 		FaRegularDirective,

@@ -1,7 +1,7 @@
 ---
 title: injectLazy
 description: ngxtension/inject-lazy
-entryPoint: inject-lazy
+entryPoint: ngxtension/inject-lazy
 badge: stable
 contributors: ['enea-jahollari']
 ---

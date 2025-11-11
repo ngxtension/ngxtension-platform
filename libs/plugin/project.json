@@ -3,12 +3,20 @@
 	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "libs/plugin/src",
 	"projectType": "library",
+	"release": {
+		"version": {
+			"generatorOptions": {
+				"packageRoot": "dist/{projectRoot}",
+				"currentVersionResolver": "git-tag"
+			}
+		}
+	},
 	"targets": {
 		"build": {
 			"executor": "@nx/js:tsc",
 			"outputs": ["{options.outputPath}"],
 			"options": {
-				"outputPath": "dist/libs/ngxtension/plugin",
+				"outputPath": "dist/libs/plugin",
 				"main": "libs/plugin/src/index.ts",
 				"tsConfig": "libs/plugin/tsconfig.lib.json",
 				"assets": [
@@ -45,6 +53,11 @@
 			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
 			"options": {
 				"jestConfig": "libs/plugin/jest.config.ts"
+			}
+		},
+		"nx-release-publish": {
+			"options": {
+				"packageRoot": "dist/{projectRoot}"
 			}
 		}
 	},

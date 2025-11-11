@@ -1,9 +1,14 @@
 ---
 title: injectRouteData
 description: ngxtension/inject-route-data
-entryPoint: inject-route-data
+entryPoint: ngxtension/inject-route-data
 contributors: ['krzysztof-kachniarz']
 ---
+
+:::note[Router outlet is required]
+`injectRouteData` works on all components that are inside routing context. Make sure the component you are using `injectRouteData` in, is part of your routes.
+For the same reason - `injectRouteData` will not work correctly inside your root component (usually `AppComponent`)
+:::
 
 `injectRouteData` is a helper function that allows us to inject data from the current route as a signal.
 
@@ -27,6 +32,17 @@ class TestComponent {
 }
 ```
 
+Or, if we want to transform the data, we can pass a function to `injectRouteData`.
+
+```ts
+@Component()
+class TestComponent {
+	routeDataKeys = injectRouteData((data) => Object.keys(data)); // returns a signal with the keys of the route data object
+}
+```
+
+### Specific value
+
 If we want to get the value for a specific key, we can pass the name of the object key to `injectRouteData`.
 
 ```ts
@@ -37,15 +53,28 @@ If we want to get the value for a specific key, we can pass the name of the obje
 	`,
 })
 class TestComponent {
-	details = injectRouteData('details'); // returns a signal with the value of the details key in route data object
+	details: Signal<unknown> = injectRouteData('details'); // returns a signal with the value of the details key in route data object
 }
 ```
 
-Or, if we want to transform the data, we can pass a function to `injectRouteData`.
+You can also pass a custom injector or `defaultValue`.
 
 ```ts
 @Component()
-class TestComponent {
-	routeDataKeys = injectRouteData((data) => Object.keys(data)); // returns a signal with the keys of the route data object
+class TestComponent implements OnInit {
+	injector = inject(Injector);
+
+	detailsWithDefaultValue: Signal<string> = injectRouteData('details', {
+		defaultValue: 'abc',
+	});
+
+	ngOnInit() {
+		const detailsWithCustomInjector: Signal<boolean> = injectRouteData(
+			'details',
+			{
+				injector: this.injector,
+			},
+		);
+	}
 }
 ```

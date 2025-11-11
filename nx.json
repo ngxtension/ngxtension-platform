@@ -53,6 +53,52 @@
 		"@nx/angular:component": { "style": "css" },
 		"@nx/workspace:move": { "projectNameAndRootFormat": "as-provided" }
 	},
-	"nxCloudAccessToken": "ZjZjZjhkOGUtNWQ5MS00NGM0LThmMDQtNDNlNzhkYjJjMmZmfHJlYWQtd3JpdGU=",
+	"release": {
+		"projects": ["ngxtension", "plugin"],
+		"version": {
+			"preVersionCommand": "npm run package"
+		},
+		"git": {
+			"commitMessage": "chore: release {version}"
+		},
+		"changelog": {
+			"workspaceChangelog": {
+				"createRelease": "github"
+			}
+		},
+		"conventionalCommits": {
+			"types": {
+				"feat": {
+					"changelog": {
+						"title": "Features"
+					}
+				},
+				"fix": {
+					"changelog": {
+						"title": "Bug Fixes"
+					}
+				},
+				"cleanup": {
+					"changelog": {
+						"title": "Cleanup"
+					},
+					"semverBump": "patch"
+				},
+				"docs": {
+					"changelog": {
+						"title": "Documentation"
+					},
+					"semverBump": "none"
+				},
+				"refactor": {
+					"changelog": {
+						"title": "Refactor"
+					},
+					"semverBump": "patch"
+				}
+			}
+		},
+		"releaseTagPattern": "{version}"
+	},
 	"nxCloudId": "691362287ee27f635d6a2523"
 }

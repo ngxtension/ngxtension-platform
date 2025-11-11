@@ -52,6 +52,14 @@ class TestHost {
 	// style binding with a style unit extension
 	width = hostBinding('style.width.px', signal(500));
 
+	style = hostBinding(
+		'style',
+		signal({
+			position: 'fixed',
+			top: '10px',
+		} satisfies Partial<CSSStyleDeclaration>),
+	);
+
 	// attribute binding
 	required = hostBinding(
 		'attr.aria-required',
@@ -69,15 +77,20 @@ describe(hostBinding.name, () => {
 	const setup = (updatedFakeControl?: Partial<FakeControl>) => {
 		const fixture = TestBed.createComponent(TestHost);
 
-		if (updatedFakeControl) {
+		const updater = (value?: Partial<FakeControl>) => {
 			fixture.componentInstance.fakeControl.update((ctrl) => ({
 				...ctrl,
-				...updatedFakeControl,
+				...value,
 			}));
+			fixture.detectChanges();
+		};
+
+		if (updatedFakeControl) {
+			updater(updatedFakeControl);
 		}
 		fixture.detectChanges();
 
-		return { fixture };
+		return { fixture, updater };
 	};
 
 	describe('class binding', () => {
@@ -102,7 +115,7 @@ describe(hostBinding.name, () => {
 			expect(fixture.nativeElement.classList).toContain('something');
 		});
 
-		it('should not bind both the "hidden" and "somehting" classes', () => {
+		it('should not bind both the "hidden" and "something" classes', () => {
 			const { fixture } = setup({ klass: null });
 
 			expect(fixture.nativeElement.classList).not.toContain('hidden');
@@ -114,6 +127,18 @@ describe(hostBinding.name, () => {
 
 			expect(fixture.nativeElement.classList).not.toContain('hidden');
 			expect(fixture.nativeElement.classList).toContain('something');
+		});
+
+		it('should remove "hidden" and add "something"', () => {
+			const { fixture, updater } = setup({ klass: 'hidden' });
+
+			expect(fixture.nativeElement.classList).toContain('hidden');
+			expect(fixture.nativeElement.classList).not.toContain('something');
+
+			updater({ klass: 'something' });
+
+			expect(fixture.nativeElement.classList).toContain('something');
+			expect(fixture.nativeElement.classList).not.toContain('hidden');
 		});
 	});
 
@@ -134,6 +159,13 @@ describe(hostBinding.name, () => {
 			const { fixture } = setup();
 
 			expect(fixture.nativeElement.style.width).toEqual('500px');
+		});
+
+		it('should bind both position to "fixed" and top to "10px"', () => {
+			const { fixture } = setup();
+
+			expect(fixture.nativeElement.style.position).toEqual('fixed');
+			expect(fixture.nativeElement.style.top).toEqual('10px');
 		});
 	});
 

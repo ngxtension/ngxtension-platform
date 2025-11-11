@@ -5,17 +5,15 @@
 	"prefix": "libs/ngxtension-platform",
 	"tags": [],
 	"projectType": "library",
-	"targets": {
-		"package": {
-			"executor": "nx:run-commands",
-			"options": {
-				"commands": [
-					"pnpm exec nx build ngxtension",
-					"pnpm exec nx build plugin"
-				],
-				"parallel": false
+	"release": {
+		"version": {
+			"generatorOptions": {
+				"packageRoot": "dist/{projectRoot}",
+				"currentVersionResolver": "git-tag"
 			}
-		},
+		}
+	},
+	"targets": {
 		"build": {
 			"executor": "@nx/angular:package",
 			"outputs": ["{workspaceRoot}/dist/{projectRoot}"],
@@ -36,10 +34,9 @@
 			"executor": "@nx/eslint:lint",
 			"outputs": ["{options.outputFile}"]
 		},
-		"publish": {
-			"command": "npm publish",
+		"nx-release-publish": {
 			"options": {
-				"cwd": "dist/libs/ngxtension"
+				"packageRoot": "dist/{projectRoot}"
 			}
 		}
 	}

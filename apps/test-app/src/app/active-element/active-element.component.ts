@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { injectActiveElement } from 'ngxtension/active-element';
 
 @Component({
-	standalone: true,
 	host: {
 		style: 'display: block; margin: 12px',
 	},

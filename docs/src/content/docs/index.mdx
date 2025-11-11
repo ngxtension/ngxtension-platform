@@ -1,20 +1,410 @@
 ---
-title: Welcome to ngxtension
+title: ngxtension
 template: splash
 hero:
-  tagline: A collection of utilities for Angular.
+  tagline: A comprehensive collection of utilities for modern Angular development.
   image:
-    file: ../../../public/logo.svg
     alt: ngxtension logo
-
+    file: ../../../public/ngxt-blue.svg
+    dark: ../../../public/ngxt-white.svg
+    light: ../../../public/ngxt-blue.svg
   actions:
-    - text: Getting Started
+    - text: Get Started
       link: /getting-started/introduction
       icon: right-arrow
       variant: primary
     - text: View on GitHub
-      link: https://github.com/nartc/ngxtension-platform
+      link: https://github.com/ngxtension/ngxtension-platform
       icon: external
+      variant: secondary
 ---
 
-Documentation powered by [Starlight Astro](https://starlight.astro.build/).
+## Why ngxtension? ✨
+
+<div class="features-grid">
+	<div class="feature-card">
+		<div class="feature-icon">📦</div>
+		<h3>Feature Rich</h3>
+		<p>50+ utilities for modern Angular development</p>
+	</div>
+
+    <div class="feature-card">
+    	<div class="feature-icon">🚀</div>
+    	<h3>Modern Angular</h3>
+    	<p>
+    		Built for Angular's latest features including signals, standalone
+    		components, and the new control flow
+    	</p>
+    </div>
+
+    <div class="feature-card">
+    	<div class="feature-icon">⚡</div>
+    	<h3>Performance</h3>
+    	<p>
+    		Optimized utilities that leverage Angular's change detection and signals
+    		system
+    	</p>
+    </div>
+
+    <div class="feature-card">
+    	<div class="feature-icon">🛠️</div>
+    	<h3>Developer Experience</h3>
+    	<p>Intuitive APIs that reduce boilerplate and improve code readability</p>
+    </div>
+
+    <div class="feature-card">
+    	<div class="feature-icon">🌳</div>
+    	<h3>Tree-shakable</h3>
+    	<p>Only import what you need, keeping your bundle size minimal</p>
+    </div>
+
+    <div class="feature-card">
+    	<div class="feature-icon">🔄</div>
+    	<h3>Type-safe</h3>
+    	<p>Full TypeScript support with excellent type inference</p>
+    </div>
+
+    <div class="feature-card">
+    	<div class="feature-icon">🎯</div>
+    	<h3>Focused</h3>
+    	<p>Each utility solves a specific problem without unnecessary complexity</p>
+    </div>
+
+    <div class="feature-card">
+    	<div class="feature-icon">📚</div>
+    	<h3>Well Documented</h3>
+    	<p>Comprehensive documentation with examples and interactive demos</p>
+    </div>
+
+    <div class="feature-card">
+    	<div class="feature-icon">🔌</div>
+    	<h3>Extensible</h3>
+    	<p>Easy to extend and customize for your specific use cases</p>
+    </div>
+
+</div>
+
+## What does **ngxtension** offer? 🚀
+
+### Signal Utilities
+
+<div class="utilities-grid">
+	<a href="/utilities/signals/connect/" class="utility-card">
+		<span class="utility-name">connect</span>
+		<span class="utility-desc">Connect everything to everything</span>
+	</a>
+	<a href="/utilities/signals/derived-from/" class="utility-card">
+		<span class="utility-name">derivedFrom</span>
+		<span class="utility-desc">combineLatest with signals support</span>
+	</a>
+	<a href="/utilities/signals/explicit-effect/" class="utility-card">
+		<span class="utility-name">explicitEffect</span>
+		<span class="utility-desc">effect with explicit dependencies</span>
+	</a>
+	<a href="/utilities/signals/create-notifier/" class="utility-card">
+		<span class="utility-name">createNotifier</span>
+		<span class="utility-desc">the tick you're missing</span>
+	</a>
+	<a href="/utilities/signals/signal-slice/" class="utility-card">
+		<span class="utility-name">signalSlice</span>
+		<span class="utility-desc">tasty sliced state management</span>
+	</a>
+	<a href="/utilities/signals/to-lazy-signal/" class="utility-card">
+		<span class="utility-name">toLazySignal</span>
+		<span class="utility-desc">defer signal's eager execution</span>
+	</a>
+	<a href="/utilities/signals/to-observable-signal/" class="utility-card">
+		<span class="utility-name">toObservableSignal</span>
+		<span class="utility-desc">convert observable to signal</span>
+	</a>
+	<a href="/utilities/signals/merge-from/" class="utility-card">
+		<span class="utility-name">mergeFrom</span>
+		<span class="utility-desc">merge multiple signals</span>
+	</a>
+	<a href="/utilities/signals/computed-previous/" class="utility-card">
+		<span class="utility-name">computedPrevious</span>
+		<span class="utility-desc">access previous signal value</span>
+	</a>
+</div>
+
+### Router Utilities
+
+<div class="utilities-grid">
+	<a href="/utilities/injectors/linked-query-param/" class="utility-card">
+		<span class="utility-name">linkedQueryParam</span>
+		<span class="utility-desc">bidirectional query parameter binding</span>
+	</a>
+	<a href="/utilities/injectors/inject-query-params/" class="utility-card">
+		<span class="utility-name">injectQueryParams</span>
+		<span class="utility-desc">inject signal route query params</span>
+	</a>
+	<a href="/utilities/injectors/inject-params/" class="utility-card">
+		<span class="utility-name">injectParams</span>
+		<span class="utility-desc">inject signal route params</span>
+	</a>
+	<a href="/utilities/injectors/inject-route-data/" class="utility-card">
+		<span class="utility-name">injectRouteData</span>
+		<span class="utility-desc">inject data from the current route</span>
+	</a>
+	<a href="/utilities/injectors/inject-route-fragment/" class="utility-card">
+		<span class="utility-name">injectRouteFragment</span>
+		<span class="utility-desc">inject route fragment as signal</span>
+	</a>
+	<a href="/utilities/injectors/navigation-end/" class="utility-card">
+		<span class="utility-name">injectNavigationEnd</span>
+		<span class="utility-desc">listen to navigation end events</span>
+	</a>
+</div>
+
+### Injector Utilities
+
+<div class="utilities-grid">
+	<a href="/utilities/injectors/inject-lazy/" class="utility-card">
+		<span class="utility-name">injectLazy</span>
+		<span class="utility-desc">Lazy inject your lazy services</span>
+	</a>
+	<a href="/utilities/injectors/create-injection-token/" class="utility-card">
+		<span class="utility-name">createInjectionToken</span>
+		<span class="utility-desc">cool InjectionToken creation</span>
+	</a>
+	<a href="/utilities/injectors/inject-destroy/" class="utility-card">
+		<span class="utility-name">injectDestroy</span>
+		<span class="utility-desc">destroy$ you don't have to unsub</span>
+	</a>
+	<a href="/utilities/injectors/inject-network/" class="utility-card">
+		<span class="utility-name">injectNetwork</span>
+		<span class="utility-desc">track the current network state</span>
+	</a>
+	<a href="/utilities/injectors/inject-is-intersecting/" class="utility-card">
+		<span class="utility-name">injectIsIntersecting</span>
+		<span class="utility-desc">listen when element intersects</span>
+	</a>
+	<a href="/utilities/injectors/inject-local-storage/" class="utility-card">
+		<span class="utility-name">injectLocalStorage</span>
+		<span class="utility-desc">inject localStorage as signal</span>
+	</a>
+	<a href="/utilities/injectors/inject-text-selection/" class="utility-card">
+		<span class="utility-name">injectTextSelection</span>
+		<span class="utility-desc">inject text selection as signal</span>
+	</a>
+	<a href="/utilities/injectors/inject-inputs/" class="utility-card">
+		<span class="utility-name">injectInputs</span>
+		<span class="utility-desc">inject component inputs as signals</span>
+	</a>
+	<a href="/utilities/injectors/create-injectable/" class="utility-card">
+		<span class="utility-name">createInjectable</span>
+		<span class="utility-desc">create injectable services easily</span>
+	</a>
+	<a href="/utilities/injectors/auto-effect/" class="utility-card">
+		<span class="utility-name">autoEffect</span>
+		<span class="utility-desc">automatic effect management</span>
+	</a>
+</div>
+
+### RxJS Operators
+
+<div class="utilities-grid">
+	<a href="/utilities/operators/debug/" class="utility-card">
+		<span class="utility-name">debug</span>
+		<span class="utility-desc">log stream inputs and transformed outputs</span>
+	</a>
+	<a href="/utilities/operators/filter-array/" class="utility-card">
+		<span class="utility-name">filterArray</span>
+		<span class="utility-desc">filter array emitted by the stream</span>
+	</a>
+	<a href="/utilities/operators/filter-nil/" class="utility-card">
+		<span class="utility-name">filterNil</span>
+		<span class="utility-desc">filter out null and undefined values</span>
+	</a>
+	<a href="/utilities/operators/map-array/" class="utility-card">
+		<span class="utility-name">mapArray</span>
+		<span class="utility-desc">map array emitted by the stream</span>
+	</a>
+	<a href="/utilities/operators/map-skip-undefined/" class="utility-card">
+		<span class="utility-name">mapSkipUndefined</span>
+		<span class="utility-desc">skip undefined on map</span>
+	</a>
+	<a href="/utilities/operators/poll/" class="utility-card">
+		<span class="utility-name">poll</span>
+		<span class="utility-desc">poll a stream every "period" milliseconds</span>
+	</a>
+	<a href="/utilities/operators/reduce-array/" class="utility-card">
+		<span class="utility-name">reduceArray</span>
+		<span class="utility-desc">reduce array emitted by the stream</span>
+	</a>
+	<a href="/utilities/operators/when-document-visible/" class="utility-card">
+		<span class="utility-name">whenDocumentVisible</span>
+		<span class="utility-desc">emit only when document is visible</span>
+	</a>
+	<a href="/utilities/operators/derive-loading/" class="utility-card">
+		<span class="utility-name">deriveLoading</span>
+		<span class="utility-desc">derive loading state from streams</span>
+	</a>
+	<a href="/utilities/operators/take-latest-from/" class="utility-card">
+		<span class="utility-name">takeLatestFrom</span>
+		<span class="utility-desc">take latest value from multiple streams</span>
+	</a>
+</div>
+
+### Forms
+
+<div class="utilities-grid">
+	<a href="/utilities/forms/if-validator/" class="utility-card">
+		<span class="utility-name">ifValidator / ifAsyncValidator</span>
+		<span class="utility-desc">
+			apply sync/async conditional form validation
+		</span>
+	</a>
+	<a href="/utilities/forms/control-value-accessor/" class="utility-card">
+		<span class="utility-name">controlValueAccessor</span>
+		<span class="utility-desc">create custom form controls</span>
+	</a>
+	<a href="/utilities/forms/control-error/" class="utility-card">
+		<span class="utility-name">controlError</span>
+		<span class="utility-desc">handle form control errors</span>
+	</a>
+	<a href="/utilities/forms/form-events/" class="utility-card">
+		<span class="utility-name">formEvents</span>
+		<span class="utility-desc">enhanced form event handling</span>
+	</a>
+</div>
+
+### Pipes
+
+<div class="utilities-grid">
+	<a href="/utilities/pipes/repeat-pipe/" class="utility-card">
+		<span class="utility-name">repeatPipe</span>
+		<span class="utility-desc">repeat pipe for template iteration</span>
+	</a>
+	<a href="/utilities/pipes/call-apply/" class="utility-card">
+		<span class="utility-name">call/apply</span>
+		<span class="utility-desc">call and apply functions in templates</span>
+	</a>
+</div>
+
+### Effects & Lifecycle
+
+<div class="utilities-grid">
+	<a href="/utilities/stores/create-effect/" class="utility-card">
+		<span class="utility-name">createEffect</span>
+		<span class="utility-desc">
+			standalone version of NgRx ComponentStore Effect
+		</span>
+	</a>
+	<a href="/utilities/effects/effect-once-if/" class="utility-card">
+		<span class="utility-name">effectOnceIf</span>
+		<span class="utility-desc">run effect once when condition is met</span>
+	</a>
+	<a href="/utilities/operators/rx-effect/" class="utility-card">
+		<span class="utility-name">rxEffect</span>
+		<span class="utility-desc">utility to create a side effect with rxjs</span>
+	</a>
+</div>
+
+### Directives
+
+<div class="utilities-grid">
+	<a href="/utilities/directives/click-outside/" class="utility-card">
+		<span class="utility-name">clickOutside</span>
+		<span class="utility-desc">track when clicked outside an element</span>
+	</a>
+	<a href="/utilities/directives/repeat/" class="utility-card">
+		<span class="utility-name">repeat</span>
+		<span class="utility-desc">extension for an effective NgFor iteration</span>
+	</a>
+	<a href="/utilities/directives/resize/" class="utility-card">
+		<span class="utility-name">resize</span>
+		<span class="utility-desc">track element/host resizing</span>
+	</a>
+	<a href="/utilities/directives/trackby-id-prop/" class="utility-card">
+		<span class="utility-name">TrackById / TrackByProp</span>
+		<span class="utility-desc">
+			efficient iteration with trackby id or prop
+		</span>
+	</a>
+</div>
+
+### Components
+
+<div class="utilities-grid">
+	<a href="/utilities/components/host-binding/" class="utility-card">
+		<span class="utility-name">hostBinding</span>
+		<span class="utility-desc">signal counterpart of @HostBinding API</span>
+	</a>
+	<a href="/utilities/components/svg-sprite/" class="utility-card">
+		<span class="utility-name">svgSprite</span>
+		<span class="utility-desc">SVG sprite management</span>
+	</a>
+	<a href="/utilities/gesture/intro/" class="utility-card">
+		<span class="utility-name">Gesture</span>
+		<span class="utility-desc">
+			collection of Gestures to bind mouse and touch events
+		</span>
+	</a>
+</div>
+
+### Miscellaneous
+
+<div class="utilities-grid">
+	<a href="/utilities/miscellaneous/singleton-proxy/" class="utility-card">
+		<span class="utility-name">createSingletonProxy</span>
+		<span class="utility-desc">
+			lazy create singleton instance of a given class
+		</span>
+	</a>
+	<a href="/utilities/miscellaneous/call-apply/" class="utility-card">
+		<span class="utility-name">call/apply</span>
+		<span class="utility-desc">call and apply functions safely</span>
+	</a>
+	<a href="/utilities/intl/intl/" class="utility-card">
+		<span class="utility-name">intl</span>
+		<span class="utility-desc">internationalization utilities</span>
+	</a>
+	<a href="/utilities/http/merge-http-context/" class="utility-card">
+		<span class="utility-name">mergeHttpContext</span>
+		<span class="utility-desc">merge HTTP context providers</span>
+	</a>
+</div>
+
+### Quick Start 🚀
+
+#### Install ngxtension
+
+```bash
+npm install ngxtension
+# or
+pnpm add ngxtension
+# or
+yarn add ngxtension
+```
+
+#### Import and use
+
+Import only what you need. **ngxtension** is built with tree-shaking in mind.
+
+```angular-ts
+import { linkedQueryParam, paramToNumber } from 'ngxtension/linked-query-param';
+import { derivedFrom } from 'ngxtension/derived-from';
+
+@Component({
+	template: `
+		<input [(ngModel)]="searchQuery" />
+
+		@for (result of results(); track result.id) {
+			<div>{{ result.title }}</div>
+		}
+
+		<pagination [(page)]="pageNumber" />
+	`,
+})
+export class MyComponent {
+	readonly searchQuery = linkedQueryParam('search');
+	readonly pageNumber = linkedQueryParam('page', {
+		parse: paramToNumber({ defaultValue: 1 }),
+	});
+
+	readonly results = derivedFrom([this.searchQuery], pipe(
+		switchMap((query) => this.searchService.search(query)),
+	));
+}
+```

@@ -1,7 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import {
 	Directive,
-	ENVIRONMENT_INITIALIZER,
 	ElementRef,
 	Injectable,
 	Input,
@@ -10,11 +9,12 @@ import {
 	computed,
 	inject,
 	makeEnvironmentProviders,
+	provideEnvironmentInitializer,
 	signal,
 	type OnInit,
 } from '@angular/core';
 import { injectAutoEffect } from 'ngxtension/auto-effect';
-import { computedFrom } from 'ngxtension/computed-from';
+import { derivedFrom } from 'ngxtension/derived-from';
 import {
 	defer,
 	map,
@@ -135,17 +135,16 @@ export type CreateNgxSvgSpriteOptions = Omit<NgxSvgSprite, 'url'> &
  */
 export const provideSvgSprites = (...sprites: CreateNgxSvgSpriteOptions[]) =>
 	makeEnvironmentProviders([
-		{
-			provide: ENVIRONMENT_INITIALIZER,
-			multi: true,
-			useFactory: () => {
+		provideEnvironmentInitializer(() => {
+			const initializerFn = (() => {
 				const service = inject(NgxSvgSprites);
 				return () =>
 					sprites.forEach((sprite) =>
 						service.register(createSvgSprite(sprite)),
 					);
-			},
-		},
+			})();
+			return initializerFn();
+		}),
 	]);
 
 /**
@@ -188,7 +187,7 @@ const createSvgSprite = (options: CreateNgxSvgSpriteOptions) => {
  *
  * ### With Directive Composition Api
  *
- * In your project you can utilize the [Directive Composition Api](https://angular.io/guide/directive-composition-api) to create specific svg sprites.
+ * In your project you can utilize the [Directive Composition Api](https://angular.dev/guide/directives/directive-composition-api) to create specific svg sprites.
  *
  * In this example a _fontawesome brands_ svg sprite is created.
  *
@@ -199,7 +198,7 @@ const createSvgSprite = (options: CreateNgxSvgSpriteOptions) => {
  * ```ts
  * @Directive({
  * 	selector: 'svg[faBrand]',
- * 	standalone: true,
+ *
  * 	hostDirectives: [
  * 		{ directive: NgxSvgSpriteFragment, inputs: ['fragment:faBrand'] },
  * 	],
@@ -288,7 +287,6 @@ const createSvgSprite = (options: CreateNgxSvgSpriteOptions) => {
  */
 @Directive({
 	selector: 'svg[fragment]',
-	standalone: true,
 })
 export class NgxSvgSpriteFragment implements OnInit {
 	/**
@@ -379,7 +377,9 @@ export class NgxSvgSpriteFragment implements OnInit {
 
 			// Cleanup: clear child nodes and remove old classes of this svg.
 			return () => {
-				element.replaceChildren();
+				while (element.firstChild) {
+					element.removeChild(element.firstChild);
+				}
 				element.classList.remove(...classes);
 			};
 		});
@@ -418,7 +418,7 @@ export class NgxSvgSpriteFragment implements OnInit {
 	/**
 	 * @ignore
 	 */
-	private readonly svg$ = computedFrom(
+	private readonly svg$ = derivedFrom(
 		{ sprite: this.spriteConfig$ },
 		pipe(switchMap(({ sprite }) => sprite?.svg$ ?? of(undefined))),
 	);

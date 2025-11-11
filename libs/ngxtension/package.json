@@ -1,12 +1,12 @@
 {
 	"name": "ngxtension",
 	"description": "Utilities library for Angular",
-	"version": "0.0.0",
+	"version": "0.0.0-replace",
 	"engines": {
 		"node": ">=18"
 	},
-	"repository": "nartc/ngxtension-platform",
-	"homepage": "https://ngxtension.netlify.app",
+	"repository": "ngxtension/ngxtension-platform",
+	"homepage": "https://ngxtension.dev",
 	"license": "MIT",
 	"keywords": [
 		"ng2",
@@ -18,24 +18,18 @@
 		"signals"
 	],
 	"peerDependencies": {
-		"@angular/common": ">=16.0.0",
-		"@angular/core": ">=16.0.0",
+		"@angular/common": ">=19.0.0",
+		"@angular/core": ">=19.0.0",
 		"@use-gesture/vanilla": "^10.0.0",
 		"rxjs": "^6.0.0 || ^7.0.0"
 	},
+	"peerDependenciesMeta": {
+		"@use-gesture/vanilla": {
+			"optional": true
+		}
+	},
 	"dependencies": {
-		"@nx/devkit": "^17.0.0",
-		"nx": "^17.0.0",
-    "ts-morph": "^21.0.1",
 		"tslib": "^2.3.0"
 	},
-	"sideEffects": false,
-	"generators": "./plugin/generators.json",
-	"schematics": "./plugin/generators.json",
-	"nx-migrations": {
-		"migrations": "./plugin/migrations.json"
-	},
-	"ng-update": {
-		"migrations": "./plugin/migrations.json"
-	}
+	"sideEffects": false
 }

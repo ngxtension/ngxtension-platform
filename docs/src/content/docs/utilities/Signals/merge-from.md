@@ -1,7 +1,7 @@
 ---
 title: mergeFrom
 description: ngxtension/merge-from
-entryPoint: merge-from
+entryPoint: ngxtension/merge-from
 badge: stable
 contributors: ['chau-tran']
 ---
@@ -11,7 +11,7 @@ It also gives us the possibility to change the emitted value before emitting it 
 
 It is similar to `merge()`, but it also takes `Signals` into consideration.
 
-From `ngxtension` perspective, `mergeFrom` is similar to [`computedFrom`](./computed-from.md), but it doesn't emit the combined value, but the latest emitted value by using the `merge` operator instead of `combineLatest`.
+From `ngxtension` perspective, `mergeFrom` is similar to [`derivedFrom`](/utilities/signals/derived-from), but it doesn't emit the combined value, but the latest emitted value by using the `merge` operator instead of `combineLatest`.
 
 ```ts
 import { mergeFrom } from 'ngxtension/merge-from';
@@ -64,24 +64,24 @@ const runnerOne = signal({ name: 'Naruto', time: '12:43PM' });
 const runnerTwo = signal({ name: 'Goku', time: '12:44PM' });
 
 const lastRunner = mergeFrom(
-    [runnerOne, runnerTwo],
-    pipe(
-        switchMap((runner) => {
-            return of('The last runner to arive was:  ' + runner.name).pipe(
-                delay(1000),
-            );
-        }),
-    ),
+	[runnerOne, runnerTwo],
+	pipe(
+		switchMap((runner) => {
+			return of('The last runner to arive was:  ' + runner.name).pipe(
+				delay(1000),
+			);
+		}),
+	),
 );
 effect(() => console.log(lastRunner())); // 👈 will throw an error!! 💥
 
 setTimeout(() => {
-    runnerOne.update((runner) => {
-        return {
-            ...runner,
-            time: '12:45PM',
-        };
-    });
+	runnerOne.update((runner) => {
+		return {
+			...runner,
+			time: '12:45PM',
+		};
+	});
 }, 3000);
 
 // You can copy the above example inside an Angular constructor and see the result in the console.
@@ -93,15 +93,15 @@ You can solve this by using the `initialValue` param in the third argument `opti
 
 ```ts
 const lastRunner = mergeFrom(
-    [runnerOne, runnerTwo],
-    pipe(
-        switchMap((runner) => {
-            return of('The last runner to arive was:  ' + runner.name).pipe(
-                delay(1000),
-            );
-        }),
-    ),
-    { initialValue: 'Waiting for someone to arrive...' },
+	[runnerOne, runnerTwo],
+	pipe(
+		switchMap((runner) => {
+			return of('The last runner to arive was:  ' + runner.name).pipe(
+				delay(1000),
+			);
+		}),
+	),
+	{ initialValue: 'Waiting for someone to arrive...' },
 );
 ```
 
@@ -117,15 +117,15 @@ Another way to solve this problem is using the `startWith` rxjs operator in the 
 
 ```ts
 const lastRunner = mergeFrom(
-    [runnerOne, runnerTwo],
-    pipe(
-        switchMap((runner) => {
-            return of('The last runner to arive was:  ' + runner.name).pipe(
-                delay(1000),
-            );
-        }),
-        startWith('Waiting for someone to arrive...'),
-    ),
+	[runnerOne, runnerTwo],
+	pipe(
+		switchMap((runner) => {
+			return of('The last runner to arive was:  ' + runner.name).pipe(
+				delay(1000),
+			);
+		}),
+		startWith('Waiting for someone to arrive...'),
+	),
 );
 ```
 
@@ -188,8 +188,8 @@ Using `startWith` operator aproach to change the initial value.
 
 ```ts
 const lastRunner = mergeFrom([
-    runnerOne$.pipe(startWith({ name: 'Naruto', time: '12:43PM' })),
-    runnerTwo$,
+	runnerOne$.pipe(startWith({ name: 'Naruto', time: '12:43PM' })),
+	runnerTwo$,
 ]);
 
 console.log(lastRunner()); // {name: 'Naruto', time: '12:43PM'}
@@ -199,7 +199,7 @@ Or, we can set `initialValue` as the third argument operator to change the initi
 
 ```ts
 const lastRunner = mergeFrom([runnerOne$, runnerTwo$], undefined, {
-    initialValue: { name: 'Naruto', time: '12:43PM' },
+	initialValue: { name: 'Naruto', time: '12:43PM' },
 });
 
 console.log(lastRunner()); // {name: 'Naruto', time: '12:43PM'}
@@ -211,7 +211,7 @@ Or, you can set the `initialValue` as the third argument in the `options` object
 
 ```ts
 const lastRunner = mergeFrom([runnerOne$, runnerTwo$], undefined, {
-    initialValue: { name: 'Naruto', time: '12:43PM' },
+	initialValue: { name: 'Naruto', time: '12:43PM' },
 });
 
 console.log(lastRunner()); // {name: 'Naruto', time: '12:43PM'}
@@ -224,18 +224,17 @@ By default, `mergeFrom` needs to be called in an injection context, but it can a
 ```ts
 @Component()
 export class MyComponent implements OnInit {
-    readonly injector = inject(Injector);
-    ngOnInit(): void {
-        const runnerTwo$ = new Subject<number>();
-        const runnerOne$ = new Subject<number>();
+	readonly injector = inject(Injector);
+	ngOnInit(): void {
+		const runnerTwo$ = new Subject<number>();
+		const runnerOne$ = new Subject<number>();
 
-        const lastRunner = mergeFrom([runnerOne$, runnerTwo$], undefined, {
-            initialValue: { name: 'Naruto', time: '12:43PM' },
-            injector: this.injector,
-        });
+		const lastRunner = mergeFrom([runnerOne$, runnerTwo$], undefined, {
+			initialValue: { name: 'Naruto', time: '12:43PM' },
+			injector: this.injector,
+		});
 
-        console.log(lastRunner()); // {name: 'Naruto', time: '12:43PM'}
-    }
+		console.log(lastRunner()); // {name: 'Naruto', time: '12:43PM'}
+	}
 }
 ```
-

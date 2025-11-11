@@ -69,7 +69,7 @@ describe(createInjectionToken.name, () => {
 		describe('when not provided', () => {
 			it('then throw No Provider error', () => {
 				TestBed.runInInjectionContext(() => {
-					expect(() => injectFn()).toThrowError(/no provider/i);
+					expect(() => injectFn()).toThrow(/no provider/i);
 				});
 			});
 		});
@@ -93,9 +93,7 @@ describe(createInjectionToken.name, () => {
 		const [injectFn, provideFn] = createInjectionToken(() => 1);
 		it(`then throw no provider when invoked with an injector without providing`, () => {
 			const injector = Injector.create({ providers: [] });
-			expect(injectFn.bind(injectFn, { injector })).toThrowError(
-				/no provider/i,
-			);
+			expect(injectFn.bind(injectFn, { injector })).toThrow(/no provider/i);
 		});
 
 		it(`then return correct value when invoked with an injector`, () => {
@@ -170,12 +168,20 @@ describe(createNoopInjectionToken.name, () => {
 			'noop',
 			{ multi: true },
 		);
+		const [injectTwoFn, provideTwoFn] = createNoopInjectionToken<() => number>(
+			'noop two',
+			{ isFunctionValue: true },
+		);
 		it('then work properly', () => {
 			TestBed.configureTestingModule({
-				providers: [provideFn(1), provideFn(() => 2)],
+				providers: [provideFn(1), provideFn(() => 2), provideTwoFn(() => 3)],
 			}).runInInjectionContext(() => {
 				const values = injectFn();
 				expect(values).toEqual([1, 2]);
+
+				const value = injectTwoFn();
+				expect(value).toStrictEqual(expect.any(Function));
+				expect(value()).toEqual(3);
 			});
 		});
 	});
