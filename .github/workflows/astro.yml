@@ -36,7 +36,7 @@ jobs:
       - name: Create local build artifacts
         run: |
           echo "Building documentation..."
-          pnpm exec nx package docs --skip-nx-cache
+          pnpm exec nx package docs
 
       - name: Verify build artifacts
         run: |

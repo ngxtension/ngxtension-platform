@@ -8,7 +8,6 @@ on:
 
 env:
   NX_VERBOSE_LOGGING: true
-  NX_NO_CLOUD: true
 
 # Needed for nx-set-shas when run on the main branch
 permissions:
@@ -36,8 +35,8 @@ jobs:
           run_install: false
 
       # Start CI run disabled
-      # - name: Start CI run
-      #   run: npx nx-cloud start-ci-run --distribute-on="8 linux-medium-js" --stop-agents-after=build
+      - name: Start CI run
+        run: npx nx-cloud start-ci-run --distribute-on="8 linux-medium-js" --stop-agents-after=build,lint,test
 
       - name: Restore cached npm dependencies
         id: cache-dependencies-restore
