@@ -175,7 +175,9 @@
 				}
 			}
 		},
-		"releaseTagPattern": "{version}"
+		"releaseTag": {
+			"pattern": "{version}"
+		}
 	},
 	"nxCloudId": "691362287ee27f635d6a2523"
 }
