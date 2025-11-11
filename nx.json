@@ -1,40 +1,22 @@
 {
 	"$schema": "./node_modules/nx/schemas/nx-schema.json",
 	"tasksRunnerOptions": {
-		"default": {
-			"options": {
-				"useLightClient": true
-			}
-		}
+		"default": { "options": { "useLightClient": true } }
 	},
-	"workspaceLayout": {
-		"projectNameAndRootFormat": "as-provided"
-	},
+	"workspaceLayout": { "projectNameAndRootFormat": "as-provided" },
 	"targetDefaults": {
 		"build": {
 			"dependsOn": ["^build"],
 			"inputs": ["production", "^production"],
 			"cache": true
 		},
-		"e2e": {
-			"inputs": ["default", "^production"],
-			"cache": true
-		},
-		"package": {
-			"cache": true
-		},
+		"e2e": { "inputs": ["default", "^production"], "cache": true },
+		"package": { "cache": true },
 		"@nx/jest:jest": {
 			"inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
 			"cache": true,
-			"options": {
-				"passWithNoTests": true
-			},
-			"configurations": {
-				"ci": {
-					"ci": true,
-					"codeCoverage": true
-				}
-			}
+			"options": { "passWithNoTests": true },
+			"configurations": { "ci": { "ci": true, "codeCoverage": true } }
 		},
 		"@nx/eslint:lint": {
 			"inputs": [
@@ -67,16 +49,10 @@
 			"unitTestRunner": "jest",
 			"e2eTestRunner": "none"
 		},
-		"@nx/angular:library": {
-			"linter": "eslint",
-			"unitTestRunner": "jest"
-		},
-		"@nx/angular:component": {
-			"style": "css"
-		},
-		"@nx/workspace:move": {
-			"projectNameAndRootFormat": "as-provided"
-		}
+		"@nx/angular:library": { "linter": "eslint", "unitTestRunner": "jest" },
+		"@nx/angular:component": { "style": "css" },
+		"@nx/workspace:move": { "projectNameAndRootFormat": "as-provided" }
 	},
-	"nxCloudAccessToken": "ZjZjZjhkOGUtNWQ5MS00NGM0LThmMDQtNDNlNzhkYjJjMmZmfHJlYWQtd3JpdGU="
+	"nxCloudAccessToken": "ZjZjZjhkOGUtNWQ5MS00NGM0LThmMDQtNDNlNzhkYjJjMmZmfHJlYWQtd3JpdGU=",
+	"nxCloudId": "691362287ee27f635d6a2523"
 }
