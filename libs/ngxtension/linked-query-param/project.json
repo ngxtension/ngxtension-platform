@@ -9,8 +9,8 @@
 			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
 			"options": {
 				"jestConfig": "libs/ngxtension/jest.config.ts",
-				"testPathPattern": ["linked-query-param"],
-				"passWithNoTests": true
+				"passWithNoTests": true,
+				"testPathPatterns": ["linked-query-param"]
 			},
 			"configurations": {
 				"ci": {

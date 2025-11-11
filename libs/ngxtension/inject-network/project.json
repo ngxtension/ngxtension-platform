@@ -9,8 +9,8 @@
 			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
 			"options": {
 				"jestConfig": "libs/ngxtension/jest.config.ts",
-				"testPathPattern": ["inject-network"],
-				"passWithNoTests": true
+				"passWithNoTests": true,
+				"testPathPatterns": ["inject-network"]
 			},
 			"configurations": {
 				"ci": {

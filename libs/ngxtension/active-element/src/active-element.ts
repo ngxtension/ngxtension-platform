@@ -1,5 +1,4 @@
-import { DOCUMENT } from '@angular/common';
-import { inject, Injector } from '@angular/core';
+import { DOCUMENT, inject, Injector } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { assertInjector } from 'ngxtension/assert-injector';
 import { fromEvent, map, merge, shareReplay } from 'rxjs';

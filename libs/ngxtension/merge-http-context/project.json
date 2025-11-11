@@ -9,8 +9,8 @@
 			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
 			"options": {
 				"jestConfig": "libs/ngxtension/jest.config.ts",
-				"testPathPattern": ["merge-http-context"],
-				"passWithNoTests": true
+				"passWithNoTests": true,
+				"testPathPatterns": ["merge-http-context"]
 			},
 			"configurations": {
 				"ci": {

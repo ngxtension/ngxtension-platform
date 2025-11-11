@@ -3,30 +3,28 @@
 	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "libs/ngxtension/src",
 	"prefix": "libs/ngxtension-platform",
-	"tags": [],
 	"projectType": "library",
 	"release": {
 		"version": {
-			"generatorOptions": {
-				"packageRoot": "dist/{projectRoot}",
-				"currentVersionResolver": "git-tag"
-			}
+			"currentVersionResolver": "git-tag",
+			"preserveLocalDependencyProtocols": false,
+			"manifestRootsToUpdate": ["dist/{projectRoot}"]
 		}
 	},
+	"tags": [],
 	"targets": {
 		"build": {
 			"executor": "@nx/angular:package",
 			"outputs": ["{workspaceRoot}/dist/{projectRoot}"],
 			"options": {
-				"project": "libs/ngxtension/ng-package.json"
+				"project": "libs/ngxtension/ng-package.json",
+				"tsConfig": "libs/ngxtension/tsconfig.lib.json"
 			},
 			"configurations": {
 				"production": {
 					"tsConfig": "libs/ngxtension/tsconfig.lib.prod.json"
 				},
-				"development": {
-					"tsConfig": "libs/ngxtension/tsconfig.lib.json"
-				}
+				"development": {}
 			},
 			"defaultConfiguration": "production"
 		},

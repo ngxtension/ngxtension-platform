@@ -9,8 +9,8 @@
 			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
 			"options": {
 				"jestConfig": "libs/ngxtension/jest.config.ts",
-				"testPathPattern": ["repeat-pipe"],
-				"passWithNoTests": true
+				"passWithNoTests": true,
+				"testPathPatterns": ["repeat-pipe"]
 			},
 			"configurations": {
 				"ci": {

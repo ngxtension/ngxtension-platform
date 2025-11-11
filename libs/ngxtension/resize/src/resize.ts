@@ -1,5 +1,5 @@
-import { DOCUMENT } from '@angular/common';
 import {
+	DOCUMENT,
 	DestroyRef,
 	Directive,
 	ElementRef,

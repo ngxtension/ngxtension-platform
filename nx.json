@@ -1,22 +1,40 @@
 {
 	"$schema": "./node_modules/nx/schemas/nx-schema.json",
 	"tasksRunnerOptions": {
-		"default": { "options": { "useLightClient": true } }
+		"default": {
+			"options": {
+				"useLightClient": true
+			}
+		}
 	},
-	"workspaceLayout": { "projectNameAndRootFormat": "as-provided" },
+	"workspaceLayout": {
+		"projectNameAndRootFormat": "as-provided"
+	},
 	"targetDefaults": {
 		"build": {
 			"dependsOn": ["^build"],
 			"inputs": ["production", "^production"],
 			"cache": true
 		},
-		"e2e": { "inputs": ["default", "^production"], "cache": true },
-		"package": { "cache": true },
+		"e2e": {
+			"inputs": ["default", "^production"],
+			"cache": true
+		},
+		"package": {
+			"cache": true
+		},
 		"@nx/jest:jest": {
 			"inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
 			"cache": true,
-			"options": { "passWithNoTests": true },
-			"configurations": { "ci": { "ci": true, "codeCoverage": true } }
+			"options": {
+				"passWithNoTests": true
+			},
+			"configurations": {
+				"ci": {
+					"ci": true,
+					"codeCoverage": true
+				}
+			}
 		},
 		"@nx/eslint:lint": {
 			"inputs": [
@@ -49,9 +67,68 @@
 			"unitTestRunner": "jest",
 			"e2eTestRunner": "none"
 		},
-		"@nx/angular:library": { "linter": "eslint", "unitTestRunner": "jest" },
-		"@nx/angular:component": { "style": "css" },
-		"@nx/workspace:move": { "projectNameAndRootFormat": "as-provided" }
+		"@nx/angular:library": {
+			"linter": "eslint",
+			"unitTestRunner": "jest"
+		},
+		"@nx/angular:component": {
+			"style": "css",
+			"type": "component"
+		},
+		"@nx/workspace:move": {
+			"projectNameAndRootFormat": "as-provided"
+		},
+		"@schematics/angular:component": {
+			"type": "component"
+		},
+		"@nx/angular:directive": {
+			"type": "directive"
+		},
+		"@schematics/angular:directive": {
+			"type": "directive"
+		},
+		"@nx/angular:service": {
+			"type": "service"
+		},
+		"@schematics/angular:service": {
+			"type": "service"
+		},
+		"@nx/angular:scam": {
+			"type": "component"
+		},
+		"@nx/angular:scam-directive": {
+			"type": "directive"
+		},
+		"@nx/angular:guard": {
+			"typeSeparator": "."
+		},
+		"@schematics/angular:guard": {
+			"typeSeparator": "."
+		},
+		"@nx/angular:interceptor": {
+			"typeSeparator": "."
+		},
+		"@schematics/angular:interceptor": {
+			"typeSeparator": "."
+		},
+		"@nx/angular:module": {
+			"typeSeparator": "."
+		},
+		"@schematics/angular:module": {
+			"typeSeparator": "."
+		},
+		"@nx/angular:pipe": {
+			"typeSeparator": "."
+		},
+		"@schematics/angular:pipe": {
+			"typeSeparator": "."
+		},
+		"@nx/angular:resolver": {
+			"typeSeparator": "."
+		},
+		"@schematics/angular:resolver": {
+			"typeSeparator": "."
+		}
 	},
 	"release": {
 		"projects": ["ngxtension", "plugin"],

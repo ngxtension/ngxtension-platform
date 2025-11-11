@@ -9,7 +9,7 @@
 			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
 			"options": {
 				"jestConfig": "libs/ngxtension/jest.config.ts",
-				"testPathPattern": ["trackby-id-prop"]
+				"testPathPatterns": ["trackby-id-prop"]
 			}
 		},
 		"lint": {

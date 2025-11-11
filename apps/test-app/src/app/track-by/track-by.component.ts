@@ -1,4 +1,3 @@
-import { NgFor } from '@angular/common';
 import {
 	Component,
 	DestroyRef,
@@ -12,20 +11,20 @@ import { TrackById, TrackByProp } from 'ngxtension/trackby-id-prop';
 @Component({
 	template: `
 		<ul #parentNoTrackBy>
-			<li *ngFor="let person of people">
-				{{ person.id }}. {{ person.firstName }} {{ person.lastName }}
-			</li>
+			@for (person of people; track person) {
+				<li>{{ person.id }}. {{ person.firstName }} {{ person.lastName }}</li>
+			}
 		</ul>
 		<hr />
 		<ul #parentTrackBy>
-			<li *ngFor="let person of people; trackById">
-				{{ person.id }}. {{ person.firstName }} {{ person.lastName }}
-			</li>
+			@for (person of people; track person) {
+				<li>{{ person.id }}. {{ person.firstName }} {{ person.lastName }}</li>
+			}
 		</ul>
 		<ul #parentTrackByProp>
-			<li *ngFor="let person of people; trackByProp: 'firstName'">
-				{{ person.id }}. {{ person.firstName }} {{ person.lastName }}
-			</li>
+			@for (person of people; track person) {
+				<li>{{ person.id }}. {{ person.firstName }} {{ person.lastName }}</li>
+			}
 		</ul>
 		<button (click)="add()">add</button>
 		<hr />
@@ -39,7 +38,7 @@ import { TrackById, TrackByProp } from 'ngxtension/trackby-id-prop';
 			With TrackBy prop mutations: {{ mutationsLength.withTrackByProp() }}
 		</p>
 	`,
-	imports: [NgFor, TrackById, TrackByProp],
+	imports: [TrackById, TrackByProp],
 })
 export default class TrackByTest {
 	people = [
