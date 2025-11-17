@@ -83,7 +83,7 @@ const username = injectLocalStorage<string>('username', {
 });
 ```
 
-Changes reflect across browser tabs.
+Changes reflect across browser tabs (default = true).
 
 **Dynamic key support**:
 
@@ -95,3 +95,12 @@ const settings = injectLocalStorage(() => `settings-${currentUserId()}`, {
 ```
 
 Reinitializes when currentUserId() changes.
+
+**Remove LocalStorage Item**:
+
+```typescript
+const username = injectLocalStorage<string>('username');
+username.set(undefined);
+```
+
+Setting `undefined` removes the item from local storage. Note that setting the value to `null` will store the string `'null'` and will **not** remove the item.
