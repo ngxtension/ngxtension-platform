@@ -5,33 +5,6 @@
 			"schema": "./src/generators/init/schema.json",
 			"description": "Init ngxtension"
 		},
-		"convert-signal-inputs": {
-			"factory": "./src/generators/convert-signal-inputs/generator",
-			"aliases": ["signal-inputs"],
-			"schema": "./src/generators/convert-signal-inputs/schema.json",
-			"description": "libs/plugin/src/generators/convert-signal-inputs/ generator"
-		},
-		"convert-outputs": {
-			"factory": "./src/generators/convert-outputs/generator",
-			"aliases": ["signal-outputs"],
-			"schema": "./src/generators/convert-outputs/schema.json",
-			"description": "libs/plugin/src/generators/convert-outputs/ generator"
-		},
-		"convert-di-to-inject": {
-			"factory": "./src/generators/convert-di-to-inject/generator",
-			"schema": "./src/generators/convert-di-to-inject/schema.json",
-			"description": "libs/plugin/src/generators/convert-di-to-inject/ generator"
-		},
-		"convert-queries": {
-			"factory": "./src/generators/convert-queries/generator",
-			"schema": "./src/generators/convert-queries/schema.json",
-			"description": "libs/plugin/src/generators/convert-queries/ generator"
-		},
-		"convert-to-self-closing-tag": {
-			"factory": "./src/generators/convert-to-self-closing-tag/generator",
-			"schema": "./src/generators/convert-to-self-closing-tag/schema.json",
-			"description": "libs/plugin/src/generators/convert-to-self-closing-tag/ generator"
-		},
 		"convert-to-sfc": {
 			"factory": "./src/generators/convert-to-sfc/generator",
 			"schema": "./src/generators/convert-to-sfc/schema.json",
@@ -48,33 +21,6 @@
 			"factory": "./src/generators/init/compat",
 			"schema": "./src/generators/init/schema.json",
 			"description": "Init ngxtension"
-		},
-		"convert-signal-inputs": {
-			"factory": "./src/generators/convert-signal-inputs/compat",
-			"aliases": ["signal-inputs"],
-			"schema": "./src/generators/convert-signal-inputs/schema.json",
-			"description": "libs/plugin/src/generators/convert-signal-inputs/ generator"
-		},
-		"convert-outputs": {
-			"factory": "./src/generators/convert-outputs/compat",
-			"aliases": ["signal-outputs"],
-			"schema": "./src/generators/convert-outputs/schema.json",
-			"description": "libs/plugin/src/generators/convert-outputs/ generator"
-		},
-		"convert-di-to-inject": {
-			"factory": "./src/generators/convert-di-to-inject/compat",
-			"schema": "./src/generators/convert-di-to-inject/schema.json",
-			"description": "libs/plugin/src/generators/convert-di-to-inject/ generator"
-		},
-		"convert-queries": {
-			"factory": "./src/generators/convert-queries/compat",
-			"schema": "./src/generators/convert-queries/schema.json",
-			"description": "libs/plugin/src/generators/convert-queries/ generator"
-		},
-		"convert-to-self-closing-tag": {
-			"factory": "./src/generators/convert-to-self-closing-tag/compat",
-			"schema": "./src/generators/convert-to-self-closing-tag/schema.json",
-			"description": "libs/plugin/src/generators/convert-to-self-closing-tag/ generator"
 		},
 		"convert-to-sfc": {
 			"factory": "./src/generators/convert-to-sfc/compat",

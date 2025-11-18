@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import LinkedQueryParamArrayCmp from './linked-query-param-array.component';
 import LinkedQueryParamStringCmp from './linked-query-param-basic.component';
 import LinkedQueryParamBooleansCmp from './linked-query-param-booleans.component';
+import LinkedQueryParamDynamicCmp from './linked-query-param-dynamic.component';
 import LinkedQueryParamInsideObjectCmp from './linked-query-param-insideObject.component';
 import LinkedQueryParamNumberCmp from './linked-query-param-number.component';
 import LinkedQueryParamObjectCmp from './linked-query-param-object.component';
@@ -40,6 +41,10 @@ export const routes: Routes = [
 			{
 				path: 'array',
 				component: LinkedQueryParamArrayCmp,
+			},
+			{
+				path: 'dynamic',
+				component: LinkedQueryParamDynamicCmp,
 			},
 		],
 	},

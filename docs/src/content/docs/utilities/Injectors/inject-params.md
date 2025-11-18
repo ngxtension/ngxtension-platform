@@ -6,6 +6,11 @@ badge: stable
 contributors: ['enea-jahollari']
 ---
 
+:::note[Router outlet is required]
+`injectParams` works on all components that are inside routing context. Make sure the component you are using `injectParams` in, is part of your routes.
+For the same reason - `injectParams` will not work correctly inside your root component (usually `AppComponent`)
+:::
+
 `injectParams` is a helper function that allows us to inject params from the current route as a signal.
 
 Having params as a signal helps in a modern angular signals based architecture.

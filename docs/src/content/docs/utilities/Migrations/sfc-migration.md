@@ -1,5 +1,5 @@
 ---
-title: Convert to SFC components migration
+title: SFC components migration
 description: Schematics for converting Angular components to SFC components
 entryPoint: convert-to-sfc
 badge: stable

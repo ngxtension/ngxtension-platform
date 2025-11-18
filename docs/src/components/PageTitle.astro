@@ -3,8 +3,8 @@ import Default from '@astrojs/starlight/components/PageTitle.astro';
 import type { Props } from '@astrojs/starlight/props';
 import { Icon } from '@astrojs/starlight/components';
 
-const badge = Astro.props.entry.data.badge;
-const entryPoint = Astro.props.entry.data.entryPoint;
+const badge = Astro.props.entry?.data?.badge;
+const entryPoint = Astro.props.entry?.data?.entryPoint;
 const bundleJsUrl = `https://deno.bundlejs.com?q=${entryPoint}&treeshake=[*]&config={%22esbuild%22:{%22external%22:[%22rxjs%22,%22@angular/core%22,%22@angular/common%22,%22@angular/forms%22,%22@angular/router%22]}}`;
 const sourceCodeUrl = `https://github.com/ngxtension/ngxtension-platform/tree/main/libs/${entryPoint}`;
 

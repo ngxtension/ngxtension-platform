@@ -261,18 +261,3 @@ effect(() => {
 	}
 });
 ```
-
-If you intend to trigger another `actionSource` from within your effects, it will be necessary to enable `allowSignalWrites` as triggering an `actionSource` will cause a value to be written to the state signal, e.g:
-
-```ts
-effect(
-	() => {
-		const status = state.status();
-
-		if (state.status() === 'complete') {
-			state.uploadAudio();
-		}
-	},
-	{ allowSignalWrites: true },
-);
-```

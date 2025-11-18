@@ -51,7 +51,7 @@ describe(injectTextSelection.name, () => {
 
 		// Configure the testing module with our test component.
 		TestBed.configureTestingModule({
-			declarations: [TestSelectionComponent],
+			imports: [TestSelectionComponent],
 		});
 
 		// Create the component and trigger initial change detection.

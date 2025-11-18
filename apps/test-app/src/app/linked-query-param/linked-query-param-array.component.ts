@@ -1,10 +1,8 @@
-import { JsonPipe } from '@angular/common';
 import { Component, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { linkedQueryParam } from 'ngxtension/linked-query-param';
 
 @Component({
-	standalone: true,
 	template: `
 		<div>
 			@for (id of IDs; track $index) {
@@ -19,7 +17,7 @@ import { linkedQueryParam } from 'ngxtension/linked-query-param';
 			}
 		</div>
 	`,
-	imports: [FormsModule, JsonPipe],
+	imports: [FormsModule],
 	styles: `
 		div {
 			padding: 20px;

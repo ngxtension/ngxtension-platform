@@ -1,16 +1,20 @@
 import {
+	computed,
 	effect,
 	inject,
 	Injectable,
 	InjectionToken,
 	Injector,
+	isSignal,
+	linkedSignal,
 	Provider,
 	runInInjectionContext,
-	signal,
+	Signal,
 	untracked,
+	ValueEqualityFn,
 	WritableSignal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
 	ActivatedRoute,
 	NavigationExtras,
@@ -19,8 +23,9 @@ import {
 } from '@angular/router';
 import { assertInjector } from 'ngxtension/assert-injector';
 import { createNotifier } from 'ngxtension/create-notifier';
-import { explicitEffect } from 'ngxtension/explicit-effect';
 
+import { computedPrevious } from 'ngxtension/computed-previous';
+import { explicitEffect } from 'ngxtension/explicit-effect';
 import { distinctUntilKeyChanged, map } from 'rxjs';
 
 /**
@@ -28,6 +33,11 @@ import { distinctUntilKeyChanged, map } from 'rxjs';
  * After transforming the value before it is passed to the query param, this type will be used.
  */
 type StringifyReturnType = string | number | boolean | null | undefined;
+
+type QueryParamKeyType =
+	| string
+	| Signal<string | undefined>
+	| (() => string | undefined);
 
 /**
  * These are the options that can be passed to the `linkedQueryParam` function.
@@ -42,12 +52,15 @@ type NavigateMethodFields = Pick<
 	| 'preserveFragment'
 >;
 
-const defaultConfig: Partial<NavigateMethodFields> = {
+const defaultConfig: Partial<NavigateMethodFields> &
+	LinkedQueryParamOptions<string> = {
 	queryParamsHandling: 'merge',
+	automaticallySynchronizeOnKeyChange: true,
 };
 
 const _LINKED_QUERY_PARAM_CONFIG_TOKEN = new InjectionToken<
-	Partial<NavigateMethodFields>
+	Partial<NavigateMethodFields> &
+		Exclude<LinkedQueryParamOptions<string>, 'injector' | 'equal' | 'source'>
 >('LinkedQueryParamConfig', {
 	providedIn: 'root',
 	factory: () => defaultConfig,
@@ -75,11 +88,12 @@ const _LINKED_QUERY_PARAM_CONFIG_TOKEN = new InjectionToken<
  *
  */
 export function provideLinkedQueryParamConfig(
-	config: Partial<NavigateMethodFields>,
+	config: Partial<NavigateMethodFields> &
+		Exclude<LinkedQueryParamOptions<string>, 'injector' | 'equal' | 'source'>,
 ): Provider {
 	return {
 		provide: _LINKED_QUERY_PARAM_CONFIG_TOKEN,
-		useValue: config,
+		useValue: { ...defaultConfig, ...config },
 	};
 }
 
@@ -180,11 +194,33 @@ export class LinkedQueryParamGlobalHandler {
 	}
 }
 
-type LinkedQueryParamOptions = {
+type LinkedQueryParamOptions<T> = {
 	/**
 	 * The injector to use to inject the router and activated route.
 	 */
 	injector?: Injector;
+
+	/**
+	 * A comparison function which defines equality for signal values.
+	 */
+	equal?: ValueEqualityFn<T>;
+
+	/**
+	 * The source signal to use to update the query param when it changes (two-way binding between this source and the query param).
+	 * @experimental
+	 */
+	source?: WritableSignal<T>;
+
+	/**
+	 * Controls whether the query param value should be synchronized with the source signal when the key changes.
+	 * When true, if the key changes (e.g. from 'key1' to 'key2'), the value from the source signal will be used to set the new query param.
+	 * When false, the new query param will be initialized as null/undefined when the key changes.
+	 * Default is true.
+	 *
+	 * This is useful when you want to preserve the source signal's value across key changes, rather than resetting the query param.
+	 * @experimental
+	 */
+	automaticallySynchronizeOnKeyChange?: boolean;
 } & Partial<NavigateMethodFields>;
 
 /**
@@ -227,8 +263,8 @@ type SignalUpdateFn<T> = (fn: (value: T) => T) => void;
  * @returns A signal that is linked to the query parameter.
  */
 export function linkedQueryParam<T = string>(
-	key: string,
-	options: LinkedQueryParamOptions & {
+	key: QueryParamKeyType,
+	options: LinkedQueryParamOptions<T> & {
 		parse: ParseFn<T>;
 		stringify: StringifyFn<T>;
 	},
@@ -254,73 +290,79 @@ export function linkedQueryParam<T = string>(
  * ```
  */
 export function linkedQueryParam<T = string>(
-	key: string,
-	options: LinkedQueryParamOptions & {
-		defaultValue: Exclude<T, undefined>;
+	key: QueryParamKeyType,
+	options: LinkedQueryParamOptions<T> & {
+		defaultValue: Exclude<T, undefined> | (() => Exclude<T, undefined>);
 		parse: ParseFn<T>;
 		stringify?: StringifyFn<T>;
 	},
 ): never;
 
 export function linkedQueryParam<T = string>(
-	key: string,
-	options: LinkedQueryParamOptions & {
-		defaultValue: T;
+	key: QueryParamKeyType,
+	options: LinkedQueryParamOptions<T> & {
+		defaultValue: T | (() => T);
 		stringify: StringifyFn<T>;
 	},
 ): WritableSignal<T | null>;
 
 export function linkedQueryParam<T>(
-	key: string,
-	options: LinkedQueryParamOptions & { defaultValue: T },
+	key: QueryParamKeyType,
+	options: LinkedQueryParamOptions<T> & { defaultValue: T | (() => T) },
 ): WritableSignal<T> & {
 	set: SignalSetFn<T | null>;
 	update: SignalUpdateFn<T | null>;
 };
 
 export function linkedQueryParam<T>(
-	key: string,
-	options: LinkedQueryParamOptions & { defaultValue: T | null },
+	key: QueryParamKeyType,
+	options: LinkedQueryParamOptions<T> & {
+		defaultValue: T | (() => T) | (() => T | null) | null;
+	},
 ): WritableSignal<T | null>;
 
 export function linkedQueryParam<T>(
-	key: string,
-	options: LinkedQueryParamOptions & { defaultValue: T | undefined },
+	key: QueryParamKeyType,
+	options: LinkedQueryParamOptions<T> & {
+		defaultValue: T | (() => T) | (() => T | undefined) | undefined;
+	},
 ): WritableSignal<T | undefined>;
 
 export function linkedQueryParam<T = string>(
-	key: string,
-	options: LinkedQueryParamOptions & { defaultValue: undefined },
+	key: QueryParamKeyType,
+	options: LinkedQueryParamOptions<T> & { defaultValue: undefined },
 ): WritableSignal<T | null>;
 
 export function linkedQueryParam<T>(
-	key: string,
-	options: LinkedQueryParamOptions & { parse: ParseFn<T> },
+	key: QueryParamKeyType,
+	options: LinkedQueryParamOptions<T> & { parse: ParseFn<T> },
 ): WritableSignal<T> & {
 	set: SignalSetFn<T | null>;
 	update: SignalUpdateFn<T | null>;
 };
 
 export function linkedQueryParam<T = string>(
-	key: string,
-	options: LinkedQueryParamOptions & { stringify: StringifyFn<T> },
+	key: QueryParamKeyType,
+	options: LinkedQueryParamOptions<T> & { stringify: StringifyFn<T> },
 ): WritableSignal<T | null>;
 
 export function linkedQueryParam<T = string>(
-	key: string,
-	options: LinkedQueryParamOptions,
+	key: QueryParamKeyType,
+	options: LinkedQueryParamOptions<T>,
 ): WritableSignal<T | null>;
 
 export function linkedQueryParam<T = string>(
-	key: string,
+	key: QueryParamKeyType,
 ): WritableSignal<T | null>;
 
 export function linkedQueryParam<T>(
-	key: string,
-	options?: LinkedQueryParamOptions & {
-		defaultValue?: T;
+	key: QueryParamKeyType,
+	options?: LinkedQueryParamOptions<T> & {
+		defaultValue?: T | (() => T);
 		parse?: ParseFn<T>;
 		stringify?: StringifyFn<T>;
+		source?: WritableSignal<T>;
+		automaticallySynchronizeOnKeyChange?: boolean;
 	},
 ): WritableSignal<T> {
 	if (options?.defaultValue !== undefined && options?.parse) {
@@ -336,71 +378,84 @@ export function linkedQueryParam<T>(
 		const globalHandler = inject(LinkedQueryParamGlobalHandler);
 		const config = inject(_LINKED_QUERY_PARAM_CONFIG_TOKEN);
 
-		/**
-		 * Parses a parameter value based on provided configuration.
-		 * @param params - An object containing parameters.
-		 * @returns The parsed parameter value.
-		 */
-		const parseParamValue = (params: Params) => {
-			// Get the value from the params object.
-			const value: string | null = params[key] ?? null;
-			// If a parsing function is provided in the config, use it to parse the value.
-			if (options?.parse) {
-				return options.parse(value);
-			}
-			// If the value is undefined or null and a default value is provided, return the default value.
-			if (
-				(value === undefined || value === null) &&
-				options?.defaultValue !== undefined
-			) {
-				return options.defaultValue;
-			}
-			// Otherwise, return the original value or the parsed value (if it was parsed).
-			return value;
-		};
+		// We have a dynamic key, so everytime the key changes, we need to make sure we remove the old one from the params
+		const queryParamKey = computed(() => getCurrentKey(key));
+		// We keep track of the previous queryParam key to remove the old one from the params
+		const previousQueryParamKey = computedPrevious(queryParamKey);
 
-		// create a signal that is updated whenever the query param changes
-		const queryParamValue = toSignal(
-			route.queryParams.pipe(
-				distinctUntilKeyChanged(key), // skip if no changes on same key
-				map((x) => parseParamValue(x)),
-			),
-			{ initialValue: parseParamValue(route.snapshot.queryParams) },
-		);
-
-		const source = signal<T>(queryParamValue() as T);
-
-		const originalSet = source.set;
-
-		explicitEffect([queryParamValue], ([value]) => {
-			// update the source signal whenever the query param changes
-			originalSet(value as T);
+		const parsedInitialValue = computed(() => {
+			return parseParamValue(
+				route.snapshot.queryParams,
+				queryParamKey(),
+				options,
+			);
 		});
 
-		const set = (value: T) => {
-			// first we check if the value is undefined or null so we can set the default value instead
-			if (
-				(value === undefined || value === null) &&
-				options?.defaultValue !== undefined
-			) {
-				value = options.defaultValue;
+		let source!: WritableSignal<T>;
+
+		if (options?.source) {
+			source = options.source;
+
+			const effRef = effect(() => {
+				source.set(parsedInitialValue() as T);
+				// we want to set the initial value once on the source signal
+				effRef.destroy();
+			});
+		} else {
+			source = linkedSignal<T>(() => parsedInitialValue() as T, {
+				equal: options?.equal ?? undefined,
+				// debugName: `linkedQueryParam-${queryParamKey()}`, TODO: enable when available
+			});
+		}
+
+		// we need to keep a reference to the original set function
+		// so we can use it to update the source signal whenever the query param changes
+		const sourceSignalSetMethod: (value: T) => void = source.set;
+
+		// By subscribing directly to the queryParams, we know this subscription is synchronous,
+		// So we don't have to depend on another effect to synchronise the values between params and source signal
+		route.queryParams
+			.pipe(
+				distinctUntilKeyChanged(queryParamKey()), // skip if no changes on same key
+				map((qp) => parseParamValue(qp, queryParamKey(), options)),
+				takeUntilDestroyed(),
+			)
+			.subscribe((value) => {
+				if (value === source() && !options?.equal) {
+					return;
+				}
+
+				// we want to call the source set method only when
+				// - the equal function is not provided or
+				// - when the value is different from the current source value
+				sourceSignalSetMethod(value as T);
+			});
+
+		const setSourceValueAndScheduleNavigation = (value: T) => {
+			// first we check if the value is undefined or null, so we can set the default value instead
+			if (isNil(value) && options?.defaultValue !== undefined) {
+				value = getValueOrReactiveValue(options.defaultValue);
 			}
 
 			// we first set the initial value so it synchronous (same as a normal signal)
-			originalSet(value);
+			sourceSignalSetMethod(value);
 
-			// when the source signal changes, update the query param
-			// store the new value in the current keys so that we can coalesce the navigation
-			let valueToBeSet: any = value;
-			if (options?.stringify) {
-				valueToBeSet = options.stringify(value);
-			} else if (value === undefined || value === null) {
-				valueToBeSet = null;
-			} else {
-				valueToBeSet = typeof value === 'string' ? value : String(value);
+			if (queryParamKey() !== previousQueryParamKey()) {
+				// remove the previous query param if it's different from the current one
+				// this way the url is cleaned up, and also the update is scheduled on the same tick as the current one
+				// NOTE: If the user wants to set a value on the previous queryParam key,
+				// they should do it synchronously after setting this linkedQueryParam value (check setParamKeyValue for more)
+				if (previousQueryParamKey()) {
+					// we want to prevent setting the param if the previous key is === "", null or undefined
+					globalHandler.setParamKeyValue(previousQueryParamKey(), null);
+				}
 			}
 
-			globalHandler.setParamKeyValue(key, valueToBeSet);
+			globalHandler.setParamKeyValue(
+				queryParamKey(),
+				stringifyParamValue(value, options),
+			);
+
 			globalHandler.setCurrentNavigationExtras({
 				...defaultConfig,
 				...config,
@@ -412,11 +467,96 @@ export function linkedQueryParam<T>(
 			globalHandler.scheduleNavigation();
 		};
 
-		const update = (fn: (value: T) => T) => set(fn(source()));
+		const update = (fn: (value: T) => T) =>
+			setSourceValueAndScheduleNavigation(fn(source()));
 
-		return Object.assign(source, { set, update });
+		if (options?.source) {
+			// When the source signal changes from outside
+			// (lets say someone changes the form field and doesn't use the signal returned from linkedQueryParam),
+			// we want to schedule a navigation event to update the query param
+			// We use defer to skip the initial effect run as the initial value is already handled
+			explicitEffect(
+				[options.source],
+				([value]) => setSourceValueAndScheduleNavigation(value as T),
+				{ defer: true },
+			);
+		}
+
+		const automaticallySynchronizeOnKeyChange =
+			options?.automaticallySynchronizeOnKeyChange ??
+			config.automaticallySynchronizeOnKeyChange;
+
+		if (automaticallySynchronizeOnKeyChange && isSignalOrFunction(key)) {
+			// we want to register the effect when the key is dynamic and the automaticallySynchronizeOnKeyChange is true
+			explicitEffect(
+				[queryParamKey],
+				// only when queryParamKey changes we want to schedule a navigation
+				() => setSourceValueAndScheduleNavigation(source() as T),
+				{ defer: true },
+			);
+		}
+
+		return Object.assign(source, {
+			set: setSourceValueAndScheduleNavigation,
+			update,
+		});
 	});
 }
+
+const getValueOrReactiveValue = <T>(value: T | (() => T) | Signal<T>) => {
+	if (isSignal(value)) {
+		return value();
+	}
+	if (value && typeof value === 'function') {
+		return (value as () => T)();
+	}
+	return value;
+};
+
+const isSignalOrFunction = <T>(value: T | (() => T) | Signal<T>) => {
+	return isSignal(value) || typeof value === 'function';
+};
+
+// Get the current key value or throw an error if it's null or undefined
+const getCurrentKey = (key: QueryParamKeyType): string => {
+	const queryParamName = getValueOrReactiveValue(key);
+	if (queryParamName === undefined) {
+		throw new Error(
+			'ngxtension/linkedQueryParam: key cannot be null or undefined',
+		);
+	}
+	return queryParamName;
+};
+
+/**
+ * Parses a parameter value based on provided configuration.
+ * @param key
+ * @param options
+ * @param params - An object containing parameters.
+ * @returns The parsed parameter value.
+ */
+const parseParamValue = <T>(
+	params: Params,
+	key: string,
+	options?: LinkedQueryParamOptions<T> & {
+		defaultValue?: T | (() => T);
+		parse?: ParseFn<T>;
+		stringify?: StringifyFn<T>;
+	},
+) => {
+	// Get the value from the params object.
+	const value: string | null = params[key] ?? null;
+	// If a parsing function is provided in the config, use it to parse the value.
+	if (options?.parse) {
+		return options.parse(value);
+	}
+	// If the value is undefined or null and a default value is provided, return the default value.
+	if (isNil(value) && options?.defaultValue !== undefined) {
+		return getValueOrReactiveValue(options.defaultValue);
+	}
+	// Otherwise, return the original value or the parsed value (if it was parsed).
+	return value;
+};
 
 /**
  * Can be used to parse a query param value to a number.
@@ -442,9 +582,9 @@ export function paramToNumber(config: {
 
 export function paramToNumber(
 	config: { defaultValue?: number | null | undefined } = { defaultValue: null },
-) {
+): (x: string | null) => number | null | undefined {
 	return (x: string | null) => {
-		if (x === undefined || x === null) return config.defaultValue;
+		if (isNil(x)) return config.defaultValue;
 		const parsed = parseInt(x, 10);
 		if (Number.isNaN(parsed)) return config.defaultValue;
 		return parsed;
@@ -478,7 +618,25 @@ export function paramToBoolean(
 	config: { defaultValue?: boolean | null | undefined } = {
 		defaultValue: null,
 	},
+): (x: string | null) => boolean | null | undefined {
+	return (x: string | null) => (isNil(x) ? config.defaultValue : x === 'true');
+}
+
+function isNil<T>(value: T | null | undefined): value is null {
+	return value === null || value === undefined;
+}
+
+function stringifyParamValue<T>(
+	value: T,
+	options?: { stringify?: StringifyFn<T> },
 ) {
-	return (x: string | null) =>
-		x === undefined || x === null ? config.defaultValue : x === 'true';
+	// when the source signal changes, update the query param
+	// store the new value in the current keys so that we can coalesce the navigation
+	return options?.stringify
+		? options.stringify(value)
+		: isNil(value)
+			? null
+			: typeof value === 'string'
+				? value
+				: String(value);
 }

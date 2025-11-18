@@ -10,7 +10,6 @@ import {
 import { TrackById, TrackByProp } from 'ngxtension/trackby-id-prop';
 
 @Component({
-	standalone: true,
 	template: `
 		<ul #parentNoTrackBy>
 			<li *ngFor="let person of people">

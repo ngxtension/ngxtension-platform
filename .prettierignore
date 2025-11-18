@@ -14,3 +14,4 @@ README.md
 /apps/test-app/src/assets/fontawesome
 
 /.nx/workspace-data
+/docs/public/*

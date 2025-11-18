@@ -3,11 +3,10 @@ import {
 	DestroyRef,
 	Directive,
 	ElementRef,
-	EventEmitter,
 	Input,
 	NgZone,
-	Output,
 	inject,
+	output,
 	type OnInit,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -94,7 +93,7 @@ export function injectResize(
 @Directive({ selector: '[ngxResize]', standalone: true })
 export class NgxResize implements OnInit {
 	@Input() ngxResizeOptions: Partial<ResizeOptions> = {};
-	@Output() ngxResize = new EventEmitter<ResizeResult>();
+	readonly ngxResize = output<ResizeResult>();
 
 	private host = inject(ElementRef);
 	private zone = inject(NgZone);
@@ -111,7 +110,7 @@ export class NgxResize implements OnInit {
 			this.zone,
 		)
 			.pipe(takeUntilDestroyed(this.destroyRef))
-			.subscribe(this.ngxResize);
+			.subscribe((result) => this.ngxResize.emit(result));
 	}
 }
 

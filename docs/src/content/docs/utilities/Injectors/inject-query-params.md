@@ -6,6 +6,11 @@ badge: stable
 contributors: ['enea-jahollari']
 ---
 
+:::note[Router outlet is required]
+`injectQueryParams` works on all components that are inside routing context. Make sure the component you are using `injectQueryParams` in, is part of your routes.
+For the same reason - `injectQueryParams` will not work correctly inside your root component (usually `AppComponent`)
+:::
+
 `injectQueryParams` is a helper function that allows us to inject query params from the current route as a signal.
 
 Having query params as a signal helps in a modern angular signals based architecture.

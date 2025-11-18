@@ -10,6 +10,8 @@ sidebar:
 The project is kick-started by [Chau](https://github.com/nartc) along with [Enea](https://twitter.com/Enea_Jahollari) and it is fully [open-sourced](https://github.com/nartc/ngxtension-platform). We welcome contributions of all kinds. If you have an issue or idea, please [let us know](https://github.com/nartc/ngxtension-platform/issues/new)
 Find yourself adding something over and over again to every Angular projects? That is something we want to have in `ngxtension`. We intend for `ngxtension` to be "_anything goes_" but with careful consideration as well as up-to-standard Angular code so that `ngxtension` can become a one-stop shop for every Angular developer out there.
 
+Once a feature from Angular core resembles a feature from `ngxtension`, we will start the deprecation process for that feature in `ngxtension` and eventually remove it in future major releases. This is a **win** as `ngxtension` has served its purpose of filling the gap.
+
 ## Bundle-size Consideration
 
 The library is entirely consisted of [Secondary Entry Point](https://angular.dev/tools/libraries/angular-package-format#entrypoints-and-code-splitting). Even though we ship `ngxtension` as one package (so it is easy for consumers to install), Angular build pipeline should handle code-splitting and tree-shaking properly for all the entry points that `ngxtension` comes with.

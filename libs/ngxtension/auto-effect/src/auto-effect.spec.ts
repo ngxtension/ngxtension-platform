@@ -28,6 +28,8 @@ describe(injectAutoEffect.name, () => {
 
 	function setup() {
 		const fixture = TestBed.createComponent(Test);
+		fixture.autoDetectChanges();
+
 		const component = fixture.componentInstance;
 		fixture.detectChanges();
 		return [

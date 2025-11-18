@@ -6,6 +6,9 @@ globalThis.ngJest = {
 	},
 };
 
+import 'zone.js';
+import 'zone.js/testing';
+
 import {
 	REACTIVE_NODE,
 	ReactiveNode,

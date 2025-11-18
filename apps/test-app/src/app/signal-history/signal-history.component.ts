@@ -254,7 +254,6 @@ import { signalHistory } from 'ngxtension/signal-history';
 	`,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [FormsModule, JsonPipe],
-	standalone: true,
 })
 export default class SignalHistoryComponent {
 	readonly newTodoTitle = signal('');

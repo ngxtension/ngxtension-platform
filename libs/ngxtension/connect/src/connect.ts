@@ -158,10 +158,7 @@ export function connect(signal: WritableSignal<unknown>, ...args: any[]) {
 					return { ...prev, ...(originSignal() as object) };
 				});
 			},
-			{
-				allowSignalWrites: true,
-				injector,
-			},
+			{ injector },
 		);
 	}
 

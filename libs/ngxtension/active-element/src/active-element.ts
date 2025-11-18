@@ -1,5 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { inject, Injector } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { assertInjector } from 'ngxtension/assert-injector';
 import { fromEvent, map, merge, shareReplay } from 'rxjs';
 
@@ -16,6 +17,7 @@ export function injectActiveElement(injector?: Injector) {
 		).pipe(
 			map((hasFocus) => (hasFocus ? doc.activeElement : null)),
 			shareReplay({ refCount: true, bufferSize: 1 }),
+			takeUntilDestroyed(),
 		);
 	});
 }

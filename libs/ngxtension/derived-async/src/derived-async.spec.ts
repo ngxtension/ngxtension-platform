@@ -15,7 +15,7 @@ describe(derivedAsync.name, () => {
 				const result = derivedAsync(() => value());
 				expect(result()).toEqual(undefined); // initial value
 				value.set(null);
-				TestBed.flushEffects();
+				tick();
 				expect(result()).toEqual(null);
 			});
 		}));
@@ -29,10 +29,10 @@ describe(derivedAsync.name, () => {
 				});
 
 				expect(result()).toEqual(undefined); // initial value
-				TestBed.flushEffects();
+				tick();
 				expect(result()).toEqual([1, 2, 3]);
 				value.set(1);
-				TestBed.flushEffects();
+				tick();
 				expect(result()).toEqual([2, 3, 4]);
 			});
 		}));
@@ -49,10 +49,10 @@ describe(derivedAsync.name, () => {
 				);
 
 				expect(result()).toEqual([]); // initial value
-				TestBed.flushEffects();
+				tick();
 				expect(result()).toEqual([1, 2, 3]);
 				value.set(1);
-				TestBed.flushEffects();
+				tick();
 				expect(result()).toEqual([2, 3, 4]);
 			});
 		}));
@@ -110,26 +110,31 @@ describe(derivedAsync.name, () => {
 				const value = signal(1);
 				const s = derivedAsync(() => of(value()));
 				expect(s()).toEqual(undefined); // initial value
+				tick();
+				expect(s()).toEqual(1);
 			});
 		}));
 		it('returns correct value and doesnt throw error if enabled', fakeAsync(() => {
 			TestBed.runInInjectionContext(() => {
 				const value = signal(1);
 				const s = derivedAsync(() => of(value()), { requireSync: true });
+				tick();
 				expect(s()).toEqual(1); // initial value
 			});
 		}));
-		it('returns correct value and doesnt throw error with initial value provided', () => {
+		it('returns correct value and doesnt throw error with initial value provided', fakeAsync(() => {
 			TestBed.runInInjectionContext(() => {
 				const s = derivedAsync(() => of(1), { initialValue: 2 });
 				expect(s()).toEqual(2); // initial value
-				TestBed.flushEffects();
+				tick();
 				expect(s()).toEqual(1);
 			});
-		});
+		}));
 		it('returns correct value and doesnt throw error with normal variable when enabled', fakeAsync(() => {
 			TestBed.runInInjectionContext(() => {
 				const s = derivedAsync(() => 1, { requireSync: true });
+				expect(s()).toEqual(1); // initial value
+				tick();
 				expect(s()).toEqual(1); // initial value
 			});
 		}));

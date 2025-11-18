@@ -6,7 +6,7 @@
 		"node": ">=18"
 	},
 	"repository": "ngxtension/ngxtension-platform",
-	"homepage": "https://ngxtension.netlify.app",
+	"homepage": "https://ngxtension.dev",
 	"license": "MIT",
 	"keywords": [
 		"ng2",
@@ -18,8 +18,8 @@
 		"signals"
 	],
 	"peerDependencies": {
-		"@angular/common": ">=16.0.0",
-		"@angular/core": ">=16.0.0",
+		"@angular/common": ">=19.0.0",
+		"@angular/core": ">=19.0.0",
 		"@use-gesture/vanilla": "^10.0.0",
 		"rxjs": "^6.0.0 || ^7.0.0"
 	},

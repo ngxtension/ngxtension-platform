@@ -14,7 +14,7 @@ export function effectOnceIf<T = any>(
 		valueFromCondition: NonNullable<T>,
 		onCleanup: EffectCleanupRegisterFn,
 	) => void,
-	options?: Omit<CreateEffectOptions, 'allowSignalWrites' | 'manualCleanup'>,
+	options?: Omit<CreateEffectOptions, 'manualCleanup'>,
 ): EffectRef {
 	const assertedInjector = assertInjector(effectOnceIf, options?.injector);
 	return runInInjectionContext(assertedInjector, () => {
