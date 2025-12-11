@@ -105,6 +105,17 @@ describe(connect.name, () => {
 				expect(state()).toEqual(5);
 			});
 		});
+
+		it('should allow connecting a date object', () => {
+			const state = signal(new Date('December 17, 1995 03:24:00'));
+
+			TestBed.runInInjectionContext(() => {
+				const sourceSignalOne = signal(new Date());
+				connect(state).with(() => sourceSignalOne());
+				TestBed.flushEffects();
+				expect(state()).toEqual(sourceSignalOne());
+			});
+		});
 	});
 
 	describe('connects an observable to a signal in injection context', () => {
@@ -163,6 +174,11 @@ describe(connect.name, () => {
 			component.objectSource$.next({});
 			component.objectSource$.next(1);
 			expect(component.objectSignal()).toEqual(1);
+
+			const date = new Date('December 17, 1995 03:24:00');
+			component.objectSource$.next({});
+			component.objectSource$.next(date);
+			expect(component.objectSignal()).toEqual(date);
 
 			component.objectSource$.next({});
 			component.objectSource$.next(undefined);
