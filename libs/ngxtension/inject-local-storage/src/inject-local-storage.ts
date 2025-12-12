@@ -246,10 +246,6 @@ const internalInjectLocalStorage = <T, R = T>(
 		});
 
 		const syncValueWithLocalStorage = (value: R): void => {
-			if (!storageSync) {
-				return;
-			}
-
 			const key = untracked(computedKey);
 			const newValue = goodTry(
 				() => (value === undefined ? null : untracked(() => stringify(value))),
@@ -265,6 +261,10 @@ const internalInjectLocalStorage = <T, R = T>(
 					localStorage.removeItem(key);
 				} else {
 					localStorage.setItem(key, newValue);
+				}
+
+				if (!storageSync) {
+					return;
 				}
 
 				// We notify other consumers in this tab about changing the value in the store for synchronization
