@@ -114,3 +114,16 @@ exports[`convert-host-binding generator should convert properly for directive 1`
   }
   "
 `;
+
+exports[`convert-host-binding generator should not crash for abstract directive 1`] = `
+"
+  import { Directive } from '@angular/core';
+
+    @Directive({
+        host: { '[attr.active]': 'active' }
+    })
+    export abstract class MyDirective {
+      readonly active = true;
+    }
+  "
+`;
