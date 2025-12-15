@@ -5,17 +5,18 @@ const error_this = function () {
 		`DON'T USE this INSIDE A FUNCTION CALLED BY | call OR | apply IT MUST BE A PURE FUNCTION!`,
 	);
 };
-const NOTHIS = !('Proxy' in window)
-	? Object.seal({})
-	: new Proxy(
-			{},
-			{
-				get: error_this,
-				set: error_this,
-				deleteProperty: error_this,
-				has: error_this,
-			},
-		);
+const NOTHIS =
+	typeof Proxy !== 'function'
+		? Object.seal({})
+		: new Proxy(
+				{},
+				{
+					get: error_this,
+					set: error_this,
+					deleteProperty: error_this,
+					has: error_this,
+				},
+			);
 
 @Pipe({
 	name: 'call',
