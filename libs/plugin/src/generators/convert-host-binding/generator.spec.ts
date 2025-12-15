@@ -78,6 +78,19 @@ const filesMap = {
   }
   `,
 
+	directiveWithEmptyDecorator: `
+	import { Directive, HostBinding, HostListener } from '@angular/core';
+
+  @Directive()
+  export class MyDirective {
+    @HostBinding('class.active') isActive = true;
+
+    @HostListener('keydown', ['$event'])
+    updateValue(event: KeyboardEvent) {
+    }
+  }
+  `,
+
 	componentWithHostProperty: `
   import { Component } from '@angular/core';
 
@@ -129,6 +142,15 @@ describe('convert-host-binding generator', () => {
 
 	it('should convert properly for directive', async () => {
 		const readContent = setup('directiveWithHostBinding');
+		await convertHostBindingGenerator(tree, options);
+
+		const [updated] = readContent();
+
+		expect(updated).toMatchSnapshot();
+	});
+
+	it('should convert properly for directive with empty decorator', async () => {
+		const readContent = setup('directiveWithEmptyDecorator');
 		await convertHostBindingGenerator(tree, options);
 
 		const [updated] = readContent();
