@@ -188,7 +188,14 @@ const addHostProperty = (sourceFile) => {
 
 		const resolveHostProperties = (hostProperties) => {
 			if (Object.keys(hostProperties).length > 0) {
-				const hostProperty = decorator.getArguments()[0].getProperty('host');
+				// If no decorator arguments exist, add an empty object literal
+				if (decorator.getArguments().length === 0) {
+					decorator.addArgument('{}');
+				}
+
+				const configObject = decorator.getArguments()[0];
+				const hostProperty = configObject.getProperty('host');
+
 				if (hostProperty) {
 					const existingHostBindings = hostProperty.getInitializerIfKindOrThrow(
 						SyntaxKind.ObjectLiteralExpression,
@@ -200,7 +207,7 @@ const addHostProperty = (sourceFile) => {
 						});
 					});
 				} else {
-					decorator.getArguments()[0].addPropertyAssignment({
+					configObject.addPropertyAssignment({
 						name: 'host',
 						initializer: `{ ${Object.entries(hostProperties)
 							.map(([key, value]) => `${key}: ${value}`)
