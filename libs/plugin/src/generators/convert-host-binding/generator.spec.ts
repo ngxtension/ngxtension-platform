@@ -96,6 +96,14 @@ const filesMap = {
       }
     }
   `,
+	abstractDirective: `
+  import { Directive, HostBinding } from '@angular/core';
+
+    @Directive()
+    export abstract class MyDirective {
+      @HostBinding('attr.active') readonly active = true;
+    }
+  `,
 };
 
 describe('convert-host-binding generator', () => {
@@ -163,6 +171,14 @@ describe('convert-host-binding generator', () => {
 
 	it('should convert properly for component with duplicate host binding', async () => {
 		const readContent = setup('componentWithDuplicateHostBinding');
+		await convertHostBindingGenerator(tree, options);
+
+		const [updated] = readContent();
+		expect(updated).toMatchSnapshot();
+	});
+
+	it('should not crash for abstract directive', async () => {
+		const readContent = setup('abstractDirective');
 		await convertHostBindingGenerator(tree, options);
 
 		const [updated] = readContent();

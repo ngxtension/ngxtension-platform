@@ -188,7 +188,7 @@ const addHostProperty = (sourceFile) => {
 
 		const resolveHostProperties = (hostProperties) => {
 			if (Object.keys(hostProperties).length > 0) {
-				const hostProperty = decorator.getArguments()[0].getProperty('host');
+				const hostProperty = decorator.getArguments()[0]?.getProperty('host');
 				if (hostProperty) {
 					const existingHostBindings = hostProperty.getInitializerIfKindOrThrow(
 						SyntaxKind.ObjectLiteralExpression,
@@ -200,6 +200,12 @@ const addHostProperty = (sourceFile) => {
 						});
 					});
 				} else {
+					if (!decorator.getArguments().length) {
+						// Abstract directive might not have any arguments
+						// Adding empty object literal will prevent crash
+						decorator.addArgument('{}');
+					}
+
 					decorator.getArguments()[0].addPropertyAssignment({
 						name: 'host',
 						initializer: `{ ${Object.entries(hostProperties)
