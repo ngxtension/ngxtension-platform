@@ -9,7 +9,6 @@ import {
 	output,
 	type OnInit,
 } from '@angular/core';
-import { isPlatformServer, PLATFORM_ID } from "@angular/common";
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { createInjectionToken } from 'ngxtension/create-injection-token';
 import {
@@ -96,7 +95,6 @@ export class NgxResize implements OnInit {
 	@Input() ngxResizeOptions: Partial<ResizeOptions> = {};
 	readonly ngxResize = output<ResizeResult>();
 
-  private platformId = inject(PLATFORM_ID);
 	private host = inject(ElementRef);
 	private zone = inject(NgZone);
 	private document = inject(DOCUMENT);
@@ -104,10 +102,6 @@ export class NgxResize implements OnInit {
 	private destroyRef = inject(DestroyRef);
 
 	ngOnInit() {
-    if (isPlatformServer(this.platformId)) {
-      // On the server, do nothing - prevents errors from accessing browser-only APIs
-      return;
-    }
 		const mergedOptions = { ...this.resizeOptions, ...this.ngxResizeOptions };
 		createResizeStream(
 			mergedOptions,
