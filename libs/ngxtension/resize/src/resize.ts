@@ -132,6 +132,14 @@ function createResizeStream(
 	const screen = window?.screen;
 	const isSupport = !!window?.ResizeObserver;
 
+  if (!window) {
+      // On server, document.defaultView is null
+      return new Observable<ResizeResult>((subscriber) => {
+          // Return an observable that never emits
+          return () => {}; // no-op unsubscribe
+      });
+  }
+
 	let observer: ResizeObserver;
 	let lastBounds: Omit<ResizeResult, 'entries' | 'dpr'>;
 	let lastEntries: ResizeObserverEntry[] = [];
