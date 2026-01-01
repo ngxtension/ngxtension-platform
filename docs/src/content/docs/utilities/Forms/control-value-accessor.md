@@ -156,3 +156,46 @@ hostDirectives: [
 ```html
 <custom-input [(value)]="value" />
 ```
+
+## Transform Values
+
+You can provide a `transform` function that transforms incoming model values - basically intercepting `writeValue` of `ControlValueAccessor`.
+
+> You can reuse the `transform` function when view values should be transformed aswell.
+
+Checkout the example below of an _uppercase input_.
+
+```ts
+@Component({
+	selector: 'uppercase-input',
+	hostDirectives: [NgxControlValueAccessor],
+	template: `
+		<label>
+			My label
+			<input
+				type="text"
+				(input)="cva.value = cva.transform($event.target.value)"
+				[value]="cva.value$()"
+				[disabled]="cva.disabled$()"
+				(blur)="cva.markAsTouched()"
+			/>
+		</label>
+	`,
+	standalone: true,
+})
+export class UppercaseInput {
+	protected cva = inject<NgxControlValueAccessor<string>>(
+		NgxControlValueAccessor,
+	);
+
+	constructor() {
+		this.cva.transform = (value: string) => value.toUpperCase();
+	}
+}
+```
+
+You can also provide a `transform` function using `provideCvaTransform`.
+
+```ts
+provideCvaTransform((value: string) => value.toUpperCase(), true);
+```

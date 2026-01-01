@@ -15,6 +15,17 @@ import { skip } from 'rxjs';
 
 const noop = () => undefined;
 
+const identity = <T>(x: T) => x;
+
+export type NgxControlValueAccessorTransform<
+	TModelValue = any,
+	TViewValue = any,
+> = (value: TModelValue) => TViewValue;
+
+export const [injectCvaTransform, provideCvaTransform] = createInjectionToken<
+	() => NgxControlValueAccessorTransform
+>(() => identity);
+
 /** @see {@link NgxControlValueAccessor.compareTo}. */
 export type NgxControlValueAccessorCompareTo<T = any> = (
 	a?: T,
@@ -210,9 +221,16 @@ export class NgxControlValueAccessor<T = any> implements ControlValueAccessor {
 		if (this.ngControl != null) this.ngControl.valueAccessor = this;
 	}
 
+	/**
+	 * A function, which transforms incoming model values. By default no transformation is done.
+	 */
+	public transform = injectCvaTransform();
+
 	/** @ignore */
 	private initialValue = (): T => {
-		if (this.ngControl != null) return this.ngControl.value;
+		if (this.ngControl != null && this.registered) {
+			return this.transform(this.ngControl.value);
+		}
 		return injectCvaDefaultValue();
 	};
 
@@ -336,7 +354,7 @@ export class NgxControlValueAccessor<T = any> implements ControlValueAccessor {
 	// control value accessor implementation
 
 	public writeValue = (value: T) => {
-		if (this.registered) this.value = value;
+		if (this.registered) this.value = this.transform(value);
 	};
 
 	public registerOnChange = (onChange: (value: T) => void) =>
