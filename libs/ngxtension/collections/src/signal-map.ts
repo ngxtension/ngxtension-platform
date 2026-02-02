@@ -1,4 +1,5 @@
 import { signal, WritableSignal } from '@angular/core';
+import { createNotifier } from 'ngxtension/create-notifier';
 
 // Internal symbol to track deletion notifications safely
 // We use this instead of 'undefined' so we can support maps that actually store 'undefined' as a value.
@@ -8,7 +9,7 @@ export class SignalMap<K, V> {
 	// Storage now holds V | REMOVED
 	private _storage = new Map<K, WritableSignal<V | typeof REMOVED>>();
 
-	private _structure = signal(0);
+	private _structure = createNotifier();
 
 	constructor(entries?: readonly (readonly [K, V])[] | null) {
 		if (entries) {
@@ -37,7 +38,7 @@ export class SignalMap<K, V> {
 		} else {
 			// 2. Key missing: We must listen to _structure.
 			// If we don't do this, we won't know when the key is added.
-			this._structure();
+			this._structure.listen();
 			return undefined;
 		}
 	}
@@ -52,7 +53,7 @@ export class SignalMap<K, V> {
 		} else {
 			// New key: Add to storage and update structure.
 			this._storage.set(key, signal(value));
-			this._structure.update((v) => v + 1);
+			this._structure.notify();
 		}
 		return this;
 	}
@@ -69,14 +70,14 @@ export class SignalMap<K, V> {
 			this._storage.delete(key);
 
 			// STEP 3: Notify structure listeners (keys/size/iterators)
-			this._structure.update((v) => v + 1);
+			this._structure.notify();
 			return true;
 		}
 		return false;
 	}
 
 	has(key: K): boolean {
-		this._structure();
+		this._structure.listen();
 		return this._storage.has(key);
 	}
 
@@ -87,22 +88,22 @@ export class SignalMap<K, V> {
 				s.set(REMOVED);
 			}
 			this._storage.clear();
-			this._structure.update((v) => v + 1);
+			this._structure.notify();
 		}
 	}
 
 	get size(): number {
-		this._structure();
+		this._structure.listen();
 		return this._storage.size;
 	}
 
 	*keys(): IterableIterator<K> {
-		this._structure();
+		this._structure.listen();
 		yield* this._storage.keys();
 	}
 
 	*values(): IterableIterator<V> {
-		this._structure();
+		this._structure.listen();
 		for (const s of this._storage.values()) {
 			const val = s();
 			if (val !== REMOVED) yield val as V;
@@ -110,7 +111,7 @@ export class SignalMap<K, V> {
 	}
 
 	*entries(): IterableIterator<[K, V]> {
-		this._structure();
+		this._structure.listen();
 		for (const [key, s] of this._storage.entries()) {
 			const val = s();
 			if (val !== REMOVED) yield [key, val as V];
@@ -118,7 +119,7 @@ export class SignalMap<K, V> {
 	}
 
 	forEach(callback: (value: V, key: K, map: SignalMap<K, V>) => void): void {
-		this._structure();
+		this._structure.listen();
 		this._storage.forEach((s, key) => {
 			const val = s();
 			if (val !== REMOVED) callback(val as V, key, this);
