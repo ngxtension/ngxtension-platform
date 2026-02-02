@@ -1,10 +1,11 @@
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import {
 	DestroyRef,
 	Directive,
 	ElementRef,
 	Input,
 	NgZone,
+	PLATFORM_ID,
 	inject,
 	output,
 	type OnInit,
@@ -92,25 +93,28 @@ export function injectResize(
  */
 @Directive({ selector: '[ngxResize]', standalone: true })
 export class NgxResize implements OnInit {
-	@Input() ngxResizeOptions: Partial<ResizeOptions> = {};
-	readonly ngxResize = output<ResizeResult>();
-
 	private host = inject(ElementRef);
 	private zone = inject(NgZone);
 	private document = inject(DOCUMENT);
 	private resizeOptions = injectResizeOptions();
 	private destroyRef = inject(DestroyRef);
+	private platformId = inject(PLATFORM_ID);
+
+	@Input() ngxResizeOptions: Partial<ResizeOptions> = {};
+	readonly ngxResize = output<ResizeResult>();
 
 	ngOnInit() {
-		const mergedOptions = { ...this.resizeOptions, ...this.ngxResizeOptions };
-		createResizeStream(
-			mergedOptions,
-			this.host.nativeElement,
-			this.document,
-			this.zone,
-		)
-			.pipe(takeUntilDestroyed(this.destroyRef))
-			.subscribe((result) => this.ngxResize.emit(result));
+		if (isPlatformBrowser(this.platformId)) {
+			const mergedOptions = { ...this.resizeOptions, ...this.ngxResizeOptions };
+			createResizeStream(
+				mergedOptions,
+				this.host.nativeElement,
+				this.document,
+				this.zone,
+			)
+				.pipe(takeUntilDestroyed(this.destroyRef))
+				.subscribe((result) => this.ngxResize.emit(result));
+		}
 	}
 }
 
@@ -131,14 +135,6 @@ function createResizeStream(
 	const window = document.defaultView;
 	const screen = window?.screen;
 	const isSupport = !!window?.ResizeObserver;
-
-  if (!window) {
-      // On server, document.defaultView is null
-      return new Observable<ResizeResult>((subscriber) => {
-          // Return an observable that never emits
-          return () => {}; // no-op unsubscribe
-      });
-  }
 
 	let observer: ResizeObserver;
 	let lastBounds: Omit<ResizeResult, 'entries' | 'dpr'>;
