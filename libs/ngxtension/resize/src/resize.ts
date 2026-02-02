@@ -1,13 +1,13 @@
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import {
 	DestroyRef,
 	Directive,
 	ElementRef,
-	EventEmitter,
 	Input,
 	NgZone,
-	Output,
+	PLATFORM_ID,
 	inject,
+	output,
 	type OnInit,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -17,6 +17,7 @@ import {
 	ReplaySubject,
 	debounceTime,
 	fromEvent,
+	of,
 	pipe,
 	share,
 	takeUntil,
@@ -72,13 +73,20 @@ export type ResizeResult = {
 export function injectResize(
 	options: Partial<ResizeOptions> = {},
 ): Observable<ResizeResult> {
-	const [{ nativeElement }, zone, document] = [
+	const [{ nativeElement }, zone, document, platformId] = [
 		inject(ElementRef) as ElementRef<HTMLElement>,
 		inject(NgZone),
 		inject(DOCUMENT),
+		inject(PLATFORM_ID),
 	];
 	const mergedOptions = { ...injectResizeOptions(), ...options };
-	return createResizeStream(mergedOptions, nativeElement, document, zone);
+	return createResizeStream(
+		mergedOptions,
+		nativeElement,
+		document,
+		zone,
+		platformId,
+	);
 }
 
 /**
@@ -93,14 +101,15 @@ export function injectResize(
  */
 @Directive({ selector: '[ngxResize]', standalone: true })
 export class NgxResize implements OnInit {
-	@Input() ngxResizeOptions: Partial<ResizeOptions> = {};
-	@Output() ngxResize = new EventEmitter<ResizeResult>();
-
 	private host = inject(ElementRef);
 	private zone = inject(NgZone);
 	private document = inject(DOCUMENT);
 	private resizeOptions = injectResizeOptions();
 	private destroyRef = inject(DestroyRef);
+	private platformId = inject(PLATFORM_ID);
+
+	@Input() ngxResizeOptions: Partial<ResizeOptions> = {};
+	readonly ngxResize = output<ResizeResult>();
 
 	ngOnInit() {
 		const mergedOptions = { ...this.resizeOptions, ...this.ngxResizeOptions };
@@ -109,9 +118,10 @@ export class NgxResize implements OnInit {
 			this.host.nativeElement,
 			this.document,
 			this.zone,
+			this.platformId,
 		)
 			.pipe(takeUntilDestroyed(this.destroyRef))
-			.subscribe(this.ngxResize);
+			.subscribe((result) => this.ngxResize.emit(result));
 	}
 }
 
@@ -128,7 +138,12 @@ function createResizeStream(
 	nativeElement: HTMLElement,
 	document: Document,
 	zone: NgZone,
+	platformId?: any,
 ) {
+	if (!isPlatformBrowser(platformId)) {
+		return of();
+	}
+
 	const window = document.defaultView;
 	const screen = window?.screen;
 	const isSupport = !!window?.ResizeObserver;

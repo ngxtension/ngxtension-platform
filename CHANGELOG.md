@@ -1,3 +1,125 @@
+## 7.0.2 (2025-11-05)
+
+This was a version bump only, there were no code changes.
+
+## 7.0.1 (2025-11-03)
+
+This was a version bump only, there were no code changes.
+
+# 7.0.0 (2025-11-03)
+
+### Features
+
+- enhance linkedQueryParam utility and add dynamic key support and source signal ([2916367](https://github.com/ngxtension/ngxtension-platform/commit/2916367))
+- add dynamic key route and enhance `linkedQueryParam` documentation ([affd47a](https://github.com/ngxtension/ngxtension-platform/commit/affd47a))
+- ⚠️  Support Angular v19 and stabilize linkedQueryParam utility ([a7db908](https://github.com/ngxtension/ngxtension-platform/commit/a7db908))
+
+### Bug Fixes
+
+- prevent setting null for invalid `previousQueryParamKey` in `linkedQueryParam` ([3ca2456](https://github.com/ngxtension/ngxtension-platform/commit/3ca2456))
+
+### Refactor
+
+- ⚠️  remove deprecated options across components and library ([3234c40](https://github.com/ngxtension/ngxtension-platform/commit/3234c40))
+- streamline `linkedQueryParam` tests and code for dynamic keys and synchronization ([9183367](https://github.com/ngxtension/ngxtension-platform/commit/9183367))
+- clean up `linkedQueryParam` tests and enhance dynamic key handling ([b47c424](https://github.com/ngxtension/ngxtension-platform/commit/b47c424))
+- simplify effect registration in `linkedQueryParam` for dynamic keys ([3b997d9](https://github.com/ngxtension/ngxtension-platform/commit/3b997d9))
+- integrate dynamic key into `linkedQueryParam` and enhance binding logic ([8599ff0](https://github.com/ngxtension/ngxtension-platform/commit/8599ff0))
+- clean up imports and enhance `linkedQueryParam` with source signal handling ([0598cc3](https://github.com/ngxtension/ngxtension-platform/commit/0598cc3))
+
+### Documentation
+
+- add note about required router outlet for params, query params, fragment etc. ([#626](https://github.com/ngxtension/ngxtension-platform/pull/626))
+- update linked query param docs to clarify input signal usage warning ([cae3c34](https://github.com/ngxtension/ngxtension-platform/commit/cae3c34))
+- mark `linkedQueryParam` as stable and expand documentation ([48873e8](https://github.com/ngxtension/ngxtension-platform/commit/48873e8))
+
+### ⚠️  Breaking Changes
+
+- ⚠️  Support Angular v19 and stabilize linkedQueryParam utility ([a7db908](https://github.com/ngxtension/ngxtension-platform/commit/a7db908))
+- ⚠️  remove deprecated options across components and library ([3234c40](https://github.com/ngxtension/ngxtension-platform/commit/3234c40))
+
+### ❤️ Thank You
+
+- Enea Jahollari @eneajaho
+- montella1507 @montella1507
+
+# 6.0.0 (2025-09-12)
+
+### Features
+
+- ⚠️  code fixes and deprecations ([#627](https://github.com/ngxtension/ngxtension-platform/pull/627))
+
+### ⚠️  Breaking Changes
+
+- ⚠️  code fixes and deprecations ([#627](https://github.com/ngxtension/ngxtension-platform/pull/627))
+
+### ❤️ Thank You
+
+- Enea Jahollari @eneajaho
+
+## 5.2.0 (2025-09-12)
+
+### Features
+
+- outputs are migrated to signals ([#614](https://github.com/ngxtension/ngxtension-platform/pull/614))
+- **inject-local-storage:** promote NGXTENSION_LOCAL_STORAGE token to platform level ([#620](https://github.com/ngxtension/ngxtension-platform/pull/620))
+- **ngxtension:** update docs ([b84f9a8](https://github.com/ngxtension/ngxtension-platform/commit/b84f9a8))
+
+### Bug Fixes
+
+- use removeChild() loop instead of replaceChildren() ([#619](https://github.com/ngxtension/ngxtension-platform/pull/619))
+- replace deprecated toThrowError with toThrow in 3 tests ([#612](https://github.com/ngxtension/ngxtension-platform/pull/612))
+- **host-binding:** allow to bind the style property with an object to set multiple CSS properties (including variables) at once ([#617](https://github.com/ngxtension/ngxtension-platform/pull/617))
+- **inject-local-storage:** fix reactive purity if signals reads inside stringify function ([#608](https://github.com/ngxtension/ngxtension-platform/pull/608))
+- ⚠️  **inject-local-storage:** fix typing ([#596](https://github.com/ngxtension/ngxtension-platform/pull/596))
+- **inject-local-storage:** fix default value creation ([#609](https://github.com/ngxtension/ngxtension-platform/pull/609))
+
+### Refactor
+
+- **ngx-control-value-accessor:** use normal effect instead of rxEffect ([#556](https://github.com/ngxtension/ngxtension-platform/pull/556))
+
+### Documentation
+
+- add version compatibility table to README.md ([6e3da4f](https://github.com/ngxtension/ngxtension-platform/commit/6e3da4f))
+- update homepage design ([807029b](https://github.com/ngxtension/ngxtension-platform/commit/807029b))
+- enhance README.md with updated features, installation instructions, and usage examples for ngxtension ([2e5c5b3](https://github.com/ngxtension/ngxtension-platform/commit/2e5c5b3))
+- update README.md to reflect new branding, enhanced features, and improved installation instructions for ngxtension ([3909037](https://github.com/ngxtension/ngxtension-platform/commit/3909037))
+- add edisonaugusthy as a contributor for code ([#623](https://github.com/ngxtension/ngxtension-platform/pull/623))
+- fixes ([72a935b](https://github.com/ngxtension/ngxtension-platform/commit/72a935b))
+
+### ⚠️  Breaking Changes
+
+- ⚠️  **inject-local-storage:** fix typing ([#596](https://github.com/ngxtension/ngxtension-platform/pull/596))
+
+### ❤️ Thank You
+
+- Denis Yılmaz
+- Edison Augusthy @edisonaugusthy
+- Enea Jahollari @eneajaho
+- Fabien Dehopré
+- J. Degand @jdegand
+- Robby Rabbitman @RobbyRabbitman
+- Svyatoslav Zaytsev @MillerSvt
+
+## 5.1.0 (2025-06-22)
+
+### Features
+
+- **computed-previous:** lazy computed previous ([#590](https://github.com/ngxtension/ngxtension-platform/pull/590), [#591](https://github.com/ngxtension/ngxtension-platform/pull/591))
+- **form-events:** provide optional injector for both form event utils ([#585](https://github.com/ngxtension/ngxtension-platform/pull/585))
+- **inject-local-storage:** computed key support ([#569](https://github.com/ngxtension/ngxtension-platform/pull/569), [#593](https://github.com/ngxtension/ngxtension-platform/pull/593))
+- **merge-http-context:** add mergeHttpContext utility function ([#587](https://github.com/ngxtension/ngxtension-platform/pull/587))
+
+### Documentation
+
+- add PForever as a contributor for code ([#583](https://github.com/ngxtension/ngxtension-platform/pull/583))
+
+### ❤️ Thank You
+
+- Krzysztof Kachniarz @kkachniarz220
+- michael-small @michael-small
+- Svyatoslav Zaytsev @MillerSvt
+
 # 5.0.0 (2025-03-14)
 
 ### Features

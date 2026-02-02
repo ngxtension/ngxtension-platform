@@ -28,13 +28,7 @@
 			"ngxtension/click-outside": [
 				"libs/ngxtension/click-outside/src/index.ts"
 			],
-			"ngxtension/computed": ["libs/ngxtension/computed/src/index.ts"],
-			"ngxtension/computed-async": [
-				"libs/ngxtension/computed-async/src/index.ts"
-			],
-			"ngxtension/computed-from": [
-				"libs/ngxtension/computed-from/src/index.ts"
-			],
+			"ngxtension/collections": ["libs/ngxtension/collections/src/index.ts"],
 			"ngxtension/computed-previous": [
 				"libs/ngxtension/computed-previous/src/index.ts"
 			],
@@ -76,6 +70,9 @@
 			],
 			"ngxtension/explicit-effect": [
 				"libs/ngxtension/explicit-effect/src/index.ts"
+			],
+			"ngxtension/extended-computed": [
+				"libs/ngxtension/extended-computed/src/index.ts"
 			],
 			"ngxtension/filter-array": ["libs/ngxtension/filter-array/src/index.ts"],
 			"ngxtension/filter-nil": ["libs/ngxtension/filter-nil/src/index.ts"],

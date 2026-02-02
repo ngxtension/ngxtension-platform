@@ -15,7 +15,7 @@ function flattenJsonPipeFormatting(str: string | null) {
 	return str?.replace(/\s/g, '');
 }
 describe('Form Events', () => {
-	it('returns a signal with the initial value, status, pristine, and touched values of a form', async () => {
+	it('returns a signal with the initial value, status, pristine, and touched values of a form and the control errors', async () => {
 		const fixture: ComponentFixture<FormEventsComponent> =
 			TestBed.configureTestingModule({
 				imports: [FormEventsComponent],
@@ -31,7 +31,9 @@ describe('Form Events', () => {
 			flattenJsonPipeFormatting(`            {
             "value": {
                 "firstName": "",
-                "lastName": ""
+                "lastName": "",
+                "email": "",
+                "age": ""
             },
             "status": "INVALID",
             "touched": false,
@@ -40,8 +42,19 @@ describe('Form Events', () => {
             "invalid": true,
             "pending": false,
             "dirty": false,
-            "untouched": true
-            }`),
+            "untouched": true,
+            "controlErrors": {
+              "firstName": {
+                "required": true
+              },
+              "lastName": null,
+              "email": {
+                "required": true
+              },
+              "age": {
+                "required": true
+              }
+            }}`),
 		);
 	});
 
@@ -61,7 +74,9 @@ describe('Form Events', () => {
 			flattenJsonPipeFormatting(`            {
             "value": {
                 "firstName": "",
-                "lastName": ""
+                "lastName": "",
+                "email": "",
+                "age": ""
             },
             "status": "INVALID",
             "touched": false,
@@ -70,8 +85,19 @@ describe('Form Events', () => {
             "invalid": true,
             "pending": false,
             "dirty": false,
-            "untouched": true
-            }`),
+            "untouched": true,
+            "controlErrors": {
+              "firstName": {
+                "required": true
+              },
+              "lastName": null,
+              "email": {
+                "required": true
+              },
+              "age": {
+                "required": true
+              }
+            }}`),
 		);
 	});
 
@@ -103,17 +129,28 @@ describe('Form Events', () => {
 			flattenJsonPipeFormatting(`{
             "value": {
                 "firstName": "Jerry",
-                "lastName": ""
+                "lastName": "",
+                "email": "",
+                "age": ""
             },
-            "status": "VALID",
+            "status": "INVALID",
             "touched": true,
             "pristine": false,
-            "valid": true,
-            "invalid": false,
+            "valid": false,
+            "invalid": true,
             "pending": false,
             "dirty": true,
-            "untouched": false
-            }`),
+            "untouched": false,
+            "controlErrors": {
+              "firstName": null,
+              "lastName": null,
+              "email": {
+                "required": true
+              },
+              "age": {
+                "required": true
+              }
+            }}`),
 		);
 	});
 
@@ -145,17 +182,28 @@ describe('Form Events', () => {
 			flattenJsonPipeFormatting(`{
             "value": {
                 "firstName": "Jerry",
-                "lastName": ""
+                "lastName": "",
+                "email": "",
+                "age": ""
             },
-            "status": "VALID",
+            "status": "INVALID",
             "touched": true,
             "pristine": false,
-            "valid": true,
-            "invalid": false,
+            "valid": false,
+            "invalid": true,
             "pending": false,
             "dirty": true,
-            "untouched": false
-            }`),
+            "untouched": false,
+            "controlErrors": {
+              "firstName": null,
+              "lastName": null,
+              "email": {
+                "required": true
+              },
+              "age": {
+                "required": true
+              }
+            }}`),
 		);
 	});
 
@@ -174,7 +222,9 @@ describe('Form Events', () => {
 		expect(flattenJsonPipeFormatting(observableVals.textContent)).toBe(
 			flattenJsonPipeFormatting(`{
             "value": {
-                "name": "custom"
+                "name": "custom",
+                "email": "email@example.com",
+                "age": "21"
             },
             "status": "VALID",
             "touched": false,
@@ -183,7 +233,12 @@ describe('Form Events', () => {
             "invalid": false,
             "pending": false,
             "dirty": false,
-            "untouched": true
+            "untouched": true,
+            "controlErrors": {
+              "name":null,
+              "email":null,
+              "age":null
+            }
             }`),
 		);
 
@@ -194,7 +249,9 @@ describe('Form Events', () => {
 		expect(flattenJsonPipeFormatting(signalVals.textContent)).toBe(
 			flattenJsonPipeFormatting(`{
             "value": {
-                "name": "custom"
+                "name": "custom",
+                "email": "email@example.com",
+                "age": "21"
             },
             "status": "VALID",
             "touched": false,
@@ -203,8 +260,65 @@ describe('Form Events', () => {
             "invalid": false,
             "pending": false,
             "dirty": false,
-            "untouched": true
+            "untouched": true,
+            "controlErrors": {
+              "name":null,
+              "email":null,
+              "age":null
+            }
             }`),
+		);
+	});
+
+	it('returns both a signal and observable value with correct initial value once the value was set in an ngOnInit with Error', async () => {
+		const fixture: ComponentFixture<FormEventsComponent> =
+			TestBed.configureTestingModule({
+				imports: [FormEventsComponent],
+			}).createComponent(FormEventsComponent);
+
+		const expected = {
+			value: {
+				name: 'custom',
+				email: 'email@example.com',
+				age: '',
+			},
+			status: 'INVALID',
+			touched: false,
+			pristine: true,
+			valid: false,
+			invalid: true,
+			pending: false,
+			dirty: false,
+			untouched: true,
+			controlErrors: {
+				name: null,
+				email: null,
+				age: {
+					required: true,
+				},
+			},
+		};
+
+		fixture.detectChanges();
+
+		const observableVals: HTMLElement = fixture.debugElement.query(
+			By.css(
+				'[data-testid="observable-values-initial-value-overwritten-with-error"]',
+			),
+		).nativeElement;
+
+		expect(flattenJsonPipeFormatting(observableVals.textContent)).toBe(
+			JSON.stringify(expected),
+		);
+
+		const signalVals: HTMLElement = fixture.debugElement.query(
+			By.css(
+				'[data-testid="signal-values-initial-value-overwritten-with-error"]',
+			),
+		).nativeElement;
+
+		expect(flattenJsonPipeFormatting(signalVals.textContent)).toBe(
+			JSON.stringify(expected),
 		);
 	});
 
@@ -241,7 +355,10 @@ describe('Form Events', () => {
             "invalid": false,
             "pending": false,
             "dirty": false,
-            "untouched": true
+            "untouched": true,
+            "controlErrors": {
+              "name":null
+            }
             }`;
 
 		formDisabledButton.click();
@@ -310,9 +427,34 @@ describe('works in ngOnInit by passing an Injector', () => {
 			pending: false,
 			dirty: false,
 			untouched: true,
+			controlErrors: null,
 		};
 		component.ngOnInit();
 		component.form.patchValue('1');
+		expect(component.data()).toStrictEqual(expected);
+
+		const result = await firstValueFrom(component.data$);
+		expect(result).toStrictEqual(expected);
+	});
+
+	it('should return with errors', async () => {
+		const expected = {
+			value: '',
+			status: 'INVALID',
+			touched: false,
+			pristine: true,
+			valid: false,
+			invalid: true,
+			pending: false,
+			dirty: false,
+			untouched: true,
+			controlErrors: {
+				required: true,
+			},
+		};
+		component.ngOnInit();
+		component.form.addValidators(Validators.required);
+		component.form.updateValueAndValidity();
 		expect(component.data()).toStrictEqual(expected);
 
 		const result = await firstValueFrom(component.data$);
@@ -338,6 +480,10 @@ describe('works in ngOnInit by passing an Injector', () => {
 				formControlName="lastName"
 				name="lastName"
 			/>
+			<label for="age">Last Name</label>
+			<input data-testid="age" formControlName="age" name="age" />
+			<label for="email">Last Name</label>
+			<input data-testid="email" formControlName="email" name="email" />
 
 			<br />
 
@@ -353,6 +499,18 @@ describe('works in ngOnInit by passing an Injector', () => {
 		>
 			<label for="firstName">Name</label>
 			<input data-testid="name" formControlName="name" name="name" />
+			<input data-testid="age" formControlName="age" name="age" />
+			<input data-testid="email" formControlName="email" name="email" />
+		</form>
+
+		<form
+			[formGroup]="formInitialValueOverwritten"
+			id="test-form-initial-value-overwritten-with-error"
+		>
+			<label for="firstName">Name</label>
+			<input data-testid="name" formControlName="name" name="name" />
+			<input data-testid="age" formControlName="age" name="age" />
+			<input data-testid="email" formControlName="email" name="email" />
 		</form>
 
 		<button (click)="setFormDisabledState('formDisable')" id="formDisable">
@@ -374,6 +532,12 @@ describe('works in ngOnInit by passing an Injector', () => {
 		<pre data-testid="observable-values-initial-value-overwritten">{{
 			formInitialValuesOverwritten$ | async | json
 		}}</pre>
+		<pre data-testid="signal-values-initial-value-overwritten-with-error">{{
+			$formInitialValuesOverwrittenWithError() | json
+		}}</pre>
+		<pre data-testid="observable-values-initial-value-overwritten-with-error">{{
+			formInitialValuesOverwrittenWithError$ | async | json
+		}}</pre>
 
 		<form [formGroup]="formDisabled" id="test-form-disabled">
 			<label for="firstName">Name</label>
@@ -391,11 +555,22 @@ export default class FormEventsComponent implements OnInit {
 	form = this.fb.group({
 		firstName: this.fb.control('', Validators.required),
 		lastName: this.fb.control(''),
+		email: this.fb.control('', [Validators.required, Validators.email]),
+		age: this.fb.control('', [Validators.min(18), Validators.required]),
 	});
 
 	formInitialValueOverwritten = this.fb.group({
 		name: this.fb.control(''),
+		email: this.fb.control('', [Validators.required, Validators.email]),
+		age: this.fb.control('', [Validators.min(18), Validators.required]),
 	});
+
+	formInitialValueOverwrittenError = this.fb.group({
+		name: this.fb.control('', [Validators.required]),
+		email: this.fb.control('', [Validators.required, Validators.email]),
+		age: this.fb.control('', [Validators.min(18), Validators.required]),
+	});
+
 	formDisabled = this.fb.group({
 		name: this.fb.control(''),
 	});
@@ -410,11 +585,27 @@ export default class FormEventsComponent implements OnInit {
 		this.formInitialValueOverwritten,
 	);
 
+	formInitialValuesOverwrittenWithError$ = allEventsObservable(
+		this.formInitialValueOverwrittenError,
+	);
+	$formInitialValuesOverwrittenWithError = allEventsSignal(
+		this.formInitialValueOverwrittenError,
+	);
+
 	formDisabled$ = allEventsObservable(this.formDisabled);
 	$formDisabled = allEventsSignal(this.formDisabled);
 
 	ngOnInit() {
 		this.formInitialValueOverwritten.controls.name.setValue('custom');
+		this.formInitialValueOverwritten.controls.email.setValue(
+			'email@example.com',
+		);
+		this.formInitialValueOverwritten.controls.age.setValue('21');
+
+		this.formInitialValueOverwrittenError.controls.name.setValue('custom');
+		this.formInitialValueOverwrittenError.controls.email.setValue(
+			'email@example.com',
+		);
 	}
 
 	setFormDisabledState(type: 'formDisable' | 'formEnable' | 'controlDisable') {

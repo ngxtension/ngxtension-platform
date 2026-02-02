@@ -21,8 +21,8 @@ import {
 	type ValidationErrors,
 } from '@angular/forms';
 import { filterNil } from 'ngxtension/filter-nil';
+import { allEventsObservable } from 'ngxtension/form-events';
 import {
-	BehaviorSubject,
 	Observable,
 	combineLatest,
 	distinctUntilChanged,
@@ -33,53 +33,16 @@ import {
 	switchMap,
 } from 'rxjs';
 
-export const dirty$ = (control: AbstractControl) => {
-	const dirty$ = new BehaviorSubject(control.dirty);
-
-	const markAsPristine = control.markAsPristine.bind(control);
-
-	const markAsDirty = control.markAsDirty.bind(control);
-
-	control.markAsPristine = (
-		...args: Parameters<AbstractControl['markAsPristine']>
-	) => {
-		markAsPristine(...args);
-		dirty$.next(false);
-	};
-
-	control.markAsDirty = (
-		...args: Parameters<AbstractControl['markAsDirty']>
-	) => {
-		markAsDirty(...args);
-		dirty$.next(true);
-	};
-
-	return dirty$.pipe(distinctUntilChanged());
-};
-
-export const touched$ = (control: AbstractControl) => {
-	const touched$ = new BehaviorSubject(control.touched);
-
-	const markAsTouched = control.markAsTouched.bind(control);
-
-	const markAsUntouched = control.markAsUntouched.bind(control);
-
-	control.markAsTouched = (
-		...args: Parameters<AbstractControl['markAsTouched']>
-	) => {
-		markAsTouched(...args);
-		touched$.next(true);
-	};
-
-	control.markAsUntouched = (
-		...args: Parameters<AbstractControl['markAsUntouched']>
-	) => {
-		markAsUntouched(...args);
-		touched$.next(false);
-	};
-
-	return touched$.pipe(distinctUntilChanged());
-};
+export const dirty$ = (control: AbstractControl) =>
+	allEventsObservable(control).pipe(
+		map((events) => events.dirty),
+		distinctUntilChanged(),
+	);
+export const touched$ = (control: AbstractControl) =>
+	allEventsObservable(control).pipe(
+		map((events) => events.touched),
+		distinctUntilChanged(),
+	);
 
 /**
  *  Defines when a {@link AbstractControl control} is in an *state*.

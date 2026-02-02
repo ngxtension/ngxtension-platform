@@ -1,11 +1,9 @@
-import { JsonPipe } from '@angular/common';
 import { Component, effect, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { linkedQueryParam } from 'ngxtension/linked-query-param';
 
 @Component({
-	standalone: true,
 	template: `
 		<div>
 			<label>
@@ -87,7 +85,7 @@ import { linkedQueryParam } from 'ngxtension/linked-query-param';
 			<br />
 		</div>
 	`,
-	imports: [FormsModule, JsonPipe],
+	imports: [FormsModule],
 	styles: `
 		div {
 			padding: 20px;

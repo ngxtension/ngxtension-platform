@@ -20,8 +20,6 @@ Create an RxJS `repeat` operator with an `emit` method on it, to notify when the
 @Component({
   ...,
   template: `
-    ...
-
     <button (click)="repeat.emit()">Repeat</button>
   `
 })
@@ -30,6 +28,21 @@ export class SomeComponent {
 
   // Will log 'hello' directly, then each time the 'Repeat' button gets clicked
   readonly #sayHello = rxEffect(of('hello').pipe(this.repeat()), console.log);
+}
+```
+
+It is syntactic sugar for the following:
+
+```ts
+@Component({
+  ...,
+  template: `
+    <button (click)="repeat$.next()">Repeat</button>
+  `
+})
+export class SomeComponent {
+  readonly repeat$ = new Subject<void>();
+  readonly #sayHello = rxEffect(of('hello').pipe(repeat({ delay: () => repeat$ }), console.log);
 }
 ```
 

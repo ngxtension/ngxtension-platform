@@ -1,7 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import {
 	Directive,
-	ENVIRONMENT_INITIALIZER,
 	ElementRef,
 	Injectable,
 	Input,
@@ -10,6 +9,7 @@ import {
 	computed,
 	inject,
 	makeEnvironmentProviders,
+	provideEnvironmentInitializer,
 	signal,
 	type OnInit,
 } from '@angular/core';
@@ -135,17 +135,16 @@ export type CreateNgxSvgSpriteOptions = Omit<NgxSvgSprite, 'url'> &
  */
 export const provideSvgSprites = (...sprites: CreateNgxSvgSpriteOptions[]) =>
 	makeEnvironmentProviders([
-		{
-			provide: ENVIRONMENT_INITIALIZER,
-			multi: true,
-			useFactory: () => {
+		provideEnvironmentInitializer(() => {
+			const initializerFn = (() => {
 				const service = inject(NgxSvgSprites);
 				return () =>
 					sprites.forEach((sprite) =>
 						service.register(createSvgSprite(sprite)),
 					);
-			},
-		},
+			})();
+			return initializerFn();
+		}),
 	]);
 
 /**
@@ -199,7 +198,7 @@ const createSvgSprite = (options: CreateNgxSvgSpriteOptions) => {
  * ```ts
  * @Directive({
  * 	selector: 'svg[faBrand]',
- * 	standalone: true,
+ *
  * 	hostDirectives: [
  * 		{ directive: NgxSvgSpriteFragment, inputs: ['fragment:faBrand'] },
  * 	],
@@ -288,7 +287,6 @@ const createSvgSprite = (options: CreateNgxSvgSpriteOptions) => {
  */
 @Directive({
 	selector: 'svg[fragment]',
-	standalone: true,
 })
 export class NgxSvgSpriteFragment implements OnInit {
 	/**
@@ -379,7 +377,9 @@ export class NgxSvgSpriteFragment implements OnInit {
 
 			// Cleanup: clear child nodes and remove old classes of this svg.
 			return () => {
-				element.replaceChildren();
+				while (element.firstChild) {
+					element.removeChild(element.firstChild);
+				}
 				element.classList.remove(...classes);
 			};
 		});

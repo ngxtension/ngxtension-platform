@@ -20,7 +20,7 @@ import { mergeInputs } from 'ngxtension/inject-inputs';
 
 ## Usage
 
-```angular-ts
+```ts
 const defaultOptions = { foo: 'default foo', bar: 123 };
 
 @Component({ standalone: true, template: '' })
@@ -29,7 +29,7 @@ class Foo {
 }
 ```
 
-```angular-html
+```html
 <!-- a partial object is passed in -->
 <app-foo [options]="{ foo: 'updated foo'}" />
 ```

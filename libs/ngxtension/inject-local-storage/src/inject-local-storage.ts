@@ -5,18 +5,17 @@ import {
 	inject,
 	InjectionToken,
 	type Injector,
-	Signal,
+	linkedSignal,
 	signal,
 	untracked,
 	type WritableSignal,
 } from '@angular/core';
-import { SIGNAL, SignalNode } from '@angular/core/primitives/signals';
 import { assertInjector } from 'ngxtension/assert-injector';
 
 export const NGXTENSION_LOCAL_STORAGE = new InjectionToken(
 	'NGXTENSION_LOCAL_STORAGE',
 	{
-		providedIn: 'root',
+		providedIn: 'platform',
 		factory: () => localStorage, // this would be the default
 	},
 );
@@ -31,7 +30,7 @@ export function provideLocalStorageImpl(impl: typeof globalThis.localStorage) {
 /**
  * Options to override the default behavior of the local storage signal.
  */
-export type LocalStorageOptionsNoDefault = {
+export type LocalStorageOptionsBase<T> = {
 	/**
 	 * Determines if local storage syncs with the signal.
 	 * When true, updates in one tab reflect in others, ideal for shared-state apps.
@@ -42,12 +41,12 @@ export type LocalStorageOptionsNoDefault = {
 	 * Override the default JSON.stringify function for custom serialization.
 	 * @param value
 	 */
-	stringify?: (value: unknown) => string;
+	stringify?: (value: T) => string;
 	/**
 	 * Override the default JSON.parse function for custom deserialization.
 	 * @param value
 	 */
-	parse?: (value: string) => unknown;
+	parse?: (value: string) => T;
 
 	/**
 	 * Injector for the Injection Context
@@ -55,8 +54,10 @@ export type LocalStorageOptionsNoDefault = {
 	injector?: Injector;
 };
 
+export type LocalStorageOptionsNoDefault<T> = LocalStorageOptionsBase<T>;
+
 export type LocalStorageOptionsWithDefaultValue<T> =
-	LocalStorageOptionsNoDefault & {
+	LocalStorageOptionsNoDefault<T> & {
 		/**
 		 * Default value for the signal.
 		 * Can be a value or a function that returns the value.
@@ -73,25 +74,17 @@ type ClearOnKeyChange = {
 	clearOnKeyChange?: boolean;
 };
 
-export type LocalStorageOptionsComputedNoDefault =
-	LocalStorageOptionsNoDefault & ClearOnKeyChange;
+export type LocalStorageOptionsComputedNoDefault<T> =
+	LocalStorageOptionsBase<T> & ClearOnKeyChange;
 
 export type LocalStorageOptionsComputedWithDefaultValue<T> =
 	LocalStorageOptionsWithDefaultValue<T> & ClearOnKeyChange;
 
 export type LocalStorageOptions<T> =
-	| LocalStorageOptionsNoDefault
+	| LocalStorageOptionsNoDefault<T>
 	| LocalStorageOptionsWithDefaultValue<T>
-	| LocalStorageOptionsComputedNoDefault
+	| LocalStorageOptionsComputedNoDefault<T>
 	| LocalStorageOptionsComputedWithDefaultValue<T>;
-
-function patch<K extends keyof any, V>(
-	target: any,
-	key: K,
-	value: V,
-): asserts target is Record<K, V> {
-	target[key] = value;
-}
 
 enum Kind {
 	INITIAL,
@@ -112,8 +105,7 @@ interface ComputedState<T> {
 
 type State<T> = InitialState | ComputedState<T>;
 
-type LocalStorageSignal<T> = Signal<T> &
-	Pick<WritableSignal<T>, 'set' | 'update' | 'asReadonly'>;
+type LocalStorageSignal<T> = WritableSignal<T>;
 
 function isLocalStorageWithDefaultValue<T>(
 	options: LocalStorageOptions<T>,
@@ -125,11 +117,15 @@ function isFunction(value: unknown): value is (...args: unknown[]) => unknown {
 	return typeof value === 'function';
 }
 
-function goodTry<T>(tryFn: () => T, defaultValue: T): T {
+function getDefaultValue<R>(defaultValue: R | (() => R)): R {
+	return isFunction(defaultValue) ? defaultValue() : defaultValue;
+}
+
+function goodTry<T>(tryFn: () => T, defaultValue: () => T): T {
 	try {
 		return tryFn();
 	} catch {
-		return defaultValue;
+		return defaultValue();
 	}
 }
 
@@ -144,7 +140,7 @@ export const injectLocalStorage: {
 	): LocalStorageSignal<T>;
 	<T>(
 		key: string,
-		options?: LocalStorageOptionsNoDefault,
+		options?: LocalStorageOptionsNoDefault<T>,
 	): LocalStorageSignal<T | undefined>;
 	<T>(
 		keyComputation: () => string,
@@ -152,34 +148,23 @@ export const injectLocalStorage: {
 	): LocalStorageSignal<T>;
 	<T>(
 		keyComputation: () => string,
-		options?: LocalStorageOptionsComputedNoDefault,
+		options?: LocalStorageOptionsComputedNoDefault<T>,
 	): LocalStorageSignal<T | undefined>;
 } = <T>(
 	keyOrComputation: string | (() => string),
 	options: LocalStorageOptions<T> = {},
 ): LocalStorageSignal<T | undefined> => {
-	if (isLocalStorageWithDefaultValue(options)) {
-		const defaultValue = isFunction(options.defaultValue)
-			? options.defaultValue()
-			: options.defaultValue;
-
-		return internalInjectLocalStorage<T>(
-			keyOrComputation,
-			options,
-			defaultValue,
-		);
-	}
-	return internalInjectLocalStorage<T | undefined>(
+	return internalInjectLocalStorage<T, T | undefined>(
 		keyOrComputation,
 		options,
-		undefined,
+		isLocalStorageWithDefaultValue(options) ? options.defaultValue : undefined,
 	);
 };
 
-const internalInjectLocalStorage = <R>(
+const internalInjectLocalStorage = <T, R = T>(
 	keyOrComputation: string | (() => string),
-	options: LocalStorageOptions<R>,
-	defaultValue: R,
+	options: LocalStorageOptions<T>,
+	defaultValue: R | (() => R),
 ): LocalStorageSignal<R> => {
 	const stringify = isFunction(options.stringify)
 		? options.stringify
@@ -216,14 +201,20 @@ const internalInjectLocalStorage = <R>(
 		);
 
 		const getInitialValue = (key: string) => {
-			const initialStoredValue = goodTry(() => localStorage.getItem(key), null);
+			const initialStoredValue = goodTry(
+				() => localStorage.getItem(key),
+				() => null,
+			);
 
 			return initialStoredValue
-				? goodTry(() => parse(initialStoredValue) as R, defaultValue)
-				: defaultValue;
+				? goodTry(
+						() => parse(initialStoredValue) as R,
+						() => getDefaultValue(defaultValue),
+					)
+				: getDefaultValue(defaultValue);
 		};
 
-		const internalSignal = computed<R>(() => {
+		const internalSignal = linkedSignal<R>(() => {
 			const key = computedKey();
 
 			untracked(() => {
@@ -255,14 +246,10 @@ const internalInjectLocalStorage = <R>(
 		});
 
 		const syncValueWithLocalStorage = (value: R): void => {
-			if (!storageSync) {
-				return;
-			}
-
 			const key = untracked(computedKey);
 			const newValue = goodTry(
-				() => (value === undefined ? null : stringify(value)),
-				null,
+				() => (value === undefined ? null : untracked(() => stringify(value))),
+				() => null,
 			);
 
 			try {
@@ -274,6 +261,10 @@ const internalInjectLocalStorage = <R>(
 					localStorage.removeItem(key);
 				} else {
 					localStorage.setItem(key, newValue);
+				}
+
+				if (!storageSync) {
+					return;
 				}
 
 				// We notify other consumers in this tab about changing the value in the store for synchronization
@@ -294,10 +285,14 @@ const internalInjectLocalStorage = <R>(
 				const key = untracked(computedKey);
 
 				if (event.storageArea === localStorage && event.key === key) {
-					const newValue =
-						event.newValue !== null
-							? (parse(event.newValue) as R)
-							: defaultValue;
+					const newValue = goodTry(
+						() =>
+							event.newValue !== null
+								? (parse(event.newValue) as R)
+								: getDefaultValue(defaultValue),
+						() => getDefaultValue(defaultValue),
+					);
+
 					state.set({
 						kind: Kind.COMPUTED,
 						key,
@@ -312,7 +307,7 @@ const internalInjectLocalStorage = <R>(
 			});
 		}
 
-		const set: WritableSignal<R>['set'] = (newValue: R) => {
+		internalSignal.set = (newValue: R) => {
 			const { kind, key } = untracked(state);
 			let newKey: string;
 
@@ -338,7 +333,7 @@ const internalInjectLocalStorage = <R>(
 			syncValueWithLocalStorage(newValue);
 		};
 
-		const update: WritableSignal<R>['update'] = (updateFn: (value: R) => R) => {
+		internalSignal.update = (updateFn: (value: R) => R) => {
 			// set the value in the signal using the original set function
 			state.update(({ kind, key, value }) => {
 				let newValue: R;
@@ -367,27 +362,6 @@ const internalInjectLocalStorage = <R>(
 				};
 			});
 		};
-
-		patch(internalSignal, 'set', set);
-		patch(internalSignal, 'update', update);
-		// TODO replace with linkedSignal after upgrade to Angular 19
-		patch(
-			internalSignal,
-			'asReadonly',
-			function signalAsReadonlyFn(this: typeof internalSignal) {
-				const node = this[SIGNAL] as SignalNode<R> & {
-					readonlyFn?: Signal<R>;
-				};
-
-				if (node.readonlyFn === undefined) {
-					const readonlyFn = () => this();
-					readonlyFn[SIGNAL] = node;
-					node.readonlyFn = readonlyFn;
-				}
-
-				return node.readonlyFn;
-			},
-		);
 
 		return internalSignal;
 	});

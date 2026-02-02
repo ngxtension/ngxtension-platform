@@ -61,7 +61,8 @@ describe(explicitEffect.name, () => {
 		expect(cleanupLog.length).toBe(0);
 
 		fixture.componentInstance.count.set(1);
-		TestBed.flushEffects();
+		fixture.detectChanges();
+
 		expect(log.length).toBe(2);
 		expect(cleanupLog.length).toBe(1);
 	});

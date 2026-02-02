@@ -1,10 +1,9 @@
 import {
 	Directive,
-	EventEmitter,
 	Injector,
 	Input,
-	Output,
 	inject,
+	output,
 	signal,
 	type OnInit,
 } from '@angular/core';
@@ -24,7 +23,7 @@ export class NgxDrag implements OnInit {
 		this.config.set(config);
 	}
 	@Input('ngxDragZoneless') zoneless?: boolean;
-	@Output() ngxDrag = new EventEmitter<NgxInjectDrag['state']>();
+	readonly ngxDrag = output<NgxInjectDrag['state']>();
 
 	private injector = inject(Injector);
 
