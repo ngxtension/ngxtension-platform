@@ -133,6 +133,7 @@
 				"libs/ngxtension/navigation-end/src/index.ts"
 			],
 			"ngxtension/not-pattern": ["libs/ngxtension/not-pattern/src/index.ts"],
+			"ngxtension/onEvent": ["libs/ngxtension/on-event/src/index.ts"],
 			"ngxtension/poll": ["libs/ngxtension/poll/src/index.ts"],
 			"ngxtension/repeat": ["libs/ngxtension/repeat/src/index.ts"],
 			"ngxtension/repeat-pipe": ["libs/ngxtension/repeat-pipe/src/index.ts"],
