@@ -109,7 +109,7 @@ If we want to use a default value if there is no value, we can pass a `defaultVa
 	`,
 })
 class TestComponent {
-	angularVersion = injectParams('version', { defaultValue: '19' }); // returns a signal with the value of the id param parsed to a number
+	angularVersion = injectParams('version', { defaultValue: '19' }); // returns a signal with the value of the version param or '19' if not present
 
 	angular = derivedFrom(
 		[this.angularVersion],
@@ -117,5 +117,81 @@ class TestComponent {
 			this.angularService.getAngular(version).pipe(startWith(null)),
 		),
 	);
+}
+```
+
+## Global Params
+
+`injectParams.global()` allows you to access route params from the entire route hierarchy, including all parent and child routes. This is similar to Angular's `input()` and `input.required()` pattern.
+
+:::note[Use Case]
+Use `.global()` when you need to access params from child routes or when your component needs to be aware of the full routing context, not just its own route params.
+:::
+
+### Get all params from route hierarchy
+
+```ts
+@Component()
+class ParentComponent {
+	// Gets all params from parent and all child routes
+	// Child params override parent params if they have the same name
+	allParams = injectParams.global();
+}
+```
+
+### Get specific param from route hierarchy
+
+```ts
+@Component()
+class ParentComponent {
+	// Gets the 'id' param from anywhere in the route hierarchy
+	id = injectParams.global('id');
+}
+```
+
+### Transform global params
+
+```ts
+@Component()
+class ParentComponent {
+	// Transform all params from the route hierarchy
+	paramCount = injectParams.global((params) => Object.keys(params).length);
+}
+```
+
+### With options
+
+All the same options work with `.global()`:
+
+```ts
+@Component()
+class TestComponent {
+	// Parse param as number
+	userId = injectParams.global('id', {
+		parse: numberAttribute,
+	});
+}
+```
+
+### Example: Breadcrumbs
+
+A common use case is building breadcrumbs that need access to all route params:
+
+```ts
+@Component({
+	template: `
+		<nav>
+			@for (crumb of breadcrumbs(); track crumb.path) {
+				<a [routerLink]="crumb.path">{{ crumb.label }}</a>
+			}
+		</nav>
+		<router-outlet />
+	`,
+})
+class LayoutComponent {
+	allParams = injectParams.global();
+
+	// Build breadcrumbs using all params from route hierarchy
+	breadcrumbs = computed(() => buildBreadcrumbs(this.allParams()));
 }
 ```
