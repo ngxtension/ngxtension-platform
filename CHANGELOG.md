@@ -1,3 +1,43 @@
+## 7.1.0 (2026-02-03)
+
+### Features
+
+- add injectAttribute utility ([#645](https://github.com/ngxtension/ngxtension-platform/pull/645))
+- **collections:** add `SignalMap` and `SignalSet` utility ([#657](https://github.com/ngxtension/ngxtension-platform/pull/657))
+- **connect:** allow to pass date object ([#647](https://github.com/ngxtension/ngxtension-platform/pull/647))
+- **inject-leaf-activated-route:** add injectLeafActivatedRoute function and related types ([e5f747f](https://github.com/ngxtension/ngxtension-platform/commit/e5f747f))
+- **inject-leaf-activated-route:** add injectLeafActivatedRoute function and related types ([9c20a36](https://github.com/ngxtension/ngxtension-platform/commit/9c20a36))
+- **inject-leaf-activated-route:** add `injectLeafActivatedRoute` utility tests and documentation ([f3cc77b](https://github.com/ngxtension/ngxtension-platform/commit/f3cc77b))
+- **inject-leaf-activated-route:** add project configuration file ([a86b94c](https://github.com/ngxtension/ngxtension-platform/commit/a86b94c))
+- **inject-params:** add global param handling and `injectParamsCore` refactor ([bea92d8](https://github.com/ngxtension/ngxtension-platform/commit/bea92d8))
+- **nx-cloud:** setup nx cloud workspace ([#638](https://github.com/ngxtension/ngxtension-platform/pull/638))
+- **resize:** add SSR compatibility to prevent browser API access on server ([#653](https://github.com/ngxtension/ngxtension-platform/pull/653))
+
+### Bug Fixes
+
+- **call-apply:** add SSR support ([#651](https://github.com/ngxtension/ngxtension-platform/pull/651))
+- **control-error:** used form-events util instead of manuel setup ([#648](https://github.com/ngxtension/ngxtension-platform/pull/648))
+- **docs:** correct typo in `withLatestFrom` usage examples ([dd69476](https://github.com/ngxtension/ngxtension-platform/commit/dd69476))
+- **inject-local-storage:** fix bug where disabling `storageSync` would not write new values to local storage ([fc6ba36](https://github.com/ngxtension/ngxtension-platform/commit/fc6ba36))
+- **plugin:** handle empty decorator arguments in host binding conversion ([#650](https://github.com/ngxtension/ngxtension-platform/pull/650))
+
+### Documentation
+
+- setup redirects ([#639](https://github.com/ngxtension/ngxtension-platform/pull/639))
+- some intro docs to test docs release ([c113380](https://github.com/ngxtension/ngxtension-platform/commit/c113380))
+
+### ❤️ Thank You
+
+- Andreas Dorner @endlacer
+- Chau @nartc
+- Chau Tran @nartc
+- Denis Yılmaz @denisyilmaz
+- Enea Jahollari @eneajaho
+- Jaime Burgos @SkyZeroZx
+- Kevin Anidjar @kanidjar
+- Max Scopp
+- Nicolas Stadler
+
 ## 7.0.2 (2025-11-05)
 
 This was a version bump only, there were no code changes.
