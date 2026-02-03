@@ -1,24 +1,40 @@
 import { inject, type Signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, type Params } from '@angular/router';
-import { injectLeafActivatedRoute } from 'libs/ngxtension/inject-leaf-activated-route/src/inject-leaf-activated-route';
 import { assertInjector } from 'ngxtension/assert-injector';
+import { injectLeafActivatedRoute } from 'ngxtension/inject-leaf-activated-route';
 import {
 	DefaultValueOptions,
 	InjectorOptions,
 	ParseOptions,
 } from 'ngxtension/shared';
-import { map } from 'rxjs';
+import { map, switchMap, type Observable } from 'rxjs';
 
 type ParamsTransformFn<ReadT> = (params: Params) => ReadT;
 
-export type ParamsFromNavigationEndOptions = {
-	/**
-	 * Retrieve params from the leaf `ActivatedRoute` of the latest `NavigationEnd` event.
-	 * Essentially, this resolve to all params, instead of only the params of the current route level.
-	 */
-	fromNavigationEnd?: boolean;
-};
+/**
+ * Merges all params from the route hierarchy by walking from root to the given route.
+ * Child route params override parent route params if there are naming conflicts.
+ */
+function mergeRouteParams(route: ActivatedRoute): Params {
+	// Build path from root to current route
+	const routePath: ActivatedRoute[] = [];
+	let currentRoute: ActivatedRoute | null = route;
+
+	while (currentRoute) {
+		routePath.unshift(currentRoute);
+		currentRoute = currentRoute.parent;
+	}
+
+	// Merge params from root to leaf (child params override parent params)
+	const mergedParams: Params = {};
+	for (const r of routePath) {
+		const params = r.snapshot?.params || {};
+		Object.assign(mergedParams, params);
+	}
+
+	return mergedParams;
+}
 
 /**
  * The `ParamsOptions` type defines options for configuring the behavior of the `injectParams` function.
@@ -32,8 +48,46 @@ export type ParamsOptions<ReadT, WriteT, DefaultValueT> = ParseOptions<
 	WriteT
 > &
 	DefaultValueOptions<DefaultValueT> &
-	ParamsFromNavigationEndOptions &
 	InjectorOptions;
+
+/**
+ * Internal helper function that implements the core logic for injectParams.
+ * This is shared between injectParams and injectParams.global.
+ */
+function injectParamsCore<T>(
+	paramsObservable: Observable<Params>,
+	initialParams: Params,
+	keyOrParamsTransform?: string | ((params: Params) => T),
+	options: ParamsOptions<T, string, T> = {},
+): Signal<T | Params | string | null> {
+	const { parse, defaultValue } = options;
+
+	if (!keyOrParamsTransform) {
+		return toSignal(paramsObservable, { initialValue: initialParams });
+	}
+
+	if (typeof keyOrParamsTransform === 'function') {
+		return toSignal(paramsObservable.pipe(map(keyOrParamsTransform)), {
+			initialValue: keyOrParamsTransform(initialParams),
+		});
+	}
+
+	const getParam = (params: Params) => {
+		const param = params?.[keyOrParamsTransform as string] as
+			| string
+			| undefined;
+
+		if (!param) {
+			return defaultValue ?? null;
+		}
+
+		return parse ? parse(param) : param;
+	};
+
+	return toSignal(paramsObservable.pipe(map(getParam)), {
+		initialValue: getParam(initialParams),
+	});
+}
 
 /**
  * The `injectParams` function allows you to access and manipulate parameters from the current route.
@@ -68,6 +122,7 @@ export function injectParams<ReadT>(
  *
  * @template ReadT - The expected type of the read value.
  * @param {ParamsTransformFn<ReadT>} fn - A transform function that takes the parameters object (`params: Params`) and returns the desired value.
+ * @param options - Optional configuration options for the parameter.
  * @returns {Signal} A `Signal` that emits the transformed value based on the provided custom transform function.
  *
  * @example
@@ -75,7 +130,7 @@ export function injectParams<ReadT>(
  */
 export function injectParams<ReadT>(
 	fn: ParamsTransformFn<ReadT>,
-	options?: ParamsFromNavigationEndOptions,
+	options?: InjectorOptions,
 ): Signal<ReadT>;
 
 /**
@@ -100,35 +155,62 @@ export function injectParams<T>(
 	options: ParamsOptions<T, string, T> = {},
 ): Signal<T | Params | string | null> {
 	return assertInjector(injectParams, options?.injector, () => {
-		const route = options.fromNavigationEnd
-			? injectLeafActivatedRoute()()
-			: inject(ActivatedRoute);
-
-		const params = route.snapshot.params;
-		const { parse, defaultValue } = options;
-
-		if (!keyOrParamsTransform) {
-			return toSignal(route.params, { initialValue: params });
-		}
-
-		if (typeof keyOrParamsTransform === 'function') {
-			return toSignal(route.params.pipe(map(keyOrParamsTransform)), {
-				initialValue: keyOrParamsTransform(params),
-			});
-		}
-
-		const getParam = (params: Params) => {
-			const param = params?.[keyOrParamsTransform] as string | undefined;
-
-			if (!param) {
-				return defaultValue ?? null;
-			}
-
-			return parse ? parse(param) : param;
-		};
-
-		return toSignal(route.params.pipe(map(getParam)), {
-			initialValue: getParam(params),
-		});
+		const route = inject(ActivatedRoute);
+		return injectParamsCore(
+			route.params,
+			route.snapshot.params,
+			keyOrParamsTransform,
+			options,
+		);
 	});
 }
+
+/**
+ * Global variant of `injectParams` that retrieves params from the leaf (deepest) `ActivatedRoute` in the router state tree.
+ * This allows you to access all route parameters from the entire route hierarchy, including child routes,
+ * regardless of where your component is positioned in the component tree.
+ *
+ * @template T - The expected type of the read value.
+ * @param keyOrParamsTransform OPTIONAL The key of the param to return, or a transform function to apply to the params object
+ * @param {ParamsOptions} options - Optional configuration options for the parameter.
+ * @returns {Signal} A `Signal` that emits the transformed value of the specified parameter, or the entire parameters object if no key is provided.
+ *
+ * @example
+ * // Get all params from route hierarchy
+ * const params = injectParams.global();
+ *
+ * @example
+ * // Get specific param from route hierarchy
+ * const childId = injectParams.global('childId');
+ *
+ * @example
+ * // Transform params from route hierarchy
+ * const allKeys = injectParams.global((params) => Object.keys(params));
+ *
+ * @example
+ * // With parse option
+ * const productId = injectParams.global('productId', { parse: numberAttribute });
+ */
+injectParams.global = function <T>(
+	keyOrParamsTransform?: string | ((params: Params) => T),
+	options: ParamsOptions<T, string, T> = {},
+): Signal<T | Params | string | null> {
+	return assertInjector(injectParams.global, options?.injector, () => {
+		// Use the leaf route reactively and merge all params from the hierarchy
+		const leafRoute = injectLeafActivatedRoute();
+		const leafRoute$ = toObservable(leafRoute);
+
+		// Create an observable that emits merged params from the route hierarchy
+		const mergedParams$ = leafRoute$.pipe(
+			switchMap((route) => route.params),
+			map(() => mergeRouteParams(leafRoute())),
+		);
+
+		return injectParamsCore(
+			mergedParams$,
+			mergeRouteParams(leafRoute()),
+			keyOrParamsTransform,
+			options,
+		);
+	});
+};
