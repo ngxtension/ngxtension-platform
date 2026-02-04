@@ -3,39 +3,36 @@ title: createNotifier
 description: ngxtension/create-notifier
 entryPoint: ngxtension/create-notifier
 badge: experimental
-contributors: ['josh-morony']
+contributors: ['josh-morony', 'endlacer']
 ---
 
-`createNotifier` provides a way to manually trigger signal re-computations by
-referencing the created notifier signal. Common use cases for this include:
+## Features
+
+`createNotifier` provides a way to manually trigger signal re-computations by referencing the created notifier signal. It can also automatically react to changes in other signals through dependency tracking.
+
+### Common Use Cases
 
 - Manually triggering a "refresh" and reacting to it
 - Mutating a `Map` and having a way to react to that map changing
 - Triggering a re-computation on some kind of event/life cycle hook
+- Combining manual notifications with automatic dependency tracking
 
-It simply creates a standard `signal` that has its value incremented by `1`
-every time `notify` is called. This means the signal value will change and any
-`effect` or `computed` that references this signal will be re-computed.
+## Basic Usage
 
-You can create a notifier like this:
+Create a simple notifier:
 
 ```ts
 import { createNotifier } from 'ngxtension/create-notifier';
-```
-
-```ts
 refreshNotifier = createNotifier();
 ```
 
-You can trigger the signal update like this:
+Trigger the signal update:
 
 ```ts
 refreshNotifier.notify();
 ```
 
-Then you can trigger a re-computation of any `computed` or `effect` (or
-`derivedAsync` from `ngxtension`) by referencing the signal returned on
-`listen`:
+React to notifications in `computed` or `effect`:
 
 ```ts
 effect(() => {
@@ -46,10 +43,9 @@ effect(() => {
 });
 ```
 
-An important thing to keep in mind is that an `effect` will also run once
-initially before `notify()` is explicitly called. Since the version number used
-internally for the signals value begins with `0` you can avoid this "init"
-behaviour by setting up your effect like this instead:
+### Avoiding Initial Effect Execution
+
+An `effect` runs once initially before `notify()` is explicitly called. Since the internal counter begins at `0`, you can skip the initial run:
 
 ```ts
 effect(() => {
@@ -61,4 +57,66 @@ effect(() => {
 });
 ```
 
-With this set up, the `if` will initially fail because the value of `refreshNotifier.listen()` will initially be `0`, but once `notify` has been explicitly called the `if` condition will always pass because the value of the signal will always be above `0`.
+The `if` condition initially fails because `refreshNotifier.listen()` returns `0`, but passes once `notify()` has been called.
+
+## Dependency Tracking
+
+You can configure a notifier to automatically increment whenever specified signals change. This combines manual notifications with reactive dependency tracking.
+
+### Basic Dependency Tracking
+
+```ts
+userId = signal(1);
+
+userNotifier = createNotifier({
+	deps: [this.userId],
+});
+```
+
+Now `userNotifier.listen()` will increment both when `notify()` is called **and** when `userId` changes:
+
+```ts
+effect(() => {
+	console.log('User notifier changed:', userNotifier.listen());
+	// Runs when userId changes OR when notify() is called
+});
+
+// Both of these will trigger the effect:
+userId.set(2); // Triggers via dependency
+userNotifier.notify(); // Triggers manually
+```
+
+### Multiple Dependencies
+
+Track multiple signals simultaneously:
+
+```ts
+userId = signal(1);
+tenantId = signal('tenant-a');
+
+compositeNotifier = createNotifier({
+	deps: [userId, tenantId],
+});
+```
+
+The notifier increments whenever **any** of the dependencies change.
+
+### Controlling Initial Emission
+
+By default, notifiers with dependencies start at `1` (emitting immediately). Control this with `depsEmitInitially`:
+
+```ts
+// Emit immediately (default behavior)
+notifier = createNotifier({
+	deps: [someSignal],
+	depsEmitInitially: true, // starts at 1 (default)
+});
+
+// Don't emit initially
+notifier = createNotifier({
+	deps: [someSignal],
+	depsEmitInitially: false, // starts at 0
+});
+```
+
+When `depsEmitInitially: false`, the notifier starts at `0` like a dependency-free notifier, even though it tracks signals. The first increment happens only when dependencies change or `notify()` is called.
