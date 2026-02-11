@@ -187,6 +187,16 @@ describe('onEvent', () => {
 			// Triggering destroy should have no effect since unregisterDestroyCallback was called
 			expect(destroyCallback).toBeUndefined();
 		});
+
+		it('should error when no destroyRef or injection context is giving while having manualCleanup != true', () => {
+			// manualCleanup is NOT true here (defaults to false / auto cleanup),
+			// but we're also not providing destroyRef or injector.
+			// If onEvent internally calls `inject(DestroyRef)` (or `inject(Injector)`),
+			// Angular will throw NG0203 outside an injection context.
+			expect(() => onEvent(mockTarget, 'click', mockListener)).toThrowError(
+				/NG0203|inject\(\) must be called from an injection context/i,
+			);
+		});
 	});
 
 	describe('Abort Callback', () => {
@@ -251,7 +261,7 @@ describe('onEvent', () => {
 				isDevMode: () => true,
 			}));
 
-			onEvent(mockTarget, 'click', mockListener);
+			onEvent(mockTarget, 'click', mockListener, { manualCleanup: true });
 
 			// Note: This test assumes inject() will fail/return null
 			// In a real test environment, you'd need to mock the inject function

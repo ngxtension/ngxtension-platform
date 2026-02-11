@@ -1,11 +1,12 @@
 import {
 	DestroyRef,
-	inject,
 	Injector,
 	isDevMode,
+	runInInjectionContext,
 	Signal,
 	signal,
 } from '@angular/core';
+import { assertInjector } from 'ngxtension/assert-injector';
 
 export type OnEventOptions = {
 	once?: boolean;
@@ -15,28 +16,40 @@ export type OnEventOptions = {
 	| {
 			destroyRef?: DestroyRef;
 			injector?: never;
+			manualCleanup?: false | null | undefined;
 	  }
 	| {
 			destroyRef?: never;
 			injector?: Injector;
+			manualCleanup?: false | null | undefined;
+	  }
+	| {
+			destroyRef?: never;
+			injector?: never;
+			manualCleanup?: true;
 	  }
 );
 
+const DEFAULT_ON_EVENT_OPTIONS: OnEventOptions = {
+	once: false,
+	capture: false,
+	passive: false,
+	manualCleanup: false,
+};
+
 /** Result of the `onEvent()` function. Contains the `removeListener()` function to remove the listener and the `active` signal to check if the listener is still active.*/
-export type OnEventResult = {
+export type OnEventRef = {
 	removeListener: () => void;
 	active: Signal<boolean>;
 };
 
 function getDestroyRef(options?: OnEventOptions): DestroyRef | null {
+	if (options?.manualCleanup) return null;
 	if (options?.destroyRef) return options.destroyRef;
-	if (options?.injector) return options.injector.get(DestroyRef);
 
-	try {
-		return inject(DestroyRef, { optional: true });
-	} catch {
-		return null;
-	}
+	const injector = assertInjector(onEvent, options?.injector);
+
+	return runInInjectionContext(injector, () => injector.get(DestroyRef));
 }
 
 export function onEvent<
@@ -49,21 +62,21 @@ export function onEvent<
 	eventKey: K,
 	listener: (event: E, abort: () => void) => void,
 	options?: OnEventOptions,
-): OnEventResult;
+): OnEventRef;
 
 export function onEvent<E extends Event>(
 	target: EventTarget,
 	eventKey: string,
 	listener: (event: E, abort: () => void) => void,
 	options?: OnEventOptions,
-): OnEventResult;
+): OnEventRef;
 
 export function onEvent<E extends Event>(
 	target: EventTarget,
 	eventKey: string,
 	listener: (event: E, abort: () => void) => void,
-	options?: OnEventOptions,
-): OnEventResult {
+	options: OnEventOptions = DEFAULT_ON_EVENT_OPTIONS,
+): OnEventRef {
 	const destroyRef = getDestroyRef(options);
 	if (!destroyRef && isDevMode()) {
 		console.warn(
