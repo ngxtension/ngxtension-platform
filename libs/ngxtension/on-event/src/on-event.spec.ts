@@ -58,14 +58,14 @@ describe('onEvent', () => {
 			expect(mockListener).toHaveBeenCalledWith(event, expect.any(Function));
 		});
 
-		it('should return OnEventResult with removeListener and active signal', () => {
+		it('should return OnEventResult with destroy and active signal', () => {
 			const result = onEvent(mockTarget, 'click', mockListener, {
 				destroyRef: mockDestroyRef,
 			});
 
-			expect(result).toHaveProperty('removeListener');
+			expect(result).toHaveProperty('destroy');
 			expect(result).toHaveProperty('active');
-			expect(typeof result.removeListener).toBe('function');
+			expect(typeof result.destroy).toBe('function');
 			expect(result.active()).toBe(true);
 		});
 	});
@@ -161,14 +161,14 @@ describe('onEvent', () => {
 	});
 
 	describe('Manual Cleanup', () => {
-		it('should remove listener when removeListener is called', () => {
+		it('should remove listener when destroy is called', () => {
 			const result = onEvent(mockTarget, 'click', mockListener, {
 				destroyRef: mockDestroyRef,
 			});
 
 			expect(result.active()).toBe(true);
 
-			result.removeListener();
+			result.destroy();
 
 			expect(result.active()).toBe(false);
 
@@ -182,7 +182,7 @@ describe('onEvent', () => {
 				destroyRef: mockDestroyRef,
 			});
 
-			result.removeListener();
+			result.destroy();
 
 			// Triggering destroy should have no effect since unregisterDestroyCallback was called
 			expect(destroyCallback).toBeUndefined();
@@ -248,33 +248,6 @@ describe('onEvent', () => {
 			abortFn?.();
 
 			expect(destroyCallback).toBeUndefined();
-		});
-	});
-
-	describe('Dev Mode Warning', () => {
-		it('should warn in dev mode when no DestroyRef is available', () => {
-			const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
-
-			// Mock isDevMode to return true
-			jest.mock('@angular/core', () => ({
-				...jest.requireActual('@angular/core'),
-				isDevMode: () => true,
-			}));
-
-			onEvent(mockTarget, 'click', mockListener, { manualCleanup: true });
-
-			// Note: This test assumes inject() will fail/return null
-			// In a real test environment, you'd need to mock the inject function
-		});
-
-		it('should not warn when DestroyRef is provided', () => {
-			const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
-
-			onEvent(mockTarget, 'click', mockListener, {
-				destroyRef: mockDestroyRef,
-			});
-
-			expect(consoleWarnSpy).not.toHaveBeenCalled();
 		});
 	});
 

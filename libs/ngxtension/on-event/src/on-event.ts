@@ -1,11 +1,4 @@
-import {
-	DestroyRef,
-	Injector,
-	isDevMode,
-	runInInjectionContext,
-	Signal,
-	signal,
-} from '@angular/core';
+import { DestroyRef, Injector, Signal, signal } from '@angular/core';
 import { assertInjector } from 'ngxtension/assert-injector';
 
 export type OnEventOptions = {
@@ -37,9 +30,9 @@ const DEFAULT_ON_EVENT_OPTIONS: OnEventOptions = {
 	manualCleanup: false,
 };
 
-/** Result of the `onEvent()` function. Contains the `removeListener()` function to remove the listener and the `active` signal to check if the listener is still active.*/
+/** Result of the `onEvent()` function. Contains the `destroy()` function to remove the listener and the `active` signal to check if the listener is still active.*/
 export type OnEventRef = {
-	removeListener: () => void;
+	destroy: () => void;
 	active: Signal<boolean>;
 };
 
@@ -48,8 +41,7 @@ function getDestroyRef(options?: OnEventOptions): DestroyRef | null {
 	if (options?.destroyRef) return options.destroyRef;
 
 	const injector = assertInjector(onEvent, options?.injector);
-
-	return runInInjectionContext(injector, () => injector.get(DestroyRef));
+	return injector.get(DestroyRef);
 }
 
 export function onEvent<
@@ -78,15 +70,6 @@ export function onEvent<E extends Event>(
 	options: OnEventOptions = DEFAULT_ON_EVENT_OPTIONS,
 ): OnEventRef {
 	const destroyRef = getDestroyRef(options);
-	if (!destroyRef && isDevMode()) {
-		console.warn(
-			`onEvent: No DestroyRef could be determined. The event listener will not be automatically removed on destroy.`,
-			{
-				target,
-				eventKey,
-			},
-		);
-	}
 	const abortController = new AbortController();
 	const listenerActive = signal(true);
 
@@ -120,7 +103,7 @@ export function onEvent<E extends Event>(
 	});
 
 	return {
-		removeListener: () => abort(),
+		destroy: () => abort(),
 		active: listenerActive.asReadonly(),
 	};
 }

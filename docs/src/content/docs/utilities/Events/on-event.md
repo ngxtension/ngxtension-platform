@@ -44,7 +44,7 @@ You can control the listener from outside the callback using the returned object
 on the listener's state.
 
 ```ts
-const { removeListener, active } = onEvent(window, 'mousemove', (e) => {
+const { destroy, active } = onEvent(window, 'mousemove', (e) => {
 	// heavy logic
 });
 
@@ -52,7 +52,7 @@ const { removeListener, active } = onEvent(window, 'mousemove', (e) => {
 console.log(active()); // true
 
 // Stop listening from outside
-removeListener();
+destroy();
 
 console.log(active()); // false
 ```
@@ -86,13 +86,13 @@ run via Angular DI), pass either:
 - `options.injector`.
 
 If no `DestroyRef` can be determined, a warning will be logged in DevMode, and the listener will **not** be
-automatically cleaned up (you must call `removeListener` manually).
+automatically cleaned up (you must call `destroy` manually).
 
 ## API
 
 ```ts
 export type OnEventResult = {
-	removeListener: () => void;
+	destroy: () => void;
 	active: Signal<boolean>;
 }
 
@@ -112,5 +112,5 @@ onEvent(target: EventTarget, eventKey: string, listener: (event: Event, abort: (
 
 Returns an `OnEventResult` object:
 
-- `removeListener`: A function to remove the event listener manually.
+- `destroy`: A function to remove the event listener manually.
 - `active`: A generic Angular `Signal<boolean>` indicating whether the listener is currently attached.
