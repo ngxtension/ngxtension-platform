@@ -8,8 +8,10 @@ import {
 import { TestBed } from '@angular/core/testing';
 import {
 	FormControl,
+	FormGroup,
 	FormGroupDirective,
 	NgForm,
+	ReactiveFormsModule,
 	Validators,
 } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -22,7 +24,7 @@ import {
 } from './control-error';
 
 describe('NgxControlError', () => {
-	const unitTest = (test: () => void | Promise<void>) => async () => {
+	const isolatedTest = (test: () => void | Promise<void>) => async () => {
 		TestBed.overrideProvider(TemplateRef, { useValue: undefined });
 		TestBed.overrideProvider(ViewContainerRef, {
 			useValue: {
@@ -39,13 +41,13 @@ describe('NgxControlError', () => {
 		await TestBed.runInInjectionContext(test);
 	};
 
-	const render = (
+	const render = <TInputs>(
 		template: string,
-		inputs?: Partial<NgxControlError> | undefined,
+		inputs?: Partial<TInputs> | undefined,
 		providers?: Provider[],
 	) => {
 		@Component({
-			imports: [CommonModule, NgxControlError],
+			imports: [CommonModule, ReactiveFormsModule, NgxControlError],
 			standalone: true,
 			template,
 			providers,
@@ -70,12 +72,12 @@ describe('NgxControlError', () => {
 
 	it(
 		'should be created',
-		unitTest(() => expect(new NgxControlError()).toBeTruthy()),
+		isolatedTest(() => expect(new NgxControlError()).toBeTruthy()),
 	);
 
 	it(
 		'should have a context guard',
-		unitTest(() =>
+		isolatedTest(() =>
 			expect(
 				NgxControlError.ngTemplateContextGuard(new NgxControlError(), {}),
 			).toBe(true),
@@ -85,7 +87,7 @@ describe('NgxControlError', () => {
 	describe('should have an error when the control includes the tracked error and the control is in an error state', () => {
 		it(
 			'respecting track changes',
-			unitTest(() => {
+			isolatedTest(() => {
 				const instance = new NgxControlError();
 
 				instance.track$.set('required');
@@ -104,7 +106,7 @@ describe('NgxControlError', () => {
 
 		it(
 			'when it has at least 1 tracked error ',
-			unitTest(() => {
+			isolatedTest(() => {
 				const instance = new NgxControlError();
 				const control = new FormControl('42', [
 					Validators.minLength(3),
@@ -128,7 +130,7 @@ describe('NgxControlError', () => {
 
 		it(
 			'respecting error state matcher changes',
-			unitTest(() => {
+			isolatedTest(() => {
 				const instance = new NgxControlError();
 
 				instance.track$.set('required');
@@ -147,7 +149,7 @@ describe('NgxControlError', () => {
 
 		it(
 			'respecting control instance changes',
-			unitTest(() => {
+			isolatedTest(() => {
 				const instance = new NgxControlError();
 
 				instance.track$.set('required');
@@ -167,7 +169,7 @@ describe('NgxControlError', () => {
 
 	it(
 		'DEFAULT_ERROR_STATE_MATCHER should match when the control is: 1. invalid 2. touched or its parent is submitted',
-		unitTest(() => {
+		isolatedTest(() => {
 			const instance = new NgxControlError();
 			const control = new FormControl('', Validators.required);
 
@@ -241,9 +243,14 @@ describe('NgxControlError', () => {
 	it('should have an injectable error state matcher', () => {
 		const errorStateMatcher = jest.fn();
 
+		const params = {
+			error: 'required',
+			control: new FormControl('', Validators.required),
+		};
+
 		const [, controlError] = render(
-			'<ng-template ngxControlError />',
-			undefined,
+			'<span *ngxControlError="control; track: error">42</span>',
+			params,
 			provideNgxControlError({ errorStateMatcher: () => errorStateMatcher }),
 		);
 
@@ -251,7 +258,15 @@ describe('NgxControlError', () => {
 	});
 
 	it('should use the default error state matcher as default', () => {
-		const [, controlError] = render('<ng-template ngxControlError />');
+		const params = {
+			error: 'required',
+			control: new FormControl('', Validators.required),
+		};
+
+		const [, controlError] = render(
+			'<span *ngxControlError="control; track: error">42</span>',
+			params,
+		);
 
 		expect(controlError.errorStateMatcher$()).toBe(
 			NGX_DEFAULT_CONTROL_ERROR_STATE_MATCHER,
@@ -298,5 +313,145 @@ describe('NgxControlError', () => {
 		expect(fixture.debugElement.nativeElement.textContent).toEqual(
 			'INVALID - true',
 		);
+	});
+
+	it('should resolve a control by its name', () => {
+		const params = {
+			error: 'required',
+			form: new FormGroup({
+				name: new FormControl('', Validators.required),
+			}),
+			stateMatcher: () => of(true),
+		};
+
+		const [fixture, controlError] = render(
+			`<form [formGroup]="form">
+					<label>
+						<input formControlName="name" />
+						<span *ngxControlError="'name'; track: error, errorStateMatcher: stateMatcher">42</span>
+					</label>
+				</form>
+			`,
+			params,
+		);
+
+		fixture.detectChanges();
+
+		expect(fixture.debugElement.nativeElement.textContent).toBe('42');
+
+		controlError.errorStateMatcher = () => of(false);
+
+		fixture.detectChanges();
+
+		expect(fixture.debugElement.nativeElement.textContent).toBe('');
+	});
+
+	it('should throw when a control cannot be found because there is no parent control', () => {
+		expect(() =>
+			render(`
+				<span *ngxControlError="'name'; track: 'required'">42</span>
+		`),
+		).toThrow(
+			'[NgxControlError]: A control name cannot be specified without a parent FormGroup.',
+		);
+	});
+
+	it('should throw when a control cannot be found in the parent form group', () => {
+		const params = {
+			form: new FormGroup({
+				name: new FormControl('', Validators.required),
+			}),
+		};
+
+		expect(() =>
+			render(
+				`<form [formGroup]="form">
+            <span *ngxControlError="'nonExistentControlname'; track: 'required'">42</span>
+          </form>
+      `,
+				params,
+			),
+		).toThrow(
+			`[NgxControlError]: Cannot find control with name 'nonExistentControlname'.`,
+		);
+	});
+
+	it('should throw when a control cannot be found in a nested parent form group', () => {
+		expect(() =>
+			render(
+				`<form [formGroup]="form">
+            <div formGroupName="nested">
+              <span *ngxControlError="'nonExistentControlname'; track: 'required'">42</span>
+            </div>
+          </form>
+      `,
+				{
+					form: new FormGroup({
+						nested: new FormGroup({
+							name: new FormControl('', Validators.required),
+						}),
+					}),
+				},
+			),
+		).toThrow(
+			`[NgxControlError]: Cannot find control with name 'nonExistentControlname'.`,
+		);
+
+		expect(() =>
+			render(
+				`<form [formGroup]="form">
+            <div formGroupName="nested">
+              <span *ngxControlError="'name1'; track: 'required'">42</span>
+            </div>
+          </form>
+      `,
+				{
+					form: new FormGroup({
+						name1: new FormControl('', Validators.required),
+						nested: new FormGroup({
+							name2: new FormControl('', Validators.required),
+						}),
+					}),
+				},
+			),
+		).toThrow(`[NgxControlError]: Cannot find control with name 'name1'.`);
+	});
+
+	it('should resolve a nested control by its name', () => {
+		const params = {
+			error: 'required',
+			form: new FormGroup({
+				nested: new FormGroup({
+					name: new FormControl('', Validators.required),
+				}),
+			}),
+			stateMatcher: () => of(true),
+		};
+
+		const [fixture, controlError] = render(
+			`
+				<form [formGroup]="form">
+					<div formGroupName="nested">
+						<label>
+							<input formControlName="name" />
+							<span
+								*ngxControlError="'name'; track: error, errorStateMatcher: stateMatcher"
+							>42</span>
+						</label>
+					</div>
+				</form>
+			`,
+			params,
+		);
+
+		fixture.detectChanges();
+
+		expect(fixture.debugElement.nativeElement.textContent).toBe('42');
+
+		controlError.errorStateMatcher = () => of(false);
+
+		fixture.detectChanges();
+
+		expect(fixture.debugElement.nativeElement.textContent).toBe('');
 	});
 });
