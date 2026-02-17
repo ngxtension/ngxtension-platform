@@ -7,6 +7,7 @@ import {
 	ViewContainerRef,
 	inject,
 	signal,
+	untracked,
 	type Provider,
 } from '@angular/core';
 import {
@@ -16,6 +17,7 @@ import {
 } from '@angular/core/rxjs-interop';
 import {
 	AbstractControl,
+	ControlContainer,
 	FormGroupDirective,
 	NgForm,
 	type ValidationErrors,
@@ -270,21 +272,51 @@ export class NgxControlError {
 	}
 
 	public get track() {
-		return this.track$();
+		return untracked(this.track$);
 	}
 
 	/**
-	 * The control which `errors` are tracked.
+	 * The control which `errors` are tracked. Either a control instance or the name of the control when used in a form.
 	 *
 	 * @see {@link AbstractControl.errors}
 	 */
-	@Input({ alias: 'ngxControlError', required: true })
 	public set control(control) {
 		this.control$.set(control);
 	}
 
 	public get control() {
-		return this.control$();
+		return untracked(this.control$);
+	}
+
+	/**
+	 * The control which `errors` are tracked. Either a control instance or the name of the control when used in a form.
+	 *
+	 * @see {@link AbstractControl.errors}
+	 */
+	@Input({ alias: 'ngxControlError', required: true })
+	public set controlInput(control: AbstractControl | string) {
+		if (control instanceof AbstractControl) {
+			this.control$.set(control);
+			return;
+		}
+
+		const directParentControl = this.controlContainer?.control;
+
+		if (!directParentControl) {
+			throw new Error(
+				`[NgxControlError]: A control name cannot be specified without a parent FormGroup.`,
+			);
+		}
+
+		const controlInstance = directParentControl.get(control);
+
+		if (!controlInstance) {
+			throw new Error(
+				`[NgxControlError]: Cannot find control with name '${control}'.`,
+			);
+		}
+
+		this.control$.set(controlInstance);
 	}
 
 	/**
@@ -299,11 +331,11 @@ export class NgxControlError {
 	}
 
 	public get errorStateMatcher() {
-		return this.errorStateMatcher$();
+		return untracked(this.errorStateMatcher$);
 	}
 
 	/**
-	 * The parent of this {@link control$ control}.
+	 * The top level parent of this {@link control$ control}.
 	 *
 	 * NOTE: Might not be the control referenced by {@link AbstractControl.parent parent} of this {@link control$ control}.
 	 */
@@ -313,7 +345,7 @@ export class NgxControlError {
 	}
 
 	public get parent() {
-		return this.parent$();
+		return untracked(this.parent$);
 	}
 
 	/**
@@ -322,7 +354,7 @@ export class NgxControlError {
 	public readonly track$ = signal<undefined | string | string[]>(undefined);
 
 	/**
-	 * The parent of this {@link control$ control}.
+	 * The top level parent of this {@link control$ control}.
 	 *
 	 * NOTE: Might not be the control referenced by {@link AbstractControl.parent parent} of this {@link control$ control}.
 	 */
@@ -332,6 +364,13 @@ export class NgxControlError {
 			inject(NgForm, { optional: true }) ??
 			undefined,
 	);
+
+	/**
+	 * The direct parent form group directive of this control.
+	 */
+	private readonly controlContainer = inject(ControlContainer, {
+		optional: true,
+	});
 
 	/**
 	 * The control which `errors` are tracked.
