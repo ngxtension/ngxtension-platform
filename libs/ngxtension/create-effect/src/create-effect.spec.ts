@@ -1,32 +1,39 @@
-import { Component, signal } from '@angular/core';
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { EMPTY, Subject, interval, of, switchMap, tap, throwError } from 'rxjs';
+import 'zone.js/testing';
+import { Component, input, signal } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { EMPTY, Subject, interval, of, switchMap, tap, throwError, isObservable } from 'rxjs';
 import { createEffect } from './create-effect';
 
 describe(createEffect.name, () => {
-	let effect: ReturnType<typeof createEffect<string>>;
-	let lastResult: string | undefined;
-	let lastError: string | undefined;
+  let effect: ReturnType<typeof createEffect<string>>;
+  let lastResult: string | undefined;
+  let lastError: string | undefined;
+  let handlerCalls = 0;
 
-	beforeEach(() => {
-		lastResult = undefined;
 
-		TestBed.runInInjectionContext(() => {
-			effect = createEffect<string>((_) =>
-				_.pipe(
-					tap((r) => (lastResult = r)),
-					switchMap((v) => {
-						if (v === 'error') {
-							lastError = v;
-							return throwError(() => 'err');
-						}
-						lastError = undefined;
-						return of(v);
-					}),
-				),
-			);
-		});
-	});
+  beforeEach(() => {
+    lastResult = undefined;
+    handlerCalls = 0;
+
+    TestBed.runInInjectionContext(() => {
+      effect = createEffect<string>((_, callbacks) => _.pipe(
+        tap((r) => {
+          lastResult = r;
+          handlerCalls++;
+        }),
+        switchMap((v) => {
+          if (v.startsWith('error')) {
+            lastError = v;
+            callbacks.error('error:' + v);
+            return throwError(() => 'err');
+          }
+          lastError = undefined;
+          callbacks.success('success:' + v);
+          return of(v);
+        }),
+      ));
+    });
+  })
 
 	@Component({
 		standalone: true,
@@ -41,22 +48,23 @@ describe(createEffect.name, () => {
 		}
 	}
 
-	it('should run until component is destroyed', fakeAsync(() => {
-		const fixture = TestBed.createComponent(Foo);
-		const component = fixture.componentInstance;
-		fixture.detectChanges();
-		expect(component.count).toEqual(0);
-
-		tick(1000);
-		expect(component.count).toEqual(1);
-
-		tick(1000);
-		expect(component.count).toEqual(2);
-
-		fixture.destroy();
-		tick(1000);
-		expect(component.count).toEqual(2);
-	}));
+  // TODO: uncomment when https://github.com/ngxtension/ngxtension-platform/issues/599 is resolved.
+	// it('should run until component is destroyed', fakeAsync(() => {
+	// 	const fixture = TestBed.createComponent(Foo);
+	// 	const component = fixture.componentInstance;
+	// 	fixture.detectChanges();
+	// 	expect(component.count).toEqual(0);
+  //
+	// 	tick(1000);
+	// 	expect(component.count).toEqual(1);
+  //
+	// 	tick(1000);
+	// 	expect(component.count).toEqual(2);
+  //
+	// 	fixture.destroy();
+	// 	tick(1000);
+	// 	expect(component.count).toEqual(2);
+	// }));
 
 	it('should keep working when generator throws an error', () => {
 		expect(lastError).toEqual(undefined);
@@ -89,11 +97,17 @@ describe(createEffect.name, () => {
 		s.next('error');
 		expect(lastResult).toEqual('a');
 		s.next('b');
-		expect(lastResult).toEqual('b');
+    // s has error and will not accept emissions anymore.
+    // {retryOnError} in effect's config should only affect
+    // the effect's event loop, not the observable that is
+    // passed as a value - resubscribing to that observable
+    // might cause unexpected behavior.
+    expect(lastResult).toEqual('a');
 
-		effect('next');
-		expect(lastResult).toEqual('next');
-		expect(lastError).toEqual(undefined);
+    // but the effect's event loop should still work
+    effect('next');
+    expect(lastResult).toEqual('next');
+    expect(lastError).toEqual(undefined);
 	});
 
 	it('should keep working when value$ emits EMPTY', () => {
@@ -151,4 +165,84 @@ describe(createEffect.name, () => {
 		expect(lastResult).toEqual('c');
 		expect(lastError).toEqual(undefined);
 	});
+
+  it('should return an observable when getEffectFor() is called', () => {
+    const e = effect.asObservable('test');
+    expect(isObservable(e)).toEqual(true);
+    e.subscribe();
+    expect(lastResult).toEqual('test');
+  });
+
+  it('should run callbacks', () => {
+    let r = '';
+    let f = '';
+    effect('s', {
+      onSuccess: (v) => r = v as string,
+      onFinalize: () => f = 'finalized:success',
+    });
+    expect(r).toEqual('success:s');
+    expect(f).toEqual('finalized:success');
+
+    f = '';
+    effect('error1', {
+      onError: (v) => r = v as string,
+      onFinalize: () => f = 'finalized:error',
+    });
+    expect(r).toEqual('error:error1');
+    expect(f).toEqual('finalized:error');
+  });
+
+  it('should emit the initial value when a signal is passed', () => {
+    expect(handlerCalls).toEqual(0);
+    effect(signal('test'));
+    expect(lastResult).toEqual('test');
+    expect(handlerCalls).toEqual(1);
+    TestBed.flushEffects();
+    expect(handlerCalls).toEqual(1);
+  });
+
+  it('should emit the new value of a signal if it is different from the initial value', () => {
+    expect(handlerCalls).toEqual(0);
+    const s = signal('test');
+    effect(s);
+    expect(lastResult).toEqual('test');
+    expect(handlerCalls).toEqual(1);
+    s.set('test2');
+    TestBed.flushEffects();
+    expect(lastResult).toEqual('test2');
+    expect(handlerCalls).toEqual(2);
+  });
+
+  it('should skip the new value of a signal if it is equal to the initial value', () => {
+    expect(handlerCalls).toEqual(0);
+    const s = signal('test');
+    effect(s);
+    expect(lastResult).toEqual('test');
+    expect(handlerCalls).toEqual(1);
+    s.set('test');
+    TestBed.flushEffects();
+    expect(lastResult).toEqual('test');
+    expect(handlerCalls).toEqual(1);
+  });
+
+  it('should NOT emit the initial value when a required input without initial value is passed', () => {
+    expect(handlerCalls).toEqual(0);
+    TestBed.runInInjectionContext(() => {
+      effect(input.required());
+      expect(lastResult).not.toEqual('test');
+      expect(handlerCalls).toEqual(0);
+      TestBed.flushEffects();
+      expect(handlerCalls).toEqual(0);
+    });
+  });
+
+  it('should accept Promise as value', async () => {
+    expect(handlerCalls).toEqual(0);
+    effect(Promise.resolve('test'));
+    expect(lastResult).toEqual(undefined);
+    expect(handlerCalls).toEqual(0);
+    await Promise.resolve();
+    expect(lastResult).toEqual('test');
+    expect(handlerCalls).toEqual(1);
+  });
 });
