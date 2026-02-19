@@ -89,6 +89,28 @@ export const appConfig: ApplicationConfig = {
 				loadComponent: () =>
 					import('./text-selection/text-selection.component'),
 			},
+			{
+				path: 'inject-params-global',
+				children: [
+					{
+						path: '',
+						loadComponent: () =>
+							import('./inject-params-global/inject-params-global.component'),
+					},
+					{
+						path: 'parent/:parentId',
+						loadComponent: () =>
+							import('./inject-params-global/parent.component'),
+						children: [
+							{
+								path: 'child/:childId',
+								loadComponent: () =>
+									import('./inject-params-global/child.component'),
+							},
+						],
+					},
+				],
+			},
 		]),
 	],
 };

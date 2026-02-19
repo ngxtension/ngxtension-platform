@@ -90,48 +90,116 @@ function injectParamsCore<T>(
 }
 
 /**
- * The `injectParams` function allows you to access and manipulate parameters from the current route.
- *
- * @returns A `Signal` that emits the entire parameters object.
+ * Base interface for parameter injection function overloads
  */
-export function injectParams(): Signal<Params>;
+interface InjectParamsBase {
+	/**
+	 * @returns A `Signal` that emits the entire parameters object.
+	 */
+	(): Signal<Params>;
+
+	/**
+	 * @param {string} key - The name of the parameter to retrieve.
+	 * @returns {Signal} A `Signal` that emits the value of the specified parameter, or `null` if it's not present.
+	 */
+	(key: string): Signal<string | null>;
+
+	/**
+	 * @param {string} key - The name of the parameter to retrieve.
+	 * @param {ParamsOptions} options - Configuration options with both parse and defaultValue that ensures a non-null return.
+	 * @returns {Signal} A `Signal` that emits the parsed and transformed value, or the default value.
+	 */
+	<ReadT>(
+		key: string,
+		options: ParamsOptions<ReadT, string, ReadT> & {
+			parse: (v: string) => ReadT;
+			defaultValue: ReadT;
+		},
+	): Signal<ReadT>;
+
+	/**
+	 * @param {string} key - The name of the parameter to retrieve.
+	 * @param {ParamsOptions} options - Configuration options with defaultValue that ensures a non-null return.
+	 * @returns {Signal} A `Signal` that emits the transformed value of the specified parameter, or the default value.
+	 */
+	<ReadT>(
+		key: string,
+		options: ParamsOptions<ReadT, string, ReadT> & { defaultValue: ReadT },
+	): Signal<ReadT>;
+
+	/**
+	 * @param {string} key - The name of the parameter to retrieve.
+	 * @param {ParamsOptions} options - Configuration options with parse function that ensures a typed return.
+	 * @returns {Signal} A `Signal` that emits the parsed value of the specified parameter, or `null` if it's not present.
+	 */
+	<ReadT>(
+		key: string,
+		options: ParamsOptions<ReadT, string, never> & {
+			parse: (v: string) => ReadT;
+		},
+	): Signal<ReadT | null>;
+
+	/**
+	 * @param {string} key - The name of the parameter to retrieve.
+	 * @param {ParamsOptions} options - Optional configuration options for the parameter.
+	 * @returns {Signal} A `Signal` that emits the transformed value of the specified parameter, or `null` if it's not present.
+	 */
+	<ReadT>(
+		key?: string,
+		options?: ParamsOptions<ReadT, string, ReadT>,
+	): Signal<ReadT | null>;
+
+	/**
+	 * It retrieves the value of a parameter based on a custom transform function applied to the parameters object.
+	 *
+	 * @template ReadT - The expected type of the read value.
+	 * @param {ParamsTransformFn<ReadT>} fn - A transform function that takes the parameters object (`params: Params`) and returns the desired value.
+	 * @param options - Optional configuration options for the parameter.
+	 * @returns {Signal} A `Signal` that emits the transformed value based on the provided custom transform function.
+	 */
+	<ReadT>(
+		fn: ParamsTransformFn<ReadT>,
+		options?: InjectorOptions,
+	): Signal<ReadT>;
+
+	<T>(
+		keyOrParamsTransform?: string | ((params: Params) => T),
+		options?: ParamsOptions<T, string, T>,
+	): Signal<T | Params | string | null>;
+}
 
 /**
- * The `injectParams` function allows you to access and manipulate parameters from the current route.
- *
- * @param {string} key - The name of the parameter to retrieve.
- * @returns {Signal} A `Signal` that emits the value of the specified parameter, or `null` if it's not present.
+ * Interface defining the global variant of injectParams
  */
-export function injectParams(key: string): Signal<string | null>;
+type InjectParamsGlobal = InjectParamsBase;
 
 /**
- * The `injectParams` function allows you to access and manipulate parameters from the current route.
- *
- * @param {string} key - The name of the parameter to retrieve.
- * @param {ParamsOptions} options - Optional configuration options for the parameter.
- * @returns {Signal} A `Signal` that emits the transformed value of the specified parameter, or `null` if it's not present.
+ * Interface for the injectParams function with global property
  */
-export function injectParams<ReadT>(
-	key?: string,
-	options?: ParamsOptions<ReadT, string, ReadT>,
-): Signal<ReadT | null>;
-
-/**
- * The `injectParams` function allows you to access and manipulate parameters from the current route.
- * It retrieves the value of a parameter based on a custom transform function applied to the parameters object.
- *
- * @template ReadT - The expected type of the read value.
- * @param {ParamsTransformFn<ReadT>} fn - A transform function that takes the parameters object (`params: Params`) and returns the desired value.
- * @param options - Optional configuration options for the parameter.
- * @returns {Signal} A `Signal` that emits the transformed value based on the provided custom transform function.
- *
- * @example
- * const searchValue = injectParams((params) => params['search'] as string);
- */
-export function injectParams<ReadT>(
-	fn: ParamsTransformFn<ReadT>,
-	options?: InjectorOptions,
-): Signal<ReadT>;
+interface InjectParamsFn extends InjectParamsBase {
+	/**
+	 * Global variant of `injectParams` that retrieves params from the leaf (deepest) `ActivatedRoute` in the router state tree.
+	 * This allows you to access all route parameters from the entire route hierarchy, including child routes,
+	 * regardless of where your component is positioned in the component tree.
+	 *
+	 * @example
+	 * // Get all params from route hierarchy
+	 * const params = injectParams.global();
+	 *
+	 * @example
+	 * // Get specific param from route hierarchy
+	 * const childId = injectParams.global('childId');
+	 *
+	 * @example
+	 * // Transform params from route hierarchy
+	 * const allKeys = injectParams.global((params) => Object.keys(params));
+	 *
+	 * @example
+	 * // With parse option
+	 * const productId = injectParams.global('productId', { parse: numberAttribute });
+	 */
+	global: InjectParamsGlobal;
+}
 
 /**
  * Injects the params from the current route.
@@ -139,10 +207,7 @@ export function injectParams<ReadT>(
  * If a transform function is provided, it will return the result of that function.
  * Otherwise, it will return the entire params object.
  *
- * @template T - The expected type of the read value.
- * @param keyOrParamsTransform OPTIONAL The key of the param to return, or a transform function to apply to the params object
- * @param {ParamsOptions} options - Optional configuration options for the parameter.
- * @returns {Signal} A `Signal` that emits the transformed value of the specified parameter, or the entire parameters object if no key is provided.
+ * Type overloads are defined in the InjectParamsFn interface.
  *
  * @example
  * const userId = injectParams('id'); // returns the value of the 'id' param
@@ -150,10 +215,10 @@ export function injectParams<ReadT>(
  * const params = injectParams(); // returns the entire params object
  *
  */
-export function injectParams<T>(
+export const injectParams: InjectParamsFn = <T>(
 	keyOrParamsTransform?: string | ((params: Params) => T),
 	options: ParamsOptions<T, string, T> = {},
-): Signal<T | Params | string | null> {
+): Signal<T | Params | string | null> => {
 	return assertInjector(injectParams, options?.injector, () => {
 		const route = inject(ActivatedRoute);
 		return injectParamsCore(
@@ -163,17 +228,14 @@ export function injectParams<T>(
 			options,
 		);
 	});
-}
+};
 
 /**
  * Global variant of `injectParams` that retrieves params from the leaf (deepest) `ActivatedRoute` in the router state tree.
  * This allows you to access all route parameters from the entire route hierarchy, including child routes,
  * regardless of where your component is positioned in the component tree.
  *
- * @template T - The expected type of the read value.
- * @param keyOrParamsTransform OPTIONAL The key of the param to return, or a transform function to apply to the params object
- * @param {ParamsOptions} options - Optional configuration options for the parameter.
- * @returns {Signal} A `Signal` that emits the transformed value of the specified parameter, or the entire parameters object if no key is provided.
+ * Type overloads are defined in the InjectParamsGlobal interface.
  *
  * @example
  * // Get all params from route hierarchy
@@ -191,11 +253,11 @@ export function injectParams<T>(
  * // With parse option
  * const productId = injectParams.global('productId', { parse: numberAttribute });
  */
-injectParams.global = function <T>(
+const injectParamsGlobal: InjectParamsGlobal = <T>(
 	keyOrParamsTransform?: string | ((params: Params) => T),
-	options: ParamsOptions<T, string, T> = {},
-): Signal<T | Params | string | null> {
-	return assertInjector(injectParams.global, options?.injector, () => {
+	options?: ParamsOptions<T, string, T>,
+): Signal<T | Params | string | null> => {
+	return assertInjector(injectParamsGlobal, options?.injector, () => {
 		// Use the leaf route reactively and merge all params from the hierarchy
 		const leafRoute = injectLeafActivatedRoute();
 		const leafRoute$ = toObservable(leafRoute);
@@ -214,3 +276,6 @@ injectParams.global = function <T>(
 		);
 	});
 };
+
+// Augment injectParams with global property
+injectParams.global = injectParamsGlobal;
