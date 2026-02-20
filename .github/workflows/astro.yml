@@ -6,6 +6,7 @@ on:
     paths:
       - 'docs/**'
       - '.github/workflows/astro.yml'
+  workflow_dispatch:
 
 jobs:
   build-docs:
