@@ -1,2 +1,0 @@
-# Redirect netlify subdomain to custom domain
-https://ngxtension.netlify.app/*  https://ngxtension.dev/:splat  301!
