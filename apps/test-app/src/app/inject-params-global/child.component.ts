@@ -4,7 +4,6 @@ import { injectParams } from 'ngxtension/inject-params';
 
 @Component({
 	selector: 'app-child',
-	standalone: true,
 	imports: [JsonPipe],
 	template: `
 		<div style="border: 2px solid green; padding: 10px; margin: 10px;">

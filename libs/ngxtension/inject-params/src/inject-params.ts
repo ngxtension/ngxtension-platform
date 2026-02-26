@@ -217,7 +217,7 @@ interface InjectParamsFn extends InjectParamsBase {
  */
 export const injectParams: InjectParamsFn = <T>(
 	keyOrParamsTransform?: string | ((params: Params) => T),
-	options: ParamsOptions<T, string, T> = {},
+	options?: ParamsOptions<T, string, T>,
 ): Signal<T | Params | string | null> => {
 	return assertInjector(injectParams, options?.injector, () => {
 		const route = inject(ActivatedRoute);
