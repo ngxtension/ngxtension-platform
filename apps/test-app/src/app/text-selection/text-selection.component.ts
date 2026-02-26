@@ -124,7 +124,6 @@ import { injectTextSelection } from 'ngxtension/inject-text-selection';
 			}
 		`,
 	],
-	standalone: true,
 })
 export default class TextSelectionComponent {
 	// Use the injectTextSelection hook to track selection state.

@@ -21,7 +21,6 @@ const NOTHIS =
 @Pipe({
 	name: 'call',
 	pure: true,
-	standalone: true,
 })
 export class CallPipe implements PipeTransform {
 	transform<T = any, R = any>(value: T, args?: (param: T) => R): R {
@@ -34,7 +33,6 @@ export class CallPipe implements PipeTransform {
 @Pipe({
 	name: 'apply',
 	pure: true,
-	standalone: true,
 })
 export class ApplyPipe implements PipeTransform {
 	transform<TFunction extends (...args: any[]) => any>(

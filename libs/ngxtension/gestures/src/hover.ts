@@ -15,7 +15,6 @@ export type NgxInjectHover = GestureInfer<typeof injectHover>;
 
 @Directive({
 	selector: '[ngxHover]',
-	standalone: true,
 })
 export class NgxHover implements OnInit {
 	private config = signal<NgxInjectHover['config']>({});

@@ -5,7 +5,6 @@ import { injectDocumentVisibility } from 'ngxtension/inject-document-visibility'
 	template: `
 		{{ visibilityState() }}
 	`,
-	standalone: true,
 })
 export default class DocumentVisibilityStateComponent {
 	visibilityState = injectDocumentVisibility();

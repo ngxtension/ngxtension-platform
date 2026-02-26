@@ -438,7 +438,6 @@ describe(injectRouteData.name, () => {
 });
 
 @Component({
-	standalone: true,
 	template: ``,
 })
 export class EntityDetailsComponent {
@@ -468,7 +467,6 @@ export class EntityDetailsComponent {
 
 // Basic version test components
 @Component({
-	standalone: true,
 	template: ``,
 })
 export class DefaultValueComponent {
@@ -479,7 +477,6 @@ export class DefaultValueComponent {
 }
 
 @Component({
-	standalone: true,
 	template: ``,
 })
 export class EmptyDataComponent {
@@ -488,7 +485,6 @@ export class EmptyDataComponent {
 }
 
 @Component({
-	standalone: true,
 	template: ``,
 })
 export class MultipleDataComponent {
@@ -498,7 +494,6 @@ export class MultipleDataComponent {
 }
 
 @Component({
-	standalone: true,
 	template: ``,
 })
 export class TransformDataComponent {
@@ -508,7 +503,6 @@ export class TransformDataComponent {
 }
 
 @Component({
-	standalone: true,
 	template: ``,
 })
 export class ComplexDataComponent {
@@ -521,7 +515,6 @@ export class ComplexDataComponent {
 
 // Global option test components
 @Component({
-	standalone: true,
 	template: `
 		<router-outlet />
 	`,
@@ -533,7 +526,6 @@ export class Level1DataComponent {
 }
 
 @Component({
-	standalone: true,
 	template: `
 		<router-outlet />
 	`,
@@ -542,13 +534,11 @@ export class Level1DataComponent {
 export class Level2DataComponent {}
 
 @Component({
-	standalone: true,
 	template: ``,
 })
 export class Level3DataComponent {}
 
 @Component({
-	standalone: true,
 	template: `
 		<router-outlet />
 	`,
@@ -559,13 +549,11 @@ export class ConflictDataParentComponent {
 }
 
 @Component({
-	standalone: true,
 	template: ``,
 })
 export class ConflictDataChildComponent {}
 
 @Component({
-	standalone: true,
 	template: `
 		<router-outlet />
 	`,
@@ -580,13 +568,11 @@ export class MissingDataParentComponent {
 }
 
 @Component({
-	standalone: true,
 	template: ``,
 })
 export class MissingDataChildComponent {}
 
 @Component({
-	standalone: true,
 	template: `
 		<router-outlet />
 	`,
@@ -598,13 +584,11 @@ export class EmptyDataParentComponent {
 }
 
 @Component({
-	standalone: true,
 	template: ``,
 })
 export class EmptyDataChildGlobalComponent {}
 
 @Component({
-	standalone: true,
 	template: `
 		<router-outlet />
 	`,
@@ -616,13 +600,11 @@ export class ReactiveDataParentComponent {
 }
 
 @Component({
-	standalone: true,
 	template: ``,
 })
 export class ReactiveDataChildComponent {}
 
 @Component({
-	standalone: true,
 	template: `
 		<router-outlet />
 	`,
@@ -633,7 +615,6 @@ export class ComplexTransformParentComponent {
 }
 
 @Component({
-	standalone: true,
 	template: ``,
 })
 export class ComplexTransformChildComponent {}

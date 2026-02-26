@@ -15,7 +15,6 @@ export type NgxInjectMove = GestureInfer<typeof injectMove>;
 
 @Directive({
 	selector: '[ngxMove]',
-	standalone: true,
 })
 export class NgxMove implements OnInit {
 	private config = signal<NgxInjectMove['config']>({});

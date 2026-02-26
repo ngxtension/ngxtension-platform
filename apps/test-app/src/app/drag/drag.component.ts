@@ -31,7 +31,6 @@ const dragHandler = (from: WritableSignal<Vector2>) => {
 
 @Component({
 	selector: 'app-box-with-host',
-	standalone: true,
 	template: `
 		<span style="position: absolute; top: -1rem; ">host directive</span>
 	`,
@@ -53,7 +52,6 @@ export class BoxWithHost {
 
 @Component({
 	selector: 'app-box',
-	standalone: true,
 	template: `
 		<span style="position: absolute; top: -1rem; ">
 			{{ from() }}

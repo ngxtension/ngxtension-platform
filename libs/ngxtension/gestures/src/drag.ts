@@ -15,7 +15,6 @@ export type NgxInjectDrag = GestureInfer<typeof injectDrag>;
 
 @Directive({
 	selector: '[ngxDrag]',
-	standalone: true,
 })
 export class NgxDrag implements OnInit {
 	private config = signal<NgxInjectDrag['config']>({});

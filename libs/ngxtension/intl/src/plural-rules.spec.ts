@@ -8,7 +8,6 @@ import {
 } from './plural-rules.pipe';
 
 @Component({
-	standalone: true,
 	template: `
 		<p>{{ 1 | pluralRules }}</p>
 		<p>{{ 2 | pluralRules }}</p>
@@ -19,7 +18,6 @@ import {
 class TestComponent {}
 
 @Component({
-	standalone: true,
 	template: `
 		<p>{{ 1 | pluralRules }}</p>
 		<p>{{ 2 | pluralRules }}</p>

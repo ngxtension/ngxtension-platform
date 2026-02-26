@@ -41,7 +41,6 @@ export const startAtErrorMessageBuilder = (value: unknown) =>
  * ```
  */
 @Pipe({
-	standalone: true,
 	name: 'repeat',
 })
 export class RepeatPipe implements PipeTransform {

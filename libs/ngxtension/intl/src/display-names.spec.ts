@@ -8,7 +8,6 @@ import {
 } from './display-names.pipe';
 
 @Component({
-	standalone: true,
 	template: `
 		<p>{{ 'en-US' | displayNames: 'language' }}</p>
 		<p>{{ 'US' | displayNames: 'region' }}</p>
@@ -19,7 +18,6 @@ import {
 class TestComponent {}
 
 @Component({
-	standalone: true,
 	template: `
 		<p>{{ 'en-US' | displayNames: 'language' }}</p>
 		<p>{{ 'US' | displayNames: 'region' }}</p>

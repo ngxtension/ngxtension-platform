@@ -4,7 +4,6 @@ import { NgxSvgSpriteFragment } from 'ngxtension/svg-sprite';
 
 @Directive({
 	selector: 'svg[faRegular]',
-	standalone: true,
 	hostDirectives: [
 		{
 			directive: NgxSvgSpriteFragment,
@@ -20,7 +19,6 @@ export class FaRegularDirective {
 
 @Directive({
 	selector: 'svg[faSolid]',
-	standalone: true,
 	hostDirectives: [
 		{ directive: NgxSvgSpriteFragment, inputs: ['fragment:faSolid'] },
 	],
@@ -33,7 +31,6 @@ export class FaSolidDirective {
 
 @Directive({
 	selector: 'svg[faBrand]',
-	standalone: true,
 	hostDirectives: [
 		{ directive: NgxSvgSpriteFragment, inputs: ['fragment:faBrand'] },
 	],

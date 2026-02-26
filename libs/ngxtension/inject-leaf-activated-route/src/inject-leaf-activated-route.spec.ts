@@ -373,7 +373,6 @@ describe(walkToDeepest.name, () => {
 
 // Test Components
 @Component({
-	standalone: true,
 	template: '',
 })
 class SimpleComponent {
@@ -381,7 +380,6 @@ class SimpleComponent {
 }
 
 @Component({
-	standalone: true,
 	selector: 'parent',
 	template: '<router-outlet />',
 	imports: [RouterOutlet],
@@ -391,7 +389,6 @@ class ParentComponent {
 }
 
 @Component({
-	standalone: true,
 	selector: 'child',
 	template: '<router-outlet />',
 	imports: [RouterOutlet],
@@ -401,7 +398,6 @@ class ChildComponent {
 }
 
 @Component({
-	standalone: true,
 	template: '',
 })
 class GrandchildComponent {
@@ -409,7 +405,6 @@ class GrandchildComponent {
 }
 
 @Component({
-	standalone: true,
 	selector: 'page1',
 	template: '',
 })
@@ -418,7 +413,6 @@ class Page1Component {
 }
 
 @Component({
-	standalone: true,
 	selector: 'page2',
 	template: '',
 })
@@ -427,7 +421,6 @@ class Page2Component {
 }
 
 @Component({
-	standalone: true,
 	selector: 'child1',
 	template: '',
 })
@@ -436,7 +429,6 @@ class Child1Component {
 }
 
 @Component({
-	standalone: true,
 	template: '',
 })
 class Child2Component {
@@ -444,7 +436,6 @@ class Child2Component {
 }
 
 @Component({
-	standalone: true,
 	template: '',
 })
 class UserComponent {
@@ -453,7 +444,6 @@ class UserComponent {
 }
 
 @Component({
-	standalone: true,
 	template: '',
 })
 class OrgUserComponent {
@@ -463,7 +453,6 @@ class OrgUserComponent {
 }
 
 @Component({
-	standalone: true,
 	template: '',
 })
 class SearchComponent {
@@ -471,7 +460,6 @@ class SearchComponent {
 }
 
 @Component({
-	standalone: true,
 	template: '',
 })
 class AdminComponent {
@@ -479,7 +467,6 @@ class AdminComponent {
 }
 
 @Component({
-	standalone: true,
 	template: '<router-outlet/>',
 	imports: [RouterOutlet],
 })
@@ -488,7 +475,6 @@ class DashboardComponent {
 }
 
 @Component({
-	standalone: true,
 	template: '',
 })
 class DashboardHomeComponent {
@@ -496,7 +482,6 @@ class DashboardHomeComponent {
 }
 
 @Component({
-	standalone: true,
 	template: '<router-outlet/>',
 	imports: [RouterOutlet],
 })
@@ -505,7 +490,6 @@ class MainComponent {
 }
 
 @Component({
-	standalone: true,
 	template: '',
 })
 class ContentComponent {
@@ -513,7 +497,6 @@ class ContentComponent {
 }
 
 @Component({
-	standalone: true,
 	template: '',
 })
 class HomeRedirectComponent {
@@ -521,7 +504,6 @@ class HomeRedirectComponent {
 }
 
 @Component({
-	standalone: true,
 	template: '',
 })
 class LazyComponent {
@@ -529,7 +511,6 @@ class LazyComponent {
 }
 
 @Component({
-	standalone: true,
 	template: '',
 })
 class ProductComponent {
@@ -559,7 +540,6 @@ class Level2Component {
 }
 
 @Component({
-	standalone: true,
 	template: '',
 })
 class Level3Component {

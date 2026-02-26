@@ -6,7 +6,6 @@ import { ApplyPipe, CallPipe } from './call-apply';
 describe(CallPipe.name, () => {
 	const NOW = new Date(42, 42, 42, 42, 42, 42, 42);
 	@Component({
-		standalone: true,
 		template: `
 			<p>{{ now | call: ISOFormat }}</p>
 			<b>{{ now | call: doSomething }}</b>
@@ -24,7 +23,6 @@ describe(CallPipe.name, () => {
 	}
 
 	@Component({
-		standalone: true,
 		template: `
 			{{ 'WILL FAIL' | call: notPureFn }}
 		`,
@@ -65,7 +63,6 @@ describe(CallPipe.name, () => {
 describe(ApplyPipe.name, () => {
 	const NOW = new Date(42, 42, 42, 42, 42, 42, 42);
 	@Component({
-		standalone: true,
 		template: `
 			<i>{{ IamPure | apply }}</i>
 			<p>{{ ISOFormat | apply: now }}</p>
@@ -86,7 +83,6 @@ describe(ApplyPipe.name, () => {
 	}
 
 	@Component({
-		standalone: true,
 		template: `
 			{{ notPureFn | apply }}
 		`,

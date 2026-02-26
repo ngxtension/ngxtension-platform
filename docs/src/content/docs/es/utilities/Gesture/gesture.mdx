@@ -56,7 +56,7 @@ También podemos usar `NgxDrag` en un elemento Host aprovechando `hostDirectives
 ```ts
 @Component({
 	selector: 'app-draggable-box',
-	standalone: true,
+
 	hostDirectives: [{ directive: NgxDrag, outputs: ['ngxDrag'] }],
 	template: ``,
 })
@@ -75,7 +75,7 @@ Otra forma de habilitar Drag Gesture es usar el CIF `injectDrag`.
 ```ts
 @Component({
 	selector: 'app-draggable-box',
-	standalone: true,
+
 	template: ``,
 })
 export class DraggableBox {

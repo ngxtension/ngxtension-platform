@@ -23,7 +23,6 @@ import { Component } from '@angular/core';
 import { injectActiveElement } from 'ngxtension/active-element';
 
 @Component({
-	standalone: true,
 	selector: 'app-example',
 	template: `
 		<button>btn1</button>

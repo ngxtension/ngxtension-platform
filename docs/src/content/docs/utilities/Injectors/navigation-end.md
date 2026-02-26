@@ -24,7 +24,6 @@ import { injectNavigationEnd } from 'ngxtension/navigation-end';
 import { NavigationEnd } from '@angular/router';
 
 @Component({
-	standalone: true,
 	selector: 'app-example',
 	template: '<p>Example Component</p>',
 })

@@ -15,7 +15,6 @@ export type NgxInjectScroll = GestureInfer<typeof injectScroll>;
 
 @Directive({
 	selector: '[ngxScroll]',
-	standalone: true,
 })
 export class NgxScroll implements OnInit {
 	private config = signal<NgxInjectScroll['config']>({});

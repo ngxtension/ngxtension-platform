@@ -24,7 +24,6 @@ import { injectRouteData } from 'ngxtension/inject-route-data';
 
 ```ts
 @Component({
-	standalone: true,
 	template: '<div>{{routeData() | json}}</div>',
 })
 class TestComponent {
@@ -146,7 +145,6 @@ A common use case is a layout component that needs to access metadata from any c
 
 ```ts
 @Component({
-	standalone: true,
 	template: `
 		<header>
 			<h1>{{ pageTitle() }}</h1>

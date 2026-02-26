@@ -7,7 +7,6 @@ import {
 } from './relative-time-format.pipe';
 
 @Component({
-	standalone: true,
 	template: `
 		<p>{{ 1 | relativeTimeFormat: 'day' }}</p>
 		<p>{{ -1 | relativeTimeFormat: 'day' }}</p>
@@ -18,7 +17,6 @@ import {
 class TestComponent {}
 
 @Component({
-	standalone: true,
 	template: `
 		<p>{{ 1 | relativeTimeFormat: 'day' }}</p>
 		<p>{{ -1 | relativeTimeFormat: 'day' }}</p>

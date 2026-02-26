@@ -5,7 +5,6 @@ import { Repeat } from './repeat';
 
 describe(Repeat.name, () => {
 	@Component({
-		standalone: true,
 		template: `
 			<p *ngFor="let i; repeat: 3">{{ i }}</p>
 		`,

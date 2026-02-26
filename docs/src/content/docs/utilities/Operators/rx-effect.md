@@ -29,7 +29,6 @@ With the `next` function
 
 ```ts
 @Component({
-	standalone: true,
 	imports: [ReactiveFormsModule],
 	selector: 'app-root',
 	template: `
@@ -60,7 +59,6 @@ With a `TapObserver`
 
 ```ts
 @Component({
-	standalone: true,
 	imports: [ReactiveFormsModule],
 	selector: 'app-root',
 	template: `
@@ -92,7 +90,6 @@ With the effect handled directly within the source
 
 ```ts
 @Component({
-	standalone: true,
 	imports: [ReactiveFormsModule],
 	selector: 'app-root',
 	template: `

@@ -20,7 +20,6 @@ import { injectParams } from 'ngxtension/inject-params';
 
 ```ts
 @Component({
-	standalone: true,
 	template: '<div>{{params() | json}}</div>',
 })
 class TestComponent {

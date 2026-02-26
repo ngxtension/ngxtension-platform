@@ -47,7 +47,6 @@ const lazyDefaultServiceImport = () =>
 describe(injectLazy.name, () => {
 	describe('lazy loads a service', () => {
 		@Component({
-			standalone: true,
 			imports: [AsyncPipe],
 			template: '<div>{{data$ | async}}</div>',
 		})
@@ -76,7 +75,6 @@ describe(injectLazy.name, () => {
 
 	describe('lazy loads a service that is exported as default', () => {
 		@Component({
-			standalone: true,
 			imports: [AsyncPipe],
 			template: '<div>{{data$ | async}}</div>',
 		})

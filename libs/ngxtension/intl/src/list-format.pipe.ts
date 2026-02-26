@@ -39,7 +39,6 @@ export function provideListFormatOptions(
  */
 @Pipe({
 	name: 'listFormat',
-	standalone: true,
 })
 export class ListFormatPipe implements PipeTransform {
 	readonly defaultOptions = injectFn();

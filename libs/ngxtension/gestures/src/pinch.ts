@@ -15,7 +15,6 @@ export type NgxInjectPinch = GestureInfer<typeof injectPinch>;
 
 @Directive({
 	selector: '[ngxPinch]',
-	standalone: true,
 })
 export class NgxPinch implements OnInit {
 	private config = signal<NgxInjectPinch['config']>({});
