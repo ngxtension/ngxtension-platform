@@ -280,21 +280,8 @@ export class NgxControlError {
 	 *
 	 * @see {@link AbstractControl.errors}
 	 */
-	public set control(control) {
-		this.control$.set(control);
-	}
-
-	public get control() {
-		return untracked(this.control$);
-	}
-
-	/**
-	 * The control which `errors` are tracked. Either a control instance or the name of the control when used in a form.
-	 *
-	 * @see {@link AbstractControl.errors}
-	 */
 	@Input({ alias: 'ngxControlError', required: true })
-	public set controlInput(control: AbstractControl | string) {
+	public set control(control: AbstractControl | string) {
 		if (control instanceof AbstractControl) {
 			this.control$.set(control);
 			return;
@@ -317,6 +304,10 @@ export class NgxControlError {
 		}
 
 		this.control$.set(controlInstance);
+	}
+
+	public get control(): AbstractControl | undefined {
+		return untracked(this.control$);
 	}
 
 	/**
