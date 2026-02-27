@@ -1,0 +1,20 @@
+{
+	"name": "ngxtension/reactive-on",
+	"$schema": "../../../node_modules/nx/schemas/project-schema.json",
+	"projectType": "library",
+	"sourceRoot": "libs/ngxtension/reactive-on/src",
+	"targets": {
+		"test": {
+			"executor": "@nx/jest:jest",
+			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+			"options": {
+				"jestConfig": "libs/ngxtension/jest.config.ts",
+				"testPathPattern": ["reactive-on"]
+			}
+		},
+		"lint": {
+			"executor": "@nx/eslint:lint",
+			"outputs": ["{options.outputFile}"]
+		}
+	}
+}
