@@ -7,10 +7,17 @@ import {
 	DefaultValueOptions,
 	InjectorOptions,
 	ParseOptions,
+	RequiredOptions,
 } from 'ngxtension/shared';
 import { map, switchMap, type Observable } from 'rxjs';
 
 type ParamsTransformFn<ReadT> = (params: Params) => ReadT;
+
+function missingRequiredParamError(key: string | undefined): Error {
+	return new Error(
+		`[ngxtension:injectParams] Parameter ${key} is required but was not provided.`,
+	);
+}
 
 /**
  * Merges all params from the route hierarchy by walking from root to the given route.
@@ -48,7 +55,8 @@ export type ParamsOptions<ReadT, WriteT, DefaultValueT> = ParseOptions<
 	WriteT
 > &
 	DefaultValueOptions<DefaultValueT> &
-	InjectorOptions;
+	InjectorOptions &
+	RequiredOptions;
 
 /**
  * Internal helper function that implements the core logic for injectParams.
@@ -60,7 +68,7 @@ function injectParamsCore<T>(
 	keyOrParamsTransform?: string | ((params: Params) => T),
 	options: ParamsOptions<T, string, T> = {},
 ): Signal<T | Params | string | null> {
-	const { parse, defaultValue } = options;
+	const { parse, defaultValue, required } = options;
 
 	if (!keyOrParamsTransform) {
 		return toSignal(paramsObservable, { initialValue: initialParams });
@@ -78,6 +86,9 @@ function injectParamsCore<T>(
 			| undefined;
 
 		if (!param) {
+			if (required) {
+				throw missingRequiredParamError(keyOrParamsTransform);
+			}
 			return defaultValue ?? null;
 		}
 
@@ -103,6 +114,29 @@ interface InjectParamsBase {
 	 * @returns {Signal} A `Signal` that emits the value of the specified parameter, or `null` if it's not present.
 	 */
 	(key: string): Signal<string | null>;
+
+	/**
+	 * @param {string} key - The name of the parameter to retrieve.
+	 * @param {ParamsOptions} options - Configuration options with required flag that ensures a non-null return.
+	 * @returns {Signal} A `Signal` that emits the value of the specified parameter. Throws an error if the parameter is not present.
+	 */
+	<ReadT = string>(
+		key: string,
+		options: ParamsOptions<ReadT, string, ReadT> & { required: true },
+	): Signal<ReadT>;
+
+	/**
+	 * @param {string} key - The name of the parameter to retrieve.
+	 * @param {ParamsOptions} options - Configuration options with both parse and required that ensures a non-null return.
+	 * @returns {Signal} A `Signal` that emits the parsed value. Throws an error if the parameter is not present.
+	 */
+	<ReadT>(
+		key: string,
+		options: ParamsOptions<ReadT, string, never> & {
+			parse: (v: string) => ReadT;
+			required: true;
+		},
+	): Signal<ReadT>;
 
 	/**
 	 * @param {string} key - The name of the parameter to retrieve.

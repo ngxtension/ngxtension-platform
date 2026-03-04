@@ -162,6 +162,42 @@ describe(injectParams.name, () => {
 		expect(instance.name()).toEqual('john doe');
 	});
 
+	it('should throw error when required param is missing', async () => {
+		TestBed.configureTestingModule({
+			providers: [
+				provideRouter([
+					{ path: 'required', component: RequiredParamComponent },
+				]),
+			],
+		});
+
+		const harness = await RouterTestingHarness.create();
+
+		await expect(
+			harness.navigateByUrl('/required', RequiredParamComponent),
+		).rejects.toThrow(
+			'[ngxtension:injectParams] Parameter id is required but was not provided.',
+		);
+	});
+
+	it('should not throw error when required param is present', async () => {
+		TestBed.configureTestingModule({
+			providers: [
+				provideRouter([
+					{ path: 'required/:id', component: RequiredParamComponent },
+				]),
+			],
+		});
+
+		const harness = await RouterTestingHarness.create();
+
+		const instance = await harness.navigateByUrl(
+			'/required/123',
+			RequiredParamComponent,
+		);
+		expect(instance.requiredId()).toBe('123');
+	});
+
 	describe('global option', () => {
 		it('should get params from current route when global is false', async () => {
 			TestBed.configureTestingModule({
@@ -634,6 +670,11 @@ export class TransformComponent {
 @Component({ template: `` })
 export class SpecialCharsComponent {
 	name = injectParams('name');
+}
+
+@Component({ template: `` })
+export class RequiredParamComponent {
+	requiredId = injectParams('id', { required: true });
 }
 
 @Component({
