@@ -52,11 +52,64 @@ export default defineConfig({
 					},
 				},
 				{
-					label: 'Utilities',
-					autogenerate: { directory: 'utilities' },
-					translations: {
-						es: 'Utilidades',
-					},
+					label: 'Signal Primitives',
+					autogenerate: { directory: 'utilities/Signal-Primitives' },
+				},
+				{
+					label: 'Signal Async',
+					autogenerate: { directory: 'utilities/Signal-Async' },
+				},
+				{
+					label: 'Effects & Side Effects',
+					autogenerate: { directory: 'utilities/Effects-Side-Effects' },
+				},
+				{
+					label: 'Component Utilities',
+					autogenerate: { directory: 'utilities/Component-Utilities' },
+				},
+				{
+					label: 'Router',
+					autogenerate: { directory: 'utilities/Router' },
+				},
+				{
+					label: 'Forms',
+					autogenerate: { directory: 'utilities/Forms' },
+				},
+				{
+					label: 'DOM & Events',
+					autogenerate: { directory: 'utilities/DOM-Events' },
+				},
+				{
+					label: 'Browser APIs',
+					autogenerate: { directory: 'utilities/Browser-APIs' },
+				},
+				{
+					label: 'RxJS Operators',
+					autogenerate: { directory: 'utilities/RxJS-Operators' },
+				},
+				{
+					label: 'Directives & Templates',
+					autogenerate: { directory: 'utilities/Directives-Templates' },
+				},
+				{
+					label: 'Dependency Injection',
+					autogenerate: { directory: 'utilities/Dependency-Injection' },
+				},
+				{
+					label: 'HTTP',
+					autogenerate: { directory: 'utilities/Http' },
+				},
+				{
+					label: 'Internationalization',
+					autogenerate: { directory: 'utilities/Intl' },
+				},
+				{
+					label: 'Testing',
+					autogenerate: { directory: 'utilities/Testing' },
+				},
+				{
+					label: 'Migrations',
+					autogenerate: { directory: 'utilities/Migrations' },
 				},
 				{
 					label: 'Project Graph',
