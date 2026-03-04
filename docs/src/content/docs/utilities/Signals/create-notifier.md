@@ -68,9 +68,7 @@ You can configure a notifier to automatically increment whenever specified signa
 ```ts
 userId = signal(1);
 
-userNotifier = createNotifier({
-	deps: [this.userId],
-});
+userNotifier = createNotifier({ deps: [userId] });
 ```
 
 Now `userNotifier.listen()` will increment both when `notify()` is called **and** when `userId` changes:

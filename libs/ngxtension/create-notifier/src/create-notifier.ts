@@ -1,7 +1,7 @@
 import { linkedSignal, signal, Signal } from '@angular/core';
 
-type CreateNotifierOptions = Record<string, any> & {
-	deps: Signal<any>[];
+type CreateNotifierOptions = {
+	deps?: Signal<any>[];
 	depsEmitInitially?: boolean;
 };
 
@@ -16,21 +16,23 @@ const DEFAULT_OPTIONS: Required<CreateNotifierOptions> = {
  * @returns A notifier object.
  */
 export function createNotifier(options?: CreateNotifierOptions) {
-	options = {
+	const mergedOptions: Required<CreateNotifierOptions> = {
 		...DEFAULT_OPTIONS,
 		...options,
 	};
 
 	// without explicit deps we can simplify to a simple signal
-	const sourceSignal = !options.deps.length
+	const sourceSignal = !mergedOptions.deps.length
 		? signal(0)
 		: linkedSignal<number, number>({
 				source: () => {
-					options.deps?.forEach((dep) => dep()); // Track all dependencies
+					mergedOptions.deps.forEach((dep) => dep()); // Track all dependencies
 
-					// - when deps exist, the notifier should start at 1, because it immediately emits.
-					//  -without any deps, it is only based on increments. and those should start at 0.
-					return options.deps?.length && options.depsEmitInitially ? 1 : 0;
+					// when deps exist, the notifier should start at 1, because it immediately emits.
+					// without any deps, it is only based on increments. and those should start at 0.
+					return mergedOptions.deps.length && mergedOptions.depsEmitInitially
+						? 1
+						: 0;
 				},
 				// Return a new value each time source runs. This ensures deps changes also increment the counter
 				computation: (currentIncrementer, previousValue) => {
