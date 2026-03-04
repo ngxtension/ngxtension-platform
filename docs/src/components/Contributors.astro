@@ -20,35 +20,38 @@ const { contributors } = Astro.props;
 	Created by
 
 	{
-		contributors.map(
-			({ data: { name, twitter, linkedin, github, website } }) => (
-				<span class="contributor">
-					{name}
-					<span class="icons">
-						{twitter && (
-							<a href={twitter} aria-label="Open {name}'s Twitter account">
-								<Icon class="icon" name="twitter" size="0.75rem" />
-							</a>
-						)}
-						{linkedin && (
-							<a href={linkedin} aria-label="Open {name}'s LinkedIn account">
-								<Icon class="icon" name="linkedin" size="0.75rem" />
-							</a>
-						)}
-						{github && (
-							<a href={github} aria-label="Open {name}'s GitHub account">
-								<Icon class="icon" name="github" size="0.75rem" />
-							</a>
-						)}
-						{website && (
-							<a href={website} aria-label="Open {name}'s website">
-								<Icon class="icon" name="external" size="0.75rem" />
-							</a>
-						)}
+		contributors
+			.filter((c) => c && c.data)
+			.map((contributor) => {
+				const { name, twitter, linkedin, github, website } = contributor.data;
+				return (
+					<span class="contributor">
+						{name}
+						<span class="icons">
+							{twitter && (
+								<a href={twitter} aria-label={`Open ${name}'s Twitter account`}>
+									<Icon class="icon" name="twitter" size="0.75rem" />
+								</a>
+							)}
+							{linkedin && (
+								<a href={linkedin} aria-label={`Open ${name}'s LinkedIn account`}>
+									<Icon class="icon" name="linkedin" size="0.75rem" />
+								</a>
+							)}
+							{github && (
+								<a href={github} aria-label={`Open ${name}'s GitHub account`}>
+									<Icon class="icon" name="github" size="0.75rem" />
+								</a>
+							)}
+							{website && (
+								<a href={website} aria-label={`Open ${name}'s website`}>
+									<Icon class="icon" name="external" size="0.75rem" />
+								</a>
+							)}
+						</span>
 					</span>
-				</span>
-			),
-		)
+				);
+			})
 	}
 </p>
 
