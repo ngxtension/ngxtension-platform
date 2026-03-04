@@ -2,7 +2,7 @@
 title: on
 description: ngxtension/reactive-on
 entryPoint: ngxtension/reactive-on
-badge: new
+badge: experimental
 contributors: ['jeanmeche']
 ---
 
