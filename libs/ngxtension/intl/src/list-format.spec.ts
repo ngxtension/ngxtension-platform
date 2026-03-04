@@ -5,7 +5,6 @@ import { By } from '@angular/platform-browser';
 import { ListFormatPipe, provideListFormatOptions } from './list-format.pipe';
 
 @Component({
-	standalone: true,
 	template: `
 		<p>{{ ['a', 'b', 'c'] | listFormat }}</p>
 		<p>{{ ['a', 'b', 'c'] | listFormat: 'short' }}</p>
@@ -15,7 +14,6 @@ import { ListFormatPipe, provideListFormatOptions } from './list-format.pipe';
 class TestComponent {}
 
 @Component({
-	standalone: true,
 	template: `
 		<p>{{ ['a', 'b', 'c'] | listFormat }}</p>
 		<p>{{ ['a', 'b', 'c'] | listFormat: 'long' }}</p>

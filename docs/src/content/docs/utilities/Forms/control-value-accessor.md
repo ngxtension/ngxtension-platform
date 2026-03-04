@@ -47,7 +47,6 @@ In this example `NgxControlValueAccessor` is used to create a `CustomInput` comp
 			/>
 		</label>
 	`,
-	standalone: true,
 })
 export class CustomInput {
 	protected cva = inject<NgxControlValueAccessor<string>>(
@@ -96,7 +95,7 @@ Full example:
 ```ts
 @Component({
 	selector: 'user-select',
-	standalone: true,
+
 	hostDirectives: [NgxControlValueAccessor],
 	providers: [provideCvaCompareToByProp<User>('id')],
 	template: `

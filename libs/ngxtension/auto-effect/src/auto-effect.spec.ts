@@ -4,7 +4,6 @@ import { injectAutoEffect } from './auto-effect';
 
 describe(injectAutoEffect.name, () => {
 	@Component({
-		standalone: true,
 		template: '',
 	})
 	class Test {

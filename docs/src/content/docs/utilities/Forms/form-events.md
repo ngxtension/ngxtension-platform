@@ -22,7 +22,7 @@ import { allEventsSignal } from 'ngxtension/form-events';
 
 @Component({
 	selector: 'my-app',
-	standalone: true,
+
 	imports: [ReactiveFormsModule],
 	template: `
 		<input [formControl]="nameControl" />
@@ -50,7 +50,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
 	selector: 'my-app',
-	standalone: true,
+
 	imports: [ReactiveFormsModule],
 	template: `
 		<form [formGroup]="form">
@@ -93,7 +93,7 @@ import { allEventsSignal } from 'ngxtension/form-events';
 
 @Component({
 	selector: 'my-app',
-	standalone: true,
+
 	imports: [ReactiveFormsModule],
 	template: `
 		<input [formControl]="usernameControl" />

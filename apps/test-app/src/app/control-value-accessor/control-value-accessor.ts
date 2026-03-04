@@ -40,7 +40,6 @@ import {
 			/>
 		</label>
 	`,
-	standalone: true,
 })
 export class CustomInput {
 	protected cva = inject<NgxControlValueAccessor<string>>(
@@ -89,7 +88,7 @@ interface User {
 			/>
 		</label>
 	`,
-	standalone: true,
+
 	providers: [provideCvaCompareToByProp<User>('id')],
 })
 export class UserSelect {

@@ -19,7 +19,7 @@ import { toObservableSignal } from 'ngxtension/to-observable-signal';
 ```ts
 @Component({
 	selector: 'my-app',
-	standalone: true,
+
 	imports: [CommonModule],
 	template: `
 		<h2>Signal A: {{ a() }}</h2>

@@ -28,7 +28,6 @@ import { injectLeafActivatedRoute } from 'ngxtension/inject-leaf-activated-route
 
 ```ts
 @Component({
-	standalone: true,
 	template: `
 		<div>Current route: {{ leafRoute().snapshot.url }}</div>
 		<div>Route params: {{ leafRoute().snapshot.params | json }}</div>

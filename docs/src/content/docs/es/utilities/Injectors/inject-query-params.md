@@ -20,7 +20,6 @@ import { injectQueryParams } from 'ngxtension/inject-query-params';
 
 ```ts
 @Component({
-	standalone: true,
 	template: '<div>{{queryParams() | json}}</div>',
 })
 class TestComponent {

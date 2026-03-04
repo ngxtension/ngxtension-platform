@@ -40,7 +40,6 @@ export function providePluralRulesOptions(
  */
 @Pipe({
 	name: 'pluralRules',
-	standalone: true,
 })
 export class PluralRulesPipe implements PipeTransform {
 	readonly defaultOptions = injectFn();

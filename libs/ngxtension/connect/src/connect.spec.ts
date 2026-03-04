@@ -197,7 +197,6 @@ describe(connect.name, () => {
 
 	describe('connects a signal to a signal in injection context', () => {
 		@Component({
-			standalone: true,
 			template: '{{ count() }}-{{ mainCount() }}',
 		})
 		class TestComponent {

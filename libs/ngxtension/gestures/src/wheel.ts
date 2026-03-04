@@ -15,7 +15,6 @@ export type NgxInjectWheel = GestureInfer<typeof injectWheel>;
 
 @Directive({
 	selector: '[ngxWheel]',
-	standalone: true,
 })
 export class NgxWheel implements OnInit {
 	private config = signal<NgxInjectWheel['config']>({});

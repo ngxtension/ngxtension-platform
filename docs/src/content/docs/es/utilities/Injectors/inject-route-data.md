@@ -19,7 +19,6 @@ import { injectRouteData } from 'ngxtension/inject-route-data';
 
 ```ts
 @Component({
-	standalone: true,
 	template: '<div>{{routeData() | json}}</div>',
 })
 class TestComponent {

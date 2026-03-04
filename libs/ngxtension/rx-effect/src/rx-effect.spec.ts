@@ -8,7 +8,6 @@ describe(rxEffect.name, () => {
 		let status: `${'' | 'un'}subscribed`;
 
 		@Component({
-			standalone: true,
 			selector: 'child',
 			template: '',
 		})
@@ -20,7 +19,6 @@ describe(rxEffect.name, () => {
 		}
 
 		@Component({
-			standalone: true,
 			imports: [Child],
 			template: `
 				@if (display()) {
@@ -45,7 +43,6 @@ describe(rxEffect.name, () => {
 
 	it('should manually unsubsribe from the source', () => {
 		@Component({
-			standalone: true,
 			template: '',
 		})
 		class Elem {
@@ -66,7 +63,6 @@ describe(rxEffect.name, () => {
 		const expected = 'hello world';
 
 		@Component({
-			standalone: true,
 			template: '',
 		})
 		class Elem {

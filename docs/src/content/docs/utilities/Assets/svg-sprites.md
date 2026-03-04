@@ -43,7 +43,7 @@ In this example a _fontawesome brands_ svg sprite is created.
 ```ts
 @Directive({
 	selector: 'svg[faBrand]',
-	standalone: true,
+
 	hostDirectives: [
 		{ directive: NgxSvgSpriteFragment, inputs: ['fragment:faBrand'] },
 	],

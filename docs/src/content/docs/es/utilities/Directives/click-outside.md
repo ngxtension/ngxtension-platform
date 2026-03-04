@@ -20,7 +20,6 @@ Agrega la directiva `clickOutside` al elemento Angular.
 
 ```ts
 @Component({
-	standalone: true,
 	template: `
 		<div (clickOutside)="close()"></div>
 	`,

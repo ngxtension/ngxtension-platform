@@ -20,7 +20,6 @@ Add `clickOutside` directive directly to the Angular element.
 
 ```ts
 @Component({
-	standalone: true,
 	template: `
 		<div (clickOutside)="close()"></div>
 	`,

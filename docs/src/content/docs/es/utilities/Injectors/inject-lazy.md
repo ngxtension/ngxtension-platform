@@ -46,7 +46,6 @@ const DataServiceImport = () =>
 	import('./data-service').then((m) => m.MyService);
 
 @Component({
-	standalone: true,
 	imports: [AsyncPipe],
 	template: '<div>{{data$ | async}}</div>',
 })
@@ -63,7 +62,6 @@ También podemos usar `injectLazy` fuera de un contexto de inyección, pasándol
 const DataServiceImport = () => import('./data-service');
 
 @Component({
-	standalone: true,
 	template: '<div>{{data}}</div>',
 })
 class TestComponent implements OnInit {

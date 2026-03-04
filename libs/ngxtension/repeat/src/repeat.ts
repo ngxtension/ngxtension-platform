@@ -16,7 +16,6 @@ import { Directive, Input } from '@angular/core';
  * ```
  */
 @Directive({
-	standalone: true,
 	selector: '[ngFor][ngForRepeat]',
 })
 export class Repeat extends NgFor<number> {

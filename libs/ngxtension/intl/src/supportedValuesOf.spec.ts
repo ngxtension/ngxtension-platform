@@ -4,7 +4,6 @@ import { By } from '@angular/platform-browser';
 import { SupportedValuesOf } from './supportedValuesOf.pipe';
 
 @Component({
-	standalone: true,
 	template: `
 		<p>{{ 'currency' | supportedValuesOf }}</p>
 		<p>{{ 'unit' | supportedValuesOf }}</p>

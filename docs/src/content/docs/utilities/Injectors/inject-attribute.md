@@ -20,7 +20,6 @@ import { injectAttribute } from 'ngxtension/inject-attribute';
 ```ts
 @Component({
 	selector: 'app-divider',
-	standalone: true,
 })
 class Divider {
 	size = injectAttribute('size', 'sm');
@@ -40,7 +39,6 @@ Use `injectAttribute.required()` when an attribute must be provided:
 ```ts
 @Component({
 	selector: 'app-card',
-	standalone: true,
 })
 class Card {
 	variation = injectAttribute.required<string>('variation');
@@ -63,7 +61,6 @@ const booleanAttribute = (value: string) => value !== null;
 
 @Component({
 	selector: 'app-paginator',
-	standalone: true,
 })
 class Paginator {
 	// Convert string to number

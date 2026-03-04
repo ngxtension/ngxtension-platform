@@ -42,7 +42,6 @@ export function provideDisplayNamesOptions(
  */
 @Pipe({
 	name: 'displayNames',
-	standalone: true,
 })
 export class DisplayNamesPipe implements PipeTransform {
 	readonly defaultOptions = injectFn();

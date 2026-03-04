@@ -40,7 +40,6 @@ export function provideRelativeTimeFormatOptions(
  */
 @Pipe({
 	name: 'relativeTimeFormat',
-	standalone: true,
 })
 export class RelativeTimeFormatPipe implements PipeTransform {
 	readonly defaultOptions = injectFn();

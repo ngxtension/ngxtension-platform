@@ -7,7 +7,6 @@ import { Pipe, type PipeTransform } from '@angular/core';
  */
 @Pipe({
 	name: 'supportedValuesOf',
-	standalone: true,
 })
 export class SupportedValuesOf implements PipeTransform {
 	/**

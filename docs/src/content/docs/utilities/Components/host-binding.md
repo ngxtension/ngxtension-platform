@@ -18,7 +18,6 @@ With `@HostBinding` you can bind a color from a class property:
 
 ```ts
 @Component({
-	standalone: true,
 	selector: 'my-component',
 	template: '...',
 })
@@ -35,7 +34,6 @@ With `hostBinding` you can now bind anything like `@HostBinding` on writable or 
 
 ```ts
 @Component({
-	standalone: true,
 	selector: 'my-component',
 	template: '...',
 })
@@ -52,7 +50,6 @@ With `hostBinding` you can update and remove attributes, like `@HostBinding`.
 
 ```ts
 @Component({
-	standalone: true,
 	selector: 'my-component',
 	template: '...',
 })
