@@ -55,6 +55,22 @@ export class SearchComponent {
 	}
 }
 
+@Component({
+	standalone: true,
+	template: ``,
+})
+export class RequiredQueryParamComponent {
+	requiredId = injectQueryParams('id', { required: true });
+}
+
+@Component({
+	standalone: true,
+	template: ``,
+})
+export class RequiredArrayQueryParamComponent {
+	requiredIdArray = injectQueryParams.array('id', { required: true });
+}
+
 describe(injectQueryParams.name, () => {
 	beforeEach(async () => {
 		TestBed.configureTestingModule({
@@ -169,6 +185,42 @@ describe(injectQueryParams.name, () => {
 		expect(instance.searchParam()).toEqual('Angular');
 		expect(instance.searchParamDefault()).toEqual('Angular');
 		expect(instance.paramKeysList()).toEqual(['query']);
+	});
+
+	it('should throw error when required query param is missing', async () => {
+		TestBed.configureTestingModule({
+			providers: [
+				provideRouter([
+					{ path: 'required', component: RequiredQueryParamComponent },
+				]),
+			],
+		});
+
+		const harness = await RouterTestingHarness.create();
+
+		await expect(
+			harness.navigateByUrl('/required', RequiredQueryParamComponent),
+		).rejects.toThrow(
+			'[ngxtension:injectQueryParams] Query parameter id is required but was not provided.',
+		);
+	});
+
+	it('should not throw error when required query param is present', async () => {
+		TestBed.configureTestingModule({
+			providers: [
+				provideRouter([
+					{ path: 'required', component: RequiredQueryParamComponent },
+				]),
+			],
+		});
+
+		const harness = await RouterTestingHarness.create();
+
+		const instance = await harness.navigateByUrl(
+			'/required?id=123',
+			RequiredQueryParamComponent,
+		);
+		expect(instance.requiredId()).toBe('123');
 	});
 });
 
@@ -339,5 +391,41 @@ describe(injectQueryParams.array.name, () => {
 
 		expect(instance.queryParams()).toEqual({ query: ['Angular', 'React'] });
 		expect(instance.searchParams()).toEqual(['Angular', 'React']);
+	});
+
+	it('should throw error when required array query param is missing', async () => {
+		TestBed.configureTestingModule({
+			providers: [
+				provideRouter([
+					{ path: 'required', component: RequiredArrayQueryParamComponent },
+				]),
+			],
+		});
+
+		const harness = await RouterTestingHarness.create();
+
+		await expect(
+			harness.navigateByUrl('/required', RequiredArrayQueryParamComponent),
+		).rejects.toThrow(
+			'[ngxtension:injectQueryParams] Query parameter id is required but was not provided.',
+		);
+	});
+
+	it('should not throw error when required array query param is present', async () => {
+		TestBed.configureTestingModule({
+			providers: [
+				provideRouter([
+					{ path: 'required', component: RequiredArrayQueryParamComponent },
+				]),
+			],
+		});
+
+		const harness = await RouterTestingHarness.create();
+
+		const instance = await harness.navigateByUrl(
+			'/required?id=123&id=456',
+			RequiredArrayQueryParamComponent,
+		);
+		expect(instance.requiredIdArray()).toEqual(['123', '456']);
 	});
 });
