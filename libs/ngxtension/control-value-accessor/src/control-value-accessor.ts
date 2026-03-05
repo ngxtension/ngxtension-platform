@@ -3,15 +3,14 @@ import {
 	Input,
 	Output,
 	booleanAttribute,
-	effect,
 	inject,
 	signal,
 	untracked,
 } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { NgControl, NgModel, type ControlValueAccessor } from '@angular/forms';
 import { createInjectionToken } from 'ngxtension/create-injection-token';
-import { skip } from 'rxjs';
+import { filter, skip, tap } from 'rxjs';
 
 const noop = () => undefined;
 
@@ -232,38 +231,36 @@ export class NgxControlValueAccessor<T = any> implements ControlValueAccessor {
 	public readonly compareTo$ =
 		signal<NgxControlValueAccessorCompareTo<T>>(injectCvaCompareTo());
 
-	protected readonly notifyNgControlOnValueChanges = effect(() => {
-		const value = this.value$();
-
-		/**
-		 * no-op if THIS value is already _equal_ to the value of the control => we dont need to notify the control.
-		 */
-		if (this.compareTo(this.ngControl?.value, value)) {
-			return;
-		}
-
-		untracked(() => {
-			this.onChange(value);
-		});
-	});
-
-	protected readonly notifyNgControlOnDisabledChanges = effect(() => {
-		const disabled = this.disabled$();
-
-		untracked(() => {
+	protected readonly notifyNgControlOnValueChanges = toObservable(this.value$)
+		.pipe(
 			/**
-			 * no-op if THIS disabled state is already _equal_ to the disabled state of the control  or there is no control
+			 * no-op if THIS value is already _equal_ to the value of the control => we dont need to notify the control.
 			 */
-			if (
-				this.ngControl?.control == null ||
-				this.ngControl.disabled === disabled
-			) {
-				return;
-			}
+			filter((value) => !this.compareTo(this.ngControl?.value, value)),
+			tap((value) => {
+				this.onChange(value);
+			}),
+			takeUntilDestroyed(),
+		)
+		.subscribe();
 
-			this.ngControl.control[disabled ? 'disable' : 'enable']();
-		});
-	});
+	protected readonly notifyNgControlOnDisabledChanges = toObservable(
+		this.disabled$,
+	)
+		.pipe(
+			tap((disabled) => {
+				/**
+				 * no-op if THIS disabled state is already _equal_ to the disabled state of the control or there is no control
+				 */
+				if (!this.ngControl?.control || this.ngControl.disabled === disabled) {
+					return;
+				}
+
+				this.ngControl.control[disabled ? 'disable' : 'enable']();
+			}),
+			takeUntilDestroyed(),
+		)
+		.subscribe();
 
 	/** The value of this. If a control is present, it reflects it's value. */
 	@Input()
