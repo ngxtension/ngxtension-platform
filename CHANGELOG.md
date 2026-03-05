@@ -1,3 +1,38 @@
+## 7.2.0 (2026-03-05)
+
+### Features
+
+- add reactive helper `on` ([#671](https://github.com/ngxtension/ngxtension-platform/pull/671))
+- add 3 testing utils ([#673](https://github.com/ngxtension/ngxtension-platform/pull/673))
+- **control-error:** accept control name ([#663](https://github.com/ngxtension/ngxtension-platform/pull/663))
+- **create-notifier:** add support for dependencies ([642521f](https://github.com/ngxtension/ngxtension-platform/commit/642521f))
+- **create-notifier:** simplify signal creation based on dependencies ([59be5dc](https://github.com/ngxtension/ngxtension-platform/commit/59be5dc))
+- **docs:** add TableOfContents component with sponsor section and update data handling for contributors ([84b27a4](https://github.com/ngxtension/ngxtension-platform/commit/84b27a4))
+- **events:** add `onEvent` utility ([#658](https://github.com/ngxtension/ngxtension-platform/pull/658))
+- **inject-params:** add required parameter validation and error handling for injectParams ([#670](https://github.com/ngxtension/ngxtension-platform/pull/670))
+
+### Bug Fixes
+
+- **cd:** fix stale docs being maintained on server ([5e4866e](https://github.com/ngxtension/ngxtension-platform/commit/5e4866e))
+- **docs:** correct badge value for 'on' utility from 'new' to 'experimental' ([e1a6e5a](https://github.com/ngxtension/ngxtension-platform/commit/e1a6e5a))
+- **docs:** correct PageTitle component to use Astro.locals instead of Astro.props ([d203cec](https://github.com/ngxtension/ngxtension-platform/commit/d203cec))
+- **docs:** replace sponsor-links classname to avoid adblocker conflicts ([02b2f87](https://github.com/ngxtension/ngxtension-platform/commit/02b2f87))
+- **filter-nil:** improve type guard for filtering null and undefined values from enums ([#660](https://github.com/ngxtension/ngxtension-platform/pull/660))
+- **workflow:** replace `rsync` with `cp` for copying docs in Astro workflow ([671a417](https://github.com/ngxtension/ngxtension-platform/commit/671a417))
+
+### Refactor
+
+- **create-notifier:** simplify options handling and fix dependency usage in notifier setup ([42f3f06](https://github.com/ngxtension/ngxtension-platform/commit/42f3f06))
+- **docs:** restructure and categorize utilities documentation for improved organization ([4668e0b](https://github.com/ngxtension/ngxtension-platform/commit/4668e0b))
+- **inject-params:** enhance global param handling with type-safe… ([#664](https://github.com/ngxtension/ngxtension-platform/pull/664))
+
+### ❤️ Thank You
+
+- Andreas Dorner @endlacer
+- Dafnik @Dafnik
+- Enea Jahollari @eneajaho
+- Matthieu Riegler @JeanMeche
+
 ## 7.1.0 (2026-02-03)
 
 ### Features
