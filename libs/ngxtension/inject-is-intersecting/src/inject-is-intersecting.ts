@@ -1,6 +1,6 @@
 import { DestroyRef, ElementRef, inject, Injector } from '@angular/core';
 import { assertInjector } from 'ngxtension/assert-injector';
-import { injectDestroy } from 'ngxtension/inject-destroy';
+import { Observable } from 'rxjs';
 import { IsInViewportService } from './is-in-viewport.service';
 
 export interface InjectIsIntersectingOptions {
@@ -39,18 +39,16 @@ export interface InjectIsIntersectingOptions {
 export const injectIsIntersecting = ({
 	injector,
 	element,
-}: InjectIsIntersectingOptions = {}) => {
-	return assertInjector(injectDestroy, injector, () => {
-		const el = element ?? inject(ElementRef).nativeElement;
-		const inInViewportService = inject(IsInViewportService);
+}: InjectIsIntersectingOptions = {}): Observable<IntersectionObserverEntry> => {
+	return assertInjector(injectIsIntersecting, injector, () => {
+		const el = element ?? inject(ElementRef<Element>).nativeElement;
+		const isInViewportService = inject(IsInViewportService);
 		const destroyRef = inject(DestroyRef);
 
-		const sub = inInViewportService.observe(el);
+		const obs$ = isInViewportService.observe(el);
 
-		destroyRef.onDestroy(() => {
-			inInViewportService.unobserve(el);
-		});
+		destroyRef.onDestroy(() => isInViewportService.unobserve(el));
 
-		return sub;
+		return obs$;
 	});
 };

@@ -42,7 +42,7 @@ describe(injectIsIntersecting.name, () => {
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			const entry: IntersectionObserverEntry = { isIntersecting: true };
-			isInViewportService.intersect(fixture.nativeElement, entry);
+			(isInViewportService as any).intersect(fixture.nativeElement, entry);
 		});
 	});
 
@@ -99,7 +99,7 @@ describe(injectIsIntersecting.name, () => {
 				target: component.divEl,
 				// target: document.createElement('div') --> uncomment this to fail the test
 			};
-			isInViewportService.intersect(component.divEl, entry);
+			(isInViewportService as any).intersect(component.divEl, entry);
 
 			expect(component.intersected).toBe(true);
 		});
