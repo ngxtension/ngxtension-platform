@@ -11,6 +11,7 @@ export class IsInViewportService implements IsInViewportServiceInterface {
 		Element,
 		Subject<IntersectionObserverEntry>
 	>();
+	private observerCounts = new Map<Element, number>(); // ref count per element
 	private observer?: IntersectionObserver;
 
 	private createObserver() {
@@ -29,6 +30,12 @@ export class IsInViewportService implements IsInViewportServiceInterface {
 			this.createObserver();
 		}
 
+		// Increment ref count regardless of whether the element is already observed
+		this.observerCounts.set(
+			element,
+			(this.observerCounts.get(element) ?? 0) + 1,
+		);
+
 		if (this.observerListeners.has(element)) {
 			return this.observerListeners.get(element)!.asObservable();
 		}
@@ -43,6 +50,16 @@ export class IsInViewportService implements IsInViewportServiceInterface {
 	}
 
 	unobserve(element: Element): void {
+		const count = (this.observerCounts.get(element) ?? 1) - 1;
+
+		if (count > 0) {
+			// Other consumers are still alive — just decrement and bail
+			this.observerCounts.set(element, count);
+			return;
+		}
+
+		// Last consumer gone — fully tear down this element
+		this.observerCounts.delete(element);
 		this.observer?.unobserve(element);
 
 		this.observerListeners.get(element)?.complete();
