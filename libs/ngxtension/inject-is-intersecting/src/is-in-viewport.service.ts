@@ -1,9 +1,11 @@
-import { inject, Injectable, NgZone } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { inject, Injectable, NgZone, PLATFORM_ID } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class IsInViewportService implements IsInViewportServiceInterface {
 	private readonly ngZone = inject(NgZone);
+	private readonly platformId = inject(PLATFORM_ID);
 
 	private observerListeners = new Map<
 		Element,
@@ -12,6 +14,7 @@ export class IsInViewportService implements IsInViewportServiceInterface {
 	private observer?: IntersectionObserver;
 
 	private createObserver() {
+		if (!isPlatformBrowser(this.platformId)) return; // IntersectionObserver is not available on the server
 		this.observer = this.ngZone.runOutsideAngular(() => {
 			return new IntersectionObserver((entries) => {
 				for (const entry of entries) {
