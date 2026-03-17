@@ -50,7 +50,11 @@ export class IsInViewportService implements IsInViewportServiceInterface {
 	}
 
 	unobserve(element: Element): void {
-		const count = (this.observerCounts.get(element) ?? 1) - 1;
+		if (!this.observerCounts.has(element)) {
+			return;
+		}
+
+		const count = this.observerCounts.get(element)! - 1;
 
 		if (count > 0) {
 			// Other consumers are still alive — just decrement and bail
