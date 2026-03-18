@@ -188,7 +188,7 @@ export class MovieCard {
 
 	movie = derivedAsync(
 		() => this.http.get(`https://localhost/api/movies/${this.movieId()}`),
-		{ behavior: 'concat' /* or 'merge', 'concat', 'exhaust' */ },
+		{ behavior: 'concat' /* or 'merge', 'switch', 'exhaust' */ },
 	);
 }
 ```
