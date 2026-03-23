@@ -121,14 +121,46 @@ This will produce the following output:
 <!-- <li>12</li> -->
 ```
 
+### Descending sequence
+
+Passing a **negative** `length` generates a descending sequence starting from `startAt`. The absolute value of `length` determines how many elements are produced.
+
+```ts
+import { Component } from '@angular/core';
+import { RepeatPipe } from 'ngxtension/repeat-pipe';
+
+@Component({
+	imports: [RepeatPipe],
+	template: `
+		<ul>
+			@for (year of -5 | repeat: 2026; track year) {
+				<li>{{ year }}</li>
+			}
+		</ul>
+	`,
+})
+export class App {}
+```
+
+This will produce the following output:
+
+```html
+<!-- Output -->
+<!-- <li>2026</li> -->
+<!-- <li>2025</li> -->
+<!-- <li>2024</li> -->
+<!-- <li>2023</li> -->
+<!-- <li>2022</li> -->
+```
+
 ## API
 
 ### Inputs
 
-- `length: number` - A non-negative integer, specifying the number of iterations.
-- `startAt: number` - A integer, specifying the start point of iterations.
+- `length: number` - An integer specifying the number of iterations. Positive values produce an ascending sequence, negative values produce a descending sequence, and zero produces an empty array.
+- `startAt: number` - An integer specifying the start point of iterations. Defaults to `0`.
 
 ### Validation
 
-- An error is thrown if `length` is either negative or not an integer.
+- An error is thrown if `length` is not an integer.
 - An error is thrown if `startAt` is not an integer.

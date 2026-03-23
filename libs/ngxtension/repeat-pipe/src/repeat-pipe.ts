@@ -32,7 +32,7 @@ export const startAtErrorMessageBuilder = (value: unknown) =>
  *
  * <hr/>
  *
- * @for (year of -5 | repeat: currentYear; track year) {
+ * @for (year of -5 | repeat: 2026; track year) {
  * <p>{{ year }}</p>
  * }
  *
@@ -87,7 +87,7 @@ export class RepeatPipe implements PipeTransform {
 	 *
 	 * <hr/>
 	 *
-	 * @for (year of -5 | repeat: currentYear; track year) {
+	 * @for (year of -5 | repeat: 2026; track year) {
 	 * <p>{{ year }}</p>
 	 * }
 	 *

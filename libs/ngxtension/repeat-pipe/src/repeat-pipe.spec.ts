@@ -98,7 +98,7 @@ describe(`${RepeatPipe.name} configuration`, () => {
 		fixture.detectChanges();
 	};
 
-	it('given -1, when render, then render 1 item starting at 0 descending', () => {
+	it('given -1, when render, then render 1 item with value 0', () => {
 		component.length = -1;
 		fixture.detectChanges();
 
