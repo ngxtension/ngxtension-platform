@@ -14,6 +14,13 @@ A modern collection of utilities for [Angular](https://angular.dev) – signals,
 
 ---
 
+# etalytics README
+
+- create patched TGZ with `pnpm run package && (cd dist/libs/ngxtension; pnpm pack; mv ngxtension-*-etalytics.tgz ../../..)`
+- see added script "eta:package" in `package.json`
+
+---
+
 ## ✨ Features & Utilities
 
 - **Signal Utilities**: Advanced computed, derived, and async signals, signal history, lazy signals, and more.

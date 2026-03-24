@@ -1,11 +1,11 @@
 {
 	"name": "ngxtension",
-	"description": "Utilities library for Angular",
-	"version": "0.0.0-replace",
+	"description": "Utilities library for Angular (etalytics patch)",
+	"version": "7.2.0-etalytics",
 	"engines": {
 		"node": ">=18"
 	},
-	"repository": "ngxtension/ngxtension-platform",
+	"repository": "etalytics/ngxtension-platform",
 	"homepage": "https://ngxtension.dev",
 	"license": "MIT",
 	"keywords": [
@@ -30,6 +30,9 @@
 	},
 	"dependencies": {
 		"tslib": "^2.3.0"
+	},
+	"publishConfig": {
+		"@etalytics:registry": "https://npm.pkg.github.com"
 	},
 	"sideEffects": false
 }
