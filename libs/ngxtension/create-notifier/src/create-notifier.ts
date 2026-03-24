@@ -1,17 +1,51 @@
-import { signal } from '@angular/core';
+import { linkedSignal, signal, Signal } from '@angular/core';
+
+type CreateNotifierOptions = {
+	deps?: Signal<any>[];
+	depsEmitInitially?: boolean;
+};
+
+const DEFAULT_OPTIONS: Required<CreateNotifierOptions> = {
+	deps: [],
+	depsEmitInitially: true,
+};
 
 /**
  * Creates a signal notifier that can be used to notify effects or other consumers.
  *
  * @returns A notifier object.
  */
-export function createNotifier() {
-	const sourceSignal = signal(0);
+export function createNotifier(options?: CreateNotifierOptions) {
+	const mergedOptions: Required<CreateNotifierOptions> = {
+		...DEFAULT_OPTIONS,
+		...options,
+	};
+
+	// without explicit deps we can simplify to a simple signal
+	const sourceSignal = !mergedOptions.deps.length
+		? signal(0)
+		: linkedSignal<number, number>({
+				source: () => {
+					mergedOptions.deps.forEach((dep) => dep()); // Track all dependencies
+
+					// when deps exist, the notifier should start at 1, because it immediately emits.
+					// without any deps, it is only based on increments. and those should start at 0.
+					return mergedOptions.deps.length && mergedOptions.depsEmitInitially
+						? 1
+						: 0;
+				},
+				// Return a new value each time source runs. This ensures deps changes also increment the counter
+				computation: (currentIncrementer, previousValue) => {
+					// Increment from previous value when deps change
+					return previousValue !== undefined
+						? previousValue.value + 1
+						: currentIncrementer;
+				},
+				equal: () => false, // Always notify downstream consumers
+			});
 
 	return {
-		notify: () => {
-			sourceSignal.update((v) => (v >>> 0) + 1);
-		},
+		notify: () => sourceSignal.update((v) => (v >>> 0) + 1),
 		listen: sourceSignal.asReadonly(),
 	};
 }

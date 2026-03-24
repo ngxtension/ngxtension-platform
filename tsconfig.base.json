@@ -28,6 +28,7 @@
 			"ngxtension/click-outside": [
 				"libs/ngxtension/click-outside/src/index.ts"
 			],
+			"ngxtension/collections": ["libs/ngxtension/collections/src/index.ts"],
 			"ngxtension/computed-previous": [
 				"libs/ngxtension/computed-previous/src/index.ts"
 			],
@@ -92,6 +93,9 @@
 				"libs/ngxtension/inject-is-intersecting/src/index.ts"
 			],
 			"ngxtension/inject-lazy": ["libs/ngxtension/inject-lazy/src/index.ts"],
+			"ngxtension/inject-leaf-activated-route": [
+				"libs/ngxtension/inject-leaf-activated-route/src/index.ts"
+			],
 			"ngxtension/inject-local-storage": [
 				"libs/ngxtension/inject-local-storage/src/index.ts"
 			],
@@ -129,7 +133,9 @@
 				"libs/ngxtension/navigation-end/src/index.ts"
 			],
 			"ngxtension/not-pattern": ["libs/ngxtension/not-pattern/src/index.ts"],
+			"ngxtension/on-event": ["libs/ngxtension/on-event/src/index.ts"],
 			"ngxtension/poll": ["libs/ngxtension/poll/src/index.ts"],
+			"ngxtension/reactive-on": ["libs/ngxtension/reactive-on/src/index.ts"],
 			"ngxtension/repeat": ["libs/ngxtension/repeat/src/index.ts"],
 			"ngxtension/repeat-pipe": ["libs/ngxtension/repeat-pipe/src/index.ts"],
 			"ngxtension/resize": ["libs/ngxtension/resize/src/index.ts"],
@@ -143,6 +149,7 @@
 				"libs/ngxtension/singleton-proxy/src/index.ts"
 			],
 			"ngxtension/svg-sprite": ["libs/ngxtension/svg-sprite/src/index.ts"],
+			"ngxtension/testing": ["libs/ngxtension/testing/src/index.ts"],
 			"ngxtension/to-lazy-signal": [
 				"libs/ngxtension/to-lazy-signal/src/index.ts"
 			],

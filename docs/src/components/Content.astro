@@ -4,7 +4,7 @@ import type { Props } from '@astrojs/starlight';
 import { getEntry } from 'astro:content';
 import Contributors from './Contributors.astro';
 
-const contributorsData = Astro.props.entry?.data?.contributors;
+const contributorsData = Astro.locals.starlightRoute?.entry?.data?.contributors;
 const contributors = contributorsData
 	? await Promise.all(
 			contributorsData.map((contributor) => getEntry(contributor)),

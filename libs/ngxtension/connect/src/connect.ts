@@ -125,12 +125,19 @@ export function connect(signal: WritableSignal<unknown>, ...args: any[]) {
 
 					if (!isObject(x)) {
 						const reducedValue = reducer ? reducer(prev, x) : x;
+
 						return isObject(reducedValue)
 							? { ...prev, ...(reducedValue as object) }
 							: reducedValue;
 					}
 
-					return { ...prev, ...((reducer?.(prev, x) || x) as object) };
+					const curr = reducer?.(prev, x) || x;
+
+					if (isDate(curr)) {
+						return new Date(curr);
+					}
+
+					return { ...prev, ...(curr as object) };
 				});
 			};
 
@@ -151,11 +158,17 @@ export function connect(signal: WritableSignal<unknown>, ...args: any[]) {
 		return effect(
 			() => {
 				signal.update((prev) => {
+					const curr = originSignal();
+
 					if (!isObject(prev)) {
-						return originSignal();
+						return curr;
 					}
 
-					return { ...prev, ...(originSignal() as object) };
+					if (isDate(curr)) {
+						return new Date(curr);
+					}
+
+					return { ...prev, ...(curr as object) };
 				});
 			},
 			{ injector },
@@ -268,6 +281,10 @@ function parseArgs(
 	}
 
 	return [null, null, args[0] as Injector | DestroyRef, false, null];
+}
+
+function isDate(val: any): val is Date {
+	return val instanceof Date;
 }
 
 function isObject(val: any): val is object {

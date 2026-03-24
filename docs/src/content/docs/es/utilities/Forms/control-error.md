@@ -40,6 +40,20 @@ Sin `NgxControlError`:
 </label>
 ```
 
+En un formulario también puedes pasar el nombre del control en lugar de la instancia.
+
+```html
+<form [formGroup]="form">
+	<label>
+		<b>Nombre</b>
+		<input type="text" formControlName="name" />
+		<strong *ngxControlError="'name'; track: 'required'">
+			Se requiere el nombre.
+		</strong>
+	</label>
+</form>
+```
+
 ## Configuración
 
 Un `StateMatcher` define cuándo el control proporcionado está en un _estado de error_.

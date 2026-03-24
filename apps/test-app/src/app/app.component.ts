@@ -73,6 +73,11 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 							Text Selection
 						</a>
 					</li>
+					<li>
+						<a routerLinkActive="active" routerLink="/inject-params-global">
+							Inject Params Global
+						</a>
+					</li>
 				</ul>
 			</div>
 			<div>

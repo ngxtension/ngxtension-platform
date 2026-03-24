@@ -1,3 +1,78 @@
+## 7.2.0 (2026-03-05)
+
+### Features
+
+- add reactive helper `on` ([#671](https://github.com/ngxtension/ngxtension-platform/pull/671))
+- add 3 testing utils ([#673](https://github.com/ngxtension/ngxtension-platform/pull/673))
+- **control-error:** accept control name ([#663](https://github.com/ngxtension/ngxtension-platform/pull/663))
+- **create-notifier:** add support for dependencies ([642521f](https://github.com/ngxtension/ngxtension-platform/commit/642521f))
+- **create-notifier:** simplify signal creation based on dependencies ([59be5dc](https://github.com/ngxtension/ngxtension-platform/commit/59be5dc))
+- **docs:** add TableOfContents component with sponsor section and update data handling for contributors ([84b27a4](https://github.com/ngxtension/ngxtension-platform/commit/84b27a4))
+- **events:** add `onEvent` utility ([#658](https://github.com/ngxtension/ngxtension-platform/pull/658))
+- **inject-params:** add required parameter validation and error handling for injectParams ([#670](https://github.com/ngxtension/ngxtension-platform/pull/670))
+
+### Bug Fixes
+
+- **cd:** fix stale docs being maintained on server ([5e4866e](https://github.com/ngxtension/ngxtension-platform/commit/5e4866e))
+- **docs:** correct badge value for 'on' utility from 'new' to 'experimental' ([e1a6e5a](https://github.com/ngxtension/ngxtension-platform/commit/e1a6e5a))
+- **docs:** correct PageTitle component to use Astro.locals instead of Astro.props ([d203cec](https://github.com/ngxtension/ngxtension-platform/commit/d203cec))
+- **docs:** replace sponsor-links classname to avoid adblocker conflicts ([02b2f87](https://github.com/ngxtension/ngxtension-platform/commit/02b2f87))
+- **filter-nil:** improve type guard for filtering null and undefined values from enums ([#660](https://github.com/ngxtension/ngxtension-platform/pull/660))
+- **workflow:** replace `rsync` with `cp` for copying docs in Astro workflow ([671a417](https://github.com/ngxtension/ngxtension-platform/commit/671a417))
+
+### Refactor
+
+- **create-notifier:** simplify options handling and fix dependency usage in notifier setup ([42f3f06](https://github.com/ngxtension/ngxtension-platform/commit/42f3f06))
+- **docs:** restructure and categorize utilities documentation for improved organization ([4668e0b](https://github.com/ngxtension/ngxtension-platform/commit/4668e0b))
+- **inject-params:** enhance global param handling with type-safe… ([#664](https://github.com/ngxtension/ngxtension-platform/pull/664))
+
+### ❤️ Thank You
+
+- Andreas Dorner @endlacer
+- Dafnik @Dafnik
+- Enea Jahollari @eneajaho
+- Matthieu Riegler @JeanMeche
+
+## 7.1.0 (2026-02-03)
+
+### Features
+
+- add injectAttribute utility ([#645](https://github.com/ngxtension/ngxtension-platform/pull/645))
+- **collections:** add `SignalMap` and `SignalSet` utility ([#657](https://github.com/ngxtension/ngxtension-platform/pull/657))
+- **connect:** allow to pass date object ([#647](https://github.com/ngxtension/ngxtension-platform/pull/647))
+- **inject-leaf-activated-route:** add injectLeafActivatedRoute function and related types ([e5f747f](https://github.com/ngxtension/ngxtension-platform/commit/e5f747f))
+- **inject-leaf-activated-route:** add injectLeafActivatedRoute function and related types ([9c20a36](https://github.com/ngxtension/ngxtension-platform/commit/9c20a36))
+- **inject-leaf-activated-route:** add `injectLeafActivatedRoute` utility tests and documentation ([f3cc77b](https://github.com/ngxtension/ngxtension-platform/commit/f3cc77b))
+- **inject-leaf-activated-route:** add project configuration file ([a86b94c](https://github.com/ngxtension/ngxtension-platform/commit/a86b94c))
+- **inject-params:** add global param handling and `injectParamsCore` refactor ([bea92d8](https://github.com/ngxtension/ngxtension-platform/commit/bea92d8))
+- **nx-cloud:** setup nx cloud workspace ([#638](https://github.com/ngxtension/ngxtension-platform/pull/638))
+- **resize:** add SSR compatibility to prevent browser API access on server ([#653](https://github.com/ngxtension/ngxtension-platform/pull/653))
+
+### Bug Fixes
+
+- **call-apply:** add SSR support ([#651](https://github.com/ngxtension/ngxtension-platform/pull/651))
+- **control-error:** used form-events util instead of manuel setup ([#648](https://github.com/ngxtension/ngxtension-platform/pull/648))
+- **docs:** correct typo in `withLatestFrom` usage examples ([dd69476](https://github.com/ngxtension/ngxtension-platform/commit/dd69476))
+- **inject-local-storage:** fix bug where disabling `storageSync` would not write new values to local storage ([fc6ba36](https://github.com/ngxtension/ngxtension-platform/commit/fc6ba36))
+- **plugin:** handle empty decorator arguments in host binding conversion ([#650](https://github.com/ngxtension/ngxtension-platform/pull/650))
+
+### Documentation
+
+- setup redirects ([#639](https://github.com/ngxtension/ngxtension-platform/pull/639))
+- some intro docs to test docs release ([c113380](https://github.com/ngxtension/ngxtension-platform/commit/c113380))
+
+### ❤️ Thank You
+
+- Andreas Dorner @endlacer
+- Chau @nartc
+- Chau Tran @nartc
+- Denis Yılmaz @denisyilmaz
+- Enea Jahollari @eneajaho
+- Jaime Burgos @SkyZeroZx
+- Kevin Anidjar @kanidjar
+- Max Scopp
+- Nicolas Stadler
+
 ## 7.0.2 (2025-11-05)
 
 This was a version bump only, there were no code changes.

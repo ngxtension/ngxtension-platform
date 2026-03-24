@@ -6,10 +6,17 @@ import {
 	DefaultValueOptions,
 	InjectorOptions,
 	ParseOptions,
+	RequiredOptions,
 } from 'ngxtension/shared';
 import { map } from 'rxjs';
 
 type QueryParamsTransformFn<ReadT> = (params: Params) => ReadT;
+
+function missingRequiredParamError(key: string | undefined): Error {
+	return new Error(
+		`[ngxtension:injectQueryParams] Query parameter ${key} is required but was not provided.`,
+	);
+}
 
 /**
  * The `QueryParamsOptions` type defines options for configuring the behavior of the `injectQueryParams` function.
@@ -23,7 +30,8 @@ export type QueryParamsOptions<ReadT, DefaultValueT> = ParseOptions<
 	string | null
 > &
 	DefaultValueOptions<DefaultValueT> &
-	InjectorOptions & {
+	InjectorOptions &
+	RequiredOptions & {
 		/**
 		 * The initial value to use if the query parameter is not present or undefined.
 		 *
@@ -54,6 +62,18 @@ export function injectQueryParams(): Signal<Params>;
  * @returns {Signal} A `Signal` that emits the value of the specified query parameter, or `null` if it's not present.
  */
 export function injectQueryParams(key: string): Signal<string | null>;
+
+/**
+ * The `injectQueryParams` function allows you to access and manipulate query parameters from the current route.
+ *
+ * @param {string} key - The name of the query parameter to retrieve.
+ * @param {QueryParamsOptions} options - Configuration options with required flag that ensures a non-null return.
+ * @returns {Signal} A `Signal` that emits the value of the specified query parameter. Throws an error if the query parameter is not present.
+ */
+export function injectQueryParams<ReadT = string>(
+	key: string,
+	options: QueryParamsOptions<ReadT, ReadT> & { required: true },
+): Signal<ReadT>;
 
 /**
  * The `injectQueryParams` function allows you to access and manipulate query parameters from the current route.
@@ -105,7 +125,7 @@ export function injectQueryParams<ReadT>(
 		const route = inject(ActivatedRoute);
 		const queryParams = route.snapshot.queryParams || {};
 
-		const { parse, transform, initialValue, defaultValue } = options;
+		const { parse, transform, initialValue, defaultValue, required } = options;
 
 		if (!keyOrParamsTransform) {
 			return toSignal(route.queryParams, { initialValue: queryParams });
@@ -124,11 +144,17 @@ export function injectQueryParams<ReadT>(
 				| undefined;
 
 			if (!param) {
+				if (required) {
+					throw missingRequiredParamError(keyOrParamsTransform);
+				}
 				return defaultValue ?? initialValue ?? null;
 			}
 
 			if (Array.isArray(param)) {
 				if (param.length < 1) {
+					if (required) {
+						throw missingRequiredParamError(keyOrParamsTransform);
+					}
 					return defaultValue ?? initialValue ?? null;
 				}
 				return parse
@@ -151,6 +177,18 @@ export function injectQueryParams<ReadT>(
  * The `injectQueryParams` function namespace provides additional functionality for handling array query parameters.
  */
 export namespace injectQueryParams {
+	/**
+	 * Retrieve an array query parameter with optional configuration options.
+	 *
+	 * @param {string} key - The name of the array query parameter to retrieve.
+	 * @param {QueryParamsOptions} options - Configuration options with required flag that ensures a non-null return.
+	 * @returns {Signal} A `Signal` that emits an array of values for the specified query parameter. Throws an error if the query parameter is not present.
+	 */
+	export function array<ReadT = string>(
+		key: string,
+		options: QueryParamsOptions<ReadT, ReadT[]> & { required: true },
+	): Signal<ReadT[]>;
+
 	/**
 	 * Retrieve an array query parameter with optional configuration options.
 	 *
@@ -191,16 +229,23 @@ export namespace injectQueryParams {
 			const route = inject(ActivatedRoute);
 			const queryParams = route.snapshot.queryParams || {};
 
-			const { parse, transform, initialValue, defaultValue } = options;
+			const { parse, transform, initialValue, defaultValue, required } =
+				options;
 
 			const transformParam = (
 				param: string | string[] | null,
 			): (ReadT | string)[] | null => {
 				if (!param) {
+					if (required) {
+						throw missingRequiredParamError(key);
+					}
 					return defaultValue ?? initialValue ?? null;
 				}
 				if (Array.isArray(param)) {
 					if (param.length < 1) {
+						if (required) {
+							throw missingRequiredParamError(key);
+						}
 						return defaultValue ?? initialValue ?? null;
 					}
 					// Avoid passing the parse function directly into the map function,

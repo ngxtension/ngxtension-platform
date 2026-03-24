@@ -34,6 +34,13 @@
 			"executor": "@nx/eslint:lint",
 			"outputs": ["{options.outputFile}"]
 		},
+		"test": {
+			"executor": "@nx/jest:jest",
+			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+			"options": {
+				"jestConfig": "libs/ngxtension/jest.config.ts"
+			}
+		},
 		"nx-release-publish": {
 			"options": {
 				"packageRoot": "dist/{projectRoot}"

@@ -114,3 +114,22 @@ exports[`convert-host-binding generator should convert properly for directive 1`
   }
   "
 `;
+
+exports[`convert-host-binding generator should convert properly for directive with empty decorator 1`] = `
+"
+	import { Directive } from '@angular/core';
+
+  @Directive({
+      host: { '[class.active]': 'isActive',
+          '(keydown)': 'updateValue($event)'
+    }
+})
+  export class MyDirective {
+    isActive = true;
+
+    
+    updateValue(event: KeyboardEvent) {
+    }
+  }
+  "
+`;
