@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, Provider, effect, inject } from '@angular/core';
-import { TestBed, fakeAsync, flush } from '@angular/core/testing';
+import { Component, effect, inject, Provider } from '@angular/core';
+import { fakeAsync, flush, TestBed } from '@angular/core/testing';
 import {
 	FormControl,
 	FormsModule,
@@ -8,7 +8,10 @@ import {
 	ReactiveFormsModule,
 } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { NgxControlValueAccessor } from './control-value-accessor';
+import {
+	NgxControlValueAccessor,
+	provideCvaDefaultValue,
+} from './control-value-accessor';
 
 describe('NgxControlValueAccessor', () => {
 	@Component({
@@ -476,6 +479,59 @@ describe('NgxControlValueAccessor', () => {
 				expect(ngControl?.disabled).toEqual(true);
 				expect(input.disabled).toEqual(true);
 			});
+		});
+	});
+
+	/**
+	 * Regression tests for the NG0203 injection-context bug.
+	 *
+	 * The etalytics fork changed `value$` to a `linkedSignal` whose source
+	 * function originally called `injectCvaDefaultValue()` directly.
+	 * `linkedSignal` source functions re-run reactively outside any injection
+	 * context, causing `inject()` to throw NG0203 on every `detectChanges()`.
+	 *
+	 * The fix captures the default value as a private field initializer
+	 * (inside the injection context) and references that field in the source
+	 * function instead.
+	 */
+	describe('NG0203 regression — inject() must not be called outside injection context', () => {
+		it('should not throw NG0203 on first detectChanges() without NgControl', () => {
+			expect(() => render(`<custom-input />`)).not.toThrow();
+		});
+
+		it('should not throw NG0203 on repeated detectChanges() without NgControl', () => {
+			const { fixture } = render(`<custom-input />`);
+			expect(() => {
+				fixture.detectChanges();
+				fixture.detectChanges();
+				fixture.detectChanges();
+			}).not.toThrow();
+		});
+
+		it('should not throw NG0203 when value changes trigger linkedSignal re-evaluation', () => {
+			const params = { value: 'initial' };
+			const { fixture, cva } = render(
+				`<custom-input [value]="value" />`,
+				params,
+			);
+
+			expect(() => {
+				// Trigger multiple change-detection cycles to exercise the linkedSignal source
+				(params as { value: string }).value = 'updated';
+				fixture.detectChanges();
+				(params as { value: string }).value = 'updated-again';
+				fixture.detectChanges();
+			}).not.toThrow();
+
+			expect(cva.value).toEqual('updated-again');
+		});
+
+		it('should not throw NG0203 when used with a custom default value provider', () => {
+			expect(() =>
+				render(`<custom-input />`, undefined, [
+					provideCvaDefaultValue(() => 'custom-default', true),
+				]),
+			).not.toThrow();
 		});
 	});
 });

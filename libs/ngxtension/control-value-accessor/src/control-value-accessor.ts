@@ -212,13 +212,22 @@ export class NgxControlValueAccessor<T = any> implements ControlValueAccessor {
 	}
 
 	/**
+	 * Captured at construction time (inside the injection context) so that
+	 * `initialValue` — which runs as a `linkedSignal` source function outside
+	 * the injection context — can read the default value without calling
+	 * `inject()` again (which would throw NG0203).
+	 * @ignore
+	 */
+	private readonly _cvaDefaultValue = injectCvaDefaultValue();
+
+	/**
 	 * We need to use untracked here to avoid that the linkedSignal
 	 * is initialized again.
 	 * @ignore
 	 */
 	private readonly initialValue = (): T =>
 		untracked(() =>
-			this.ngControl ? this.ngControl.value : injectCvaDefaultValue(),
+			this.ngControl ? this.ngControl.value : this._cvaDefaultValue,
 		);
 
 	/**
