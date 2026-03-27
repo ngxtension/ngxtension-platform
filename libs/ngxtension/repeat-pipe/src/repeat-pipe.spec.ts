@@ -98,13 +98,13 @@ describe(`${RepeatPipe.name} configuration`, () => {
 		fixture.detectChanges();
 	};
 
-	it('given -1, when render, then render 0 items', () => {
+	it('given -1, when render, then render 1 item with value 0', () => {
 		component.length = -1;
-
-		expect(detectChanges).toThrow(lengthErrorMessageBuilder('-1'));
+		fixture.detectChanges();
 
 		const items = fixture.debugElement.queryAll(By.css('p'));
-		expect(items).toHaveLength(0);
+		expect(items).toHaveLength(1);
+		expect(items[0].nativeElement.textContent).toContain('0');
 	});
 
 	it('given 1.5, when render, then render 0 items', () => {
@@ -153,5 +153,17 @@ describe(`${RepeatPipe.name} configuration`, () => {
 
 		const items = fixture.debugElement.queryAll(By.css('p'));
 		expect(items).toHaveLength(0);
+	});
+
+	it('given -5 and startAt 2026, when render, then render 5 items descending from 2026', () => {
+		component.length = -5;
+		component.startAt = 2026;
+		fixture.detectChanges();
+
+		const items = fixture.debugElement.queryAll(By.css('p'));
+		expect(items).toHaveLength(5);
+		items.forEach((item, i) => {
+			expect(item.nativeElement.textContent).toContain((2026 - i).toString());
+		});
 	});
 });
