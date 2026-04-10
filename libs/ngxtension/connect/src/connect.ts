@@ -208,27 +208,22 @@ function parseArgs(
 ] {
 	const array = [...args];
 
-	const observable = isObservable(array[0])
-		? (array.shift() as Observable<unknown>)
+	const takeIf = (predicate: (val: any) => boolean) =>
+		predicate(array[0]) ? array.shift() : null;
+
+	const observable = takeIf(isObservable);
+
+	const originSignal = !observable
+		? takeIf((v) => typeof v === 'function')
 		: null;
 
-	const originSignal =
-		!observable && typeof array[0] === 'function'
-			? (array.shift() as () => unknown)
-			: null;
+	const reducer = observable ? takeIf((v) => typeof v === 'function') : null;
 
-	const reducer =
-		observable && typeof array[0] === 'function'
-			? (array.shift() as Reducer<unknown, unknown>)
-			: null;
+	const injectorOrDestroyRef = takeIf(
+		(v) => typeof v === 'object' && v !== null,
+	);
 
-	const injectorOrDestroyRef =
-		array.length > 0 && typeof array[0] !== 'boolean'
-			? (array.shift() as Injector | DestroyRef)
-			: null;
-
-	const useUntracked =
-		typeof array[0] === 'boolean' ? (array.shift() as boolean) : false;
+	const useUntracked = takeIf((v) => typeof v === 'boolean') ?? false;
 
 	return [
 		observable,
