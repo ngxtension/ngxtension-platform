@@ -1,5 +1,11 @@
-import { DOCUMENT } from '@angular/common';
-import { inject, signal, type Injector, type Signal } from '@angular/core';
+import { DOCUMENT, isPlatformServer } from '@angular/common';
+import {
+	inject,
+	PLATFORM_ID,
+	signal,
+	type Injector,
+	type Signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { assertInjector } from 'ngxtension/assert-injector';
 import { fromEvent, map, merge, startWith } from 'rxjs';
@@ -102,13 +108,11 @@ export function injectNetwork({
 }: InjectNetworkOptions = {}): Readonly<NetworkState> {
 	return assertInjector(injectNetwork, injector, () => {
 		const window: Window = customWindow ?? inject(DOCUMENT).defaultView!;
+		const platformId = inject(PLATFORM_ID);
+		const isServer = isPlatformServer(platformId);
 		const navigator = window?.navigator;
 
-		const supported = signal(
-			window?.navigator && 'connection' in window.navigator,
-		);
-
-		const online = signal(true);
+		const online = signal(isServer ? true : navigator.onLine);
 		const saveData = signal(false);
 		const offlineAt = signal<number | undefined>(undefined);
 		const onlineAt = signal<number | undefined>(undefined);
@@ -117,6 +121,10 @@ export function injectNetwork({
 		const rtt = signal<number | undefined>(undefined);
 		const effectiveType = signal<NetworkEffectiveType | undefined>(undefined);
 		const type = signal<NetworkType>('unknown');
+
+		const supported = signal(
+			window?.navigator && 'connection' in window.navigator,
+		);
 
 		const connection = supported() && (navigator as any).connection;
 
@@ -136,7 +144,7 @@ export function injectNetwork({
 			}
 		};
 
-		if (window) {
+		if (!isServer && window) {
 			merge(
 				fromEvent(window, 'online').pipe(map(() => true)),
 				fromEvent(window, 'offline').pipe(map(() => false)),
@@ -152,7 +160,7 @@ export function injectNetwork({
 				});
 		}
 
-		if (connection) {
+		if (!isServer && connection) {
 			fromEvent(connection, 'change')
 				.pipe(
 					startWith(null), // we need to start with null to trigger the first update
