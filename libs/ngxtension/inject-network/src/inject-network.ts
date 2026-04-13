@@ -112,7 +112,7 @@ export function injectNetwork({
 		const isServer = isPlatformServer(platformId);
 		const navigator = window?.navigator;
 
-		const online = signal(isServer ? true : navigator.onLine);
+		const online = signal(isServer ? true : (navigator?.onLine ?? true));
 		const saveData = signal(false);
 		const offlineAt = signal<number | undefined>(undefined);
 		const onlineAt = signal<number | undefined>(undefined);
