@@ -197,7 +197,6 @@ export function connect(signal: WritableSignal<unknown>, ...args: any[]) {
 	} as ConnectedSignal<unknown>;
 }
 
-// TODO: there must be a way to parse the args more efficiently
 function parseArgs(
 	args: any[],
 ): [
@@ -207,80 +206,32 @@ function parseArgs(
 	boolean,
 	(() => unknown) | null,
 ] {
-	if (args.length > 3) {
-		return [
-			args[0] as Observable<unknown>,
-			args[1] as Reducer<unknown, unknown>,
-			args[2] as Injector | DestroyRef,
-			args[3] as boolean,
-			null,
-		];
-	}
+	const array = [...args];
 
-	if (args.length === 3) {
-		if (typeof args[2] === 'boolean') {
-			if (isObservable(args[0])) {
-				return [
-					args[0] as Observable<unknown>,
-					null,
-					args[1] as Injector | DestroyRef,
-					args[2],
-					null,
-				];
-			} else {
-				return [
-					null,
-					null,
-					args[1] as Injector | DestroyRef,
-					args[2],
-					args[0] as () => unknown,
-				];
-			}
-		}
+	const takeIf = (predicate: (val: any) => boolean) =>
+		predicate(array[0]) ? array.shift() : null;
 
-		return [
-			args[0] as Observable<unknown>,
-			args[1] as Reducer<unknown, unknown>,
-			args[2] as Injector | DestroyRef,
-			false,
-			null,
-		];
-	}
+	const observable = takeIf(isObservable);
 
-	if (args.length === 2) {
-		if (typeof args[1] === 'boolean') {
-			return [null, null, args[0] as Injector | DestroyRef, args[1], null];
-		}
+	const originSignal = !observable
+		? takeIf((v) => typeof v === 'function')
+		: null;
 
-		if (typeof args[1] === 'function') {
-			return [
-				args[0] as Observable<unknown>,
-				args[1] as Reducer<unknown, unknown>,
-				null,
-				false,
-				null,
-			];
-		}
+	const reducer = observable ? takeIf((v) => typeof v === 'function') : null;
 
-		return [
-			args[0] as Observable<unknown>,
-			null,
-			args[1] as Injector | DestroyRef,
-			false,
-			null,
-		];
-	}
+	const injectorOrDestroyRef = takeIf(
+		(v) => typeof v === 'object' && v !== null,
+	);
 
-	if (isObservable(args[0])) {
-		return [args[0] as Observable<unknown>, null, null, false, null];
-	}
+	const useUntracked = takeIf((v) => typeof v === 'boolean') ?? false;
 
-	// to connect signals to other signals, we need to use a callback that includes a signal call
-	if (typeof args[0] === 'function') {
-		return [null, null, null, false, args[0] as () => unknown];
-	}
-
-	return [null, null, args[0] as Injector | DestroyRef, false, null];
+	return [
+		observable,
+		reducer,
+		injectorOrDestroyRef,
+		useUntracked,
+		originSignal,
+	];
 }
 
 function isDate(val: any): val is Date {
