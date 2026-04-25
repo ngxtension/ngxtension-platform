@@ -1,15 +1,16 @@
 import {
-	Directive,
-	Input,
-	Output,
 	booleanAttribute,
+	Directive,
 	effect,
 	inject,
+	Input,
+	linkedSignal,
+	Output,
 	signal,
 	untracked,
 } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { NgControl, NgModel, type ControlValueAccessor } from '@angular/forms';
+import { type ControlValueAccessor, NgControl, NgModel } from '@angular/forms';
 import { createInjectionToken } from 'ngxtension/create-injection-token';
 import { skip } from 'rxjs';
 
@@ -210,22 +211,51 @@ export class NgxControlValueAccessor<T = any> implements ControlValueAccessor {
 		if (this.ngControl != null) this.ngControl.valueAccessor = this;
 	}
 
-	/** @ignore */
-	private initialValue = (): T => {
-		if (this.ngControl != null) return this.ngControl.value;
-		return injectCvaDefaultValue();
-	};
+	/**
+	 * Captured at construction time (inside the injection context) so that
+	 * `initialValue` — which runs as a `linkedSignal` source function outside
+	 * the injection context — can read the default value without calling
+	 * `inject()` again (which would throw NG0203).
+	 * @ignore
+	 */
+	private readonly _cvaDefaultValue = injectCvaDefaultValue();
 
-	/** The value of this. If a control is present, it reflects it's value. */
-	public readonly value$ = signal(this.initialValue(), {
+	/**
+	 * We need to use untracked here to avoid that the linkedSignal
+	 * is initialized again.
+	 * @ignore
+	 */
+	private readonly initialValue = (): T =>
+		untracked(() =>
+			this.ngControl ? this.ngControl.value : this._cvaDefaultValue,
+		);
+
+	/**
+	 * The value of this. If a control is present, it reflects it's value.
+	 * @remarks Internally, this uses a `linkedSignal` to delay the initialization until
+	 * the host component's inputs are set to avoid runtime exceptions.
+	 */
+	public readonly value$ = linkedSignal(this.initialValue, {
 		equal: (a, b) => this.compareTo(a, b),
 	});
 
-	/** Whether this is disabled. If a control is present, it reflects it's disabled state. */
-	public readonly disabled$ = signal(this.ngControl?.disabled ?? false);
+	/**
+	 * We need to use untracked here to avoid that the linkedSignal
+	 * is initialized again.
+	 * @ignore
+	 */
+	private readonly initialDisabled = (): boolean =>
+		untracked(() => this.ngControl?.disabled ?? false);
 
 	/**
-	 * A comparator, which determines value changes. Should return true, if two values are considered semanticly equal.
+	 * Whether this is disabled. If a control is present, it reflects it's disabled state.
+	 *
+	 * @remarks Internally, this uses a `linkedSignal` to delay the initialization until
+	 * the host component's inputs are set to avoid runtime exceptions.	 */
+	public readonly disabled$ = linkedSignal(this.initialDisabled);
+
+	/**
+	 * A comparator, which determines value changes. Should return true, if two values are considered semantically equal.
 	 *
 	 * Defaults to {@link Object.is} in order to align with change detection behavior for inputs.
 	 */

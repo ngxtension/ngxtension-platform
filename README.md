@@ -26,7 +26,7 @@ A modern collection of utilities for [Angular](https://angular.dev) – signals,
 - **Internationalization**: Utilities for i18n and formatting.
 - **SVG & UI**: SVG sprite helpers, repeat pipe, trackBy helpers, and more.
 
-> **See the [full documentation](https://ngxtension.netlify.app/) for a complete list and usage examples.**
+> **See the [full documentation](https://ngxtension.dev) for a complete list and usage examples.**
 
 ---
 
@@ -182,5 +182,3 @@ This project follows the [all-contributors](https://github.com/all-contributors/
 ## License
 
 MIT
-
-
