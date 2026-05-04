@@ -32,15 +32,14 @@ function wrapPhase<Input extends readonly unknown[], P, R>(
 		onCleanup: EffectCleanupRegisterFn,
 	) => R,
 ): (
-	...args: [EffectCleanupRegisterFn] | [Signal<P>, EffectCleanupRegisterFn]
+	prevOrCleanup: Signal<P> | EffectCleanupRegisterFn,
+	maybeCleanup?: EffectCleanupRegisterFn,
 ) => R {
-	return (...args): R => {
+	return (prevOrCleanup, maybeCleanup): R => {
 		const values = deps.map((d) => d()) as unknown as Input;
-		const [prevOrCleanup, maybeCleanup] = args;
 		const onCleanup = (maybeCleanup ??
 			prevOrCleanup) as EffectCleanupRegisterFn;
 		const prev = maybeCleanup ? (prevOrCleanup as Signal<P>) : undefined;
-
 		return untracked(() => fn(values, prev, onCleanup));
 	};
 }
