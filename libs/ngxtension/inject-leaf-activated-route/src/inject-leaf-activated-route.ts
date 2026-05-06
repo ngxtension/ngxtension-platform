@@ -49,10 +49,9 @@ export function injectLeafActivatedRoute(name?: string) {
 	const router = inject(Router);
 	const navigationEnd$ = injectNavigationEnd();
 
-	const walkerFn =
-		name && name !== 'primary'
-			? (root: ActivatedRoute) => walkToDeepestInOutlet(root, name!)
-			: walkToDeepest;
+	const walkerFn = name
+		? (root: ActivatedRoute) => walkToDeepestInOutlet(root, name)
+		: walkToDeepest;
 
 	return toSignal(
 		// Map each navigation end event to the current leaf route
