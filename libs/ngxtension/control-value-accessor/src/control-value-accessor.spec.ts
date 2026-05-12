@@ -497,7 +497,7 @@ describe('NgxControlValueAccessor', () => {
 				expect(ngControl!.value).toEqual('foo');
 			});
 
-			it('should transform incoming model values', async () => {
+			it('should transform incoming model values', fakeAsync(() => {
 				const params = {
 					value: '',
 				};
@@ -509,25 +509,26 @@ describe('NgxControlValueAccessor', () => {
 				cva.transform = (v: string) => v.toUpperCase();
 				params.value = 'foo';
 				fixture.detectChanges();
-				await fixture.whenStable();
+				flush();
+				fixture.detectChanges();
 				expect(cva.value).toEqual('FOO');
 				expect(ngControl!.value).toEqual('FOO');
 
 				params.value = 'bar';
 				fixture.detectChanges();
-				await fixture.whenStable();
+				flush();
+				fixture.detectChanges();
 				expect(cva.value).toEqual('BAR');
 				expect(ngControl!.value).toEqual('BAR');
 
 				input.value = 'baz';
 				input.dispatchEvent(new Event('input'));
 				fixture.detectChanges();
-				await fixture.whenStable();
 				expect(cva.value).toEqual('baz');
 				expect(ngControl!.value).toEqual('baz');
-			});
+			}));
 
-			it('should transform incoming model values when provided', async () => {
+			it('should transform incoming model values when provided', fakeAsync(() => {
 				const params = {
 					value: 'foo',
 				};
@@ -538,23 +539,24 @@ describe('NgxControlValueAccessor', () => {
 					[provideCvaTransform((v: string) => v.toUpperCase(), true)],
 				);
 				fixture.detectChanges();
-				await fixture.whenStable();
+				flush();
+				fixture.detectChanges();
 				expect(cva.value).toEqual('FOO');
 				expect(ngControl!.value).toEqual('FOO');
 
 				params.value = 'bar';
 				fixture.detectChanges();
-				await fixture.whenStable();
+				flush();
+				fixture.detectChanges();
 				expect(cva.value).toEqual('BAR');
 				expect(ngControl!.value).toEqual('BAR');
 
 				input.value = 'baz';
 				input.dispatchEvent(new Event('input'));
 				fixture.detectChanges();
-				await fixture.whenStable();
 				expect(cva.value).toEqual('baz');
 				expect(ngControl!.value).toEqual('baz');
-			});
+			}));
 		});
 	});
 });
