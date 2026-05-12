@@ -48,6 +48,41 @@ export class CustomInput {
 	);
 }
 
+@Component({
+	selector: 'custom-input-with-transform',
+	hostDirectives: [
+		{
+			directive: NgxControlValueAccessor,
+			inputs: ['value', 'disabled'],
+			outputs: ['valueChange'],
+		},
+	],
+	template: `
+		<label>
+			<b>custom input:</b>
+			<input
+				type="text"
+				(input)="cva.value = cva.transform($any($event.target).value)"
+				[value]="cva.value$()"
+				[disabled]="cva.disabled$()"
+				(blur)="cva.markAsTouched()"
+			/>
+		</label>
+
+		<button (click)="cva['ngControl']!.control!.setValue('model value')">
+			Emit Model Change
+		</button>
+	`,
+	standalone: true,
+})
+export class CustomInputWithTransform {
+	cva = inject<NgxControlValueAccessor<string>>(NgxControlValueAccessor);
+
+	constructor() {
+		this.cva.transform = (value: string) => value.toUpperCase();
+	}
+}
+
 interface User {
 	id: string;
 	name: string;
@@ -114,6 +149,7 @@ export class UserSelect {
 		FormsModule,
 		ReactiveFormsModule,
 		CustomInput,
+		CustomInputWithTransform,
 		UserSelect,
 	],
 	template: `
@@ -167,6 +203,20 @@ export class UserSelect {
 				<span>
 					<b>value:</b>
 					{{ ngModelUser | json }}
+				</span>
+			</p>
+		</section>
+
+		<section>
+			<h2>With Model Transform</h2>
+			<p>
+				<custom-input-with-transform
+					#inputWithTransform
+					ngModel="I am uppercase"
+				/>
+				<span>
+					<b>value:</b>
+					{{ inputWithTransform.cva.value$() }}
 				</span>
 			</p>
 		</section>
