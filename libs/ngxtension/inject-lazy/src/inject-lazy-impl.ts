@@ -74,7 +74,10 @@ export class InjectLazyImpl<T> {
 }
 
 /**
- * Helper function to mock the lazy-loaded module in `injectAsync`
+ * Helper function to mock the lazy-loaded module in `injectLazy`
+ *
+ * @deprecated Use Angular's built-in `injectAsync` instead, available from Angular v22.
+ * See https://github.com/angular/angular/pull/68248
  *
  * @usage
  * TestBed.configureTestingModule({
