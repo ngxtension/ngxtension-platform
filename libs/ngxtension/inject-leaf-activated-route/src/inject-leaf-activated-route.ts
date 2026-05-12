@@ -1,4 +1,4 @@
-import { inject } from '@angular/core';
+import { inject, type Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { injectNavigationEnd } from 'ngxtension/navigation-end';
@@ -41,16 +41,24 @@ import { map } from 'rxjs';
  * }
  * ```
  */
-export function injectLeafActivatedRoute() {
+export function injectLeafActivatedRoute(): Signal<ActivatedRoute>;
+export function injectLeafActivatedRoute(
+	name: string,
+): Signal<ActivatedRoute | null>;
+export function injectLeafActivatedRoute(name?: string) {
 	const router = inject(Router);
 	const navigationEnd$ = injectNavigationEnd();
 
+	const walkerFn = name
+		? (root: ActivatedRoute) => walkToDeepestInOutlet(root, name)
+		: walkToDeepest;
+
 	return toSignal(
 		// Map each navigation end event to the current leaf route
-		navigationEnd$.pipe(map(() => walkToDeepest(router.routerState.root))),
+		navigationEnd$.pipe(map(() => walkerFn(router.routerState.root))),
 		{
 			// Set the initial value immediately with the current leaf route
-			initialValue: walkToDeepest(router.routerState.root),
+			initialValue: walkerFn(router.routerState.root),
 			// Always emit when navigation ends, even if technically navigating to the same route
 			// This ensures the signal updates consistently with your router's OnSameUrlNavigation behavior
 			// @see [OnSameUrlNavigation](https://angular.dev/api/router/OnSameUrlNavigation)
@@ -80,4 +88,22 @@ export function injectLeafActivatedRoute() {
 export function walkToDeepest(step: ActivatedRoute): ActivatedRoute {
 	// Recursively traverse to the first child until we reach a route with no children
 	return step.firstChild ? walkToDeepest(step.firstChild) : step;
+}
+
+export function walkToDeepestInOutlet(
+	step: ActivatedRoute,
+	name: string,
+): ActivatedRoute | null {
+	// find direct child
+	const directChild = step.children.find((c) => c.outlet === name);
+	if (directChild) {
+		// found first child in the specified outlet, now walk down to the deepest in that outlet
+		return walkToDeepest(directChild);
+	}
+	// if not found, check all children recursively
+	for (const child of step.children) {
+		const found = walkToDeepestInOutlet(child, name);
+		if (found) return found;
+	}
+	return null;
 }

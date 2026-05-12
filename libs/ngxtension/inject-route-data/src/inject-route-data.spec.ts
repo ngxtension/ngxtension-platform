@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import {
 	ActivatedRouteSnapshot,
 	provideRouter,
+	Router,
 	RouterOutlet,
 } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
@@ -406,6 +407,89 @@ describe(injectRouteData.name, () => {
 			expect(instance.content()).toEqual('Content 2');
 		});
 
+		it('should work with global and named outlet using outlet option', async () => {
+			TestBed.configureTestingModule({
+				providers: [
+					provideRouter([
+						{
+							path: 'sidebar-content',
+							component: SidebarRouteComponent,
+							outlet: 'sidebar',
+							data: { title: 'Sidebar Title', section: 'help' },
+						},
+					]),
+				],
+			});
+
+			const fixture = TestBed.createComponent(ShellWithSidebarDataComponent);
+			fixture.detectChanges();
+
+			const router = TestBed.inject(Router);
+			await router.navigateByUrl('(sidebar:sidebar-content)');
+			fixture.detectChanges();
+
+			expect(fixture.componentInstance.sidebarTitle()).toBe('Sidebar Title');
+			expect(fixture.componentInstance.sidebarSection()).toBe('help');
+			expect(fixture.componentInstance.sidebarAllData()).toEqual({
+				title: 'Sidebar Title',
+				section: 'help',
+			});
+		});
+
+		it('should return null/empty when named outlet is not active', () => {
+			TestBed.configureTestingModule({
+				providers: [
+					provideRouter([
+						{
+							path: 'sidebar-content',
+							component: SidebarRouteComponent,
+							outlet: 'sidebar',
+							data: { title: 'Sidebar Title' },
+						},
+					]),
+				],
+			});
+
+			const fixture = TestBed.createComponent(ShellWithSidebarDataComponent);
+			fixture.detectChanges();
+
+			expect(fixture.componentInstance.sidebarTitle()).toBeNull();
+			expect(fixture.componentInstance.sidebarAllData()).toEqual({});
+		});
+
+		it('should update reactively when named outlet data changes', async () => {
+			TestBed.configureTestingModule({
+				providers: [
+					provideRouter([
+						{
+							path: 'section1',
+							component: SidebarRouteComponent,
+							outlet: 'sidebar',
+							data: { title: 'Section One' },
+						},
+						{
+							path: 'section2',
+							component: SidebarRoute2Component,
+							outlet: 'sidebar',
+							data: { title: 'Section Two' },
+						},
+					]),
+				],
+			});
+
+			const fixture = TestBed.createComponent(ShellWithSidebarDataComponent);
+			fixture.detectChanges();
+			const router = TestBed.inject(Router);
+
+			await router.navigateByUrl('(sidebar:section1)');
+			fixture.detectChanges();
+			expect(fixture.componentInstance.sidebarTitle()).toBe('Section One');
+
+			await router.navigateByUrl('(sidebar:section2)');
+			fixture.detectChanges();
+			expect(fixture.componentInstance.sidebarTitle()).toBe('Section Two');
+		});
+
 		it('should work with global and transform returning complex types', async () => {
 			TestBed.configureTestingModule({
 				providers: [
@@ -637,3 +721,25 @@ export class ComplexTransformParentComponent {
 	template: ``,
 })
 export class ComplexTransformChildComponent {}
+
+@Component({ standalone: true, template: '' })
+export class SidebarRouteComponent {}
+
+@Component({ standalone: true, template: '' })
+export class SidebarRoute2Component {}
+
+@Component({
+	standalone: true,
+	template: `
+		<router-outlet />
+		<router-outlet name="sidebar" />
+	`,
+	imports: [RouterOutlet],
+})
+export class ShellWithSidebarDataComponent {
+	sidebarTitle = injectRouteData.global('title', { outlet: 'sidebar' });
+	sidebarSection = injectRouteData.global('section', { outlet: 'sidebar' });
+	sidebarAllData = injectRouteData.global((data) => data, {
+		outlet: 'sidebar',
+	});
+}

@@ -5,6 +5,7 @@ import { RouterTestingHarness } from '@angular/router/testing';
 import {
 	injectLeafActivatedRoute,
 	walkToDeepest,
+	walkToDeepestInOutlet,
 } from './inject-leaf-activated-route';
 
 describe(injectLeafActivatedRoute.name, () => {
@@ -318,6 +319,154 @@ describe(injectLeafActivatedRoute.name, () => {
 	});
 });
 
+describe('named outlet support', () => {
+	it('should return null when the named outlet is not active', () => {
+		TestBed.configureTestingModule({
+			providers: [
+				provideRouter([
+					{
+						path: 'sidebar-item',
+						component: SidebarItemComponent,
+						outlet: 'sidebar',
+					},
+				]),
+			],
+		});
+
+		const fixture = TestBed.createComponent(ShellWithSidebarComponent);
+		fixture.detectChanges();
+
+		expect(fixture.componentInstance.sidebarLeaf()).toBeNull();
+	});
+
+	it('should return the leaf route in the named outlet after navigation', async () => {
+		TestBed.configureTestingModule({
+			providers: [
+				provideRouter([
+					{
+						path: 'sidebar-item',
+						component: SidebarItemComponent,
+						outlet: 'sidebar',
+						data: { role: 'sidebar' },
+					},
+				]),
+			],
+		});
+
+		const fixture = TestBed.createComponent(ShellWithSidebarComponent);
+		fixture.detectChanges();
+
+		const router = TestBed.inject(Router);
+		await router.navigateByUrl('(sidebar:sidebar-item)');
+		fixture.detectChanges();
+
+		const leaf = fixture.componentInstance.sidebarLeaf();
+		expect(leaf).toBeDefined();
+		expect(leaf!.snapshot.url.toString()).toBe('sidebar-item');
+		expect(leaf!.snapshot.data['role']).toBe('sidebar');
+	});
+
+	it('should update when navigating between named outlet routes', async () => {
+		TestBed.configureTestingModule({
+			providers: [
+				provideRouter([
+					{
+						path: 'item1',
+						component: SidebarItemComponent,
+						outlet: 'sidebar',
+					},
+					{
+						path: 'item2',
+						component: SidebarItem2Component,
+						outlet: 'sidebar',
+					},
+				]),
+			],
+		});
+
+		const fixture = TestBed.createComponent(ShellWithSidebarComponent);
+		fixture.detectChanges();
+		const router = TestBed.inject(Router);
+
+		await router.navigateByUrl('(sidebar:item1)');
+		fixture.detectChanges();
+		expect(
+			fixture.componentInstance.sidebarLeaf()!.snapshot.url.toString(),
+		).toBe('item1');
+
+		await router.navigateByUrl('(sidebar:item2)');
+		fixture.detectChanges();
+		expect(
+			fixture.componentInstance.sidebarLeaf()!.snapshot.url.toString(),
+		).toBe('item2');
+	});
+
+	it('should track primary and named outlets independently', async () => {
+		TestBed.configureTestingModule({
+			providers: [
+				provideRouter([
+					{ path: 'home', component: SimpleComponent },
+					{
+						path: 'sidebar-item',
+						component: SidebarItemComponent,
+						outlet: 'sidebar',
+					},
+				]),
+			],
+		});
+
+		const fixture = TestBed.createComponent(ShellWithSidebarComponent);
+		fixture.detectChanges();
+		const router = TestBed.inject(Router);
+
+		await router.navigateByUrl('/home(sidebar:sidebar-item)');
+		fixture.detectChanges();
+
+		expect(
+			fixture.componentInstance.primaryLeaf().snapshot.url.toString(),
+		).toBe('home');
+		expect(
+			fixture.componentInstance.sidebarLeaf()!.snapshot.url.toString(),
+		).toBe('sidebar-item');
+	});
+});
+
+describe(walkToDeepestInOutlet.name, () => {
+	it('should return null when the named outlet is not active', () => {
+		TestBed.configureTestingModule({ providers: [provideRouter([])] });
+
+		const router = TestBed.inject(Router);
+		expect(
+			walkToDeepestInOutlet(router.routerState.root, 'sidebar'),
+		).toBeNull();
+	});
+
+	it('should find the deepest route in a named outlet', async () => {
+		TestBed.configureTestingModule({
+			providers: [
+				provideRouter([
+					{
+						path: 'sidebar-item',
+						component: SidebarItemComponent,
+						outlet: 'sidebar',
+					},
+				]),
+			],
+		});
+
+		const fixture = TestBed.createComponent(ShellWithSidebarComponent);
+		fixture.detectChanges();
+
+		const router = TestBed.inject(Router);
+		await router.navigateByUrl('(sidebar:sidebar-item)');
+		fixture.detectChanges();
+
+		const leaf = walkToDeepestInOutlet(router.routerState.root, 'sidebar');
+		expect(leaf).toBeDefined();
+		expect(leaf!.snapshot.url.toString()).toBe('sidebar-item');
+	});
+});
+
 describe(walkToDeepest.name, () => {
 	it('should return the same route if there are no children', async () => {
 		TestBed.configureTestingModule({
@@ -547,6 +696,25 @@ class ProductComponent {
 })
 class Level1Component {
 	leafRoute = injectLeafActivatedRoute();
+}
+
+@Component({ standalone: true, template: '' })
+class SidebarItemComponent {}
+
+@Component({ standalone: true, template: '' })
+class SidebarItem2Component {}
+
+@Component({
+	standalone: true,
+	template: `
+		<router-outlet />
+		<router-outlet name="sidebar" />
+	`,
+	imports: [RouterOutlet],
+})
+class ShellWithSidebarComponent {
+	primaryLeaf = injectLeafActivatedRoute();
+	sidebarLeaf = injectLeafActivatedRoute('sidebar');
 }
 
 @Component({

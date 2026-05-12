@@ -4,7 +4,7 @@ import { ActivatedRoute, type Data } from '@angular/router';
 import { assertInjector } from 'ngxtension/assert-injector';
 import { injectLeafActivatedRoute } from 'ngxtension/inject-leaf-activated-route';
 import { DefaultValueOptions, InjectorOptions } from 'ngxtension/shared';
-import { map, switchMap } from 'rxjs';
+import { map, of, switchMap } from 'rxjs';
 
 type RouteDataTransformFn<T> = (data: Data) => T;
 
@@ -40,7 +40,7 @@ function mergeRouteData(route: ActivatedRoute): Data {
  * @template DefaultValueT - The type of the default value.
  */
 export type RouteDataOptions<DefaultValueT> =
-	DefaultValueOptions<DefaultValueT> & InjectorOptions;
+	DefaultValueOptions<DefaultValueT> & InjectorOptions & { outlet?: string };
 
 /**
  * Core implementation shared between `injectRouteData` and `injectRouteData.global`.
@@ -127,47 +127,57 @@ export function injectRouteData<T>(
 }
 
 /**
- * Global variant of `injectRouteData` that retrieves route data from the leaf (deepest) `ActivatedRoute` in the router state tree.
- * This allows you to access route data from the entire route hierarchy, including child routes,
- * regardless of where your component is positioned in the component tree.
+ * Global variant of `injectRouteData` that retrieves route data from the leaf (deepest) `ActivatedRoute`
+ * in the router state tree, merging data from the entire route hierarchy.
  *
- * @template T - The expected type of the read value.
- * @param keyOrTransform OPTIONAL The key of the route data to return, or a transform function to apply to the route data object
- * @param {RouteDataOptions} options - Optional configuration options for the route data.
- * @returns {Signal} A `Signal` that emits the transformed value of the specified route data, or the entire data object if no key is provided.
+ * Supports named router outlets via the `outlet` option.
  *
  * @example
- * // Get all route data from route hierarchy
+ * // Get all route data from primary leaf
  * const data = injectRouteData.global();
  *
  * @example
- * // Get specific data from route hierarchy
+ * // Get specific data from primary leaf hierarchy
  * const title = injectRouteData.global('title');
  *
  * @example
- * // Transform route data from route hierarchy
+ * // Transform route data from primary leaf hierarchy
  * const breadcrumbs = injectRouteData.global((data) => data['breadcrumbs'] as string[]);
  *
  * @example
  * // With default value option
  * const title = injectRouteData.global('title', { defaultValue: 'Default Title' });
+ *
+ * @example
+ * // Get data from a named outlet
+ * const sidebarTitle = injectRouteData.global('title', { outlet: 'sidebar' });
+ *
+ * @example
+ * // Get all data from a named outlet using a transform
+ * const sidebarData = injectRouteData.global((data) => data, { outlet: 'sidebar' });
  */
 injectRouteData.global = function <T>(
 	keyOrTransform?: keyof Data | RouteDataTransformFn<T>,
 	options: RouteDataOptions<T> = {},
 ): Signal<T | Data | null> {
 	return assertInjector(injectRouteData.global, options?.injector, () => {
-		const leafRoute = injectLeafActivatedRoute();
+		const leafRoute = injectLeafActivatedRoute(options.outlet as string);
 		const leafRoute$ = toObservable(leafRoute);
 
 		const mergedData$ = leafRoute$.pipe(
-			switchMap((route) => route.data),
-			map(() => mergeRouteData(leafRoute())),
+			switchMap((route) => (route ? route.data : of({}))),
+			map(() => {
+				const route = leafRoute();
+				return route ? mergeRouteData(route) : {};
+			}),
 		);
+
+		const initialRoute = leafRoute();
+		const initialData = initialRoute ? mergeRouteData(initialRoute) : {};
 
 		return injectRouteDataCore(
 			mergedData$,
-			mergeRouteData(leafRoute()),
+			initialData,
 			keyOrTransform,
 			options,
 		);
