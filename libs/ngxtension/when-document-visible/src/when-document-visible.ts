@@ -24,9 +24,10 @@ export function whenDocumentVisible<T>(
 	options?: InjectDocumentVisibilityOptions,
 ): MonoTypeOperatorFunction<T> {
 	const visibilityChanged$ = injectDocumentVisibilityStream(options);
-	const [pageVisible$, pageHidden$] = partition(visibilityChanged$, () => {
-		return document.visibilityState === 'visible';
-	});
+	const [pageVisible$, pageHidden$] = partition(
+		visibilityChanged$,
+		(visibilityState) => visibilityState === 'visible',
+	);
 	return (source: Observable<T>) => {
 		return source.pipe(
 			takeUntil(pageHidden$),
