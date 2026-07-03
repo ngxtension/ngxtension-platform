@@ -78,6 +78,14 @@ describe(injectRouteFragment.name, () => {
 		expect(instance.numberFragmentDefaultValue()).toEqual(100000000);
 	});
 
+	it('returns a falsy default value instead of falling back to null', async () => {
+		const instance = await harness.navigateByUrl('test', TestComponent);
+
+		// defaultValue: 0 is a legitimate falsy default and should be
+		// returned as-is when there is no fragment, not discarded for `null`
+		expect(instance.zeroFragmentDefaultValue()).toEqual(0);
+	});
+
 	it('returns right signals and values for different parsers', async () => {
 		const instance = await harness.navigateByUrl('test', TestComponent);
 
@@ -127,6 +135,7 @@ export class TestComponent implements OnInit {
 	fragmentDefaultValue = injectRouteFragment({
 		defaultValue: 'default-fragment',
 	});
+	zeroFragmentDefaultValue = injectRouteFragment({ defaultValue: 0 });
 	isFragmentAvailable = injectRouteFragment({
 		parse: (fragment) => !!fragment,
 	});
