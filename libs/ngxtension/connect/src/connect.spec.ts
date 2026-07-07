@@ -371,6 +371,42 @@ describe(connect.name, () => {
 		});
 	});
 
+	describe('reducer returning a falsy value', () => {
+		it('should use the reducer result instead of the raw emission when it is a falsy primitive', () => {
+			const isActive = signal(true);
+
+			TestBed.runInInjectionContext(() => {
+				connect(isActive, of('toggle'), () => false);
+			});
+
+			expect(isActive()).toBe(false);
+		});
+
+		it('should use a reducer result of 0 instead of falling back to the raw emission', () => {
+			const count = signal(5);
+
+			TestBed.runInInjectionContext(() => {
+				// reducer computes a delta which legitimately evaluates to 0
+				connect(count, of(5), (prev, next) => next - prev);
+			});
+
+			expect(count()).toBe(0);
+		});
+
+		it('should not silently replace object state with the raw emission when a reducer guard returns a falsy value', () => {
+			const state = signal({ age: 30 });
+
+			TestBed.runInInjectionContext(() => {
+				// reducer intentionally returns null to skip the update
+				connect(state, of({ age: 20 }), (prev, next) =>
+					next.age > prev.age ? { age: next.age } : (null as any),
+				);
+			});
+
+			expect(state()).toEqual({ age: 30 });
+		});
+	});
+
 	describe('connects an observable to a signal not in injection context using injector', () => {
 		@Component({ standalone: true, template: '' })
 		class TestComponent implements OnInit {
