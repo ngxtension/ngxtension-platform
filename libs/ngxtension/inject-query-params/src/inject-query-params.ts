@@ -141,9 +141,10 @@ export function injectQueryParams<ReadT>(
 			const param = params?.[keyOrParamsTransform] as
 				| string
 				| string[]
+				| null
 				| undefined;
 
-			if (!param) {
+			if (param === undefined || param === null) {
 				if (required) {
 					throw missingRequiredParamError(keyOrParamsTransform);
 				}
@@ -233,9 +234,9 @@ export namespace injectQueryParams {
 				options;
 
 			const transformParam = (
-				param: string | string[] | null,
+				param: string | string[] | null | undefined,
 			): (ReadT | string)[] | null => {
-				if (!param) {
+				if (param === undefined || param === null) {
 					if (required) {
 						throw missingRequiredParamError(key);
 					}

@@ -7,8 +7,9 @@ import {
 } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
+import { of } from 'rxjs';
 import { injectQueryParams } from './inject-query-params';
 
 @Component({
@@ -222,6 +223,56 @@ describe(injectQueryParams.name, () => {
 		);
 		expect(instance.requiredId()).toBe('123');
 	});
+
+	it('returns an empty string for a query parameter with no value instead of the default/missing fallback', async () => {
+		const harness = await RouterTestingHarness.create();
+		const instance = await harness.navigateByUrl(
+			'/search?query',
+			SearchComponent,
+		);
+
+		expect(instance.queryParams()).toEqual({ query: '' });
+		expect(instance.searchParam()).toEqual('');
+		expect(instance.searchParamDefault()).toEqual('');
+	});
+
+	it('should not throw error when required query param has no value', async () => {
+		TestBed.configureTestingModule({
+			providers: [
+				provideRouter([
+					{ path: 'required', component: RequiredQueryParamComponent },
+				]),
+			],
+		});
+
+		const harness = await RouterTestingHarness.create();
+
+		const instance = await harness.navigateByUrl(
+			'/required?id',
+			RequiredQueryParamComponent,
+		);
+		expect(instance.requiredId()).toBe('');
+	});
+
+	it('treats a null query parameter the same as a missing one', () => {
+		TestBed.configureTestingModule({
+			providers: [
+				{
+					provide: ActivatedRoute,
+					useValue: {
+						snapshot: { queryParams: { id: null } },
+						queryParams: of({ id: null }),
+					},
+				},
+			],
+		});
+
+		const idParam = TestBed.runInInjectionContext(() =>
+			injectQueryParams('id', { defaultValue: 'fallback' }),
+		);
+
+		expect(idParam()).toEqual('fallback');
+	});
 });
 
 describe(injectQueryParams.array.name, () => {
@@ -427,5 +478,35 @@ describe(injectQueryParams.array.name, () => {
 			RequiredArrayQueryParamComponent,
 		);
 		expect(instance.requiredIdArray()).toEqual(['123', '456']);
+	});
+
+	it('returns an array with an empty string for a query parameter with no value instead of the default/missing fallback', async () => {
+		const harness = await RouterTestingHarness.create();
+		const instance = await harness.navigateByUrl(
+			'/search?query',
+			SearchComponent,
+		);
+
+		expect(instance.queryParams()).toEqual({ query: '' });
+		expect(instance.searchParams()).toEqual(['']);
+		expect(instance.searchParamsDefault()).toEqual(['']);
+	});
+
+	it('should not throw error when required array query param has no value', async () => {
+		TestBed.configureTestingModule({
+			providers: [
+				provideRouter([
+					{ path: 'required', component: RequiredArrayQueryParamComponent },
+				]),
+			],
+		});
+
+		const harness = await RouterTestingHarness.create();
+
+		const instance = await harness.navigateByUrl(
+			'/required?id',
+			RequiredArrayQueryParamComponent,
+		);
+		expect(instance.requiredIdArray()).toEqual(['']);
 	});
 });
