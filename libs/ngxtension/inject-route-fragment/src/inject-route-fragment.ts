@@ -54,7 +54,7 @@ export function injectRouteFragment<T>(
 		const route = inject(ActivatedRoute);
 		const initialRouteFragment = route.snapshot.fragment;
 		const getFragment = (fragment: string | null) => {
-			if (fragment === null && options?.defaultValue) {
+			if (fragment === null && options?.defaultValue !== undefined) {
 				return options.defaultValue;
 			}
 			if (options?.parse) {

@@ -120,7 +120,7 @@ export function connect(signal: WritableSignal<unknown>, ...args: any[]) {
 			const update = () => {
 				signal.update((prev) => {
 					if (!isObject(prev)) {
-						return reducer?.(prev, x) || x;
+						return reducer ? reducer(prev, x) : x;
 					}
 
 					if (!isObject(x)) {
@@ -131,7 +131,7 @@ export function connect(signal: WritableSignal<unknown>, ...args: any[]) {
 							: reducedValue;
 					}
 
-					const curr = reducer?.(prev, x) || x;
+					const curr = reducer ? reducer(prev, x) : x;
 
 					if (isDate(curr)) {
 						return new Date(curr);

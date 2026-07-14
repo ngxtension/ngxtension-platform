@@ -47,7 +47,6 @@ export function notPattern(pattern: string | RegExp): ValidatorFn {
 			return null; // don't validate empty values to allow optional controls
 		}
 		const value: string = control.value;
-		console.log('value', value, 'regex', regex);
 		return regex.test(value)
 			? { notPattern: { disallowedPattern: regexStr, actualValue: value } }
 			: null;
