@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { effectOnceIf } from './effect-once-if';
+import { effect } from 'ngxtension/effect';
 
 function createTestComponent(triggerValue: number) {
 	const log: string[] = [];
@@ -10,9 +10,10 @@ function createTestComponent(triggerValue: number) {
 	class Example {
 		count = signal(0);
 
-		ref = effectOnceIf(
-			() => this.count() === triggerValue,
-			(value, onCleanup) => {
+		ref = effect(
+			[() => this.count() === triggerValue],
+			{ once: true, filter: Boolean },
+			([value], _previousValues, onCleanup) => {
 				log.push(`received ${triggerValue}: ${value}`);
 				onCleanup(() => {
 					logCleanup.push(`cleaning effect with condition ${triggerValue}`);
@@ -24,7 +25,7 @@ function createTestComponent(triggerValue: number) {
 	return { component: Example, log, logCleanup };
 }
 
-describe(effectOnceIf.name, () => {
+describe('effectOnceIf behavior with effect', () => {
 	it('should run effect once and cleanup', () => {
 		const test = createTestComponent(2);
 		const fixture = TestBed.createComponent(test.component);

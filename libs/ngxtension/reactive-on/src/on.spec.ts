@@ -1,14 +1,8 @@
-import {
-	ApplicationRef,
-	Injector,
-	computed,
-	effect,
-	signal,
-} from '@angular/core';
+import { ApplicationRef, Injector, computed, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { on } from './on';
+import { effect } from 'ngxtension/effect';
 
-describe(on.name, () => {
+describe('on behavior with effect', () => {
 	let injector: Injector;
 	let appRef: ApplicationRef;
 
@@ -22,9 +16,10 @@ describe(on.name, () => {
 		const log: number[] = [];
 
 		effect(
-			on(count, (c) => {
+			[count],
+			([c]) => {
 				log.push(c);
-			}),
+			},
 			{ injector },
 		);
 
@@ -42,10 +37,11 @@ describe(on.name, () => {
 		const log: number[] = [];
 
 		effect(
-			on(count, (c) => {
+			[count],
+			([c]) => {
 				// accessing 'other' which is not in deps
 				log.push(c + other());
-			}),
+			},
 			{ injector },
 		);
 
@@ -69,9 +65,10 @@ describe(on.name, () => {
 		const log: number[] = [];
 
 		effect(
-			on([a, b], ([valA, valB]) => {
+			[a, b],
+			([valA, valB]) => {
 				log.push(valA + valB);
-			}),
+			},
 			{ injector },
 		);
 
@@ -93,9 +90,10 @@ describe(on.name, () => {
 		const log: number[] = [];
 
 		effect(
-			on({ a, b }, ({ a: valA, b: valB }) => {
+			[() => ({ a: a(), b: b() })],
+			([{ a: valA, b: valB }]) => {
 				log.push(valA * valB);
-			}),
+			},
 			{ injector },
 		);
 
@@ -116,11 +114,12 @@ describe(on.name, () => {
 		const log: string[] = [];
 
 		effect(
-			on(count, (input, prevInput) => {
+			[count],
+			([input], [prevInput]) => {
 				const result = `cur: ${input}, prevIn: ${prevInput}`;
 				log.push(result);
 				return undefined;
-			}),
+			},
 			{ injector },
 		);
 
@@ -137,12 +136,13 @@ describe(on.name, () => {
 		const log: string[] = [];
 
 		const effectRef = effect(
-			on(count, (c, _, __, onCleanup) => {
+			[count],
+			([c], _previousValues, onCleanup) => {
 				log.push(`run: ${c}`);
 				onCleanup(() => {
 					log.push(`cleanup: ${c}`);
 				});
-			}),
+			},
 			{ injector },
 		);
 
@@ -162,11 +162,12 @@ describe(on.name, () => {
 		const log: number[] = [];
 
 		effect(
-			on(count, (c, _, prevValue) => {
+			[count],
+			([c], _previousValues, _onCleanup, prevValue) => {
 				const result = c + ((prevValue as number) || 0);
 				log.push(result);
 				return result;
-			}),
+			},
 			{ injector },
 		);
 
@@ -188,9 +189,10 @@ describe(on.name, () => {
 		const log: number[] = [];
 
 		effect(
-			on(doubleCount, (val) => {
+			[doubleCount],
+			([val]) => {
 				log.push(val);
-			}),
+			},
 			{ injector },
 		);
 
@@ -207,13 +209,11 @@ describe(on.name, () => {
 		const log: number[] = [];
 
 		effect(
-			on(
-				count,
-				(c) => {
-					log.push(c);
-				},
-				{ defer: true },
-			),
+			[count],
+			{ defer: true },
+			([c]) => {
+				log.push(c);
+			},
 			{ injector },
 		);
 
