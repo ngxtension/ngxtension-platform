@@ -1,3 +1,40 @@
+## 7.3.0 (2026-08-04)
+
+### Features
+
+- add support for named outlets ([#689](https://github.com/ngxtension/ngxtension-platform/pull/689))
+- **NgxControlValueAccessor:** add possibility to transform model values ([#636](https://github.com/ngxtension/ngxtension-platform/pull/636))
+- **connect:** enhance reducer behavior for falsy values in signal updates ([#696](https://github.com/ngxtension/ngxtension-platform/pull/696))
+- **repeat:** allow negative number ([#678](https://github.com/ngxtension/ngxtension-platform/pull/678))
+
+### Bug Fixes
+
+- remove leftover console log from not-pattern validation ([#698](https://github.com/ngxtension/ngxtension-platform/pull/698))
+- **inject-is-intersecting:** Fix encapsulation, SSR safety, and shared-element subscription teardown ([#675](https://github.com/ngxtension/ngxtension-platform/pull/675))
+- **inject-network:** set init value and support SSR ([#684](https://github.com/ngxtension/ngxtension-platform/pull/684))
+- **inject-query-params:** treat valueless query params as empty string, not missing ([#694](https://github.com/ngxtension/ngxtension-platform/pull/694))
+- **inject-route-fragment:** return default values even when falsy ([#697](https://github.com/ngxtension/ngxtension-platform/pull/697))
+- **when-document-visible:** improve visibility state check in partition function ([#695](https://github.com/ngxtension/ngxtension-platform/pull/695))
+
+### Refactor
+
+- parseArgs more efficiently ([#682](https://github.com/ngxtension/ngxtension-platform/pull/682))
+- **docs:** add redirects for reorganized utilities documentation categories ([015a9e6](https://github.com/ngxtension/ngxtension-platform/commit/015a9e6))
+- **docs:** update redirects to align with reorganized utility categories ([ddff699](https://github.com/ngxtension/ngxtension-platform/commit/ddff699))
+
+### Documentation
+
+- replace `concat` w/ `switch` in `derivedAsync` example ([#676](https://github.com/ngxtension/ngxtension-platform/pull/676))
+
+### ❤️ Thank You
+
+- Andreas Dorner @endlacer
+- Enea Jahollari @eneajaho
+- JonataB @JonataB
+- Michael Small @msmallest
+- Robby Rabbitman @RobbyRabbitman
+- Toni Škobić @toniskobic
+
 ## 7.2.0 (2026-03-05)
 
 ### Features
