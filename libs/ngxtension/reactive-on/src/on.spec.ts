@@ -1,6 +1,7 @@
 import {
 	ApplicationRef,
 	Injector,
+	afterRenderEffect,
 	computed,
 	effect,
 	signal,
@@ -43,7 +44,6 @@ describe(on.name, () => {
 
 		effect(
 			on(count, (c) => {
-				// accessing 'other' which is not in deps
 				log.push(c + other());
 			}),
 			{ injector },
@@ -54,12 +54,10 @@ describe(on.name, () => {
 
 		other.set(20);
 		appRef.tick();
-		// Should NOT run again because 'other' is not in deps list passed to on()
 		expect(log).toEqual([10]);
 
 		count.set(1);
 		appRef.tick();
-		// Should run now, seeing the new value of 'other' ONLY because 'count' changed
 		expect(log).toEqual([10, 21]);
 	});
 
@@ -69,9 +67,12 @@ describe(on.name, () => {
 		const log: number[] = [];
 
 		effect(
-			on([a, b], ([valA, valB]) => {
-				log.push(valA + valB);
-			}),
+			on(
+				() => [a(), b()],
+				([valA, valB]) => {
+					log.push(valA + valB);
+				},
+			),
 			{ injector },
 		);
 
@@ -93,9 +94,12 @@ describe(on.name, () => {
 		const log: number[] = [];
 
 		effect(
-			on({ a, b }, ({ a: valA, b: valB }) => {
-				log.push(valA * valB);
-			}),
+			on(
+				() => ({ a: a(), b: b() }),
+				({ a: valA, b: valB }) => {
+					log.push(valA * valB);
+				},
+			),
 			{ injector },
 		);
 
@@ -111,33 +115,12 @@ describe(on.name, () => {
 		expect(log).toEqual([2, 6, 12]);
 	});
 
-	it('should pass previous input correctly', () => {
-		const count = signal(0);
-		const log: string[] = [];
-
-		effect(
-			on(count, (input, prevInput) => {
-				const result = `cur: ${input}, prevIn: ${prevInput}`;
-				log.push(result);
-				return undefined;
-			}),
-			{ injector },
-		);
-
-		appRef.tick();
-		expect(log).toEqual(['cur: 0, prevIn: undefined']);
-
-		count.set(1);
-		appRef.tick();
-		expect(log).toEqual(['cur: 0, prevIn: undefined', 'cur: 1, prevIn: 0']);
-	});
-
 	it('should support cleanup function', () => {
 		const count = signal(0);
 		const log: string[] = [];
 
 		const effectRef = effect(
-			on(count, (c, _, __, onCleanup) => {
+			on(count, (c, onCleanup) => {
 				log.push(`run: ${c}`);
 				onCleanup(() => {
 					log.push(`cleanup: ${c}`);
@@ -155,31 +138,6 @@ describe(on.name, () => {
 
 		effectRef.destroy();
 		expect(log).toEqual(['run: 0', 'cleanup: 0', 'run: 1', 'cleanup: 1']);
-	});
-
-	it('should pass previous value correctly', () => {
-		const count = signal(1);
-		const log: number[] = [];
-
-		effect(
-			on(count, (c, _, prevValue) => {
-				const result = c + ((prevValue as number) || 0);
-				log.push(result);
-				return result;
-			}),
-			{ injector },
-		);
-
-		appRef.tick();
-		expect(log).toEqual([1]); // 1 + 0 (undefined prevValue treated as 0)
-
-		count.set(2);
-		appRef.tick();
-		expect(log).toEqual([1, 3]); // 2 + 1 (prevValue was 1)
-
-		count.set(3);
-		appRef.tick();
-		expect(log).toEqual([1, 3, 6]); // 3 + 3 (prevValue was 3)
 	});
 
 	it('should work with computed signals', () => {
@@ -218,14 +176,99 @@ describe(on.name, () => {
 		);
 
 		appRef.tick();
-		expect(log).toEqual([]); // Should not run on initial tick due to defer
+		expect(log).toEqual([]);
 
 		count.set(1);
 		appRef.tick();
-		expect(log).toEqual([1]); // Should run now because count changed
+		expect(log).toEqual([1]);
 
 		count.set(1);
 		appRef.tick();
-		expect(log).toEqual([1]); // Should NOT run again because count did not change
+		expect(log).toEqual([1]);
+	});
+
+	it('should work seamlessly with computed', () => {
+		const count = signal(1);
+
+		const doubled = computed(on(count, (val) => val * 2));
+
+		expect(doubled()).toEqual(2);
+
+		count.set(3);
+		expect(doubled()).toEqual(6);
+	});
+
+	it('should work seamlessly with afterRenderEffect', () => {
+		const count = signal(0);
+		const log: number[] = [];
+
+		afterRenderEffect(
+			on(count, (c) => {
+				log.push(c);
+			}),
+			{ injector },
+		);
+
+		appRef.tick();
+		expect(log).toEqual([0]);
+
+		count.set(1);
+		appRef.tick();
+		expect(log).toEqual([0, 1]);
+	});
+
+	it('should work with afterRenderEffect phases', () => {
+		const count = signal(0);
+		const log: string[] = [];
+
+		const earlyRead = on(count, (c) => {
+			log.push(`earlyRead:${c}`);
+			return c;
+		});
+
+		const write = on(count, (c) => {
+			log.push(`write:${c}`);
+			return c;
+		});
+
+		const mixedReadWrite = on(count, (c) => {
+			log.push(`mixedReadWrite:${c}`);
+			return c;
+		});
+
+		const read = on(count, (c) => {
+			log.push(`read:${c}`);
+		});
+
+		afterRenderEffect(
+			{
+				earlyRead: () => earlyRead(),
+				write: () => write(),
+				mixedReadWrite: () => mixedReadWrite(),
+				read: () => read(),
+			},
+			{ injector },
+		);
+
+		appRef.tick();
+		expect(log).toEqual([
+			'earlyRead:0',
+			'write:0',
+			'mixedReadWrite:0',
+			'read:0',
+		]);
+
+		count.set(1);
+		appRef.tick();
+		expect(log).toEqual([
+			'earlyRead:0',
+			'write:0',
+			'mixedReadWrite:0',
+			'read:0',
+			'earlyRead:1',
+			'write:1',
+			'mixedReadWrite:1',
+			'read:1',
+		]);
 	});
 });
