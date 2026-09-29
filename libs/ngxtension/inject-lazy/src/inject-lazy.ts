@@ -11,6 +11,9 @@ import { InjectLazyImpl } from './inject-lazy-impl';
  * @param injector The injector to use to load the service. If not provided, the current injector is used.
  * @returns An observable of the service.
  *
+ * @deprecated Use Angular's built-in `injectAsync` instead, available from Angular v22.
+ * See https://github.com/angular/angular/pull/68248
+ *
  * @example
  * ```ts
  * const dataService$ = injectLazy(() => import('./data-service').then((m) => m.MyService));
