@@ -209,7 +209,6 @@ export function signalSlice<
 				destroyRef,
 				subject,
 				subs,
-				sharedObservable,
 			);
 		}
 	}
@@ -293,7 +292,6 @@ function addReducerProperties(
 	destroyRef: DestroyRef,
 	subject: Subject<unknown>,
 	subs: Subject<unknown>[],
-	observableFromActionSource?: Observable<any>,
 ) {
 	const version = createNotifier();
 	Object.defineProperties(readonlyState, {
@@ -317,12 +315,6 @@ function addReducerProperties(
 							},
 						});
 					});
-				}
-
-				if (observableFromActionSource) {
-					observableFromActionSource
-						.pipe(takeUntilDestroyed(destroyRef))
-						.subscribe();
 				}
 
 				return new Promise((res) => {
