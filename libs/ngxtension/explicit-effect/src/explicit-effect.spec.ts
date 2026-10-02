@@ -1,8 +1,8 @@
 import { Component, computed, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { explicitEffect } from './explicit-effect';
+import { effect } from 'ngxtension/effect';
 
-describe(explicitEffect.name, () => {
+describe('explicitEffect behavior with effect', () => {
 	let log: string[] = [];
 	let cleanupLog: string[] = [];
 
@@ -20,9 +20,9 @@ describe(explicitEffect.name, () => {
 		state = signal('idle');
 		foobar = signal<'foo' | 'bar'>('foo');
 
-		eff = explicitEffect(
+		eff = effect(
 			[this.count, this.state],
-			([count, state], cleanUpFn) => {
+			([count, state], _previousValues, cleanUpFn) => {
 				this.foobar();
 				log.push(`count updated ${count}, ${state}`);
 
@@ -43,7 +43,7 @@ describe(explicitEffect.name, () => {
 		expect(log.length).toBe(2);
 	});
 
-	it('should not run when unresgistered dep', () => {
+	it('should not run when unregistered dep', () => {
 		const fixture = TestBed.createComponent(Foo);
 		fixture.detectChanges();
 		expect(log.length).toBe(1);
@@ -76,7 +76,7 @@ describe(explicitEffect.name, () => {
 		const result = () => count() + doubleCount() + foobar();
 
 		TestBed.runInInjectionContext(() => {
-			explicitEffect(
+			effect(
 				[count, state, doubleCount, result],
 				([count, state, doubleCount, result]) => {
 					log.push(
@@ -100,7 +100,7 @@ describe(explicitEffect.name, () => {
 		const state = signal('idle');
 
 		TestBed.runInInjectionContext(() => {
-			explicitEffect([count, state], ([count, state]) => {
+			effect([count, state], ([count, state]) => {
 				const _count: number = count;
 				const _state: string = state;
 				console.log(_count, _state);
@@ -114,12 +114,12 @@ describe(explicitEffect.name, () => {
 		const state = signal('idle');
 
 		TestBed.runInInjectionContext(() => {
-			explicitEffect(
+			effect(
 				[count, state],
+				{ defer: true },
 				([count, state]) => {
 					log.push(`count updated ${count}, ${state}`);
 				},
-				{ defer: true },
 			);
 			expect(log.length).toBe(0);
 			TestBed.flushEffects();
