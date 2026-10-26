@@ -90,6 +90,18 @@ export function connect<
 	injectorOrDestroyRef?: Injector | DestroyRef,
 	useUntracked?: boolean,
 ): Subscription;
+/**
+ * Explicit Injector/DestroyRef overload so a passed injector is not matched as a
+ * {@link Reducer} when the observable value is not assignable to the signal.
+ *
+ * @see https://github.com/ngxtension/ngxtension-platform/issues/572
+ */
+export function connect<TSignalValue, TObservableValue>(
+	signal: WritableSignal<TSignalValue>,
+	observable: Observable<TObservableValue & PartialOrValue<TSignalValue>>,
+	injectorOrDestroyRef: Injector | DestroyRef,
+	useUntracked?: boolean,
+): Subscription;
 export function connect<TSignalValue, TObservableValue>(
 	signal: WritableSignal<TSignalValue>,
 	observable: Observable<TObservableValue>,
