@@ -1,6 +1,7 @@
 ---
 title: injectTextSelection
 description: ngxtension/inject-text-selection
+badge: stable
 entryPoint: ngxtension/inject-text-selection
 contributors: ['fiorelozere']
 ---

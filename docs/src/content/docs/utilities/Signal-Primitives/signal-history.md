@@ -1,6 +1,7 @@
 ---
 title: signalHistory
 description: ngxtension/signal-history
+badge: stable
 entryPoint: ngxtension/signal-history
 contributors: ['enea-jahollari']
 ---

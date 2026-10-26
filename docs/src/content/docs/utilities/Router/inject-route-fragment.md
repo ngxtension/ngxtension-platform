@@ -1,6 +1,7 @@
 ---
 title: injectRouteFragment
 description: ngxtension/inject-route-fragment
+badge: stable
 entryPoint: ngxtension/inject-route-fragment
 contributors: ['krzysztof-kachniarz']
 ---

@@ -1,6 +1,7 @@
 ---
 title: mergeHttpContext
 description: ngxtension/merge-http-context
+badge: stable
 entryPoint: merge-http-context
 contributors: ['krzysztof-kachniarz']
 ---
