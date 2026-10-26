@@ -47,6 +47,12 @@ export type LocalStorageOptionsBase<T> = {
 	 * @param value
 	 */
 	parse?: (value: string) => T;
+	/**
+	 * Validate the parsed value read from localStorage.
+	 * When it returns false, the signal falls back to `defaultValue`.
+	 * @param value
+	 */
+	validate?: (value: unknown) => value is T;
 
 	/**
 	 * Injector for the Injection Context
@@ -170,6 +176,7 @@ const internalInjectLocalStorage = <T, R = T>(
 		? options.stringify
 		: JSON.stringify;
 	const parse = isFunction(options.parse) ? options.parse : parseJSON;
+	const validate = isFunction(options.validate) ? options.validate : () => true;
 	const storageSync = options.storageSync ?? true;
 	const clearOnKeyChange =
 		'clearOnKeyChange' in options ? (options.clearOnKeyChange ?? true) : true;
@@ -200,19 +207,28 @@ const internalInjectLocalStorage = <T, R = T>(
 			},
 		);
 
-		const getInitialValue = (key: string) => {
-			const initialStoredValue = goodTry(
-				() => localStorage.getItem(key),
-				() => null,
-			);
+		const parseStoredValue = (storedValue: string | null): R => {
+			if (storedValue === null) {
+				return getDefaultValue(defaultValue);
+			}
 
-			return initialStoredValue
-				? goodTry(
-						() => parse(initialStoredValue) as R,
-						() => getDefaultValue(defaultValue),
-					)
-				: getDefaultValue(defaultValue);
+			return goodTry(
+				() => {
+					const value = parse(storedValue);
+					// invalid values (e.g. tampered storage) fall back to defaultValue
+					return validate(value) ? (value as R) : getDefaultValue(defaultValue);
+				},
+				() => getDefaultValue(defaultValue),
+			);
 		};
+
+		const getInitialValue = (key: string) =>
+			parseStoredValue(
+				goodTry(
+					() => localStorage.getItem(key),
+					() => null,
+				),
+			);
 
 		const internalSignal = linkedSignal<R>(() => {
 			const key = computedKey();
@@ -285,18 +301,10 @@ const internalInjectLocalStorage = <T, R = T>(
 				const key = untracked(computedKey);
 
 				if (event.storageArea === localStorage && event.key === key) {
-					const newValue = goodTry(
-						() =>
-							event.newValue !== null
-								? (parse(event.newValue) as R)
-								: getDefaultValue(defaultValue),
-						() => getDefaultValue(defaultValue),
-					);
-
 					state.set({
 						kind: Kind.COMPUTED,
 						key,
-						value: newValue,
+						value: parseStoredValue(event.newValue),
 					});
 				}
 			};

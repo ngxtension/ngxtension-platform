@@ -30,6 +30,7 @@ Options to configure the behavior of the local storage signal.
   - `storageSync`: If set to `true`, synchronizes data across browser tabs. Defaults to `true`.
   - `stringify`: A custom function to serialize stored data. Defaults to `JSON.stringify`.
   - `parse`: A custom function to deserialize stored data. Defaults to a function handling JSON parsing with support for `undefined`.
+  - `validate`: An optional type guard for the parsed value, e.g. `(v): v is string[] => Array.isArray(v)`. Protects against values tampered with in the browser storage: when it returns `false`, the signal falls back to `defaultValue`. The stored value is replaced on the next `set` or `update`.
   - `injector`: Optional custom injector for dependency resolution.
   - `clearOnKeyChange`: If set to true, removes the value stored under the previous key from localStorage when the computed key changes. Applies only when a key-computation function is provided. Defaults to `true`.
 
