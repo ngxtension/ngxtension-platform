@@ -67,3 +67,6 @@ jobs:
         # TODO: (chau) local-plugin test is faulty right now with Jest and ESM. Will fix later
       - run: pnpm nx affected --target=test --parallel=3 --exclude=local-plugin
       - run: pnpm nx affected --target=build --parallel=3 --exclude=docs
+
+      - run: pnpm exec nx fix-ci
+        if: always()
