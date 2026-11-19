@@ -16,3 +16,6 @@ jobs:
           script: |
             const script = require('./.github/scripts/merge-all-contributors.js')
             await script({ github, context });
+
+      - run: pnpm exec nx fix-ci
+        if: always()

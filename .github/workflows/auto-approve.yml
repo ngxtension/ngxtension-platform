@@ -12,3 +12,6 @@ jobs:
       - uses: hmarr/auto-approve-action@v3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: pnpm exec nx fix-ci
+        if: always()
