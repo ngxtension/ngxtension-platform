@@ -9,9 +9,9 @@ class MockResizeObserver {
 		MockResizeObserver.instances.push(this);
 	}
 
-	observe() {}
-	unobserve() {}
-	disconnect() {}
+	observe = jest.fn();
+	unobserve = jest.fn();
+	disconnect = jest.fn();
 
 	trigger() {
 		this.callback([], this as unknown as ResizeObserver);
