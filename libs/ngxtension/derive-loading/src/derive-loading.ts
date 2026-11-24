@@ -1,16 +1,21 @@
 import {
 	combineLatest,
+	concat,
 	debounce,
 	distinctUntilChanged,
 	map,
+	materialize,
 	merge,
+	mergeMap,
 	MonoTypeOperatorFunction,
 	Observable,
+	of,
 	OperatorFunction,
 	ReplaySubject,
 	share,
 	startWith,
 	takeUntil,
+	throwError,
 	timer,
 } from 'rxjs';
 
@@ -37,6 +42,9 @@ export type DeriveLoadingOptions = {
  * If the async operation takes longer than threshold + loadingtime, "false" will be emitted after the operation
  * has finished.
  *
+ * The operation is finished when the source first emits, or when it completes or errors without emitting.
+ * If the source errors, "false" is emitted first and the error is then re-thrown.
+ *
  * @param options - The options to configure the loading state derivation.
  * @returns A observable that emits the loading flag.
  *
@@ -58,13 +66,24 @@ export function deriveLoading<T>(
 			}),
 		);
 
+		/* Emits when the source emits, completes or errors, so the loading
+		 * flag also goes back to false for a source that never emits. */
+		const settled$ = result$.pipe(materialize());
+
 		return merge(
 			timer(threshold).pipe(
 				map(() => true),
-				takeUntil(result$),
+				takeUntil(settled$),
 			),
-			combineLatest([result$, timer(threshold + loadingTime)]).pipe(
-				map(() => false),
+			combineLatest([settled$, timer(threshold + loadingTime)]).pipe(
+				mergeMap(([notification]) =>
+					notification.kind === 'E'
+						? concat(
+								of(false),
+								throwError(() => notification.error),
+							)
+						: of(false),
+				),
 			),
 		).pipe(startWith(false), distinctUntilChanged(), handleSyncValue());
 	};

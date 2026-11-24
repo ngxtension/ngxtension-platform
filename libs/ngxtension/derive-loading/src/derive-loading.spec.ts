@@ -54,5 +54,83 @@ describe(deriveLoading.name, () => {
 				expectObservable(source$).toBe(expected, { f: false, t: true });
 			});
 		});
+
+		describe('when the source completes without emitting', () => {
+			it('should emit only false when it completes synchronously', () => {
+				testScheduler.run(({ cold, expectObservable }) => {
+					const source$ = cold('|').pipe(
+						deriveLoading({ threshold: 1, loadingTime: 2 }),
+					);
+					expectObservable(source$).toBe('f--|', { f: false });
+				});
+			});
+
+			it('should emit only false when it completes before threshold', () => {
+				testScheduler.run(({ cold, expectObservable }) => {
+					const source$ = cold('-|').pipe(
+						deriveLoading({ threshold: 2, loadingTime: 2 }),
+					);
+					expectObservable(source$).toBe('f---|', { f: false });
+				});
+			});
+
+			it('should emit false-true-false when it completes after threshold', () => {
+				testScheduler.run(({ cold, expectObservable }) => {
+					const source$ = cold('--|').pipe(
+						deriveLoading({ threshold: 1, loadingTime: 2 }),
+					);
+					expectObservable(source$).toBe('ft-(f|)', { f: false, t: true });
+				});
+			});
+
+			it('should emit false-true-false when it completes after threshold + loadingTime', () => {
+				testScheduler.run(({ cold, expectObservable }) => {
+					const source$ = cold('----|').pipe(
+						deriveLoading({ threshold: 1, loadingTime: 2 }),
+					);
+					expectObservable(source$).toBe('ft--(f|)', {
+						f: false,
+						t: true,
+					});
+				});
+			});
+		});
+
+		describe('when the source errors', () => {
+			it('should not emit true when it errors before threshold', () => {
+				testScheduler.run(({ cold, expectObservable }) => {
+					const source$ = cold('-#', {}, 'boom').pipe(
+						deriveLoading({ threshold: 2, loadingTime: 2 }),
+					);
+					expectObservable(source$).toBe('f---#', { f: false }, 'boom');
+				});
+			});
+
+			it('should emit false before the error when it errors after threshold', () => {
+				testScheduler.run(({ cold, expectObservable }) => {
+					const source$ = cold('--#', {}, 'boom').pipe(
+						deriveLoading({ threshold: 1, loadingTime: 2 }),
+					);
+					expectObservable(source$).toBe(
+						'ft-(f#)',
+						{ f: false, t: true },
+						'boom',
+					);
+				});
+			});
+
+			it('should emit false before the error when it errors after threshold + loadingTime', () => {
+				testScheduler.run(({ cold, expectObservable }) => {
+					const source$ = cold('----#', {}, 'boom').pipe(
+						deriveLoading({ threshold: 1, loadingTime: 2 }),
+					);
+					expectObservable(source$).toBe(
+						'ft--(f#)',
+						{ f: false, t: true },
+						'boom',
+					);
+				});
+			});
+		});
 	});
 });
