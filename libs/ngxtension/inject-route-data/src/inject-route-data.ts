@@ -127,6 +127,66 @@ export function injectRouteData<T>(
 }
 
 /**
+ * Global variant of `injectRouteData`: retrieves all route data merged along the leaf route hierarchy.
+ *
+ * @returns A `Signal` that emits the merged data object.
+ */
+function injectRouteDataGlobal(): Signal<Data>;
+
+/**
+ * Global variant of `injectRouteData`: retrieves one value from the route data merged along the leaf route hierarchy.
+ *
+ * @template T - The expected type of the read value.
+ * @param {string} key - The name of the route data to retrieve.
+ * @param {RouteDataOptions} options - Optional configuration options, like `defaultValue` or `outlet`.
+ * @returns {Signal} A `Signal` that emits the value of the specified route data, or `null` if it's not present.
+ */
+function injectRouteDataGlobal<T>(
+	key: keyof Data,
+	options?: RouteDataOptions<T>,
+): Signal<T | null>;
+
+/**
+ * Global variant of `injectRouteData`: applies a transform function to the route data merged along the leaf route hierarchy.
+ *
+ * @template ReadT - The expected type of the read value.
+ * @param {RouteDataTransformFn<ReadT>} fn - A transform function that takes the merged route data object and returns the desired value.
+ * @param {RouteDataOptions} options - Optional configuration options, like `outlet`.
+ * @returns {Signal<ReadT>} A `Signal` that emits the transformed value.
+ */
+function injectRouteDataGlobal<ReadT>(
+	fn: RouteDataTransformFn<ReadT>,
+	options?: RouteDataOptions<ReadT>,
+): Signal<ReadT>;
+function injectRouteDataGlobal<T>(
+	keyOrTransform?: keyof Data | RouteDataTransformFn<T>,
+	options: RouteDataOptions<T> = {},
+): Signal<T | Data | null> {
+	return assertInjector(injectRouteData.global, options?.injector, () => {
+		const leafRoute = injectLeafActivatedRoute(options.outlet as string);
+		const leafRoute$ = toObservable(leafRoute);
+
+		const mergedData$ = leafRoute$.pipe(
+			switchMap((route) => (route ? route.data : of({}))),
+			map(() => {
+				const route = leafRoute();
+				return route ? mergeRouteData(route) : {};
+			}),
+		);
+
+		const initialRoute = leafRoute();
+		const initialData = initialRoute ? mergeRouteData(initialRoute) : {};
+
+		return injectRouteDataCore(
+			mergedData$,
+			initialData,
+			keyOrTransform,
+			options,
+		);
+	});
+}
+
+/**
  * Global variant of `injectRouteData` that retrieves route data from the leaf (deepest) `ActivatedRoute`
  * in the router state tree, merging data from the entire route hierarchy.
  *
@@ -156,30 +216,4 @@ export function injectRouteData<T>(
  * // Get all data from a named outlet using a transform
  * const sidebarData = injectRouteData.global((data) => data, { outlet: 'sidebar' });
  */
-injectRouteData.global = function <T>(
-	keyOrTransform?: keyof Data | RouteDataTransformFn<T>,
-	options: RouteDataOptions<T> = {},
-): Signal<T | Data | null> {
-	return assertInjector(injectRouteData.global, options?.injector, () => {
-		const leafRoute = injectLeafActivatedRoute(options.outlet as string);
-		const leafRoute$ = toObservable(leafRoute);
-
-		const mergedData$ = leafRoute$.pipe(
-			switchMap((route) => (route ? route.data : of({}))),
-			map(() => {
-				const route = leafRoute();
-				return route ? mergeRouteData(route) : {};
-			}),
-		);
-
-		const initialRoute = leafRoute();
-		const initialData = initialRoute ? mergeRouteData(initialRoute) : {};
-
-		return injectRouteDataCore(
-			mergedData$,
-			initialData,
-			keyOrTransform,
-			options,
-		);
-	});
-};
+injectRouteData.global = injectRouteDataGlobal;

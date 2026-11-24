@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 
 import {
 	ActivatedRouteSnapshot,
+	Data,
 	provideRouter,
 	Router,
 	RouterOutlet,
@@ -612,8 +613,9 @@ export class ComplexDataComponent {
 	imports: [RouterOutlet],
 })
 export class Level1DataComponent {
-	allData = injectRouteData.global();
-	level = injectRouteData.global('level');
+	// same return types as the non-global overloads
+	allData: Signal<Data> = injectRouteData.global();
+	level: Signal<number | null> = injectRouteData.global<number>('level');
 }
 
 @Component({
@@ -713,7 +715,9 @@ export class ReactiveDataChildComponent {}
 	imports: [RouterOutlet],
 })
 export class ComplexTransformParentComponent {
-	dataCount = injectRouteData.global((data) => Object.keys(data).length);
+	dataCount: Signal<number> = injectRouteData.global(
+		(data) => Object.keys(data).length,
+	);
 }
 
 @Component({
@@ -737,7 +741,10 @@ export class SidebarRoute2Component {}
 	imports: [RouterOutlet],
 })
 export class ShellWithSidebarDataComponent {
-	sidebarTitle = injectRouteData.global('title', { outlet: 'sidebar' });
+	sidebarTitle: Signal<string | null> = injectRouteData.global<string>(
+		'title',
+		{ outlet: 'sidebar' },
+	);
 	sidebarSection = injectRouteData.global('section', { outlet: 'sidebar' });
 	sidebarAllData = injectRouteData.global((data) => data, {
 		outlet: 'sidebar',
