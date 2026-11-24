@@ -39,13 +39,63 @@ export function injectRouteFragment(): Signal<string | null>;
 
 /**
  * The `injectRouteFragment` function allows you to access and transform url fragment from the current route.
+ * The `parse` function is called for every fragment, `null` included, unless a `defaultValue` replaces `null`.
  *
- * @param {InjectRouteFragmentOptions} options - inject options like transform fn.
+ * @param {InjectRouteFragmentOptions} options - inject options with a `parse` fn and an optional `defaultValue`.
+ * @returns {Signal} A `Signal` that emits the parsed value of url fragment.
+ */
+export function injectRouteFragment<T>(
+	options: InjectRouteFragmentOptions<T> &
+		Required<ParseOptions<T, string | null>>,
+): Signal<T>;
+
+/**
+ * The `injectRouteFragment` function allows you to access and transform url fragment from the current route.
+ *
+ * @deprecated Use the `parse` option instead of `transform`.
+ * @param {InjectRouteFragmentOptions} options - inject options with a `transform` fn.
  * @returns {Signal} A `Signal` that emits the transformed value of url fragment.
  */
 export function injectRouteFragment<T>(
-	options: InjectRouteFragmentOptions<T>,
+	options: InjectRouteFragmentOptions<T> & {
+		transform: (v: string | null) => T;
+	},
 ): Signal<T>;
+
+/**
+ * The `injectRouteFragment` function allows you to access url fragment from the current route.
+ * Without `parse`, the fragment string is returned as-is and `defaultValue` is used only when there is no fragment.
+ *
+ * @param {InjectRouteFragmentOptions} options - inject options with a `defaultValue`.
+ * @returns {Signal} A `Signal` that emits the url fragment, or `defaultValue` when there is none.
+ */
+export function injectRouteFragment<T>(
+	options: InjectorOptions & { defaultValue: T },
+): Signal<string | T>;
+
+/**
+ * The `injectRouteFragment` function allows you to access url fragment from the current route.
+ *
+ * @param {InjectorOptions} options - inject options like a custom injector.
+ * @returns {Signal} A `Signal` that emits the url fragment, or `null` when there is none.
+ */
+export function injectRouteFragment(
+	options: InjectorOptions & {
+		parse?: undefined;
+		transform?: undefined;
+		defaultValue?: undefined;
+	},
+): Signal<string | null>;
+
+/**
+ * The `injectRouteFragment` function allows you to access and transform url fragment from the current route.
+ *
+ * @param {InjectRouteFragmentOptions} options - inject options like parse fn and default value.
+ * @returns {Signal} A `Signal` that emits the url fragment, its parsed value or the default value.
+ */
+export function injectRouteFragment<T>(
+	options: InjectRouteFragmentOptions<T>,
+): Signal<T | string | null>;
 
 export function injectRouteFragment<T>(
 	options?: InjectRouteFragmentOptions<T>,

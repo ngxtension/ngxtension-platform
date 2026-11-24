@@ -86,6 +86,20 @@ describe(injectRouteFragment.name, () => {
 		expect(instance.zeroFragmentDefaultValue()).toEqual(0);
 	});
 
+	it('returns the fragment string when present even if the default value is of another type', async () => {
+		const instance = await harness.navigateByUrl('test', TestComponent);
+
+		expect(instance.zeroFragmentDefaultValue()).toEqual(0);
+
+		await harness.navigateByUrl('test#sample-fragment', TestComponent);
+
+		// without `parse`, the fragment is not converted to the default value's type
+		expect(instance.zeroFragmentDefaultValue()).toEqual('sample-fragment');
+		expect(instance.inferredFragmentFromCustomInjector?.()).toEqual(
+			'sample-fragment',
+		);
+	});
+
 	it('returns right signals and values for different parsers', async () => {
 		const instance = await harness.navigateByUrl('test', TestComponent);
 
@@ -135,17 +149,27 @@ export class TestComponent implements OnInit {
 	fragmentDefaultValue = injectRouteFragment({
 		defaultValue: 'default-fragment',
 	});
-	zeroFragmentDefaultValue = injectRouteFragment({ defaultValue: 0 });
+	zeroFragmentDefaultValue: Signal<string | number> = injectRouteFragment({
+		defaultValue: 0,
+	});
+	// @ts-expect-error a present fragment is still a string, so this is not Signal<number>
+	zeroFragmentAsNumber: Signal<number> = injectRouteFragment({
+		defaultValue: 0,
+	});
 	isFragmentAvailable = injectRouteFragment({
 		parse: (fragment) => !!fragment,
 	});
 	fragmentFromCustomInjector: Signal<string | null> | null = null;
 	fragmentDefaultValueFromCustomInjector: Signal<string | null> | null = null;
+	inferredFragmentFromCustomInjector: Signal<string | null> | null = null;
 
 	ngOnInit(): void {
 		this.fragmentFromCustomInjector = injectRouteFragment({
 			injector: this._injector,
 		});
+		// inferred without a contextual type: Signal<string | null>, not Signal<unknown>
+		const inferred = injectRouteFragment({ injector: this._injector });
+		this.inferredFragmentFromCustomInjector = inferred;
 		this.fragmentDefaultValueFromCustomInjector = injectRouteFragment({
 			defaultValue: 'default-fragment',
 			injector: this._injector,
