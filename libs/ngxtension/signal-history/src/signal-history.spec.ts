@@ -56,7 +56,7 @@ describe(signalHistory.name, () => {
 		);
 	});
 
-	fit('should work for numbers', () => {
+	it('should work for numbers', () => {
 		const fixture = TestBed.createComponent(Foo);
 		fixture.detectChanges();
 
