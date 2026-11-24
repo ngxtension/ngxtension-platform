@@ -41,7 +41,35 @@ export default defineConfig({
 					href: 'https://twitter.com/Nartc1410',
 				},
 			],
-			customCss: ['./src/styles/custom.css'],
+			customCss: [
+				'@fontsource-variable/instrument-sans/wdth.css',
+				'@fontsource-variable/jetbrains-mono/wght.css',
+				'./src/styles/custom.css',
+			],
+			expressiveCode: {
+				themes: ['github-dark-default', 'github-light-default'],
+				styleOverrides: {
+					borderRadius: '0.75rem',
+					borderColor: 'var(--nx-line)',
+					codeBackground: 'var(--nx-code-bg)',
+					codeFontFamily: 'var(--__sl-font-mono)',
+					codeFontSize: '0.875rem',
+					codeLineHeight: '1.7',
+					uiFontFamily: 'var(--__sl-font)',
+					frames: {
+						shadowColor: 'transparent',
+						editorTabBarBackground: 'var(--nx-surface)',
+						editorActiveTabBackground: 'var(--nx-code-bg)',
+						editorActiveTabIndicatorTopColor: 'transparent',
+						editorActiveTabIndicatorBottomColor: 'var(--sl-color-accent)',
+						editorTabBarBorderBottomColor: 'var(--nx-line)',
+						terminalTitlebarBackground: 'var(--nx-surface)',
+						terminalBackground: 'var(--nx-code-bg)',
+						terminalTitlebarBorderBottomColor: 'var(--nx-line)',
+						inlineButtonBorder: 'var(--nx-line-strong)',
+					},
+				},
+			},
 			lastUpdated: true,
 			sidebar: [
 				{
@@ -125,6 +153,7 @@ export default defineConfig({
 			],
 			components: {
 				PageTitle: './src/components/PageTitle.astro',
+				Hero: './src/components/Hero.astro',
 				MarkdownContent: './src/components/Content.astro',
 				Sidebar: './src/components/Sidebar.astro',
 				TableOfContents: './src/components/TableOfContents.astro',

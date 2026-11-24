@@ -1,25 +1,6 @@
 ---
 import Default from '@astrojs/starlight/components/MarkdownContent.astro';
-import type { Props } from '@astrojs/starlight';
-import { getEntry } from 'astro:content';
-import Contributors from './Contributors.astro';
-
-const contributorsData = Astro.locals.starlightRoute?.entry?.data?.contributors;
-const contributors = contributorsData
-	? await Promise.all(
-			contributorsData.map((contributor) => getEntry(contributor)),
-		)
-	: null;
+// Contributors now render in the page header (PageTitle.astro).
 ---
 
-{contributors && <Contributors {contributors} />}
-
 <Default {...Astro.props}><slot /></Default>
-
-<style>
-	.contributors {
-		margin-top: -1rem;
-		font-size: var(--sl-text-xs);
-		color: var(--sl-color-gray-3);
-	}
-</style>
