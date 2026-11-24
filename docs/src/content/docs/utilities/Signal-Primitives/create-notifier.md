@@ -1,120 +1,123 @@
 ---
 title: createNotifier
-description: ngxtension/create-notifier
+description: Creates a signal you can trigger by hand to re-run effects and computeds, like a refresh button for reactive code.
 entryPoint: ngxtension/create-notifier
 badge: experimental
 contributors: ['josh-morony', 'endlacer']
 ---
 
-## Features
+`createNotifier` gives you a signal with no meaningful value that you trigger by hand. Read it in an `effect` or `computed` to make that code re-run whenever you call `notify()`. It is useful when there is no natural signal to depend on, for example a "refresh" button, a mutated `Map`, or a lifecycle event.
 
-`createNotifier` provides a way to manually trigger signal re-computations by referencing the created notifier signal. It can also automatically react to changes in other signals through dependency tracking.
+## Usage
 
-### Common Use Cases
-
-- Manually triggering a "refresh" and reacting to it
-- Mutating a `Map` and having a way to react to that map changing
-- Triggering a re-computation on some kind of event/life cycle hook
-- Combining manual notifications with automatic dependency tracking
-
-## Basic Usage
-
-Create a simple notifier:
-
-```ts
+```angular-ts
+import { Component, effect } from '@angular/core';
 import { createNotifier } from 'ngxtension/create-notifier';
-refreshNotifier = createNotifier();
+
+@Component({
+	selector: 'app-dashboard',
+	template: `<button (click)="refresh.notify()">Refresh</button>`,
+})
+export class Dashboard {
+	readonly refresh = createNotifier();
+
+	constructor() {
+		effect(() => {
+			this.refresh.listen(); // track the notifier
+			this.loadData();
+		});
+	}
+
+	loadData() {
+		// runs once on init and again every time refresh.notify() is called
+	}
+}
 ```
 
-Trigger the signal update:
+`listen` is a read-only signal holding a counter. It starts at `0` and goes up by one on every `notify()`.
 
-```ts
-refreshNotifier.notify();
-```
+### Skip the initial run
 
-React to notifications in `computed` or `effect`:
+An `effect` always runs once when it is created. Because the counter starts at `0`, you can skip that first run with a truthy check:
 
 ```ts
 effect(() => {
-	refreshNotifier.listen();
-
-	// whatever code you want to run whenever
-	// refreshNotifier.notify() is called
-});
-```
-
-### Avoiding Initial Effect Execution
-
-An `effect` runs once initially before `notify()` is explicitly called. Since the internal counter begins at `0`, you can skip the initial run:
-
-```ts
-effect(() => {
-	if (refreshNotifier.listen()) {
-		// Will NOT run on init
-		// whatever code you want to run whenever
-		// refreshNotifier.notify() is called
+	if (this.refresh.listen()) {
+		// runs only after notify() has been called
 	}
 });
 ```
 
-The `if` condition initially fails because `refreshNotifier.listen()` returns `0`, but passes once `notify()` has been called.
+### Use it in a computed
 
-## Dependency Tracking
-
-You can configure a notifier to automatically increment whenever specified signals change. This combines manual notifications with reactive dependency tracking.
-
-### Basic Dependency Tracking
+Anything that reads `listen()` re-evaluates on `notify()`. This lets a `computed` pick up changes to a plain mutable object:
 
 ```ts
-userId = signal(1);
+readonly cache = new Map<string, number>();
+readonly cacheChanged = createNotifier();
 
-userNotifier = createNotifier({ deps: [userId] });
-```
-
-Now `userNotifier.listen()` will increment both when `notify()` is called **and** when `userId` changes:
-
-```ts
-effect(() => {
-	console.log('User notifier changed:', userNotifier.listen());
-	// Runs when userId changes OR when notify() is called
+readonly total = computed(() => {
+	this.cacheChanged.listen();
+	return [...this.cache.values()].reduce((sum, n) => sum + n, 0);
 });
 
-// Both of these will trigger the effect:
-userId.set(2); // Triggers via dependency
-userNotifier.notify(); // Triggers manually
+add(key: string, value: number) {
+	this.cache.set(key, value);
+	this.cacheChanged.notify();
+}
 ```
 
-### Multiple Dependencies
+:::tip
+For reactive `Map` and `Set` collections, use [`SignalMap`](/utilities/signal-primitives/signal-map/) and [`SignalSet`](/utilities/signal-primitives/signal-set/) instead. They are built on `createNotifier`.
+:::
 
-Track multiple signals simultaneously:
+## Notify when other signals change
+
+Pass `deps` to also increment the counter whenever any of those signals change. This combines manual refreshes with automatic dependency tracking.
 
 ```ts
-userId = signal(1);
-tenantId = signal('tenant-a');
+readonly userId = signal(1);
+readonly tenantId = signal('tenant-a');
 
-compositeNotifier = createNotifier({
-	deps: [userId, tenantId],
-});
+readonly reload = createNotifier({ deps: [this.userId, this.tenantId] });
+
+constructor() {
+	effect(() => {
+		this.reload.listen();
+		// runs when userId or tenantId changes, or when reload.notify() is called
+	});
+}
 ```
 
-The notifier increments whenever **any** of the dependencies change.
-
-### Controlling Initial Emission
-
-By default, notifiers with dependencies start at `1` (emitting immediately). Control this with `depsEmitInitially`:
+With `deps`, the counter starts at `1`, so the truthy check above does **not** skip the first run. Set `depsEmitInitially: false` to start at `0` instead:
 
 ```ts
-// Emit immediately (default behavior)
-notifier = createNotifier({
-	deps: [someSignal],
-	depsEmitInitially: true, // starts at 1 (default)
-});
-
-// Don't emit initially
-notifier = createNotifier({
-	deps: [someSignal],
-	depsEmitInitially: false, // starts at 0
+readonly reload = createNotifier({
+	deps: [this.userId],
+	depsEmitInitially: false, // starts at 0, like a notifier without deps
 });
 ```
 
-When `depsEmitInitially: false`, the notifier starts at `0` like a dependency-free notifier, even though it tracks signals. The first increment happens only when dependencies change or `notify()` is called.
+## API
+
+```ts
+function createNotifier(options?: {
+	deps?: Signal<any>[];
+	depsEmitInitially?: boolean;
+}): {
+	notify: () => void;
+	listen: Signal<number>;
+};
+```
+
+| Option              | Type            | Default | Description                                                                                  |
+| ------------------- | --------------- | ------- | -------------------------------------------------------------------------------------------- |
+| `deps`              | `Signal<any>[]` | `[]`    | Signals that also increment the counter when they change.                                    |
+| `depsEmitInitially` | `boolean`       | `true`  | Only used with `deps`. When `true` the counter starts at `1`; when `false` it starts at `0`. |
+
+| Returned | Type             | Description                                                       |
+| -------- | ---------------- | ----------------------------------------------------------------- |
+| `notify` | `() => void`     | Increments the counter, notifying everything that reads `listen`. |
+| `listen` | `Signal<number>` | Read-only counter signal. Read it to subscribe to notifications.  |
+
+`createNotifier` doesn't need an injection context, so you can call it anywhere.

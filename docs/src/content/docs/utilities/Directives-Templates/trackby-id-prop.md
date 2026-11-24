@@ -6,65 +6,94 @@ badge: stable
 contributors: ['daniele-morosinotto']
 ---
 
-## Import
+`TrackById` and `TrackByProp` give `*ngFor` a `trackBy` function straight from the template, so you don't have to
+write a `trackBy` method in every component. With tracking, Angular reuses the existing DOM nodes when the list is
+replaced with new objects that have the same id, instead of re-creating every row.
 
-```ts
-import { TrackById, TrackByProp } from 'ngxtension/trackby-id-prop';
-```
+:::tip[Using `@for`? You don't need these]
+Angular's built-in `@for` block requires a `track` expression, so tracking by a property is already one line:
+`@for (item of items; track item.id)`. These directives are only useful in templates that still use `*ngFor`.
+:::
 
 ## Usage
 
-### TrackById
+Import `NgFor` and `TrackById`, then add `trackById` to the `*ngFor` expression. Every item needs an `id` property
+(`string` or `number`).
 
-For objects that have an `id` property, use `TrackById` to efficiently iterate through them in `*ngFor`.
-
-```ts
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+```angular-ts
+import { NgFor } from '@angular/common';
+import { Component } from '@angular/core';
 import { TrackById } from 'ngxtension/trackby-id-prop';
 
 @Component({
-	selector: 'my-app',
-	imports: [TrackById],
+	selector: 'app-user-list',
+	imports: [NgFor, TrackById],
 	template: `
-		<ul *ngFor="let item of arr; trackById">
-			<li>{{ item.name }}</li>
+		<ul>
+			<li *ngFor="let user of users; trackById">{{ user.name }}</li>
 		</ul>
 	`,
-	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class App {
-	public arr = [
-		{ id: 1, name: 'foo' },
-		{ id: 2, name: 'bar' },
-		{ id: 3, name: 'baz' },
+export class UserList {
+	users = [
+		{ id: 1, name: 'Ada' },
+		{ id: 2, name: 'Grace' },
+		{ id: 3, name: 'Linus' },
 	];
 }
 ```
 
-### TrackByProp
+## Track by another property
 
-If you need to specify a different property for tracking, use `TrackByProp`.
+When the unique key isn't called `id`, use `TrackByProp` and pass the property name.
+
+```angular-ts
+import { NgFor } from '@angular/common';
+import { Component } from '@angular/core';
+import { TrackByProp } from 'ngxtension/trackby-id-prop';
+
+@Component({
+	selector: 'app-country-list',
+	imports: [NgFor, TrackByProp],
+	template: `
+		<p *ngFor="let country of countries; trackByProp: 'code'">
+			{{ country.name }} ({{ country.code }})
+		</p>
+	`,
+})
+export class CountryList {
+	countries = [
+		{ code: 'AL', name: 'Albania' },
+		{ code: 'IT', name: 'Italy' },
+	];
+}
+```
+
+To import both directives at once, use `TRACK_BY_DIRECTIVES`:
 
 ```ts
-template: `
-	<p *ngFor="let item of arr; trackByProp: 'name'">
-		{{ item.name }} @{{ item.id }}
-	</p>
-`;
+import { NgFor } from '@angular/common';
+import { TRACK_BY_DIRECTIVES } from 'ngxtension/trackby-id-prop';
+
+@Component({
+	// …
+	imports: [NgFor, TRACK_BY_DIRECTIVES],
+})
 ```
 
 ## API
 
-### Inputs for TrackById
+Both directives must sit on the same element as `NgFor` (`NgForOf`), which is why you import `NgFor` too.
 
-- `ngForOf: NgIterable<T>` - An iterable containing objects with an `id` property.
+| Directive     | Selector             | Template syntax                                  | Tracks by   |
+| ------------- | -------------------- | ------------------------------------------------ | ----------- |
+| `TrackById`   | `[ngForTrackById]`   | `*ngFor="let item of items; trackById"`          | `item.id`   |
+| `TrackByProp` | `[ngForTrackByProp]` | `*ngFor="let item of items; trackByProp: 'key'"` | `item[key]` |
 
-### Inputs for TrackByProp
+| Input              | Directive     | Type      | Description                               |
+| ------------------ | ------------- | --------- | ----------------------------------------- |
+| `ngForTrackByProp` | `TrackByProp` | `keyof T` | Required. The property to track items by. |
 
-- `ngForOf: NgIterable<T>` - An iterable of objects.
-- `ngForTrackByProp: keyof T` - The property name for tracking objects (required).
-
-### Validation
-
-- For `TrackById`, an error is thrown if the iterable's objects don't have an `id` property.
-- For `TrackByProp`, an error is thrown if the specified property doesn't exist on the iterable's objects.
+`TrackById` is typed for items with an `id: string | number` property, so strict template type checking flags lists
+without one. Neither directive checks the items at runtime: if the property is missing, every item is tracked as
+`undefined`.

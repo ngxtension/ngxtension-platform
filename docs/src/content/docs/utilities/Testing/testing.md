@@ -1,108 +1,134 @@
 ---
 title: Testing Utilities
-description: Utilities for testing Angular applications
+description: Small async helpers for Angular component tests, to wait for the app to stabilize, retry an assertion until it passes and wait for text to appear.
 entryPoint: ngxtension/testing
 badge: experimental
 contributors: []
 ---
 
-`ngxtension/testing` provides utilities to help testing Angular applications.
+`ngxtension/testing` has three small helpers for async component tests: `act` waits for Angular to settle after a change, `waitFor` retries an assertion until it passes, and `expectText` waits until some text shows up in the rendered component. They work with Jest, Vitest or Jasmine, and are most useful in zoneless tests where `fakeAsync` isn't available.
+
+## Usage
+
+```ts
+import {
+	Component,
+	provideZonelessChangeDetection,
+	signal,
+} from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { act, expectText, waitFor } from 'ngxtension/testing';
+
+@Component({
+	selector: 'app-counter',
+	template: `
+		<p>Count: {{ count() }}</p>
+	`,
+})
+class CounterComponent {
+	readonly count = signal(0);
+}
+
+describe('CounterComponent', () => {
+	beforeEach(() => {
+		TestBed.configureTestingModule({
+			providers: [provideZonelessChangeDetection()],
+		});
+	});
+
+	it('renders the new count', async () => {
+		const fixture = TestBed.createComponent(CounterComponent);
+
+		await act(() => fixture.componentInstance.count.set(1));
+
+		await expectText('Count: 1');
+	});
+});
+```
+
+:::note
+`provideZonelessChangeDetection()` is stable from Angular 20. On Angular 19, use `provideExperimentalZonelessChangeDetection()`.
+:::
 
 ## act
 
-`act` executes a function and waits for the Angular application to stabilize.
-
-This utility helps in testing async state transitions by ensuring that any scheduled effects or microtasks are processed before the promise resolves.
-
-### Usage
+Runs a function, then waits for `ApplicationRef.whenStable()`: pending change detection, effects and the app's tracked async work have finished. Use it after anything that changes state, such as setting a signal, clicking a button or flushing an HTTP request.
 
 ```ts
-import { act } from 'ngxtension/testing';
+const button: HTMLButtonElement = fixture.nativeElement.querySelector('button');
 
-it('should verify async state', async () => {
-	@Component({
-		selector: 'test-component',
-		template: `
-			<div>{{ value() }}</div>
-		`,
-	})
-	class TestComponent {
-		value = signal('initial');
-	}
+await act(() => button.click());
 
-	const fixture = TestBed.createComponent(TestComponent);
-
-	await act(() => {
-		fixture.componentInstance.value.set('updated');
-	});
-
-	expect(fixture.nativeElement.textContent.trim()).toBe('updated');
-});
+expect(fixture.nativeElement.textContent).toContain('Saved');
 ```
+
+`act` resolves to whatever your function returns.
+
+In zone-based tests, `act` waits for the zone to settle but doesn't render the fixture on its own. Turn on `fixture.autoDetectChanges()` or call `fixture.detectChanges()` after it.
 
 ## waitFor
 
-`waitFor` returns a promise that resolves when the provided callback returns a truthy value or completes successfully.
-
-It is useful for waiting for asynchronous updates in tests.
-
-### Usage
+Calls a function again and again until it **stops throwing**, then resolves with its return value. If it still throws when the timeout runs out, `waitFor` rejects with the last error. Put your assertions inside it:
 
 ```ts
-import { waitFor } from 'ngxtension/testing';
+await waitFor(() => {
+	expect(fixture.nativeElement.querySelector('.spinner')).toBeNull();
+});
 
-it('should wait for condition', async () => {
-	await waitFor(() => {
-		if (!component.isLoaded) {
-			throw new Error('Not loaded yet');
-		}
-	});
-
-	// or return a value
-	const result = await waitFor(() => component.getValue());
+// Resolve with a value once it's available
+const row = await waitFor(() => {
+	const el = fixture.nativeElement.querySelector('tr');
+	if (!el) throw new Error('No rows yet');
+	return el;
 });
 ```
 
-### Options
+:::caution
+Returning `false` doesn't make `waitFor` retry: it resolves right away with `false`. Throw (or use `expect`) for the condition you're waiting for.
+:::
 
-`waitFor` accepts an optional configuration object:
-
-- `timeout`: Maximum time to wait in milliseconds (default: 100)
-- `interval`: Polling interval in milliseconds (default: 0)
-
-```ts
-await waitFor(() => checkCondition(), { timeout: 500 });
-```
+The callback can be async. `waitFor` uses the real clock, so it keeps working in tests that use fake timers.
 
 ## expectText
 
-`expectText` returns a promise that resolves when the provided element's text content matches the expected text or regex.
-
-### Usage
+Waits until the rendered component's text contains a string, or matches a regular expression. It rejects with the actual text when the timeout runs out.
 
 ```ts
-import { expectText } from 'ngxtension/testing';
-
-it('should verify text content', async () => {
-	// The component we'll check against
-	const fixture = TestBed.createComponent(MyHomePage);
-
-	// simple string match
-	await expectText('Hello World');
-
-	// regex match
-	await expectText(/Hello/);
-});
+await expectText('Welcome back');
+await expectText(/\d+ results/, { timeout: 1000 });
 ```
 
-### Options
-
-`expectText` accepts an optional configuration object:
-
-- `timeout`: Maximum time to wait in milliseconds (default: 100)
-- `interval`: Polling interval in milliseconds (default: 0)
-- `container`: HTMLElement to search within (default: active fixture's native element)
+By default it reads the `textContent` of the first fixture created with `TestBed.createComponent`, so create one first. Pass `container` to search somewhere else:
 
 ```ts
-await expectText('Loading...', { timeout: 2000, interval: 100 });
+const dialog = document.querySelector<HTMLElement>('.cdk-overlay-pane')!;
+await expectText('Are you sure?', { container: dialog });
 ```
+
+`expectText` doesn't run change detection. In a zone-based test without `autoDetectChanges()`, call `fixture.detectChanges()` or use `act` first.
+
+## API
+
+```ts
+function act<T>(fn: () => T): Promise<T>;
+
+function waitFor<T>(
+	callback: () => Promise<T> | T,
+	options?: WaitForOptions,
+): Promise<T>;
+
+function expectText(
+	text: string | RegExp,
+	options?: ExpectTextOptions,
+): Promise<void>;
+```
+
+| Option      | Type          | Default                        | Description                                                                            |
+| ----------- | ------------- | ------------------------------ | -------------------------------------------------------------------------------------- |
+| `timeout`   | `number`      | `100`                          | Milliseconds to keep retrying before rejecting.                                        |
+| `interval`  | `number`      | `0`                            | Milliseconds between attempts. There's always at least one macrotask between attempts. |
+| `container` | `HTMLElement` | first active fixture's element | `expectText` only. Element whose text to check.                                        |
+
+:::tip
+The default timeout is short (100 ms). Raise it for anything that waits on real timers or debounced input.
+:::

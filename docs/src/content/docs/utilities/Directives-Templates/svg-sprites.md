@@ -6,44 +6,70 @@ badge: stable
 contributors: ['robby-rabbitman']
 ---
 
-A directive for rendering _symbols_ of svg sprites. It is done with the [`use`](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/use) element.
-
-## Import
-
-```typescript
-import { NgxSvgSpriteFragment } from 'ngxtension/svg-sprite';
-```
+`NgxSvgSpriteFragment` renders a _symbol_ from an svg sprite by name, so you write `<svg sprite="fa-brands" fragment="github">`
+instead of a `<use href="…#github">` with the full sprite URL. It adds the [`use`](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/use)
+element for you and, by default, copies the symbol's `viewBox` so the icon gets the right proportions.
 
 ## Usage
 
-In this example the symbol `github` of the [fontawesome](https://fontawesome.com/) svg sprite `fa-brands` is rendered. A symbol is identified by a `fragment`. Learn more about [URLs](https://svgwg.org/svg2-draft/linking.html#URLReference).
+Import `NgxSvgSpriteFragment` and use it on an `svg` element. `sprite` is the name of a registered sprite (see below),
+and `fragment` is the id of the symbol in that sprite. Learn more about
+[fragment URLs](https://svgwg.org/svg2-draft/linking.html#URLReference).
 
-```html
-<svg fragment="github" sprite="fa-brands"></svg>
+```angular-ts
+import { Component } from '@angular/core';
+import { NgxSvgSpriteFragment } from 'ngxtension/svg-sprite';
+
+@Component({
+	selector: 'app-footer',
+	imports: [NgxSvgSpriteFragment],
+	template: `
+		<a href="https://github.com/ngxtension/ngxtension-platform">
+			<svg sprite="fa-brands" fragment="github" width="24" height="24"></svg>
+		</a>
+	`,
+})
+export class Footer {}
 ```
 
-Without `NgxSvgSpriteFragment`:
+This renders the same as writing the `use` element by hand:
 
 ```html
-<svg viewBox="0 0 496 512">
+<svg viewBox="0 0 496 512" width="24" height="24">
 	<use href="assets/fontawesome/sprites/brands.svg#github"></use>
 </svg>
 ```
 
-### With Directive Composition Api
+### Register sprites
 
-In your project you can utilize the [Directive Composition Api](https://angular.dev/guide/directives/directive-composition-api) to create specific svg sprites.
-
-In this example a _fontawesome brands_ svg sprite is created.
-
-```html
-<svg faBrand="github"></svg>
-```
+For the directive to find a sprite, register it with `provideSvgSprites` in your application (or route) providers.
+Give each sprite a unique `name` and the URL of the sprite file. Pass several objects to register several sprites.
 
 ```ts
+import { ApplicationConfig } from '@angular/core';
+import { provideSvgSprites } from 'ngxtension/svg-sprite';
+
+export const appConfig: ApplicationConfig = {
+	providers: [
+		provideSvgSprites({
+			name: 'fa-brands',
+			baseUrl: 'assets/fontawesome/sprites/brands.svg',
+		}),
+	],
+};
+```
+
+## Create an icon directive with the Directive Composition API
+
+Use the [Directive Composition API](https://angular.dev/guide/directives/directive-composition-api) to create a
+directive for one specific sprite, so templates only name the icon.
+
+```ts
+import { Directive, inject } from '@angular/core';
+import { NgxSvgSpriteFragment } from 'ngxtension/svg-sprite';
+
 @Directive({
 	selector: 'svg[faBrand]',
-	standalone: true,
 	hostDirectives: [
 		{ directive: NgxSvgSpriteFragment, inputs: ['fragment:faBrand'] },
 	],
@@ -55,32 +81,19 @@ export class FaBrandSvg {
 }
 ```
 
-## Configuration
-
-In order to render a symbol, sprites have to be provided.
-
-```ts
-provideSvgSprites({
-	name: 'fa-brands',
-	baseUrl: 'assets/fontawesome/sprites/brands.svg',
-});
+```html
+<svg faBrand="github"></svg>
 ```
 
-The `name` property can reference any arbitrary value, but should be unique, since you can register multiple different svg sprites.
+## Auto view box
 
-The `sprite` input of the `NgxSvgSpriteFragment` should reference the `name` property of a provided sprite.
+An `svg` element doesn't take the `viewBox` of the symbol it renders, so without a `viewBox` (or `width` and `height`)
+it falls back to the default size of 300×150 px.
 
-### Auto View Box
+By default, the sprite file is also fetched with JavaScript, and `NgxSvgSpriteFragment` copies the symbol's `viewBox` to
+its host `svg`. You can turn this off in three ways.
 
-When a symbol of an svg sprite is rendered the `viewBox` attribute or `height` and `width` _should_ be set. The `svg` element does not copy/use the `viewBox` attribute of the symbol in the svg sprite, therefore the svg will have default dimensions of 300x150 px, which is probably not preferred.
-
-Per default when an svg sprite is registered, the svg sprite is fetched with js in addition. `NgxSvgSpriteFragment` will copy the `viewBox` attribute of the symbol to its host.
-
-This behavior can be disabled.
-
-#### Disable via DI
-
-Auto View Box is disabled for the svg sprite.
+For a whole sprite, with `autoViewBox: false`:
 
 ```ts
 provideSvgSprites({
@@ -90,37 +103,34 @@ provideSvgSprites({
 });
 ```
 
-#### Disable via `autoViewBoxDisabled` Input
-
-Auto View Box is disabled for a `svg` element, when the `autoViewBoxDisabled` input is set to `false`.
+For one element, with the `autoViewBoxDisabled` attribute (or `[autoViewBoxDisabled]="true"`):
 
 ```html
 <svg fragment="github" sprite="fa-brands" autoViewBoxDisabled></svg>
 ```
 
-#### Disable via `viewBox` Attribute
-
-Auto View Box is disabled for a `svg` element, when the `viewBox` attribute already is defined.
+For one element, by setting a `viewBox` yourself. An existing `viewBox` is never overwritten:
 
 ```html
 <svg fragment="github" sprite="fa-brands" viewBox="0 0 32 32"></svg>
 ```
 
-### Classes
+## Classes
 
-When the `classes` function is set, a list of classes will be added by the `NgxSvgSpriteFragment` to its host.
+Set `classes` to add CSS classes to every `svg` that renders a symbol of this sprite. It receives the fragment and
+returns an array of classes or a space-separated string.
 
 ```ts
 provideSvgSprites({
 	name: 'my-sprite',
 	baseUrl: 'path/to/my/sprite.svg',
-	classes: (fragment) => ['some-class', `some-other-class-${fragment}`],
+	classes: (fragment) => ['icon', `icon-${fragment}`],
 });
 ```
 
-### Url
+## Custom URL
 
-Per default when providing a sprite, the `url` will return `'${baseUrl}#${fragment}'`. This can be overwritten:
+By default the `use` element points to `${baseUrl}#${fragment}`. Set `url` when your sprite uses a different scheme:
 
 ```ts
 provideSvgSprites({
@@ -129,3 +139,35 @@ provideSvgSprites({
 	url: (baseUrl, fragment) => `${baseUrl}#some-prefix-${fragment}`,
 });
 ```
+
+## API
+
+```ts
+function provideSvgSprites(
+	...sprites: CreateNgxSvgSpriteOptions[]
+): EnvironmentProviders;
+```
+
+`provideSvgSprites` returns environment providers, so use it in application or route providers, not in a component's
+`providers`.
+
+### Sprite options
+
+| Option        | Type                                            | Default                        | Description                                                    |
+| ------------- | ----------------------------------------------- | ------------------------------ | -------------------------------------------------------------- |
+| `name`        | `string`                                        | -                              | Unique name of the sprite. Referenced by the `sprite` input.   |
+| `baseUrl`     | `string`                                        | -                              | URL of the sprite file, for example `assets/icons/sprite.svg`. |
+| `url`         | `(baseUrl: string, fragment: string) => string` | `` `${baseUrl}#${fragment}` `` | Builds the `href` of the `use` element.                        |
+| `autoViewBox` | `boolean`                                       | `true`                         | Copy the symbol's `viewBox` to the host `svg`.                 |
+| `classes`     | `(fragment: string) => string[] \| string`      | -                              | Classes to add to the host `svg`.                              |
+
+### `NgxSvgSpriteFragment` (selector `svg[fragment]`)
+
+| Input                 | Type      | Description                                                             |
+| --------------------- | --------- | ----------------------------------------------------------------------- |
+| `fragment`            | `string`  | Id of the symbol to render.                                             |
+| `sprite`              | `string`  | `name` of a registered sprite.                                          |
+| `autoViewBoxDisabled` | `boolean` | Turns off the auto view box for this element. Accepts a bare attribute. |
+
+Registered sprites are kept in the root `NgxSvgSprites` service, which you can also inject to `register()` sprites at
+runtime or `get()` one by name.

@@ -1,64 +1,85 @@
 ---
 title: injectNavigationEnd
-description: An Angular utility to create an Observable that emits NavigationEnd events from the Angular Router.
+description: An Observable of the router's NavigationEnd events that unsubscribes itself when the component is destroyed.
 entryPoint: ngxtension/navigation-end
 badge: stable
 contributors: ['mateusz-stefanczyk']
 ---
 
-## Import
-
-```ts
-import { injectNavigationEnd } from 'ngxtension/navigation-end';
-```
+`injectNavigationEnd` returns an Observable that emits every `NavigationEnd` event of the Angular Router. It saves you the `router.events.pipe(filter(e => e instanceof NavigationEnd))` boilerplate, types the events correctly, and completes when the component (or other injection context) that created it is destroyed, so you don't need to unsubscribe.
 
 ## Usage
 
-### Basic
-
-Create an Observable that emits when a navigation ends in Angular's Router.
-
-```ts
+```angular-ts
 import { Component } from '@angular/core';
 import { injectNavigationEnd } from 'ngxtension/navigation-end';
-import { NavigationEnd } from '@angular/router';
 
 @Component({
-	standalone: true,
-	selector: 'app-example',
-	template: '<p>Example Component</p>',
+	selector: 'app-analytics',
+	template: '',
 })
-export class ExampleComponent {
-	source$ = injectNavigationEnd();
+export class Analytics {
 	constructor() {
-		source$.subscribe((event: NavigationEnd) => {
-			console.log('Navigation ended:', event);
+		injectNavigationEnd().subscribe((event) => {
+			// event: NavigationEnd
+			console.log('Page view:', event.urlAfterRedirects);
 		});
 	}
 }
 ```
 
-## Use Outside of an Injection Context
+The subscription ends automatically when `Analytics` is destroyed.
 
-The `injectNavigationEnd` function accepts an optional `Injector` parameter, enabling usage outside of an injection context.
+## As a signal
+
+Combine it with `toSignal` to show data from the latest navigation in a template.
+
+```angular-ts
+import { Component } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { injectNavigationEnd } from 'ngxtension/navigation-end';
+import { map } from 'rxjs';
+
+@Component({
+	selector: 'app-current-url',
+	template: `<code>{{ url() }}</code>`,
+})
+export class CurrentUrl {
+	url = toSignal(
+		injectNavigationEnd().pipe(map((event) => event.urlAfterRedirects)),
+		{ initialValue: '' },
+	);
+}
+```
+
+## Outside an injection context
+
+Pass an `Injector` when you call it outside a field initializer or constructor, for example in `ngOnInit`. The Observable then completes when that injector is destroyed.
 
 ```ts
-@Component()
-export class ExampleComponent implements OnInit {
-	private readonly injector = inject(Injector);
+export class Analytics implements OnInit {
+	private injector = inject(Injector);
 
 	ngOnInit() {
-		source$ = injectNavigationEnd(this.injector);
+		injectNavigationEnd(this.injector).subscribe((event) => {
+			console.log('Navigation ended:', event.url);
+		});
 	}
 }
 ```
 
 ## API
 
-### Inputs
+```ts
+function injectNavigationEnd(injector?: Injector): Observable<NavigationEnd>;
+```
 
-- `injector?: Injector` - Optional. Allows using the function outside of an Angular injection context.
+| Parameter  | Type       | Description                                                                        |
+| ---------- | ---------- | ---------------------------------------------------------------------------------- |
+| `injector` | `Injector` | Optional. Use it when you call `injectNavigationEnd` outside an injection context. |
 
-### Outputs
+The Observable only emits navigations that end after you subscribe; it doesn't replay the last one.
 
-- Emits an Observable of `NavigationEnd` events from Angular's Router.
+## Related
+
+- [injectLeafActivatedRoute](/utilities/router/inject-leaf-activated-route/): the deepest active route as a signal, updated on every `NavigationEnd`.

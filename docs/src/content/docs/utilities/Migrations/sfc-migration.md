@@ -1,62 +1,104 @@
 ---
 title: SFC components migration
-description: Schematics for converting Angular components to SFC components
+description: A generator that inlines component templateUrl files (and optionally styles) into single-file components.
 entryPoint: plugin/src/generators/convert-to-sfc
 badge: stable
 contributors: ['enea-jahollari']
 ---
 
-Angular components can have inline templates or have a separate template file. The inline templates are called SFC (Single File Components) and are a common practice in modern Angular applications.
-This schematic helps you convert your Angular components to SFC components.
+A single-file component (SFC) keeps its template, and often its styles, inline in the `.ts` file instead of in separate `.html` and `.css` files. The `convert-to-sfc` generator from `ngxtension-plugin` moves `templateUrl` files into `template`, and can do the same for `styleUrl` / `styleUrls`. Large templates and styles are skipped, so only small components change.
 
-### How it works?
+## Usage
 
-The moment you run the schematics, it will look for all the components in your project and will convert them to SFC components.
+Install the plugin if you don't have it yet:
 
-- It will move the template from the `templateUrl` to the `template` property.
-- If the `--move-styles` param is enabled it will move also the styles from the `styleUrls` to the `styles` property.
-- The maximum lines length for the template is set to 200 lines. If the template has more than 200 lines, it will be skipped.
+```shell
+npm install -D ngxtension-plugin
+```
 
-In order to change the maximum line length, you can pass the `--max-inline-template-lines` param to the schematics. For styles, you can pass the `--max-inline-style-lines` param.
+Then run the generator. Without options it converts the components of every project in the workspace:
 
-### Usage
-
-In order to run the schematics for all the project in the app you have to run the following script:
-
-```bash
+```shell
 ng g ngxtension-plugin:convert-to-sfc
 ```
 
-If you want to specify the project name you can pass the `--project` param.
+In an Nx workspace, use `nx` instead of `ng`:
 
-```bash
-ng g ngxtension-plugin:convert-to-sfc --project=<project-name>
+```shell
+nx g ngxtension-plugin:convert-to-sfc
 ```
 
-If you want to run the schematic for a specific component or directive you can pass the `--path` param.
+Limit it to one project or one file:
 
-```bash
-ng g ngxtension-plugin:convert-to-sfc --path=<path-to-ts-file>
+```shell
+ng g ngxtension-plugin:convert-to-sfc --project=my-app
+ng g ngxtension-plugin:convert-to-sfc --path=src/app/card/card.component.ts
 ```
 
-If you want to inline styles file as well you can set `--move-styles` param.
+Commit or stash your work first, so you can review the changes with `git diff`.
 
-```bash
+## What it changes
+
+Before, `card.component.ts` with a separate `card.component.html`:
+
+```ts
+@Component({
+	selector: 'app-card',
+	templateUrl: './card.component.html',
+	styleUrl: './card.component.css',
+})
+export class CardComponent {}
+```
+
+After running with `--move-styles`, both files are deleted and their contents are inlined:
+
+```ts
+@Component({
+	selector: 'app-card',
+	template: `
+		<div class="card"><ng-content /></div>
+	`,
+	styles: `
+		.card {
+			padding: 1rem;
+		}
+	`,
+})
+export class CardComponent {}
+```
+
+- Only `@Component` classes with a `templateUrl` are converted.
+- Templates longer than `--max-inline-template-lines` (200 by default) are left alone.
+- Templates that contain `${` are skipped, because they would break the template literal.
+- Styles are only moved with `--move-styles`, and only when they're no longer than `--max-inline-style-lines` (200 by default).
+- The file contents are pasted as they are. The generator formats changed files with Prettier if your workspace has it, but Prettier doesn't re-indent template literals.
+
+## Move styles and change the limits
+
+```shell
 ng g ngxtension-plugin:convert-to-sfc --move-styles
+ng g ngxtension-plugin:convert-to-sfc --move-styles --max-inline-template-lines=100 --max-inline-style-lines=50
 ```
 
-If you want to change the maximum line length for the template or styles you can pass the `--max-inline-template-lines` param or `--max-inline-style-lines` param.
+:::caution
+Check the diff before you commit:
 
-```bash
-ng g ngxtension-plugin:convert-to-sfc --max-inline-template-lines=100 --max-inline-style-lines=100 --move-styles
-```
+- `--move-styles` handles one stylesheet per component (`styleUrl`, or `styleUrls` with a single entry). A component with several files in `styleUrls` ends up with empty `styles`, so leave `--move-styles` off for it, or convert it with `--path` and fix the styles by hand.
+- The template is pasted into a template literal as-is. A template that contains a backtick (`` ` ``) needs to be escaped by hand.
+  :::
 
-### Usage with Nx
+## Options
 
-To use the schematics on a Nx monorepo you just swap `ng` with `nx`
+| Option                        | Type      | Default | Description                                                                  |
+| ----------------------------- | --------- | ------- | ---------------------------------------------------------------------------- |
+| `--project`                   | `string`  | –       | Only convert components in this project. Aliases: `--name`, `--projectName`. |
+| `--path`                      | `string`  | –       | Only convert this file, relative to the workspace root.                      |
+| `--move-styles`               | `boolean` | `false` | Also inline `styleUrl` / `styleUrls` into `styles`.                          |
+| `--max-inline-template-lines` | `number`  | `200`   | Skip templates with more lines than this.                                    |
+| `--max-inline-style-lines`    | `number`  | `200`   | Skip stylesheets with more lines than this.                                  |
 
-Example:
+Pass either `--project` or `--path`, not both. With neither, every project in the workspace is converted.
 
-```bash
-nx g ngxtension-plugin:convert-to-sfc --project=<project-name>
-```
+## Related
+
+- [Host Binding Migration](/utilities/migrations/host-binding-migration/), the other generator in `ngxtension-plugin`.

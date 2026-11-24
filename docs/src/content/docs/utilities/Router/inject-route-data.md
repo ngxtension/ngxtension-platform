@@ -1,152 +1,73 @@
 ---
 title: injectRouteData
-description: ngxtension/inject-route-data
+description: Read the current route's data (static data and resolver results) as a signal.
 entryPoint: ngxtension/inject-route-data
 contributors: ['krzysztof-kachniarz']
 ---
 
-:::note[Router outlet is required]
-`injectRouteData` works on all components that are inside routing context. Make sure the component you are using `injectRouteData` in, is part of your routes.
-For the same reason - `injectRouteData` will not work correctly inside your root component (usually `AppComponent`)
+`injectRouteData` gives you the `data` of the current route as a signal. That includes the static `data` from the route config and the results of resolvers. Read the whole object, one key, or derive a value with a function. The signal updates when the data changes, for example when a resolver re-runs.
+
+:::note[Use it inside a routed component]
+`injectRouteData` reads from the `ActivatedRoute` of the component that calls it, so it only sees that route's data. In the root component (usually `AppComponent`) the data is empty. Use [`injectRouteData.global()`](#data-from-the-whole-route-hierarchy) to read the data of child routes.
 :::
-
-`injectRouteData` is a helper function that allows us to inject data from the current route as a signal.
-
-Having route data as a signal helps in a modern angular signals based architecture.
-
-```ts
-import { injectRouteData } from 'ngxtension/inject-route-data';
-```
 
 ## Usage
 
-`injectRouteData` when is called, returns a signal with the current route data.
+```angular-ts
+// Route: { path: 'products/:id', component: ProductDetail, resolve: { product: productResolver } }
+import { Component } from '@angular/core';
+import { injectRouteData } from 'ngxtension/inject-route-data';
 
-```ts
-@Component({
-	standalone: true,
-	template: '<div>{{routeData() | json}}</div>',
-})
-class TestComponent {
-	routeData = injectRouteData();
-}
-```
-
-Or, if we want to transform the data, we can pass a function to `injectRouteData`.
-
-```ts
-@Component()
-class TestComponent {
-	routeDataKeys = injectRouteData((data) => Object.keys(data)); // returns a signal with the keys of the route data object
-}
-```
-
-### Specific value
-
-If we want to get the value for a specific key, we can pass the name of the object key to `injectRouteData`.
-
-```ts
 @Component({
 	template: `
-		<div>{{ details().name }}</div>
-		<div>{{ details().description }}</div>
+		@if (product(); as product) {
+			<h1>{{ product.name }}</h1>
+			<p>{{ product.description }}</p>
+		}
 	`,
 })
-class TestComponent {
-	details: Signal<unknown> = injectRouteData('details'); // returns a signal with the value of the details key in route data object
+export class ProductDetail {
+	product = injectRouteData<Product>('product'); // Signal<Product | null>
 }
 ```
 
-### Default value
+Pass the expected type as the generic. Without it, the value is typed as `unknown`.
 
-You can pass a `defaultValue` that will be returned if the key is not present in the route data:
+## Get all data
+
+Call it without arguments to get the whole `Data` object, or pass a function to derive a value from it.
 
 ```ts
-@Component()
-class TestComponent {
-	title: Signal<string> = injectRouteData('title', {
-		defaultValue: 'Default Title',
-	});
-}
+data = injectRouteData(); // Signal<Data>
+
+dataKeys = injectRouteData((data) => Object.keys(data)); // Signal<string[]>
 ```
 
-### Custom injector
+## Default value
 
-You can also pass a custom injector:
+`defaultValue` is returned when the key is missing (or `null`).
 
 ```ts
-@Component()
-class TestComponent implements OnInit {
-	injector = inject(Injector);
-
-	ngOnInit() {
-		const details = injectRouteData('details', {
-			injector: this.injector,
-		});
-	}
-}
+title = injectRouteData<string>('title', { defaultValue: 'Untitled' }); // Signal<string | null>
 ```
 
-## Global Route Data
-
-`injectRouteData.global()` allows you to access route data from the entire route hierarchy, including all parent and child routes. This is similar to Angular's `input()` and `input.required()` pattern.
-
-:::note[Use Case]
-Use `.global()` when you need to access data from child routes or when your component needs to be aware of the full routing context. Child route data overrides parent route data when there are naming conflicts.
+:::note
+The return type stays `Signal<T | null>` even with a `defaultValue`.
 :::
 
-### Get all data from route hierarchy
+## Data from the whole route hierarchy
 
-```ts
-@Component()
-class ParentComponent {
-	// Gets all data from parent and all child routes
-	// Child route data overrides parent route data if they have the same key
-	allData = injectRouteData.global();
-}
-```
+`injectRouteData` only sees its own route's data. A layout that renders a `<router-outlet>` doesn't see the data of its child routes. `injectRouteData.global()` reads the deepest active route and merges the data of every route from the root down to it. When two routes use the same key, the deeper route wins.
 
-### Get specific data from route hierarchy
+It accepts the same arguments and options as `injectRouteData`.
 
-```ts
-@Component()
-class ParentComponent {
-	// Gets the 'title' data from anywhere in the route hierarchy
-	title = injectRouteData.global('title');
-}
-```
+```angular-ts
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { injectRouteData } from 'ngxtension/inject-route-data';
 
-### Transform global data
-
-```ts
-@Component()
-class ParentComponent {
-	// Transform all data from the route hierarchy
-	dataCount = injectRouteData.global((data) => Object.keys(data).length);
-}
-```
-
-### With options
-
-All the same options work with `.global()`:
-
-```ts
-@Component()
-class TestComponent {
-	// With default value
-	theme = injectRouteData.global('theme', {
-		defaultValue: 'light',
-	});
-}
-```
-
-### Example: Layout with metadata
-
-A common use case is a layout component that needs to access metadata from any child route:
-
-```ts
 @Component({
-	standalone: true,
+	imports: [RouterOutlet],
 	template: `
 		<header>
 			<h1>{{ pageTitle() }}</h1>
@@ -154,43 +75,32 @@ A common use case is a layout component that needs to access metadata from any c
 				<nav><!-- breadcrumbs --></nav>
 			}
 		</header>
-		<main>
-			<router-outlet />
-		</main>
+		<main><router-outlet /></main>
 	`,
 })
-class LayoutComponent {
-	// Access data from the entire route tree
-	allData = injectRouteData.global();
-
-	pageTitle = injectRouteData.global('title', {
-		defaultValue: 'My App',
-	});
-
+export class Layout {
+	pageTitle = injectRouteData.global('title', { defaultValue: 'My App' });
 	showBreadcrumbs = injectRouteData.global('breadcrumbs', {
 		defaultValue: false,
 	});
 }
 ```
 
-Routes configuration:
-
 ```ts
 const routes: Routes = [
 	{
 		path: '',
-		component: LayoutComponent,
+		component: Layout,
 		data: { title: 'Home' },
 		children: [
 			{
 				path: 'products',
-				component: ProductsComponent,
 				data: { title: 'Products', breadcrumbs: true },
 				children: [
 					{
 						path: ':id',
-						component: ProductDetailComponent,
-						data: { title: 'Product Details', breadcrumbs: true },
+						component: ProductDetail,
+						data: { title: 'Product details' },
 					},
 				],
 			},
@@ -199,7 +109,55 @@ const routes: Routes = [
 ];
 ```
 
-When navigating to `/products/123`, the `LayoutComponent` will have access to all merged data:
+On `/products/123`, `Layout` sees the merged data:
 
-- `title`: 'Product Details' (from the deepest child)
-- `breadcrumbs`: true (from parent route)
+- `title`: `'Product details'` (from the deepest route)
+- `breadcrumbs`: `true` (from the `products` route)
+
+### Named outlets
+
+By default `.global()` follows the primary outlet. Use the `outlet` option to read the data of the route active in a named outlet. Without an active route in that outlet, you get an empty object (or the `defaultValue`).
+
+```ts
+// URL: /home(sidebar:help)
+sidebarTitle = injectRouteData.global('title', { outlet: 'sidebar' });
+```
+
+## Outside an injection context
+
+Pass an `injector` when you call it outside a field initializer or constructor.
+
+```ts
+export class ProductDetail implements OnInit {
+	private injector = inject(Injector);
+
+	ngOnInit() {
+		const product = injectRouteData<Product>('product', {
+			injector: this.injector,
+		});
+	}
+}
+```
+
+## API
+
+```ts
+function injectRouteData(): Signal<Data>;
+function injectRouteData<T>(key: string, options?: RouteDataOptions<T>): Signal<T | null>;
+function injectRouteData<T>(fn: (data: Data) => T, options?: RouteDataOptions<T>): Signal<T>;
+
+// Same arguments, reading the merged data of the whole route hierarchy
+injectRouteData.global(...);
+```
+
+| Option         | Type       | Default     | Description                                                          |
+| -------------- | ---------- | ----------- | -------------------------------------------------------------------- |
+| `defaultValue` | `T`        | `undefined` | Returned when the key is missing or `null`.                          |
+| `outlet`       | `string`   | `undefined` | Only for `.global()`: read the route active in this named outlet.    |
+| `injector`     | `Injector` | `undefined` | Use it when you call `injectRouteData` outside an injection context. |
+
+## Related
+
+- [injectParams](/utilities/router/inject-params/) and [injectQueryParams](/utilities/router/inject-query-params/): the same API for params and query params.
+- [injectLeafActivatedRoute](/utilities/router/inject-leaf-activated-route/): the deepest active route as a signal.
+- Angular's [`withComponentInputBinding()`](https://angular.dev/api/router/withComponentInputBinding) binds route data to `input()`s of the routed component.

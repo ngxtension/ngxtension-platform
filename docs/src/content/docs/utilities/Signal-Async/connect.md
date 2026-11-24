@@ -1,189 +1,170 @@
 ---
 title: connect
-description: ngxtension/connect
+description: Keeps a writable signal updated from an observable or another signal, with automatic cleanup.
 entryPoint: ngxtension/connect
 badge: stable
 contributors: ['enea-jahollari', 'josh-morony', 'chau-tran']
 ---
 
-`connect` is a utility function that connects a signal to an observable and returns a subscription. The subscription is automatically unsubscribed when the component is destroyed. If it's not called in an injection context, it must be called with an injector or DestroyRef.
-
-```ts
-import { connect } from 'ngxtension/connect';
-```
+`connect` pushes every value from an observable (or another signal) into a writable signal you own. The signal stays writable, so you can still `set` it yourself, and the subscription is closed automatically when the component or service is destroyed. For object state, partial values are merged in, so you can feed different streams into different parts of one state signal.
 
 ## Usage
 
-It can be helpful when you want to have a writable signal, but you want to set its value based on an observable.
+```angular-ts
+import { Component, inject, Injectable, signal } from '@angular/core';
+import { connect } from 'ngxtension/connect';
+import { BehaviorSubject } from 'rxjs';
 
-#### Connect with observables
+@Injectable({ providedIn: 'root' })
+export class PagingService {
+	readonly pageNumber$ = new BehaviorSubject(1);
+}
 
-For example, you might want to have a signal that represents the current page number, but you want to set its value based on an observable that represents the current page number from a data service.
+@Component({
+	selector: 'app-pager',
+	template: `
+		<p>Page {{ pageNumber() }}</p>
+		<button (click)="pageNumber.set(1)">First page</button>
+	`,
+})
+export class Pager {
+	private readonly paging = inject(PagingService);
 
-```ts
-@Component()
-export class AppComponent implements OnDestroy {
-	private dataService = inject(DataService);
-
-	pageNumber = signal(1);
+	readonly pageNumber = signal(1);
 
 	constructor() {
-		connect(this.pageNumber, this.dataService.pageNumber$);
+		connect(this.pageNumber, this.paging.pageNumber$);
 	}
 }
 ```
 
-#### Connect with observables not in an injection context
+Each emission of `pageNumber$` is written into `pageNumber`. `connect` returns the `Subscription` in case you want to stop it early.
 
-You can also use it not in an injection context, but you must provide an injector or DestroyRef.
+## Merge partial updates into object state
+
+When the signal holds an object, each emission is shallow-merged into the current value. A stream only needs to emit the properties it changes:
 
 ```ts
-@Component()
-export class AppComponent implements OnDestroy {
-	private dataService = inject(DataService);
+readonly state = signal({ user: { firstName: 'Chau', lastName: 'Tran' }, loading: false });
 
-	private injector = inject(Injector);
-	// or
-	private destroyRef = inject(DestroyRef);
+readonly loading$ = new Subject<boolean>();
 
-	pageNumber = signal(1);
-
-	ngOnInit() {
-		connect(this.pageNumber, this.dataService.pageNumber$, this.injector);
-
-		// or
-
-		connect(this.pageNumber, this.dataService.pageNumber$, this.destroyRef);
-	}
+constructor() {
+	// emits { loading: true }, keeps `user` as it is
+	connect(this.state, this.loading$.pipe(map((loading) => ({ loading }))));
 }
 ```
 
-#### Connect with other signals
+Arrays and primitives are replaced, not merged.
 
-This is useful when you want to have a writable signal, but you want to update its value based on another signal that represents the current state of that value.
-For this to work, the second argument must be a callback function that includes a signal call inside of it.
+## Use a reducer
+
+Pass a reducer as the third argument to compute the update from the previous value and the emitted value. The result is merged the same way:
 
 ```ts
-@Component()
-export class AppComponent implements OnDestroy {
-	private dataService = inject(DataService);
+readonly lastName$ = new Subject<string>();
 
-	pageNumber = signal(1);
-
-	constructor() {
-		connect(this.pageNumber, () => this.dataService.state().pageNumber);
-	}
+constructor() {
+	connect(this.state, this.lastName$, (prev, lastName) => ({
+		user: { ...prev.user, lastName },
+	}));
 }
 ```
 
-## Object Signal
+Selectors that read other parts of the state (`computed(() => this.state().user.firstName)`) keep their value, so effects that depend only on them don't re-run.
 
-There are cases where we construct a single `Signal` to store a state object. `connect` can also work with object signals
+## Connect to another signal
+
+Pass a function that reads signals instead of an observable. `connect` creates an `effect` that writes the result into your signal whenever those signals change, and returns the `EffectRef`:
 
 ```ts
-@Component()
-export class MyComponent {
-	state = signal({
-		user: {
-			firstName: 'chau',
-			lastName: 'tran',
-		},
-	});
+private readonly userService = inject(UserService);
 
-	firstName = computed(() => this.state().user.firstName);
-	lastName = computed(() => this.state().user.lastName);
+readonly name = signal('');
 
-	lastName$ = new Subject<string>();
-
-	constructor() {
-		effect(() => {
-			console.log('first name changed', this.firstName());
-		});
-
-		// we want to connect `lastName$` stream to `state`
-		// and when `lastName$` emits, update the state with the `reducer` fn
-		connect(this.state, this.lastName$, (prev, lastName) => ({
-			user: { ...prev.user, lastName },
-		}));
-
-		// logs: first name changed, chau
-
-		// sometimes later
-		this.lastName$.next('Tran');
-
-		// `firstName()` effect won't be triggered because we only update `lastName`
-	}
+constructor() {
+	connect(this.name, () => this.userService.user().name);
 }
 ```
 
-## ConnectedSignal
+This keeps `name` writable (for example for a form field) while it follows the source signal. Angular's [`linkedSignal`](https://angular.dev/guide/signals/linked-signal) solves the same problem without an effect; prefer it in new code.
 
-A `ConnectedSignal` allows you to connect any number of streams to a signal
-during or after the initial connect call.
+## Connect several streams to one signal
 
-```ts
-const connectedSignal = connect(this.state)
-	.with(this.lastName$, (prev, lastName) => ({ user: { ...prev.user, lastName } }))
-	.with(this.firstName$, (prev, firstName) => ({ user: { ...prev.user, firstName } }));
-
-/* can connect later as well */
-connectedSignal.with(/* ... */);
-
-/* can destroy */
-connectedSignal.subscription.unsubscribe();
-
-/* after the subscription is closed, connectedSignal doesn't so anything */
-connectedSignal.with(/* ...*/)); // won't connect
-```
-
-A benefit of this approach is that it allows you to connect multiple streams to
-a signal whilst utilising different syntax for the `connect` call.
-
-For example, if your streams directly emit the values you want to set into the
-signal, you can use this syntax:
+Call `connect` with only the signal to get a `ConnectedSignal`, then chain `.with()` for each stream. Each `.with()` takes the same arguments as `connect` (a stream, a stream plus reducer, or a signal function):
 
 ```ts
-connect(this.pageNumber, this.dataService.pageNumber$);
-```
-
-Or, if you need to use a reducer to access the previous signal value, you can
-use this syntax:
-
-```ts
-connect(this.state, this.lastName$, (prev, lastName) => ({
-	user: { ...prev.user, lastName },
-}));
-```
-
-However, if you want to use multiple different streams with different reducers,
-you would need to use multiple connect calls (one for each reducer you want to
-add), e.g:
-
-```ts
-connect(this.state, this.someStream$);
-
-connect(this.state, this.add$, (state, checklist) => ({
-	checklists: [...state.checklists, checklist],
-}));
-
-connect(this.state, this.remove$, (state, id) => ({
-	checklists: state.checklists.filter((checklist) => checklist.id !== id),
-}));
-```
-
-With a `ConnectedSignal` you can use the `with` syntax to chain these into
-a single connect call:
-
-```ts
-connect(this.state)
-	.with(this.someStream$)
+const connected = connect(this.state)
+	.with(this.loading$.pipe(map((loading) => ({ loading }))))
 	.with(this.lastName$, (prev, lastName) => ({
 		user: { ...prev.user, lastName },
 	}))
 	.with(this.firstName$, (prev, firstName) => ({
 		user: { ...prev.user, firstName },
 	}));
+
+// You can add more streams later
+connected.with(this.stop$.pipe(map(() => ({ loading: false }))));
+
+// Stop all observable connections at once
+connected.subscription.unsubscribe();
 ```
 
-This allows for any combination of streams without reducers and streams with
-different types of reducers.
+After `subscription` is closed, further `.with()` calls are ignored.
+
+## Outside an injection context
+
+In an injection context, `connect` uses the current `DestroyRef`. Elsewhere (for example in `ngOnInit`), pass an `Injector` or a `DestroyRef` as the last argument:
+
+```ts
+private readonly destroyRef = inject(DestroyRef);
+
+ngOnInit() {
+	connect(this.pageNumber, this.paging.pageNumber$, this.destroyRef);
+}
+```
+
+## API
+
+```ts
+// observable → signal
+function connect<T>(
+	signal: WritableSignal<T>,
+	observable: Observable<PartialOrValue<T>>,
+	injectorOrDestroyRef?: Injector | DestroyRef,
+	useUntracked?: boolean,
+): Subscription;
+
+// observable + reducer → signal
+function connect<T, V>(
+	signal: WritableSignal<T>,
+	observable: Observable<V>,
+	reducer: (previous: T, next: V) => PartialOrValue<T>,
+	injectorOrDestroyRef?: Injector | DestroyRef,
+	useUntracked?: boolean,
+): Subscription;
+
+// signal → signal
+function connect<T>(
+	signal: WritableSignal<T>,
+	originSignal: () => T,
+): EffectRef;
+
+// several sources
+function connect<T>(
+	signal: WritableSignal<T>,
+	injectorOrDestroyRef?: Injector | DestroyRef,
+	useUntracked?: boolean,
+): ConnectedSignal<T>; // { with(...): ConnectedSignal<T>; subscription: Subscription }
+```
+
+`PartialOrValue<T>` is `Partial<T>` when `T` is an object, otherwise `T`.
+
+| Argument               | Description                                                                          |
+| ---------------------- | ------------------------------------------------------------------------------------ |
+| `signal`               | The writable signal to update.                                                       |
+| `observable`           | Source stream. Object emissions are shallow-merged into object state.                |
+| `reducer`              | Optional. `(previous, next) => update`. Its result is merged like a plain emission.  |
+| `originSignal`         | A function that reads signals. Tracked in an `effect`.                               |
+| `injectorOrDestroyRef` | Optional. Needed outside an injection context. Ends the subscription when destroyed. |
+| `useUntracked`         | Optional, default `false`. Writes to the signal inside `untracked()`.                |

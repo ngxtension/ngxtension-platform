@@ -1,36 +1,41 @@
 ---
 title: assertInjector
-description: ngxtension/assert-injector
+description: Assert an injection context or use a custom Injector, for writing your own inject functions.
 entryPoint: ngxtension/assert-injector
 badge: stable
 contributors: ['chau-tran']
 ---
 
-`assertInjector` is an extension of [`assertInInjectionContext`](https://angular.dev/api/core/assertInInjectionContext) that accepts a `Function` and an optional custom `Injector`
+`assertInjector` is a building block for your own inject functions (often called Custom Inject Functions, or CIFs). It extends Angular's [`assertInInjectionContext`](https://angular.dev/api/core/assertInInjectionContext): if the caller passed an `Injector`, it uses that one; otherwise it asserts that the function runs in an [injection context](https://angular.dev/guide/di/dependency-injection-context) and returns the current `Injector`. Either way, you get a guaranteed `Injector` back.
 
-`assertInjector` will assert that the `Function` is invoked in an [Injection Context](https://angular.dev/guide/di/dependency-injection-context) and will return a **guaranteed** `Injector` whether it is the _custom_ one that is passed in or the _default_ one.
-
-```ts
-import { assertInjector } from 'ngxtension/assert-injector';
-```
+Most ngxtension `inject*` utilities use it to support an optional `injector` argument.
 
 ## Usage
 
-`assertInjector` is mainly used for Custom Inject Functions (CIFs) or abstract functions that might depend on an Injection Context (i.e: `effect()` or `takeUntilDestroyed()`).
+Accept an optional `injector`, assert it, then run your code in that injector's context:
 
 ```ts
-export function toSignal<T>(
+import {
+	effect,
+	Injector,
+	runInInjectionContext,
+	signal,
+	type Signal,
+} from '@angular/core';
+import { assertInjector } from 'ngxtension/assert-injector';
+import type { Observable } from 'rxjs';
+
+export function signalFromObservable<T>(
 	observable: Observable<T>,
 	injector?: Injector,
-): Signal<T> {
-	injector = assertInjector(toSignal, injector);
+): Signal<T | undefined> {
+	injector = assertInjector(signalFromObservable, injector);
+
 	return runInInjectionContext(injector, () => {
-		const source = signal<T>(undefined!);
+		const source = signal<T | undefined>(undefined);
 
 		effect((onCleanup) => {
-			const sub = observable.subscribe((value) => {
-				source.set(value);
-			});
+			const sub = observable.subscribe((value) => source.set(value));
 			onCleanup(() => sub.unsubscribe());
 		});
 
@@ -38,23 +43,23 @@ export function toSignal<T>(
 	});
 }
 ```
+
+Called in a field initializer or constructor, it uses the component's injector. Called anywhere else without an `injector`, it throws Angular's "must be called from an injection context" error, which names `signalFromObservable` so the message points to your function.
 
 ## Assert and run
 
-`assertInjector` can also accept a `runner` which is a function that will be invoked in the Injection Context of the guaranteed `Injector` that it asserts. This usage shortens the CIF by not having to call `runInInjectionContext` explicitly.
+Pass a `runner` function as the third argument to skip the `runInInjectionContext` call. `assertInjector` runs it in the asserted injector's context and returns its result.
 
 ```ts
-export function toSignal<T>(
+export function signalFromObservable<T>(
 	observable: Observable<T>,
 	injector?: Injector,
-): Signal<T> {
-	return assertInjector(toSignal, injector, () => {
-		const source = signal<T>(undefined!);
+): Signal<T | undefined> {
+	return assertInjector(signalFromObservable, injector, () => {
+		const source = signal<T | undefined>(undefined);
 
 		effect((onCleanup) => {
-			const sub = observable.subscribe((value) => {
-				source.set(value);
-			});
+			const sub = observable.subscribe((value) => source.set(value));
 			onCleanup(() => sub.unsubscribe());
 		});
 
@@ -63,27 +68,51 @@ export function toSignal<T>(
 }
 ```
 
-### Retrieve the asserted `Injector`
+### Get the asserted `Injector`
 
-Since the `runner` is invoked with the asserted `Injector` context, we can retrieve _that_ `Injector` with `inject(Injector)` in the `runner` body. For example, nested `effect()` might need the `Injector`
+Inside the `runner`, `inject(Injector)` returns the asserted injector. Keep a reference to it when your function returns callbacks that run later, outside the injection context, and still need DI:
 
 ```ts
-export function injectFoo(injector?: Injector) {
-	return assertInjector(injectFoo, injector, () => {
+import { afterNextRender, ElementRef, inject, Injector } from '@angular/core';
+import { assertInjector } from 'ngxtension/assert-injector';
+
+export function injectFocus(injector?: Injector) {
+	return assertInjector(injectFocus, injector, () => {
 		const assertedInjector = inject(Injector);
+		const host = inject<ElementRef<HTMLElement>>(ElementRef);
 
-		// 👇 the outer effect automatically runs in the Injection Context
-		effect(() => {
-			/* do something for outer effect */
-			effect(
-				() => {
-					/* do something for inner effect */
-				},
-				{ injector: assertedInjector },
-			);
-		});
-
-		return 'foo';
+		return {
+			// called later, e.g. from a click handler
+			focusAfterRender: () =>
+				afterNextRender(() => host.nativeElement.focus(), {
+					injector: assertedInjector,
+				}),
+		};
 	});
 }
 ```
+
+## API
+
+```ts
+function assertInjector(
+	fn: Function,
+	injector: Injector | undefined | null,
+): Injector;
+
+function assertInjector<Runner extends () => any>(
+	fn: Function,
+	injector: Injector | undefined | null,
+	runner: Runner,
+): ReturnType<Runner>;
+```
+
+| Parameter  | Type                            | Description                                                                      |
+| ---------- | ------------------------------- | -------------------------------------------------------------------------------- |
+| `fn`       | `Function`                      | Your function. Its name appears in the error when there is no injection context. |
+| `injector` | `Injector \| undefined \| null` | The injector passed by the caller. When it is set, no assertion is made.         |
+| `runner`   | `() => any`                     | Optional. Runs in the asserted injector's context; its return value is returned. |
+
+## Related
+
+- [createInjectionToken](/utilities/dependency-injection/create-injection-token/): its `injectFn` uses `assertInjector` to accept an `injector` option.

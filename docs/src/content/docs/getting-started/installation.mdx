@@ -1,49 +1,122 @@
 ---
 title: Installation
-description: How to add ngxtension to your project
+description: Add ngxtension to an Angular CLI or Nx workspace, with the init generator or by hand, and pick the version that matches your Angular version.
 sidebar:
   order: 2
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-### Automatic
+`ngxtension` is a single npm package. Install it with the `ngxtension-plugin` init generator, which also sets up your TypeScript config, or add it by hand.
+
+## Requirements
+
+- Angular 19 or later for `ngxtension` 7.x. For older Angular versions, see the [compatibility matrix](#compatibility-matrix).
+- RxJS 6 or 7.
+- TypeScript `strict` mode is recommended. Some utilities don't type correctly without it.
+
+## With the init generator
+
+Install the plugin as a dev dependency:
 
 ```shell
 npm install -D ngxtension-plugin
 ```
 
-<Tabs>
- <TabItem label="ng">
+Then run its `init` generator:
 
-```shell title="Invoking init generator"
-  ng g ngxtension-plugin:init
+<Tabs>
+  <TabItem label="Angular CLI">
+
+```shell
+ng g ngxtension-plugin:init
 ```
 
   </TabItem>
- <TabItem label="nx">
+  <TabItem label="Nx">
 
-```shell title="Invoking init generator"
-  nx g ngxtension-plugin:init
+```shell
+nx g ngxtension-plugin:init
 ```
 
   </TabItem>
 </Tabs>
 
-### Manual
+The generator:
 
-Install `ngxtension` using the above command then turn `skipLibCheck: true` on the project's root `tsconfig.json`
+- adds `ngxtension` to your `dependencies`, at the same version as `ngxtension-plugin` (or `latest`),
+- sets `skipLibCheck: true` in `tsconfig.base.json` if it exists, otherwise in `tsconfig.json`,
+- warns you if `strict` mode is off,
+- installs the new dependency.
 
-> For Nx, it might be `tsconfig.base.json`
+The plugin also provides the [migration generators](/utilities/migrations/host-binding-migration/).
 
-## Compatibility Matrix
+## Manual installation
 
-| ngxtension Version | Release Date | Angular Version Support |
+Install the package:
+
+<Tabs>
+  <TabItem label="npm">
+
+```shell
+npm install ngxtension
+```
+
+  </TabItem>
+  <TabItem label="pnpm">
+
+```shell
+pnpm add ngxtension
+```
+
+  </TabItem>
+  <TabItem label="yarn">
+
+```shell
+yarn add ngxtension
+```
+
+  </TabItem>
+</Tabs>
+
+Then turn on `skipLibCheck` in your root TypeScript config (`tsconfig.json`, or `tsconfig.base.json` in Nx):
+
+```json title="tsconfig.json"
+{
+	"compilerOptions": {
+		"skipLibCheck": true
+	}
+}
+```
+
+## Optional peer dependency
+
+The [gesture utilities](/utilities/dom-events/gesture-intro/) in `ngxtension/gestures` need `@use-gesture/vanilla`. Install it only if you use them:
+
+```shell
+npm install @use-gesture/vanilla
+```
+
+## Use a utility
+
+Import from the utility's entry point. There's nothing to register:
+
+```ts
+import { injectParams } from 'ngxtension/inject-params';
+```
+
+See the [introduction](/getting-started/introduction/#entry-points-and-tree-shaking) for how entry points keep your bundle small.
+
+## Compatibility matrix
+
+| ngxtension version | Release date | Angular version support |
 | ------------------ | ------------ | ----------------------- |
-| **7.x**            | 2025-09-12   | >=19.0.0                |
+| **7.x**            | 2025-11-03   | >=19.0.0                |
 | **6.x**            | 2025-09-12   | >=16.0.0                |
 | **5.x**            | 2025-03-14   | >=16.0.0                |
 | **4.x**            | 2024-07-15   | >=16.0.0                |
 | **3.x**            | 2024-04-24   | >=16.0.0                |
 | **2.x**            | 2024-02-02   | >=16.0.0                |
 | **1.x**            | 2023-11-09   | >=16.0.0                |
+
+The Angular range is the `@angular/core` peer dependency of each major version. On an Angular version older than 19, install the latest 6.x: `npm install ngxtension@6`.

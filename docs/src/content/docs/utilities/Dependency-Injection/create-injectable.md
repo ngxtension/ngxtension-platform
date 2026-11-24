@@ -6,69 +6,109 @@ badge: experimental
 contributors: ['josh-morony', 'chau-tran']
 ---
 
-`createInjectable` returns a class behind the scenes as a way to
-create injectable services and other types of injectables in Angular without using classes and decorators.
+`createInjectable` lets you write an Angular service as a plain function instead of a decorated class. The object your function returns is the service's public API; everything else stays private in the closure. Behind the scenes it creates an `@Injectable` class, so you inject it with `inject()` as usual.
 
-The general difference is that rather than using a class, we use a `function` to
-create the injectable. Whatever the function returns is what will be the
-consumable public API of the service, everything else will be private.
+## Usage
 
-### `providedIn`
+```ts title="counter.service.ts"
+import { computed, signal } from '@angular/core';
+import { createInjectable } from 'ngxtension/create-injectable';
 
-By default, `createInjectable` returns a root service with `providedIn: 'root'`. You can override this by passing in a second argument to `createInjectable`:
+export const CounterService = createInjectable(() => {
+	const count = signal(0); // private
 
-- `scoped`: The service will be scoped to where it is provided in (i.e: `providers` array)
-- `platform`: The service will be scoped to the platform (i.e: `platform-browser`). This is recommended if you create services that are used across multiple apps on the same platform.
-
-### Non-root Service
-
-```ts
-// defining a service
-export const MyService = createInjectable(
-	() => {
-		const myState = signal(1);
-		return { myState: myState.asReadonly() };
-	},
-	{ providedIn: 'scoped' },
-);
+	return {
+		count: count.asReadonly(),
+		double: computed(() => count() * 2),
+		increment: () => count.update((c) => c + 1),
+	};
+});
 ```
 
-```ts
-// provide the service
-{
-	providers: [MyService];
+```angular-ts
+import { Component, inject } from '@angular/core';
+import { CounterService } from './counter.service';
+
+@Component({
+	selector: 'app-counter',
+	template: `
+		<button (click)="counter.increment()">{{ counter.count() }}</button>
+		<p>Double: {{ counter.double() }}</p>
+	`,
+})
+export class Counter {
+	counter = inject(CounterService);
 }
 ```
 
-```ts
-// using the service
-const myService = inject(MyService);
-```
+By default the service is `providedIn: 'root'`, so there is one shared instance and you don't have to provide it anywhere.
 
-### Root Service
+## Inject dependencies
+
+The factory runs in an injection context (the constructor of the generated class), so you can call `inject()` inside it:
 
 ```ts
-// defining a root service
-export const MyService = createInjectable(() => {
-	const myState = signal(1);
-	return { myState: myState.asReadonly() };
+export const TodosService = createInjectable(() => {
+	const http = inject(HttpClient);
+	const todos = signal<Todo[]>([]);
+
+	return {
+		todos: todos.asReadonly(),
+		load: () =>
+			http.get<Todo[]>('/api/todos').subscribe((data) => todos.set(data)),
+	};
 });
 ```
 
+## Scoped services
+
+Pass `{ providedIn: 'scoped' }` to create a service that is not provided in root. Add it to the `providers` of a component, route or `bootstrapApplication`, and each of those injectors gets its own instance.
+
 ```ts
-// using the service
-const myService = inject(MyService);
+export const FormStateService = createInjectable(
+	() => {
+		const dirty = signal(false);
+		return { dirty };
+	},
+	{ providedIn: 'scoped' },
+);
+
+@Component({
+	selector: 'app-edit-user',
+	providers: [FormStateService],
+	template: `
+		...
+	`,
+})
+export class EditUser {
+	formState = inject(FormStateService);
+}
 ```
 
-### Using a named function
+## Named functions
 
-It is possible to use a named function as the `factory` instead of an arrow function. If a named function is used, the name of the function will be used as the name of the service constructor.
+You can pass a named function instead of an arrow function. The class name then includes it, which makes the service easier to recognise in Angular DevTools and error messages.
 
 ```ts
-export const MyService = createInjectable(function MyService() {
-	const myState = signal(1);
-	return { myState: myState.asReadonly() };
+export const CounterService = createInjectable(function CounterService() {
+	const count = signal(0);
+	return { count: count.asReadonly() };
 });
 
-console.log(MyService.name); // MyService
+console.log(CounterService.name); // '_Injectable_CounterService'
 ```
+
+## API
+
+```ts
+function createInjectable<TFactory extends (...args: any[]) => object>(
+	factory: TFactory,
+	options?: { providedIn?: 'root' | 'platform' | 'scoped' },
+): Type<ReturnType<TFactory>>;
+```
+
+| Option       | Type                               | Default  | Description                                                                                                           |
+| ------------ | ---------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
+| `providedIn` | `'root' \| 'platform' \| 'scoped'` | `'root'` | `'root'`: one app-wide instance. `'platform'`: shared by all apps on the page. `'scoped'`: you add it to `providers`. |
+
+The factory runs once per instance, when the service is first injected. Each property of the returned object is exposed on the service through a getter and setter, so reassigning a property on the service updates the object your factory returned.

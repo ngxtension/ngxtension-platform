@@ -1,184 +1,102 @@
 ---
 title: injectLeafActivatedRoute
-description: ngxtension/inject-leaf-activated-route
+description: Get the deepest active route as a signal, from any component, including layouts and the root component.
 entryPoint: ngxtension/inject-leaf-activated-route
 badge: stable
 contributors: ['max-scopp']
 ---
 
-:::note[Router outlet is required]
-`injectLeafActivatedRoute` works on all components that are inside routing context. Make sure the component you are using `injectLeafActivatedRoute` in is part of your routes.
-:::
-
-`injectLeafActivatedRoute` is a helper function that returns a signal containing the deepest (leaf) activated route in the router state tree.
-
-The leaf route is the deepest child route that has no children of its own. This is useful when you need to access route information from the currently active, deepest route regardless of your component's position in the route hierarchy.
-
-Having the leaf route as a signal helps in a modern Angular signals-based architecture and automatically updates whenever navigation ends.
-
-```ts
-import { injectLeafActivatedRoute } from 'ngxtension/inject-leaf-activated-route';
-```
+`injectLeafActivatedRoute` returns a signal with the deepest (leaf) active route in the router state tree. It updates after every navigation. Use it in layouts, headers or the root component when you need the params, query params or data of the page that is currently displayed, not of the route your component belongs to.
 
 ## Usage
 
-### Get the leaf activated route
+```angular-ts
+import { Component, computed } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { injectLeafActivatedRoute } from 'ngxtension/inject-leaf-activated-route';
 
-`injectLeafActivatedRoute` when called, returns a signal with the current leaf activated route.
-
-```ts
 @Component({
-	standalone: true,
+	selector: 'app-root',
+	imports: [RouterOutlet],
 	template: `
-		<div>Current route: {{ leafRoute().snapshot.url }}</div>
-		<div>Route params: {{ leafRoute().snapshot.params | json }}</div>
+		<header>{{ title() }}</header>
+		<router-outlet />
 	`,
 })
-class MyComponent {
-	leafRoute = injectLeafActivatedRoute();
+export class App {
+	leafRoute = injectLeafActivatedRoute(); // Signal<ActivatedRoute>
+
+	title = computed(() => this.leafRoute().snapshot.data['title'] ?? 'My app');
 }
 ```
 
-### Access route parameters from leaf route
+The leaf route is found by following `firstChild` from the root route until a route has no children.
 
-The most common use case is to access route parameters from the deepest active route, regardless of where your component is in the component tree.
+## Why not `inject(ActivatedRoute)`?
+
+`inject(ActivatedRoute)` returns the route the component was created for. With this route config:
 
 ```ts
-@Component({
-	template: `
-		@if (user(); as user) {
-			<div>{{ user.name }}</div>
-		} @else {
-			<div>Loading...</div>
-		}
-	`,
-})
-class ParentComponent {
-	leafRoute = injectLeafActivatedRoute();
-
-	// Access the 'id' param from the leaf route
-	userId = computed(() => this.leafRoute().snapshot.params['id']);
-}
+const routes: Routes = [
+	{
+		path: 'dashboard/:orgId',
+		component: Dashboard,
+		children: [{ path: 'users/:userId', component: UserDetail }],
+	},
+];
 ```
 
-### Access multiple route parameters
+`Dashboard` only sees `orgId` through `inject(ActivatedRoute)`. With `injectLeafActivatedRoute()` it gets the `users/:userId` route, so it can read `userId` too:
 
 ```ts
-@Component({
-	template: `
-		<div>Organization: {{ orgId() }}</div>
-		<div>User: {{ userId() }}</div>
-	`,
-})
-class DashboardComponent {
+export class Dashboard {
 	leafRoute = injectLeafActivatedRoute();
 
-	orgId = computed(() => this.leafRoute().snapshot.params['orgId']);
 	userId = computed(() => this.leafRoute().snapshot.params['userId']);
-}
-```
-
-### Access query parameters
-
-You can also access query parameters from the leaf route:
-
-```ts
-@Component({
-	template: `
-		<div>Search query: {{ searchQuery() }}</div>
-	`,
-})
-class SearchComponent {
-	leafRoute = injectLeafActivatedRoute();
-
-	searchQuery = computed(
-		() => this.leafRoute().snapshot.queryParams['query'] ?? '',
-	);
-}
-```
-
-### Access route data
-
-Access static or resolved data from the leaf route:
-
-```ts
-@Component({
-	template: `
-		<div>Requires auth: {{ requiresAuth() }}</div>
-	`,
-})
-class AdminComponent {
-	leafRoute = injectLeafActivatedRoute();
-
+	search = computed(() => this.leafRoute().snapshot.queryParams['q'] ?? '');
 	requiresAuth = computed(
 		() => this.leafRoute().snapshot.data['requiresAuth'] ?? false,
 	);
 }
 ```
 
-## Why use this over `inject(ActivatedRoute)`?
+:::note
+`snapshot.params` only holds the params of the leaf route itself. To merge the params of every route from the root down to the leaf, use [`injectParams.global()`](/utilities/router/inject-params/#params-from-the-whole-route-hierarchy) or [`injectRouteData.global()`](/utilities/router/inject-route-data/#data-from-the-whole-route-hierarchy), which are built on this function.
+:::
 
-When you inject `ActivatedRoute` directly, you get the route associated with the current component. This might not be the deepest route if you have nested routes with child components.
+## Named outlets
 
-`injectLeafActivatedRoute` always gives you the deepest active route, which is often what you need when you want to access parameters from the currently displayed page, regardless of your component's position in the route hierarchy.
-
-### Example scenario
-
-Consider this route structure:
-
-```
-/dashboard/:orgId/users/:userId
-```
-
-With this component hierarchy:
-
-```
-DashboardComponent (at /dashboard/:orgId)
-  └─ UsersComponent (at users/:userId)
-```
-
-In `DashboardComponent`, if you use `inject(ActivatedRoute)`, you only get access to `orgId`. But with `injectLeafActivatedRoute()`, you can access both `orgId` and `userId` because it gives you the deepest route.
-
-## Reactive updates
-
-The signal automatically updates whenever navigation ends, ensuring it always reflects the current leaf route:
+Pass an outlet name to get the leaf route inside that outlet. The signal holds `null` while nothing is active in the outlet.
 
 ```ts
-@Component({
-	template: `
-		<div>Current user ID: {{ userId() }}</div>
-		<button (click)="navigateToUser('123')">User 123</button>
-		<button (click)="navigateToUser('456')">User 456</button>
-	`,
-})
-class UserListComponent {
-	router = inject(Router);
-	leafRoute = injectLeafActivatedRoute();
+// URL: /home(sidebar:help)
+sidebarLeaf = injectLeafActivatedRoute('sidebar'); // Signal<ActivatedRoute | null>
 
-	userId = computed(() => this.leafRoute().snapshot.params['id']);
-
-	navigateToUser(id: string) {
-		this.router.navigate(['/users', id]);
-		// The userId signal will automatically update after navigation
-	}
-}
+sidebarTitle = computed(() => this.sidebarLeaf()?.snapshot.data['title']);
 ```
 
-## Use with other inject utilities
+## Updates
 
-`injectLeafActivatedRoute` works great with other ngxtension utilities like `injectParams` and `injectQueryParams`, but it's particularly useful when you need access to the full route object or when building reusable components that need to be aware of the current route state.
+The signal emits after every `NavigationEnd` event, even when the leaf route object is the same (for example `/users/1` → `/users/2`, where Angular reuses the route). That keeps `computed`s that read `snapshot` up to date.
+
+:::note[Injection context]
+`injectLeafActivatedRoute` has no `injector` option. Call it in a field initializer, a constructor or another injection context. It stops listening when that context is destroyed.
+:::
+
+## API
 
 ```ts
-import { injectParams } from 'ngxtension/inject-params';
-
-@Component({})
-class MyComponent {
-	// Using injectParams with global option
-	// internally uses injectLeafActivatedRoute
-	userId = injectParams('id', { global: true });
-
-	// Or use injectLeafActivatedRoute directly for more control
-	leafRoute = injectLeafActivatedRoute();
-	allParams = computed(() => this.leafRoute().snapshot.params);
-}
+function injectLeafActivatedRoute(): Signal<ActivatedRoute>;
+function injectLeafActivatedRoute(
+	outlet: string,
+): Signal<ActivatedRoute | null>;
 ```
+
+| Parameter | Type     | Description                                                                                     |
+| --------- | -------- | ----------------------------------------------------------------------------------------------- |
+| `outlet`  | `string` | Optional. The name of a named router outlet to look in. Without it, the primary outlet is used. |
+
+## Related
+
+- [injectParams](/utilities/router/inject-params/), [injectQueryParams](/utilities/router/inject-query-params/) and [injectRouteData](/utilities/router/inject-route-data/) when you only need one value as a signal.
+- [injectNavigationEnd](/utilities/router/navigation-end/): the `NavigationEnd` events this signal is based on.

@@ -1,123 +1,163 @@
 ---
 title: injectLazy
-description: ngxtension/inject-lazy
+description: Lazy-load a service with a dynamic import and get it as an Observable, to keep it out of the initial bundle.
 entryPoint: ngxtension/inject-lazy
 badge: stable
 contributors: ['enea-jahollari']
 ---
 
-`injectLazy` is a helper function that allows us to lazily load a service or any kind of Angular provider.
+`injectLazy` loads a service (or any injectable class) with a dynamic `import()` only when you need it, and gives you the instance as an Observable. The service's code, and everything it imports, ends up in a separate chunk instead of your initial bundle. That's useful for heavy services that only some users or some actions need, like a PDF exporter or a charting library wrapper.
 
-Lazy loading services is useful when we want to shrink the bundle size by loading services only when they are needed.
-
-```ts
-import { injectLazy } from 'ngxtension/inject-lazy';
-```
-
-:::tip[Inside story of the function]
-Initial implementation inspiration: [Lazy loading services in Angular. What?! Yes, we can.](https://itnext.io/lazy-loading-services-in-angular-what-yes-we-can-cfbaf586d54e)
-Enhanced usage + testing: [Lazy loading your services in Angular with tests in mind](https://riegler.fr/blog/2023-09-30-lazy-loading-mockable)
+:::tip[Background]
+Initial idea: [Lazy loading services in Angular. What?! Yes, we can.](https://itnext.io/lazy-loading-services-in-angular-what-yes-we-can-cfbaf586d54e)
+Usage and testing: [Lazy loading your services in Angular with tests in mind](https://riegler.fr/blog/2023-09-30-lazy-loading-mockable)
 :::
 
 ## Usage
 
-`injectLazy` accepts a function that returns a `Promise` of the service. The function will be called only when the service is needed.
+```ts title="report-exporter.service.ts"
+import { Injectable } from '@angular/core';
 
-It can be a normal dynamic import or a default dynamic import from a module.
-
-```ts
-const DataServiceImport = () =>
-	import('./data-service').then((m) => m.MyService);
-// or
-const DataServiceImport = () => import('./data-service');
-```
-
-Then, we can use `injectLazy` to lazily load the service.
-
-```ts data.service.ts
 @Injectable({ providedIn: 'root' })
-export class MyService {
-	data$ = of(1);
-}
-```
-
-```ts test.component.ts
-const DataServiceImport = () =>
-	import('./data-service').then((m) => m.MyService);
-
-@Component({
-	standalone: true,
-	imports: [AsyncPipe],
-	template: '<div>{{data$ | async}}</div>',
-})
-class TestComponent {
-	private dataService$ = injectLazy(DataServiceImport);
-
-	data$ = this.dataService$.pipe(switchMap((s) => s.data$));
-}
-```
-
-We can also use `injectLazy` not in an injection context, by passing an injector to it.
-
-```ts test.component.ts
-const DataServiceImport = () => import('./data-service');
-
-@Component({
-	standalone: true,
-	template: '<div>{{data}}</div>',
-})
-class TestComponent implements OnInit {
-	private injector = inject(Injector);
-
-	data = 0;
-
-	ngOnInit() {
-		injectLazy(DataServiceImport, this.injector) // 👈
-			.pipe(switchMap((s) => s.data$))
-			.subscribe((value) => {
-				this.data = value;
-			});
+export class ReportExporter {
+	exportPdf(data: Report) {
+		/* heavy code */
 	}
 }
 ```
 
-## Testing
+```angular-ts title="report.component.ts"
+import { Component } from '@angular/core';
+import { injectLazy } from 'ngxtension/inject-lazy';
 
-In order to test the lazy injected service we can mock them using `mockLazyProvider`.
+@Component({
+	selector: 'app-report',
+	template: `<button (click)="export()">Export PDF</button>`,
+})
+export class ReportPage {
+	private exporter$ = injectLazy(
+		async () => (await import('./report-exporter.service')).ReportExporter,
+	);
 
-### Testing Example
+	report = {} as Report;
 
-Let's test the below component
+	export() {
+		this.exporter$.subscribe((exporter) => exporter.exportPdf(this.report));
+	}
+}
+```
+
+Nothing is downloaded until `exporter$` is subscribed to, here on the first click. Calling `injectLazy` alone doesn't load anything.
+
+## Default exports
+
+If the file has a `default` export, return the module directly:
+
+```ts title="report-exporter.service.ts"
+@Injectable({ providedIn: 'root' })
+export default class ReportExporter {
+	/* ... */
+}
+```
 
 ```ts
-const MyDataServiceImport = () =>
-	import('./my-data.service.ts').then((x) => x.MyDataService);
+private exporter$ = injectLazy(() => import('./report-exporter.service'));
+```
 
-@Component({})
+## Combine with other streams
+
+Because you get an Observable, you can switch to the service's own Observables:
+
+```angular-ts
+import { AsyncPipe } from '@angular/common';
+import { Component } from '@angular/core';
+import { injectLazy } from 'ngxtension/inject-lazy';
+import { switchMap } from 'rxjs';
+
+@Component({
+	selector: 'app-stats',
+	imports: [AsyncPipe],
+	template: '<div>{{ stats$ | async }}</div>',
+})
+export class Stats {
+	private statsService$ = injectLazy(
+		async () => (await import('./stats.service')).StatsService,
+	);
+
+	stats$ = this.statsService$.pipe(switchMap((service) => service.stats$));
+}
+```
+
+## Outside an injection context
+
+Pass an `Injector` as the second argument to call it outside a field initializer or constructor:
+
+```ts
+export class Stats implements OnInit {
+	private injector = inject(Injector);
+
+	ngOnInit() {
+		injectLazy(() => import('./stats.service'), this.injector)
+			.pipe(switchMap((service) => service.stats$))
+			.subscribe((value) => console.log(value));
+	}
+}
+```
+
+:::note[Where the instance lives]
+When you call `injectLazy` in a component or directive, the service is created in a new environment injector, a child of the closest environment injector, that is destroyed with the component. Later subscriptions to the same `injectLazy` Observable reuse that instance, but it is not the singleton the rest of the app gets with `inject()`. When you call it in a service (an environment injector), you get the service from that injector as usual.
+:::
+
+## Testing
+
+Replace a lazy service with a mock using `mockLazyProvider`. Given this component:
+
+```ts
+const MyDataServiceImport = async () =>
+	(await import('./my-data.service')).MyDataService;
+
+@Component({ selector: 'app-test', template: '' })
 class TestComponent {
 	myLazyService$ = injectLazy(MyDataServiceImport);
 }
 ```
 
-In our test file we can do this:
+Provide the mock in the test:
 
 ```ts
 import { mockLazyProvider } from 'ngxtension/inject-lazy';
+import { MyDataService } from './my-data.service';
 
-@Injectable()
 class MyDataServiceMock {
 	hello = 'world';
 }
 
-beforeEach(async () => {
+beforeEach(() => {
 	TestBed.configureTestingModule({
-		providers: [
-			// 👇 here we provide mocked service
-			mockLazyProvider(MyDataService, MyDataServiceMock),
-		],
+		providers: [mockLazyProvider(MyDataService, MyDataServiceMock)],
 	});
 	fixture = TestBed.createComponent(TestComponent);
 });
 ```
 
-Now the component will use the mocked version of the service.
+`injectLazy` now emits a `MyDataServiceMock` instance. The mock is created with `new`, not through DI, so it can't use `inject()`.
+
+## API
+
+```ts
+function injectLazy<T>(
+	loader: () =>
+		| Promise<ProviderToken<T>>
+		| Promise<{ default: ProviderToken<T> }>,
+	injector?: Injector,
+): Observable<T>;
+
+function mockLazyProvider<T>(type: Type<T>, mock: Type<unknown>): Provider[];
+```
+
+| Parameter  | Type                                       | Description                                                               |
+| ---------- | ------------------------------------------ | ------------------------------------------------------------------------- |
+| `loader`   | `() => Promise<Type \| { default: Type }>` | A function that dynamically imports the service class.                    |
+| `injector` | `Injector`                                 | Optional. Use it when you call `injectLazy` outside an injection context. |
+
+The loader runs each time the Observable is subscribed to. The browser caches the downloaded chunk, so only the first call hits the network.

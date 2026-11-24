@@ -4,107 +4,204 @@ description: An Angular directive and function for listening to element resize e
 badge: stable
 entryPoint: ngxtension/resize
 contributors: ['tomer']
+sidebar:
+  order: 60
 ---
 
-import { Tabs, TabItem } from '@astrojs/starlight/components';
+`ngxtension/resize` tells you when an element changes size, with its new width, height and position. It uses a
+`ResizeObserver` (and optionally scroll listeners) set up outside the Angular zone, and cleans everything up for you.
 
-## Import
+The entry point gives you two ways to use it:
 
-```ts
-import { NgxResize, injectResize } from 'ngxtension/resize';
-```
-
-`resize` entry point exposes 2 symbols:
-
-- `injectResize()`: a CIF that observes the resize event on the Host element of the component
-- `NgxResize`: a directive that can observe the resize event of any element that it is attached on
-
-Both emit resize result outside of [Angular Zone](https://angular.dev/best-practices/zone-pollution) by default but both provide way to configure the behavior.
+- `NgxResize`: a directive you put on any element in a template, with the `(ngxResize)` output.
+- `injectResize()`: a function that observes the host element of the component or directive that calls it, and
+  returns an `Observable<ResizeResult>`.
 
 ## Usage
 
-### `injectResize`
+Put `NgxResize` on the element you want to observe and listen to `(ngxResize)`.
 
-`injectResize` returns an `Observable<ResizeResult>` (see [ResizeResult TBD]())
+```angular-ts
+import { Component, signal } from '@angular/core';
+import { NgxResize, type ResizeResult } from 'ngxtension/resize';
 
-```ts
-export class App {
-	resize$ = injectResize(); // Observable<ResizeResult>
+@Component({
+	selector: 'app-chart-panel',
+	imports: [NgxResize],
+	template: `
+		<div class="panel" (ngxResize)="onResize($event)">
+			{{ width() }} × {{ height() }}
+		</div>
+	`,
+})
+export class ChartPanel {
+	readonly width = signal(0);
+	readonly height = signal(0);
+
+	onResize({ width, height }: ResizeResult) {
+		this.width.set(width);
+		this.height.set(height);
+	}
 }
 ```
 
-### `NgxResize`
+The first event arrives on the first resize observation, which browsers report shortly after the element is rendered.
 
-<Tabs>
-	<TabItem label="html">
+## Observe the host element with `injectResize`
+
+Call `injectResize()` in an injection context to observe the host element of the current component or directive. It
+returns a lazy, shared `Observable<ResizeResult>`: nothing is observed until you subscribe, and the observer stops when
+the last subscriber unsubscribes.
+
+```angular-ts
+import { Component } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { injectResize } from 'ngxtension/resize';
+import { map } from 'rxjs';
+
+@Component({
+	selector: 'app-responsive-card',
+	host: { '[class.compact]': 'compact()' },
+	template: `
+		<ng-content />
+	`,
+})
+export class ResponsiveCard {
+	readonly compact = toSignal(
+		injectResize().pipe(map(({ width }) => width < 400)),
+		{ initialValue: false },
+	);
+}
+```
+
+`toSignal` subscribes for you and unsubscribes when the component is destroyed.
+
+### With `hostDirectives`
+
+If you prefer outputs over Observables, attach `NgxResize` to the host with `hostDirectives`:
+
+```angular-ts
+import { Component } from '@angular/core';
+import { NgxResize, type ResizeResult } from 'ngxtension/resize';
+
+@Component({
+	selector: 'app-sidebar',
+	hostDirectives: [{ directive: NgxResize, outputs: ['ngxResize'] }],
+	host: { '(ngxResize)': 'onResize($event)' },
+	template: `
+		<ng-content />
+	`,
+})
+export class Sidebar {
+	onResize(result: ResizeResult) {
+		console.log(result.width);
+	}
+}
+```
+
+## Options
+
+Pass a partial `ResizeOptions` object; it is merged with the defaults (or with the options you provided globally).
+
+```ts
+// injectResize
+injectResize({ box: 'border-box', emitInitialResult: true });
+```
 
 ```html
-<div (ngxResize)="onResize($event)">
-	<!-- content -->
-</div>
+<!-- NgxResize -->
+<div
+	(ngxResize)="onResize($event)"
+	[ngxResizeOptions]="{ box: 'border-box' }"
+></div>
 ```
 
-  </TabItem>
-	<TabItem label="ts">
+### Emit the initial size
+
+By default you get a result only when the `ResizeObserver` reports a change. Set `emitInitialResult: true` to also get
+one result as soon as you subscribe.
+
+### Track position on scroll
+
+The result includes the element's position (`top`, `left`, `x`, `y`, …) from `getBoundingClientRect()`. Scrolling
+changes the position without resizing the element. Set `scroll: true` to also recompute on scroll of the window and of
+every scrollable ancestor.
+
+### Stay outside the Angular zone
+
+Results are emitted inside the Angular zone by default (`emitInZone: true`), so each emission can trigger change
+detection in apps that use zone.js. Set `emitInZone: false` when you handle the result without touching the view, for
+example to update a canvas.
+
+### Global options
+
+Use `provideResizeOptions()` to change the options for the whole app, a route or a component subtree. It replaces the
+defaults instead of merging with them, so start from `defaultResizeOptions`:
 
 ```ts
-@Component({
-	imports: [NgxResize],
-	templateUrl: './app.html',
-})
-export class App {
-	onResize(event: ResizeResult) {
-		// runs outside of Angular Zone by default
-	}
-}
+import { bootstrapApplication } from '@angular/platform-browser';
+import type { Routes } from '@angular/router';
+import { defaultResizeOptions, provideResizeOptions } from 'ngxtension/resize';
+
+// the whole application
+bootstrapApplication(App, {
+	providers: [
+		provideResizeOptions({ ...defaultResizeOptions, emitInZone: false }),
+	],
+});
+
+// a route and its children
+const routes: Routes = [
+	{
+		path: 'dashboard',
+		component: Dashboard,
+		providers: [
+			provideResizeOptions({ ...defaultResizeOptions, scroll: true }),
+		],
+	},
+];
 ```
 
-  </TabItem>
-</Tabs>
+Options passed to `injectResize()` or `[ngxResizeOptions]` still override the global ones.
 
-If you are not a fan of `inject()`, you can also use `NgxResize` on the Host element by leveraging `hostDirectives`
+## API
 
 ```ts
-@Component({
-	hostDirectives: [{ directive: NgxResize, outputs: ['ngxResize'] }],
-})
-export class App {
-	@HostListener('ngxResize', ['$event'])
-	onResize(event: ResizeResult) {
-		// listen for resize event from NgxResize
-	}
-}
+function injectResize(
+	options?: Partial<ResizeOptions>,
+): Observable<ResizeResult>;
+
+function provideResizeOptions(
+	options: ResizeOptions | (() => ResizeOptions),
+): Provider;
 ```
+
+`NgxResize` (selector `[ngxResize]`) has the input `ngxResizeOptions: Partial<ResizeOptions>` (read once, on init) and
+the output `ngxResize: ResizeResult`.
 
 ### `ResizeOptions`
 
-We can pass in specific `ResizeOptions` to each approach:
+| Option              | Type                                           | Default                     | Description                                                                                                                                               |
+| ------------------- | ---------------------------------------------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `box`               | `ResizeObserverBoxOptions`                     | `'content-box'`             | Which box the `ResizeObserver` watches: `'content-box'`, `'border-box'` or `'device-pixel-content-box'`.                                                  |
+| `debounce`          | `number \| { scroll: number; resize: number }` | `{ scroll: 50, resize: 0 }` | Debounce in milliseconds for scroll and window resize recalculations. A number applies to both. The whole stream is also debounced by the `scroll` value. |
+| `scroll`            | `boolean`                                      | `false`                     | Also recompute on scroll of the window and scrollable ancestors.                                                                                          |
+| `offsetSize`        | `boolean`                                      | `false`                     | Use `offsetWidth`/`offsetHeight` for `width`/`height` instead of `getBoundingClientRect()`, which includes CSS transforms.                                |
+| `emitInZone`        | `boolean`                                      | `true`                      | Emit results inside the Angular zone.                                                                                                                     |
+| `emitInitialResult` | `boolean`                                      | `false`                     | Emit a result as soon as you subscribe, before the first resize.                                                                                          |
 
-```ts
-injectResize(someOptions);
-```
+### `ResizeResult`
 
-```html
-<div (ngxResize)="onResize($event)" [ngxResizeOptions]="someOptions">
-	<div></div>
-</div>
-```
+| Property                                   | Type                                 | Description                                                                      |
+| ------------------------------------------ | ------------------------------------ | -------------------------------------------------------------------------------- |
+| `width`, `height`                          | `number`                             | Size of the element (from `getBoundingClientRect()` unless `offsetSize` is set). |
+| `x`, `y`, `top`, `right`, `bottom`, `left` | `number`                             | Position of the element relative to the viewport.                                |
+| `dpr`                                      | `number`                             | `window.devicePixelRatio` at the time of the result.                             |
+| `entries`                                  | `ReadonlyArray<ResizeObserverEntry>` | The latest raw `ResizeObserver` entries.                                         |
 
-To provide `ResizeOptions` globally to the application or to a sub component tree (via `Route#providers`), we can use `provideResizeOptions()`
+## Notes
 
-```ts
-// Standalone
-bootstrapApplication(App, { providers: [provideResizeOptions(globalOptions)] });
-
-// AppModule
-@NgModule({
-	providers: [provideResizeOptions(globalOptions)],
-})
-export class AppModule {}
-
-// Route#provider (equivalent to Lazy-load modules)
-const route = {
-	path: 'some-path',
-	providers: [provideResizeOptions(subTreeGlobalOptions)],
-};
-```
+- **SSR**: on the server the Observable completes without emitting, so it is safe to use in server-rendered apps.
+- **Browser support**: if `ResizeObserver` isn't available, the Observable errors. Add a polyfill if you support such
+  browsers.
+- **Injection context**: `injectResize()` has no `injector` option. Call it in a constructor or field initializer.

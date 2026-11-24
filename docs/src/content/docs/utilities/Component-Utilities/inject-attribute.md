@@ -1,77 +1,70 @@
 ---
 title: injectAttribute
-description: ngxtension/inject-attribute
+description: Read a static host attribute with inject(), with a default value and optional type conversion.
 entryPoint: ngxtension/inject-attribute
 badge: stable
 contributors: ['SkyZeroZx']
 ---
 
-`injectAttribute` is a small utility built on top of `HostAttributeToken` that lets you read host attributes through `inject()`.  
-It's ideal for **static, initialization-time configuration**, since—unlike `input()` attributes are resolved **once** and never updated later.
+`injectAttribute` reads a static attribute from the host element through `inject()`. It wraps Angular's `HostAttributeToken` and adds a default value and an optional `transform`.
 
-```ts
-import { injectAttribute } from 'ngxtension/inject-attribute';
-```
+Use it for configuration that is set once in the template, like a size or a variant. Unlike `input()`, the value is read once when the component is created and never updates, so there is no change tracking to pay for.
 
 ## Usage
 
-### Basic usage with default value
+```angular-ts
+import { Component } from '@angular/core';
+import { injectAttribute } from 'ngxtension/inject-attribute';
 
-```ts
 @Component({
 	selector: 'app-divider',
-	standalone: true,
+	template: `<hr [class]="'divider-' + size" />`,
 })
-class Divider {
+export class Divider {
 	size = injectAttribute('size', 'sm');
 }
 ```
 
 ```html
 <app-divider size="lg" />
+<!-- size === 'lg' -->
+
+<app-divider />
+<!-- size === 'sm' -->
 ```
 
-If the `size` attribute is not provided, it defaults to `'sm'`.
+:::note
+Only static attributes are read. A property binding such as `[size]="mySize"` is not an attribute, so `injectAttribute` falls back to the default value.
+:::
 
-### Required attributes
+## Required attributes
 
-Use `injectAttribute.required()` when an attribute must be provided:
+Use `injectAttribute.required()` when the attribute must be present. It has no default value.
 
 ```ts
-@Component({
-	selector: 'app-card',
-	standalone: true,
-})
-class Card {
+@Component({ selector: 'app-card', template: '<ng-content />' })
+export class Card {
 	variation = injectAttribute.required<string>('variation');
 }
 ```
 
 ```html
-<app-card variation="primary"></app-card>
+<app-card variation="primary" />
 ```
 
-If the attribute is missing, Angular throws an error: `NG0201: No provider for HostAttributeToken variation found`
+If the attribute is missing, Angular throws `NG0201: No provider for HostAttributeToken variation found`.
 
-### Type coercion with transform
+## Convert the value with `transform`
 
-Since host attributes are always strings, use the `transform` option to convert them to other types:
+Attribute values are always strings. Pass a `transform` to convert them. Angular's `numberAttribute` and `booleanAttribute` work here.
 
 ```ts
-const numberAttribute = (value: string) => Number(value);
-const booleanAttribute = (value: string) => value !== null;
+import { booleanAttribute, Component, numberAttribute } from '@angular/core';
+import { injectAttribute } from 'ngxtension/inject-attribute';
 
-@Component({
-	selector: 'app-paginator',
-	standalone: true,
-})
-class Paginator {
-	// Convert string to number
-	pageSize = injectAttribute('pageSize', 10, {
-		transform: numberAttribute,
-	});
-
-	// Convert string to boolean
+@Component({ selector: 'app-paginator', template: '' })
+export class Paginator {
+	pageSize = injectAttribute('pageSize', 10, { transform: numberAttribute });
 	disabled = injectAttribute('disabled', false, {
 		transform: booleanAttribute,
 	});
@@ -80,4 +73,28 @@ class Paginator {
 
 ```html
 <app-paginator pageSize="20" disabled />
+<!-- pageSize === 20, disabled === true -->
 ```
+
+The `transform` only runs when the attribute is present. The default value is returned as is.
+
+## API
+
+```ts
+function injectAttribute<T>(
+	key: string,
+	defaultValue: T,
+	options?: InjectAttributeOptions<T>,
+): T;
+
+namespace injectAttribute {
+	function required<T>(key: string, options?: InjectAttributeOptions<T>): T;
+}
+```
+
+| Option      | Type                   | Default     | Description                                                          |
+| ----------- | ---------------------- | ----------- | -------------------------------------------------------------------- |
+| `transform` | `(value: string) => T` | `undefined` | Converts the attribute string to another type.                       |
+| `injector`  | `Injector`             | `undefined` | Use it when you call `injectAttribute` outside an injection context. |
+
+The return value is a plain value, not a signal.

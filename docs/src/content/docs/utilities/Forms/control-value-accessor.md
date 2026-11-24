@@ -6,74 +6,52 @@ badge: stable
 contributors: ['robby-rabbitman']
 ---
 
-`NgxControlValueAccessor` is a directive to reduce boilerplate when building components, which implement the [ControlValueAccessor](https://angular.dev/api/forms/ControlValueAccessor) interface.
-
-## Import
-
-```typescript
-import { NgxControlValueAccessor } from 'ngxtension/control-value-accessor';
-```
+`NgxControlValueAccessor` is a host directive that implements Angular's [`ControlValueAccessor`](https://angular.dev/api/forms/ControlValueAccessor) for you. Add it to `hostDirectives`, inject it, and wire your template to a value signal, a disabled signal and a `markAsTouched()` function. Your custom input then works with `[formControl]`, `formControlName` and `[(ngModel)]`, without writing `writeValue`, `registerOnChange` or an `NG_VALUE_ACCESSOR` provider.
 
 ## Usage
 
-`NgxControlValueAccessor` implements the [ControlValueAccessor](https://angular.dev/api/forms/ControlValueAccessor) interface and exposes a _simpler_ api. Declare `NgxControlValueAccessor` in the `hostDirectives` section of your component and inject the instance in order to wire up your template:
+```angular-ts
+import { Component, inject } from '@angular/core';
+import { NgxControlValueAccessor } from 'ngxtension/control-value-accessor';
 
-- `NgxControlValueAccessor.value` for syncing the value
-- `NgxControlValueAccessor.disabled` for syncing the disabled state
-- `NgxControlValueAccessor.markAsTouched` for marking the view as _touched_
-
-The value and disabled state are also available as signals:
-
-- `NgxControlValueAccessor.value$`
-- `NgxControlValueAccessor.disabled$`
-
-### Example
-
-In this example `NgxControlValueAccessor` is used to create a `CustomInput` component.
-
-```ts
 @Component({
-	selector: 'custom-input',
+	selector: 'app-custom-input',
 	hostDirectives: [NgxControlValueAccessor],
 	template: `
 		<label>
 			<b>Custom label</b>
 			<input
+				#input
 				type="text"
-				(input)="cva.value = $event.target.value"
 				[value]="cva.value$()"
 				[disabled]="cva.disabled$()"
+				(input)="cva.value = input.value"
 				(blur)="cva.markAsTouched()"
 			/>
 		</label>
 	`,
-	standalone: true,
 })
 export class CustomInput {
-	protected cva = inject<NgxControlValueAccessor<string>>(
-		NgxControlValueAccessor,
-	);
+	protected cva = inject<NgxControlValueAccessor<string>>(NgxControlValueAccessor);
 }
 ```
 
-With usage:
+Use it like any other form control:
 
 ```html
-<custom-input [formControl]="control" />
-<custom-input [(ngModel)]="value" />
+<app-custom-input [formControl]="control" />
+<app-custom-input [(ngModel)]="value" />
 ```
 
-## Non Primitive Values
+From the injected directive you use:
 
-When your model is a non primitive datatype, you should provide a _comparator_. It is a pure function which tells `NgxControlValueAccessor`, whether two values are _semantically_ equal:
+- `value$` and `disabled$`: signals that reflect the control's value and disabled state.
+- `value = x`: sets the value and notifies the form control.
+- `markAsTouched()`: marks the control as touched; call it on `blur`.
 
-```ts
-(a, b) => boolean;
-```
+## Object values
 
-### Example
-
-In this example `NgxControlValueAccessor` is used to create a `User` select. A `User` is identified by its `id`.
+For objects, tell `NgxControlValueAccessor` when two values are the same with a comparator `(a, b) => boolean`. Without one, values are compared with `Object.is`, so a new object with the same content counts as a change.
 
 ```ts
 interface User {
@@ -86,30 +64,37 @@ const userComparator: NgxControlValueAccessorCompareTo<User> = (a, b) =>
 
 provideCvaCompareTo(userComparator, true);
 
-// or
-
+// or, when one property identifies the object
 provideCvaCompareToByProp<User>('id');
 ```
 
-Full example:
+The second argument `true` of `provideCvaCompareTo` tells it that the function is the value, not a factory that returns the value.
 
-```ts
+Here is a user select that compares users by `id`:
+
+```angular-ts
+import { Component, inject, input } from '@angular/core';
+import {
+	NgxControlValueAccessor,
+	provideCvaCompareToByProp,
+} from 'ngxtension/control-value-accessor';
+
 @Component({
-	selector: 'user-select',
-	standalone: true,
+	selector: 'app-user-select',
 	hostDirectives: [NgxControlValueAccessor],
 	providers: [provideCvaCompareToByProp<User>('id')],
 	template: `
 		<label>
 			<b>Select a user:</b>
 			<select
+				#select
 				[disabled]="cva.disabled$()"
+				(change)="selectUser(select.value)"
 				(blur)="cva.markAsTouched()"
-				(change)="onChange($event)"
 			>
-				<option [selected]="cva.value === null">-- no user selected --</option>
-				@for (user of users; track user.id) {
-					<option [value]="user.id" [selected]="user.id === cva.value?.id">
+				<option value="" [selected]="cva.value$() === null">-- no user selected --</option>
+				@for (user of users(); track user.id) {
+					<option [value]="user.id" [selected]="user.id === cva.value$()?.id">
 						{{ user.name }}
 					</option>
 				}
@@ -118,75 +103,72 @@ Full example:
 	`,
 })
 export class UserSelect {
-	protected cva = inject<NgxControlValueAccessor<User | null>>(
-		NgxControlValueAccessor,
-	);
+	protected cva = inject<NgxControlValueAccessor<User | null>>(NgxControlValueAccessor);
 
-	protected onChange = (event: Event) =>
-		(this.cva.value =
-			this.users.find(({ id }) => event.target.value === id) ?? null);
+	users = input<User[]>([]);
 
-	@Input()
-	users: User[] = [];
+	protected selectUser(id: string) {
+		this.cva.value = this.users().find((user) => user.id === id) ?? null;
+	}
 }
 ```
 
-With usage:
-
 ```html
-<user-select [formControl]="userControl" [users]="users" />
-<user-select [(ngModel)]="user" [users]="users" />
+<app-user-select [formControl]="userControl" [users]="users" />
+<app-user-select [(ngModel)]="user" [users]="users" />
 ```
 
-## Without `NgControl`
+## Without a form control
 
-Optionally you can expose `inputs` and `outputs` in the `hostDirectives` declaration
-and use it without a `NgControl` directive.
-
-```ts
-hostDirectives: [
-	{
-		directive: NgxControlValueAccessor,
-		inputs: ['value'],
-		outputs: ['valueChange'],
-	},
-];
-```
-
-```html
-<custom-input [(value)]="value" />
-```
-
-## Transform Values
-
-You can provide a `transform` function that transforms incoming model values - basically intercepting `writeValue` of `ControlValueAccessor`.
-
-> You can reuse the `transform` function when view values should be transformed aswell.
-
-Checkout the example below of an _uppercase input_.
+To use the component without `[formControl]` or `[(ngModel)]`, expose the directive's `value` input and `valueChange` output in `hostDirectives`:
 
 ```ts
 @Component({
-	selector: 'uppercase-input',
+	selector: 'app-custom-input',
+	hostDirectives: [
+		{
+			directive: NgxControlValueAccessor,
+			inputs: ['value'],
+			outputs: ['valueChange'],
+		},
+	],
+	template: `
+		...
+	`,
+})
+export class CustomInput {}
+```
+
+```html
+<app-custom-input [(value)]="value" />
+```
+
+You can expose `disabled` and `compareTo` the same way.
+
+## Transform incoming values
+
+A `transform` function is applied to every value the form writes into your component (it intercepts `writeValue`). Call it yourself in the template if values typed by the user should be transformed too. This uppercase input does both:
+
+```angular-ts
+import { Component, inject } from '@angular/core';
+import { NgxControlValueAccessor } from 'ngxtension/control-value-accessor';
+
+@Component({
+	selector: 'app-uppercase-input',
 	hostDirectives: [NgxControlValueAccessor],
 	template: `
-		<label>
-			My label
-			<input
-				type="text"
-				(input)="cva.value = cva.transform($event.target.value)"
-				[value]="cva.value$()"
-				[disabled]="cva.disabled$()"
-				(blur)="cva.markAsTouched()"
-			/>
-		</label>
+		<input
+			#input
+			type="text"
+			[value]="cva.value$()"
+			[disabled]="cva.disabled$()"
+			(input)="cva.value = cva.transform(input.value)"
+			(blur)="cva.markAsTouched()"
+		/>
 	`,
-	standalone: true,
 })
 export class UppercaseInput {
-	protected cva = inject<NgxControlValueAccessor<string>>(
-		NgxControlValueAccessor,
-	);
+	protected cva = inject<NgxControlValueAccessor<string>>(NgxControlValueAccessor);
 
 	constructor() {
 		this.cva.transform = (value: string) => value.toUpperCase();
@@ -194,8 +176,43 @@ export class UppercaseInput {
 }
 ```
 
-You can also provide a `transform` function using `provideCvaTransform`.
+You can also provide it with DI:
 
 ```ts
-provideCvaTransform((value: string) => value.toUpperCase(), true);
+providers: [provideCvaTransform((value: string) => value.toUpperCase(), true)];
 ```
+
+## Default value
+
+Without a form control, the initial value is `null`. Change it with `provideCvaDefaultValue`:
+
+```ts
+providers: [provideCvaDefaultValue('')];
+```
+
+## API
+
+### `NgxControlValueAccessor<T>`
+
+| Member            | Type                                   | Description                                                                      |
+| ----------------- | -------------------------------------- | -------------------------------------------------------------------------------- |
+| `value$`          | `WritableSignal<T>`                    | The current value. Reflects the form control's value when there is one.          |
+| `value`           | `T` (getter/setter, `@Input`)          | Read or set the value. Setting it notifies the form control.                     |
+| `disabled$`       | `WritableSignal<boolean>`              | Whether the control is disabled.                                                 |
+| `disabled`        | `boolean` (getter/setter, `@Input`)    | Read or set the disabled state. Setting it enables or disables the form control. |
+| `compareTo`       | `(a?: T, b?: T) => boolean` (`@Input`) | Decides whether two values are equal. Defaults to `Object.is`.                   |
+| `valueChange`     | `Observable<T>` (`@Output`)            | Emits when the value changes.                                                    |
+| `markAsTouched()` | `() => void`                           | Marks the form control as touched.                                               |
+| `transform`       | `(value: any) => T`                    | Applied to values written by the form. Defaults to identity.                     |
+| `ngControl`       | `NgControl \| null`                    | The `NgControl` on the host element, if any.                                     |
+
+### Providers
+
+```ts
+provideCvaCompareTo(compareTo: NgxControlValueAccessorCompareTo, isFunctionValue: true);
+provideCvaCompareToByProp<T>(prop: keyof T);
+provideCvaTransform(transform: NgxControlValueAccessorTransform, isFunctionValue: true);
+provideCvaDefaultValue(value: any);
+```
+
+Each provider function is created with [`createInjectionToken`](/utilities/dependency-injection/create-injection-token/). Pass `true` as the second argument when you provide the function itself, as in the examples above.

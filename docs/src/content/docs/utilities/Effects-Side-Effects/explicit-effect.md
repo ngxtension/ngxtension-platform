@@ -1,15 +1,14 @@
 ---
 title: explicitEffect
-description: ngxtension/explicit-effect
+description: An effect that only tracks the signals you list, and runs its body untracked.
 entryPoint: ngxtension/explicit-effect
 badge: stable
 contributors: ['jeanmeche', 'enea-jahollari']
 ---
 
-`explicitEffect` is a helper function that allows you to create an effect that only depends on the provided signals in the deps array.
-It will run the effect function only when the signals in the deps array change.
+`explicitEffect` creates an effect that depends only on the signals you list. Everything inside the effect body runs untracked, so reading or writing other signals there never adds hidden dependencies. You see at a glance what makes the effect run.
 
-Think about this pattern:
+It replaces this common pattern:
 
 ```ts
 import { untracked } from '@angular/core';
@@ -26,9 +25,7 @@ effect(() => {
 });
 ```
 
-This pattern is very common in Angular apps, and it's used to prevent unnecessary signal reads or writes when the effect function is called.
-
-`explicitEffect` is a helper function that does exactly this, but in a more explicit way.
+with:
 
 ```ts
 explicitEffect([this.count, this.state], ([count, state]) => {
@@ -36,58 +33,103 @@ explicitEffect([this.count, this.state], ([count, state]) => {
 });
 ```
 
-```ts
-import { explicitEffect } from 'ngxtension/explicit-effect';
-```
-
 ## Usage
 
-`explicitEffect` accepts an array of signals and a function that will be called when the signals change.
-The deps array accepts:
+```angular-ts
+import { Component, inject, signal } from '@angular/core';
+import { explicitEffect } from 'ngxtension/explicit-effect';
+import { Analytics } from './analytics';
 
-- Signals (also computed signals)
-- Writable signals
-- Functions that have signal reads as dependencies (ex: `() => this.count()`)
+@Component({
+	selector: 'app-search',
+	template: `<input [value]="query()" (input)="query.set($any($event.target).value)" />`,
+})
+export class Search {
+	private readonly analytics = inject(Analytics);
+
+	readonly query = signal('');
+	readonly page = signal(1);
+	readonly userId = signal('anonymous');
+
+	constructor() {
+		// Runs when query or page change. Reading userId() inside doesn't make it a dependency.
+		explicitEffect([this.query, this.page], ([query, page]) => {
+			this.analytics.track('search', { query, page, user: this.userId() });
+		});
+	}
+}
+```
+
+The deps array accepts any mix of:
+
+- signals, including `input()` and `computed()` signals,
+- writable signals,
+- functions that read signals, such as `() => this.count() * 2`.
 
 ```ts
 const count = signal(0);
 const state = signal('idle');
 const doubleCount = computed(() => count() * 2);
-const result = () => count() + doubleCount();
+const sum = () => count() + doubleCount();
 
 explicitEffect(
-	[count, state, doubleCount, result],
-	([count, state, doubleCount, result]) => {
-		console.log(`count updated ${count}, ${state}, ${doubleCount}, ${result}`);
+	[count, state, doubleCount, sum],
+	([count, state, doubleCount, sum]) => {
+		console.log(count, state, doubleCount, sum);
 	},
 );
 ```
 
+The values arrive in the same order as the deps, with their types preserved.
+
 ## Cleanup
 
-An optional second argument can be provided to the `explicitEffect` function that will be called when the effect is cleaned up.
+The callback receives an `onCleanup` function as its second argument. The cleanup runs before the next run and when the effect is destroyed:
 
 ```ts
-const count = signal(0);
-explicitEffect([count], ([count], cleanup) => {
-	console.log(`count updated ${count}`);
-	cleanup(() => console.log('cleanup'));
+explicitEffect([this.userId], ([userId], onCleanup) => {
+	const timer = setInterval(() => this.poll(userId), 5000);
+	onCleanup(() => clearInterval(timer));
 });
 ```
 
-## Defer
+## Skip the first run
 
-In addition to the regular `effect` options, you can also pass a `defer` value as part of the third object argument of `explicitEffect`. This allows the computation not to execute immediately and only run on first deps change.
+Effects run once when created. Pass `defer: true` to skip that run and only react to later changes:
 
 ```ts
 const count = signal(0);
+
 explicitEffect(
 	[count],
 	([count]) => {
-		console.log(`count updated ${count}`);
+		console.log(`count changed to ${count}`);
 	},
 	{ defer: true },
 );
 
-count.set(1); // this set will trigger the effect function call, not the initial value
+count.set(1); // the callback runs for this change, not for the initial 0
 ```
+
+## API
+
+```ts
+function explicitEffect<Input extends readonly unknown[], Params = Input>(
+	deps: readonly [...{ [K in keyof Input]: () => Input[K] }],
+	fn: (deps: Params, onCleanup: EffectCleanupRegisterFn) => void,
+	options?: CreateEffectOptions & { defer?: boolean },
+): EffectRef;
+```
+
+| Option          | Type       | Default         | Description                                                            |
+| --------------- | ---------- | --------------- | ---------------------------------------------------------------------- |
+| `defer`         | `boolean`  | `false`         | Skip the first run; only run on the first change of a dep.             |
+| `injector`      | `Injector` | current context | Needed outside an injection context, like any `effect`.                |
+| `manualCleanup` | `boolean`  | `false`         | Don't destroy the effect with its injector; call `destroy()` yourself. |
+
+The other Angular `effect` options are passed through. Returns the `EffectRef`.
+
+## Related
+
+- [`on`](/utilities/effects-side-effects/on/) gives the same explicit dependencies inside a regular `effect()`, plus previous values.
+- [`effectOnceIf`](/utilities/effects-side-effects/effect-once-if/) runs an effect once when a condition becomes true.

@@ -1,94 +1,119 @@
 ---
 title: signalHistory
-description: ngxtension/signal-history
+description: Records the changes of a writable signal and gives you undo, redo, reset and clear.
 entryPoint: ngxtension/signal-history
 contributors: ['enea-jahollari']
 ---
 
-`signalHistory` is a helper function that allows you to track the history of a signal and provides undo/redo functionality.
-
-```ts
-import { signalHistory } from 'ngxtension/signal-history';
-```
+`signalHistory` watches a writable signal and records each new value, so you can add undo and redo to forms, editors or drawing tools without keeping your own stacks. It returns the history as a signal plus `undo`, `redo`, `canUndo` and `canRedo` that you can bind straight to buttons.
 
 ## Usage
 
-`signalHistory` needs a signal as an argument and returns an object with the following properties:
+```angular-ts
+import { JsonPipe } from '@angular/common';
+import { Component, signal } from '@angular/core';
+import { signalHistory } from 'ngxtension/signal-history';
 
-- `history`: A signal that represents the history of the source signal.
-- `undo`: A function that undoes the last change to the source signal.
-- `redo`: A function that redoes the last undone change to the source signal.
-- `reset`: A function that resets the history to the current state.
-- `clear`: A function that clears the history.
-- `canUndo`: A signal that indicates if undo is possible.
-- `canRedo`: A signal that indicates if redo is possible.
-
-```ts
 @Component({
+	selector: 'app-editor',
+	imports: [JsonPipe],
 	template: `
-		<h2>Source: {{ source() | json }}</h2>
+		<p>Value: {{ value() }}</p>
 
-		<div>
-			<button (click)="source.set(1)">Set 1</button>
-			<button (click)="source.set(2)">Set 2</button>
-			<button (click)="source.set(3)">Set 3</button>
-			<button
-				(click)="sourceHistory.undo()"
-				[disabled]="!sourceHistory.canUndo()"
-			>
-				Undo
-			</button>
-			<button
-				(click)="sourceHistory.redo()"
-				[disabled]="!sourceHistory.canRedo()"
-			>
-				Redo
-			</button>
-			<button (click)="sourceHistory.reset()">Reset</button>
-			<button (click)="sourceHistory.clear()">Clear</button>
-		</div>
-		<div>
-			History:
-			<pre>{{ sourceHistory.history() | json }}</pre>
-		</div>
+		<button (click)="value.set(value() + 1)">+1</button>
+		<button (click)="history.undo()" [disabled]="!history.canUndo()">Undo</button>
+		<button (click)="history.redo()" [disabled]="!history.canRedo()">Redo</button>
+		<button (click)="history.reset()">Reset</button>
+		<button (click)="history.clear()">Clear</button>
+
+		<pre>{{ history.history() | json }}</pre>
 	`,
 })
-class TestComponent {
-	readonly source = signal(0);
-	readonly sourceHistory = signalHistory(this.source);
+export class Editor {
+	readonly value = signal(0);
+	readonly history = signalHistory(this.value);
 }
 ```
 
-You can pass custom options to the function.
+The history starts with the signal's initial value. `undo()` and `redo()` write the old value back into the source signal, so everything that reads `value()` updates too.
+
+## Limit the history size
+
+By default the 100 most recent records are kept. Older records are dropped first.
 
 ```ts
-@Component()
-class TestComponent implements OnInit {
-	private injector = inject(Injector);
-
-	readonly source = signal(0);
-
-	ngOnInit() {
-		const history = signalHistory(this.source, {
-			capacity: 1000, // The default capacity is 100 records
-			injector: this.injector,
-		});
-	}
-}
+readonly history = signalHistory(this.value, { capacity: 20 });
 ```
 
-## Should Record
+## Record only some changes
 
-You can pass a `shouldRecord` function to the `signalHistory` function.
+Pass `shouldRecord` to decide which changes become history records. It receives the new value and the last recorded value.
 
 ```ts
-@Component()
-class TestComponent {
-	readonly source = signal<string[]>([]);
+readonly tags = signal<string[]>([]);
 
-	readonly sourceHistory = signalHistory(this.source, {
-		// Only record changes to the length of the array
-		shouldRecord: (value, oldValue) => value.length !== oldValue.length,
-	});
+readonly tagsHistory = signalHistory(this.tags, {
+	// only record changes that add or remove a tag
+	shouldRecord: (value, oldValue) => value.length !== oldValue.length,
+});
+```
+
+A value that is the same (`===`) as the last record is never recorded.
+
+## Use it outside an injection context
+
+`signalHistory` uses an effect internally, so it needs an injection context. Outside one (for example in `ngOnInit`), pass an `injector`:
+
+```ts
+private readonly injector = inject(Injector);
+readonly value = signal(0);
+
+ngOnInit() {
+	const history = signalHistory(this.value, { injector: this.injector });
 }
 ```
+
+## API
+
+```ts
+function signalHistory<T>(
+	source: WritableSignal<T>,
+	options?: {
+		capacity?: number;
+		shouldRecord?: (value: T, oldValue: T) => boolean;
+		injector?: Injector;
+	},
+): {
+	history: Signal<{ value: T; timestamp: number }[]>;
+	undo: () => void;
+	redo: () => void;
+	reset: () => void;
+	clear: () => void;
+	canUndo: Signal<boolean>;
+	canRedo: Signal<boolean>;
+};
+```
+
+| Option         | Type                                 | Default         | Description                                           |
+| -------------- | ------------------------------------ | --------------- | ----------------------------------------------------- |
+| `capacity`     | `number`                             | `100`           | Maximum number of records to keep.                    |
+| `shouldRecord` | `(value: T, oldValue: T) => boolean` | record all      | Return `false` to skip recording a change.            |
+| `injector`     | `Injector`                           | current context | Needed when you call it outside an injection context. |
+
+| Returned  | Description                                                                                  |
+| --------- | -------------------------------------------------------------------------------------------- |
+| `history` | Signal with the recorded values, oldest first. Each record has `value` and `timestamp` (ms). |
+| `undo`    | Sets the source back to the previous record. Does nothing at the first record.               |
+| `redo`    | Re-applies the last undone record. Making a new change clears the redo stack.                |
+| `reset`   | Keeps only the current record, clearing undo and redo.                                       |
+| `clear`   | Removes all records.                                                                         |
+| `canUndo` | `true` when there is more than one record.                                                   |
+| `canRedo` | `true` when there is something to redo.                                                      |
+
+:::note[Changes are recorded by an effect]
+New values are picked up when the internal effect runs, not at the moment you call `set()`. If you set the signal several times in the same synchronous block, only the last value is recorded.
+:::
+
+## Related
+
+- [`computedPrevious`](/utilities/signal-primitives/computed-previous/) when you only need the last value.
