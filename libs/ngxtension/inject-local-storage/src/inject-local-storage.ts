@@ -47,6 +47,13 @@ export type LocalStorageOptionsBase<T> = {
 	 * @param value
 	 */
 	parse?: (value: string) => T;
+	/**
+	 * Validate the parsed value read from localStorage.
+	 * When it returns false, the signal falls back to `defaultValue`.
+	 * Values written with `set` or `update` are not validated.
+	 * @param value
+	 */
+	validate?: (value: unknown) => value is T;
 
 	/**
 	 * Injector for the Injection Context
@@ -170,6 +177,7 @@ const internalInjectLocalStorage = <T, R = T>(
 		? options.stringify
 		: JSON.stringify;
 	const parse = isFunction(options.parse) ? options.parse : parseJSON;
+	const validate = isFunction(options.validate) ? options.validate : () => true;
 	const storageSync = options.storageSync ?? true;
 	const clearOnKeyChange =
 		'clearOnKeyChange' in options ? (options.clearOnKeyChange ?? true) : true;
@@ -200,19 +208,34 @@ const internalInjectLocalStorage = <T, R = T>(
 			},
 		);
 
-		const getInitialValue = (key: string) => {
-			const initialStoredValue = goodTry(
-				() => localStorage.getItem(key),
-				() => null,
-			);
+		const parseStoredValue = (
+			storedValue: string | null,
+			getInvalidFallback = () => getDefaultValue(defaultValue), // invalid values (e.g. tampered storage) fall back to defaultValue
+		): R => {
+			if (storedValue === null) {
+				return getDefaultValue(defaultValue);
+			}
 
-			return initialStoredValue
-				? goodTry(
-						() => parse(initialStoredValue) as R,
-						() => getDefaultValue(defaultValue),
-					)
-				: getDefaultValue(defaultValue);
+			return goodTry(
+				() => {
+					const value = parse(storedValue);
+					const isValid = goodTry<boolean>(
+						() => validate(value),
+						() => false,
+					);
+					return isValid ? (value as R) : getInvalidFallback();
+				},
+				() => getDefaultValue(defaultValue),
+			);
 		};
+
+		const getInitialValue = (key: string) =>
+			parseStoredValue(
+				goodTry(
+					() => localStorage.getItem(key),
+					() => null,
+				),
+			);
 
 		const internalSignal = linkedSignal<R>(() => {
 			const key = computedKey();
@@ -245,6 +268,8 @@ const internalInjectLocalStorage = <T, R = T>(
 			throw new Error('Cannot access to the value');
 		});
 
+		let ownEvent: StorageEvent | undefined; // last storage event dispatched by this instance
+
 		const syncValueWithLocalStorage = (value: R): void => {
 			const key = untracked(computedKey);
 			const newValue = goodTry(
@@ -268,13 +293,12 @@ const internalInjectLocalStorage = <T, R = T>(
 				}
 
 				// We notify other consumers in this tab about changing the value in the store for synchronization
-				window.dispatchEvent(
-					new StorageEvent(`storage`, {
-						key,
-						newValue,
-						storageArea: localStorage,
-					}),
-				);
+				ownEvent = new StorageEvent(`storage`, {
+					key,
+					newValue,
+					storageArea: localStorage,
+				});
+				window.dispatchEvent(ownEvent);
 			} catch {
 				// ignore errors
 			}
@@ -285,19 +309,14 @@ const internalInjectLocalStorage = <T, R = T>(
 				const key = untracked(computedKey);
 
 				if (event.storageArea === localStorage && event.key === key) {
-					const newValue = goodTry(
-						() =>
-							event.newValue !== null
-								? (parse(event.newValue) as R)
-								: getDefaultValue(defaultValue),
-						() => getDefaultValue(defaultValue),
-					);
-
-					state.set({
+					state.update((current) => ({
 						kind: Kind.COMPUTED,
 						key,
-						value: newValue,
-					});
+						value: parseStoredValue(
+							event.newValue,
+							event === ownEvent ? () => current.value as R : undefined, // validate guards against external values, keep what this instance wrote
+						),
+					}));
 				}
 			};
 

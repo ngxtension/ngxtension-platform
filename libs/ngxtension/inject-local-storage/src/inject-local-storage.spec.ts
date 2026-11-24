@@ -601,4 +601,185 @@ describe('injectLocalStorage', () => {
 			},
 		);
 	});
+
+	describe('with tampered storage', () => {
+		const validate = (value: unknown): value is string[] =>
+			Array.isArray(value);
+
+		it.injectable(
+			'should keep a parsable but unexpected value without validate',
+			() => {
+				localStorage.setItem(key, 'null');
+
+				const localStorageSignal = injectLocalStorage<string[]>(key, {
+					defaultValue: [],
+				});
+
+				expect(localStorageSignal()).toBeNull();
+			},
+		);
+
+		it.injectable(
+			'should fall back to defaultValue when validate fails',
+			() => {
+				localStorage.setItem(key, 'null');
+
+				const localStorageSignal = injectLocalStorage<string[]>(key, {
+					defaultValue: [],
+					validate,
+				});
+
+				expect(localStorageSignal()).toEqual([]);
+				// storage is only repaired by the next set/update
+				expect(localStorage.getItem(key)).toEqual('null');
+			},
+		);
+
+		it.injectable('should allow update after an invalid stored value', () => {
+			localStorage.setItem(key, 'null');
+
+			const localStorageSignal = injectLocalStorage<string[]>(key, {
+				defaultValue: [],
+				validate,
+			});
+
+			localStorageSignal.update((items) => [...items, 'a']);
+
+			expect(localStorageSignal()).toEqual(['a']);
+			expect(localStorage.getItem(key)).toEqual('["a"]');
+		});
+
+		it.injectable('should keep a valid stored value', () => {
+			localStorage.setItem(key, '["a"]');
+
+			const localStorageSignal = injectLocalStorage<string[]>(key, {
+				defaultValue: [],
+				validate,
+			});
+
+			expect(localStorageSignal()).toEqual(['a']);
+		});
+
+		it.injectable('should not touch storage when parse fails', () => {
+			localStorage.setItem(key, '{not json');
+
+			const localStorageSignal = injectLocalStorage<string[]>(key, {
+				defaultValue: [],
+			});
+
+			expect(localStorageSignal()).toEqual([]);
+			expect(localStorage.getItem(key)).toEqual('{not json');
+		});
+
+		it.injectable(
+			'should fall back to defaultValue on an invalid storage event',
+			() => {
+				const localStorageSignal = injectLocalStorage<string[]>(key, {
+					defaultValue: [],
+					validate,
+				});
+				localStorageSignal.set(['a']);
+
+				localStorage.setItem(key, 'null');
+				window.dispatchEvent(
+					new StorageEvent('storage', {
+						key,
+						newValue: 'null',
+						storageArea: localStorage,
+					}),
+				);
+
+				expect(localStorageSignal()).toEqual([]);
+				expect(localStorage.getItem(key)).toEqual('null');
+			},
+		);
+
+		it.injectable(
+			'should fall back to defaultValue when another tab removes the key',
+			() => {
+				const localStorageSignal = injectLocalStorage<string[]>(key, {
+					defaultValue: [],
+					validate,
+				});
+				localStorageSignal.set(['a']);
+
+				localStorage.removeItem(key);
+				window.dispatchEvent(
+					new StorageEvent('storage', {
+						key,
+						newValue: null,
+						storageArea: localStorage,
+					}),
+				);
+
+				expect(localStorageSignal()).toEqual([]);
+			},
+		);
+
+		[true, false].forEach((storageSync) => {
+			it.injectable(
+				`should not validate values written by set and update when storageSync is ${storageSync}`,
+				() => {
+					const options = {
+						defaultValue: [],
+						validate: (value: unknown): value is string[] =>
+							validate(value) && value.length < 2,
+						storageSync,
+					};
+					const setSignal = injectLocalStorage<string[]>('set', options);
+					const updateSignal = injectLocalStorage<string[]>('update', options);
+
+					setSignal.set(['a', 'b']);
+					updateSignal.update(() => ['a', 'b']);
+
+					expect(setSignal()).toEqual(['a', 'b']);
+					expect(updateSignal()).toEqual(['a', 'b']);
+					expect(localStorage.getItem('set')).toEqual('["a","b"]');
+					expect(localStorage.getItem('update')).toEqual('["a","b"]');
+				},
+			);
+		});
+
+		it.injectable(
+			'should keep a written value that does not survive serialization',
+			() => {
+				const localStorageSignal = injectLocalStorage<Date>(key, {
+					defaultValue: new Date(0),
+					validate: (value): value is Date => value instanceof Date,
+				});
+				const date = new Date(1);
+
+				localStorageSignal.set(date);
+
+				expect(localStorageSignal()).toBe(date);
+			},
+		);
+
+		it.injectable('should keep a written value when validate throws', () => {
+			const localStorageSignal = injectLocalStorage<string[]>(key, {
+				defaultValue: [],
+				validate: (value): value is string[] => {
+					throw new Error(`Invalid value: ${value}`);
+				},
+			});
+
+			localStorageSignal.set(['a']);
+
+			expect(localStorageSignal()).toEqual(['a']);
+		});
+
+		it.injectable('should still validate external events after a write', () => {
+			const writer = injectLocalStorage<string[] | null>(key);
+			const localStorageSignal = injectLocalStorage<string[]>(key, {
+				defaultValue: [],
+				validate,
+			});
+			localStorageSignal.set(['a']);
+
+			writer.set(null);
+
+			expect(writer()).toBeNull();
+			expect(localStorageSignal()).toEqual([]);
+		});
+	});
 });
