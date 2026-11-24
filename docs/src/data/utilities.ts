@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { importLine, importNames } from './exports';
 
 export type Lang = 'en' | 'es';
 
@@ -503,11 +504,11 @@ export interface Utility {
 	entryPoint?: string;
 	badge?: 'stable' | 'unstable' | 'experimental' | 'deprecated';
 	tagline: string;
-	/** True when the title is a single importable identifier */
-	importable: boolean;
+	/** Real export names (from the page's own import or the library source) */
+	importNames: string[];
+	/** `import { … } from 'ngxtension/…';` or undefined when the page has no import */
+	importLine?: string;
 }
-
-const IDENT = /^[A-Za-z_$][\w$]*$/;
 
 function firstSentence(body: string | undefined): string {
 	if (!body) return '';
@@ -543,6 +544,7 @@ export async function getUtilities(lang: Lang = 'en'): Promise<Utility[]> {
 				.split('/');
 			const key = `${category}/${file}`;
 			const title = String(e.data.title).replace(/^'|'$/g, '');
+			const names = importNames(e.data.entryPoint, title, e.body);
 			return {
 				title,
 				category: category as CategoryDir,
@@ -551,7 +553,8 @@ export async function getUtilities(lang: Lang = 'en'): Promise<Utility[]> {
 				entryPoint: e.data.entryPoint,
 				badge: e.data.badge,
 				tagline: taglines[key]?.[lang] ?? firstSentence(e.body),
-				importable: IDENT.test(title),
+				importNames: names,
+				importLine: importLine(e.data.entryPoint, names),
 			} satisfies Utility;
 		})
 		.filter((u) => order.has(u.category))

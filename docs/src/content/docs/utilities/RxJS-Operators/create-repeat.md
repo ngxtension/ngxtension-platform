@@ -1,7 +1,7 @@
 ---
 title: createRepeat
 description: ngxtension/create-repeat
-entryPoint: create-repeat
+entryPoint: ngxtension/create-repeat
 badge: stable
 contributors: ['lucas-garcia']
 ---

@@ -3,6 +3,7 @@ import { Icon } from '@astrojs/starlight/components';
 import Default from '@astrojs/starlight/components/PageTitle.astro';
 import { getEntry } from 'astro:content';
 import { categories } from '../data/utilities';
+import { importLine as toImportLine, importNames } from '../data/exports';
 
 const route = Astro.locals.starlightRoute;
 const data = route?.entry?.data;
@@ -20,13 +21,14 @@ const categoryDir =
 		: undefined;
 const category = categories.find((c) => c.dir === categoryDir?.toLowerCase());
 
-const importLine = entryPoint
-	? /^[A-Za-z_$][\w$]*$/.test(title)
-		? `import { ${title} } from '${entryPoint}';`
-		: `import … from '${entryPoint}';`
-	: undefined;
+// Real export names: the page's own import line, else the library's public API. Never the title.
+const importLine = toImportLine(
+	entryPoint,
+	importNames(entryPoint, title, route?.entry?.body),
+);
+const isLibEntry = entryPoint?.startsWith('ngxtension/');
 
-const bundleJsUrl = entryPoint
+const bundleJsUrl = isLibEntry
 	? `https://deno.bundlejs.com?q=${entryPoint}&treeshake=[*]&config={%22esbuild%22:{%22external%22:[%22rxjs%22,%22@angular/core%22,%22@angular/common%22,%22@angular/forms%22,%22@angular/router%22]}}`
 	: undefined;
 const sourceCodeUrl = entryPoint
@@ -133,7 +135,20 @@ const t = {
 					>
 						<code>{importLine}</code>
 						<span class="nx-import__icon" aria-hidden="true">
-							<Icon name="copy" size="0.95rem" />
+							<svg
+								width="15"
+								height="15"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"
+							>
+								<rect x="9" y="9" width="12" height="12" rx="2" />
+								<path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" />
+							</svg>
 						</span>
 						<span class="nx-import__done" aria-hidden="true">
 							{t.copied}

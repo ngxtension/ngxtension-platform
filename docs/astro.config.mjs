@@ -154,6 +154,7 @@ export default defineConfig({
 			components: {
 				PageTitle: './src/components/PageTitle.astro',
 				Hero: './src/components/Hero.astro',
+				Head: './src/components/Head.astro',
 				MarkdownContent: './src/components/Content.astro',
 				Sidebar: './src/components/Sidebar.astro',
 				TableOfContents: './src/components/TableOfContents.astro',

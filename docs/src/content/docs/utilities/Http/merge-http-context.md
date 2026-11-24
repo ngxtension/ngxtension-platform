@@ -1,7 +1,7 @@
 ---
 title: mergeHttpContext
 description: ngxtension/merge-http-context
-entryPoint: merge-http-context
+entryPoint: ngxtension/merge-http-context
 contributors: ['krzysztof-kachniarz']
 ---
 

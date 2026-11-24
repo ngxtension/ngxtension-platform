@@ -1,7 +1,7 @@
 ---
 title: effectOnceIf
 description: ngxtension/effect-once-if
-entryPoint: effect-once-if
+entryPoint: ngxtension/effect-once-if
 badge: stable
 contributors: ['lorenzo-dianni']
 ---

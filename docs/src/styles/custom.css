@@ -29,6 +29,7 @@
 	--sl-color-bg-sidebar: var(--sl-color-black);
 	--sl-color-hairline: hsl(219, 20%, 16%);
 	--sl-color-hairline-light: hsl(218, 17%, 21%);
+	--sl-color-hairline-shade: hsl(219, 20%, 16%);
 
 	--sl-content-width: 47rem;
 	--sl-line-height: 1.7;
@@ -76,6 +77,7 @@
 	--sl-color-bg-sidebar: var(--sl-color-black);
 	--sl-color-hairline: hsl(216, 20%, 91%);
 	--sl-color-hairline-light: hsl(216, 20%, 91%);
+	--sl-color-hairline-shade: hsl(216, 20%, 91%);
 
 	--nx-surface: hsl(210, 30%, 97.5%);
 	--nx-surface-2: hsl(214, 26%, 95%);
@@ -122,20 +124,12 @@ pre,
 }
 
 /* ---------- Header ---------- */
-.header {
-	border-bottom: 1px solid var(--nx-line);
-}
-
 .site-title img {
 	height: 1.75rem;
 	width: auto;
 }
 
 /* ---------- Sidebar ---------- */
-.sidebar-pane {
-	border-inline-end: 1px solid var(--nx-line);
-}
-
 #starlight__sidebar .top-level > li > details > summary .group-label > span,
 #starlight__sidebar .group-label .large {
 	font-size: var(--sl-text-sm);
