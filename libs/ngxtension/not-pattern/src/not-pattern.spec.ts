@@ -83,4 +83,42 @@ describe('notPattern', () => {
 
 		expect(result).toBeNull();
 	});
+
+	it('should not test the string form of a non-empty Set', () => {
+		// String(new Set(['1'])) is '[object Set]', which matches /[a-z]/
+		const control = new FormControl(new Set(['1']));
+		const validator = notPattern(/[a-z]/);
+		const result = validator(control);
+
+		expect(result).toBeNull();
+	});
+
+	it('should not test the string form of an object', () => {
+		const control = new FormControl({ name: '123' });
+		const validator = notPattern(/object/);
+		const result = validator(control);
+
+		expect(result).toBeNull();
+	});
+
+	it('should not test the string form of a non-empty array', () => {
+		const control = new FormControl(['abc', '123']);
+		const validator = notPattern(/,/);
+		const result = validator(control);
+
+		expect(result).toBeNull();
+	});
+
+	it('should test number values', () => {
+		const control = new FormControl(42);
+		const validator = notPattern(/^4/);
+		const result = validator(control);
+
+		expect(result).toEqual({
+			notPattern: {
+				disallowedPattern: '/^4/',
+				actualValue: 42,
+			},
+		});
+	});
 });

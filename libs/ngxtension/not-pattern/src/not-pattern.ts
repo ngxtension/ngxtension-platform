@@ -20,6 +20,9 @@ import {
  * console.log(control2.errors); // {notPattern: {requiredPattern: '/[0-9]/', actual: 'abc123'}} - invalid because it contains numbers
  * ```
  *
+ * Only string and number values are tested. Empty values and other types (arrays, Sets, objects)
+ * are treated as valid.
+ *
  * @param pattern A regular expression or string to match against
  * @returns A validator function that returns an error map with the `notPattern` property
  * if the validation check fails, otherwise `null`.
@@ -43,11 +46,16 @@ export function notPattern(pattern: string | RegExp): ValidatorFn {
 		regex = pattern;
 	}
 	return (control: AbstractControl): ValidationErrors | null => {
-		if (isEmptyInputValue(control.value)) {
+		const value: unknown = control.value;
+		if (isEmptyInputValue(value)) {
 			return null; // don't validate empty values to allow optional controls
 		}
-		const value: string = control.value;
-		return regex.test(value)
+		// only strings and numbers have a meaningful text form to test;
+		// other values (arrays, Sets, objects) would be tested as e.g. '[object Set]'
+		if (typeof value !== 'string' && typeof value !== 'number') {
+			return null;
+		}
+		return regex.test(String(value))
 			? { notPattern: { disallowedPattern: regexStr, actualValue: value } }
 			: null;
 	};
