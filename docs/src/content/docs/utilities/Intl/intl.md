@@ -1,360 +1,312 @@
 ---
 title: Intl
-description: Additional Intl Utilities for formatting numbers, strings, and other objects.
+description: Standalone Angular pipes for the browser's Intl API, to show localized language and region names, lists, plural categories and relative times.
 entryPoint: ngxtension/intl
 badge: stable
 contributors: ['ion-prodan']
 ---
 
-This is a collection of pipes designed for Angular applications that leverage the [Intl API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl).
+`ngxtension/intl` is a set of standalone pipes built on the browser's [Intl API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl). They cover formatting that Angular's `date`, `number` and `currency` pipes don't: language and country names, lists, plural categories and relative times like "3 hours ago". Nothing to load: the locale data comes from the browser.
 
-While it's not intended to fully replace Angular's standard pipes for `currency`, `date`, and `number`, it serves as a supplemental toolkit to enhance existing functionalities.
+| Pipe                                                | Template name        | Example output                    |
+| --------------------------------------------------- | -------------------- | --------------------------------- |
+| [`DisplayNamesPipe`](#displaynamespipe)             | `displayNames`       | `'DE'` → `Germany`                |
+| [`ListFormatPipe`](#listformatpipe)                 | `listFormat`         | `['a', 'b', 'c']` → `a, b, and c` |
+| [`PluralRulesPipe`](#pluralrulespipe)               | `pluralRules`        | `1` → `one`                       |
+| [`RelativeTimeFormatPipe`](#relativetimeformatpipe) | `relativeTimeFormat` | `-3, 'hour'` → `3 hours ago`      |
+| [`SupportedValuesOf`](#supportedvaluesof)           | `supportedValuesOf`  | `'currency'` → `['AED', …]`       |
 
-The default locale is determined by the [`LOCALE_ID` token](https://angular.dev/api/core/LOCALE_ID). Altering this will change the locale for all included pipes.
+## Usage
 
-Alternatively, you can specify the locale directly as the **final parameter to any pipe, thereby overriding the default setting**.
+Import the pipes you need into your component:
 
-These pipes aim to utilize the Intl API. In cases where the Intl API is unavailable, the pipes will automatically resort to alternative methods, varying by the specific pipe in use.
+```angular-ts
+import { Component, signal } from '@angular/core';
+import { DisplayNamesPipe, ListFormatPipe, RelativeTimeFormatPipe } from 'ngxtension/intl';
 
-For instance, [`DisplayNamesPipe`](#displaynamespipe) processes the code value passed into it, whereas [`ListFormatPipe`](#listformatpipe) outputs the array values as a string.
+@Component({
+	selector: 'app-team-card',
+	imports: [DisplayNamesPipe, ListFormatPipe, RelativeTimeFormatPipe],
+	template: `
+		<p>Based in {{ country() | displayNames: 'region' : 'long' }}</p>
+		<p>Members: {{ members() | listFormat }}</p>
+		<p>Last active {{ -3 | relativeTimeFormat: 'hour' }}</p>
+	`,
+})
+export class TeamCardComponent {
+	readonly country = signal('DE');
+	readonly members = signal(['Ada', 'Grace', 'Linus']);
+}
+```
 
-Should an issue arise, an error message will be displayed in the console to provide further insights.
+With `LOCALE_ID` set to `en-US`, this renders:
+
+```txt
+Based in Germany
+Members: Ada, Grace, and Linus
+Last active 3 hours ago
+```
+
+### Locale
+
+Every pipe except `supportedValuesOf` formats in the app's [`LOCALE_ID`](https://angular.dev/api/core/LOCALE_ID). To use another locale for a single value, pass it as the **last argument**:
+
+```html
+{{ members() | listFormat: 'long' : 'fr' }}
+<!-- Ada, Grace et Linus -->
+```
+
+### Default options
+
+Each pipe except `supportedValuesOf` has a `provide…Options()` function to change its defaults. Add it to `providers` in a component, a route or `app.config.ts`. The options you pass are merged with the pipe's defaults.
+
+### Errors
+
+The pipes never throw. When `Intl` rejects an input (an invalid code, an unsupported locale), the pipe logs the error with `console.error` and returns a fallback, listed in each section below.
+
+:::note
+Output comes from the browser's own locale data, so wording can differ slightly between browsers and versions.
+:::
 
 ## DisplayNamesPipe
 
-Displays the localized display name of the given key for the given type.
-
-For example, the display name of the language code "en" in English is "English", and in German it's "Englisch".
-
-### Usage
-
-Import `DisplayNamesPipe` and add it to your component:
-
-```ts
-import {Component} from "@angular/core";
-import {DisplayNamesPipe} from 'ngxtension/intl';
-
-@Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [DisplayNamesPipe],
-  template: `
-    <p>{{ 'en' | displayNames: 'language' }}</p>
-  `
-})
-```
-
-If `LOCALE_ID` is set to `en-US`, the above example will display `English`, while if it's set to `de-DE`, it will display `Englisch`.
-
-Additionally, you can **send the style and locale as parameters**:
+Shows the localized name of a language, region, script, currency or calendar code. Wraps [`Intl.DisplayNames`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DisplayNames).
 
 ```html
-<p>{{ 'en' | displayNames: 'language' : 'long' : 'de' }}</p>
+{{ 'DE' | displayNames: 'region' }}
+<!-- Germany -->
+{{ 'US' | displayNames: 'region' }}
+<!-- US -->
+{{ 'US' | displayNames: 'region' : 'long' }}
+<!-- United States -->
+{{ 'en-US' | displayNames: 'language' : 'long' }}
+<!-- American English -->
+{{ 'EUR' | displayNames: 'currency' }}
+<!-- Euro -->
+{{ 'en' | displayNames: 'language' : 'long' : 'de' }}
+<!-- Englisch -->
 ```
 
-The above example will display `Englisch` in German locale, no matter what `LOCALE_ID` is set to.
+**Arguments:** `code | displayNames: type : style? : locale?`
 
-### Configuration
+| Argument | Type                                                                                | Description                           |
+| -------- | ----------------------------------------------------------------------------------- | ------------------------------------- |
+| `type`   | `'language' \| 'region' \| 'script' \| 'currency' \| 'calendar' \| 'dateTimeField'` | Required. What kind of code you pass. |
+| `style`  | `'long' \| 'short' \| 'narrow'`                                                     | Overrides the default style.          |
+| `locale` | `string \| string[]`                                                                | Overrides `LOCALE_ID`.                |
 
-To explore additional configuration settings, you can customize the `DisplayNamesPipe` by modifying the default options through the `provideDisplayNamesOptions` provider:
+**Defaults:** `{ style: 'short', localeMatcher: 'lookup', fallback: 'code' }`. Change them with `provideDisplayNamesOptions()`. The `type` can't be set there: always pass it in the template.
 
 ```ts
-import {Component} from "@angular/core";
-import {DisplayNamesPipe, provideDisplayNamesOptions} from 'ngxtension/intl';
-
-@Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [DisplayNamesPipe],
-  providers: [
-    provideDisplayNamesOptions({
-      localeMatcher: 'best fit',
-      style: 'long',
-    })
-  ],
-  template: `
-    <p>{{ 'en' | displayNames }}</p>
-  `
-})
+providers: [provideDisplayNamesOptions({ style: 'long' })];
 ```
 
-The default options are:
-
-```ts
-const defaultOptions: DisplayNamesOptions = {
-	style: 'short',
-	localeMatcher: 'lookup',
-	fallback: 'code',
-};
-```
-
-For more information, check the [DisplayNames API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DisplayNames).
-
-### Error Handling
-
-If an error occurs, the pipe will return the value that was sent to it, and a console error will be displayed with more details.
-
-`{{ 'any-nonvalid-value' | displayNames: 'language' }}` will return `any-nonvalid-value`.
+**Fallback:** the code you passed in.
 
 ## ListFormatPipe
 
-Displays the localized string representation of a list of elements.
-
-For example, the list `['en', 'fr', 'de']` will be displayed as `en, fr, and de` in English, and `en, fr et de` in French.
-
-### Usage
-
-Import `ListFormatPipe` and add it to your component:
-
-```ts
-import {Component} from "@angular/core";
-import {ListFormatPipe} from 'ngxtension/intl';
-
-@Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [ListFormatPipe],
-  template: `
-    <p>{{ ['en', 'fr', 'de'] | listFormat }}</p>
-  `
-})
-```
-
-If `LOCALE_ID` is set to `en-US`, the above example will display `en, fr, and de`, while if it's set to `fr-FR`, it will display `en, fr et de`.
-
-Additionally, you can **send the style and locale as parameters**:
+Joins a list with the locale's separators and conjunction. Wraps [`Intl.ListFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/ListFormat).
 
 ```html
-<p>{{ ['en', 'fr', 'de'] | listFormat : 'long' : 'fr' }}</p>
+{{ ['Ada', 'Grace', 'Linus'] | listFormat }}
+<!-- Ada, Grace, and Linus -->
+{{ ['Ada', 'Grace', 'Linus'] | listFormat: 'short' }}
+<!-- Ada, Grace, & Linus -->
+{{ ['Ada', 'Grace', 'Linus'] | listFormat: 'long' : 'de' }}
+<!-- Ada, Grace und Linus -->
 ```
 
-The above example will display `en, fr et de` in French locale, no matter what `LOCALE_ID` is set to.
+**Arguments:** `values | listFormat: style? : locale?`, where `values` is any `Iterable<string>` (an array or a `Set`).
 
-### Configuration
+| Argument | Type                            | Description                  |
+| -------- | ------------------------------- | ---------------------------- |
+| `style`  | `'long' \| 'short' \| 'narrow'` | Overrides the default style. |
+| `locale` | `string \| string[]`            | Overrides `LOCALE_ID`.       |
 
-To explore additional configuration settings, you can customize the `ListFormatPipe` by modifying the default options through the `provideListFormatOptions` provider:
+**Defaults:** `{ style: 'long', type: 'conjunction' }`. Set `type` with the provider to get "or" lists or unit lists:
 
 ```ts
-import {Component} from "@angular/core";
-import {ListFormatPipe, provideListFormatOptions} from 'ngxtension/intl';
-
-@Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [ListFormatPipe],
-  providers: [
-    provideListFormatOptions({
-      style: 'short',
-      type: 'conjunction',
-    })
-  ],
-  template: `
-    <p>{{ ['en', 'fr', 'de'] | listFormat }}</p>
-  `
-})
+providers: [provideListFormatOptions({ type: 'disjunction' })];
+// ['Ada', 'Grace', 'Linus'] → Ada, Grace, or Linus
 ```
 
-The default options are:
-
-```ts
-const defaultOptions: ListFormatOptions = {
-	style: 'long',
-	type: 'conjunction',
-};
-```
-
-For more information, check the [ListFormat API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/ListFormat).
-
-### Error Handling
-
-If an error occurs, the pipe will return the value of the array as string, and a console error will be displayed with more details.
-
-`{{ ['en', 'fr', 'de'] | listFormat }}` will return `en, fr, de`.
+**Fallback:** the values joined with `, `.
 
 ## PluralRulesPipe
 
-Displays the localized string representation of a plural value.
-
-For example, the value `1` will be displayed as `one` in English, and `uno` in Spanish.
-
-### Usage
-
-Import `PluralRulesPipe` and add it to your component:
-
-```ts
-import {Component} from "@angular/core";
-import {PluralRulesPipe} from 'ngxtension/intl';
-
-@Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [PluralRulesPipe],
-  template: `
-    <p>{{ 1 | pluralRules }}</p>
-  `
-})
-```
-
-If `LOCALE_ID` is set to `en-US`, the above example will display `one`, while if it's set to `es-ES`, it will display `uno`.
-
-Additionally, you can **send locale as last parameter**:
+Returns the plural **category** of a number in the current locale: `zero`, `one`, `two`, `few`, `many` or `other`. It doesn't translate anything; use the category to pick the right text. Wraps [`Intl.PluralRules`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/PluralRules).
 
 ```html
-<p>{{ 1 | pluralRules: 'en-US' }}</p>
+{{ 1 | pluralRules }}
+<!-- one -->
+{{ 5 | pluralRules }}
+<!-- other -->
+
+@switch (count() | pluralRules) { @case ('one') { {{ count() }} file selected }
+@default { {{ count() }} files selected } }
 ```
 
-The above example will display `one` in English locale, no matter what `LOCALE_ID` is set to.
+With `type: 'ordinal'`, you get the category for "1st, 2nd, 3rd". Map it to a suffix:
 
-### Configuration
-
-To explore additional configuration settings, you can customize the `PluralRulesPipe` by modifying the default options through the `providePluralRulesOptions` provider:
-
-```ts
-import {Component} from "@angular/core";
-import {PluralRulesPipe, providePluralRulesOptions} from 'ngxtension/intl';
+```angular-ts
+import { Component, input } from '@angular/core';
+import { PluralRulesPipe, providePluralRulesOptions } from 'ngxtension/intl';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [PluralRulesPipe],
-  providers: [
-    providePluralRulesOptions({
-      type: 'ordinal',
-    })
-  ],
-  template: `
-    <p>{{ 1 | pluralRules }}</p>
-  `
+	selector: 'app-rank',
+	imports: [PluralRulesPipe],
+	providers: [providePluralRulesOptions({ type: 'ordinal' })],
+	template: `{{ place() }}{{ suffixes[place() | pluralRules] }} place`,
 })
+export class RankComponent {
+	readonly place = input.required<number>();
+
+	// 1st, 2nd, 3rd, 4th, … 22nd
+	protected readonly suffixes: Record<string, string> = {
+		one: 'st',
+		two: 'nd',
+		few: 'rd',
+		other: 'th',
+	};
+}
 ```
 
-The default options are:
+**Arguments:** `value | pluralRules: locale?`
 
-```ts
-const defaultOptions: Intl.PluralRulesOptions = {
-	localeMatcher: 'best fit', // other values: "lookup",
-	type: 'cardinal', // other values: "ordinal"
-};
-```
+| Argument | Type     | Description            |
+| -------- | -------- | ---------------------- |
+| `locale` | `string` | Overrides `LOCALE_ID`. |
 
-For more information, check the [PluralRules API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/PluralRules).
+**Defaults:** `{ localeMatcher: 'best fit', type: 'cardinal' }`. Change them with `providePluralRulesOptions()`.
 
-### Error Handling
-
-If an error occurs, the pipe will return the value that was sent to it, and a console error will be displayed with more details.
-
-`{{ 1 | pluralRules }}` will return `1`.
+**Fallback:** the number as a string.
 
 ## RelativeTimeFormatPipe
 
-Displays the localized string representation of a relative time value.
-
-For example, the value `1` will be displayed as `in 1 day` in English, and `dentro de 1 día` in Spanish.
-
-### Usage
-
-Import `RelativeTimeFormatPipe` and add it to your component:
-
-```ts
-import {Component} from "@angular/core";
-import {RelativeTimeFormatPipe} from 'ngxtension/intl';
-
-@Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [RelativeTimeFormatPipe],
-  template: `
-    <p>{{ 1 | relativeTimeFormat: 'day' }}</p>
-  `
-})
-```
-
-If `LOCALE_ID` is set to `en-US`, the above example will display `in 1 day`, while if it's set to `es-ES`, it will display `dentro de 1 día`.
-
-Additionally, you can **send style and locale as parameters**:
+Formats a number of units as a relative time, like "in 2 days" or "3 hours ago". Negative values are in the past. Wraps [`Intl.RelativeTimeFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat).
 
 ```html
-<p>{{ 1 | relativeTimeFormat: 'day' : 'long' : 'es-ES' }}</p>
+{{ 1 | relativeTimeFormat: 'day' }}
+<!-- in 1 day -->
+{{ -3 | relativeTimeFormat: 'hour' }}
+<!-- 3 hours ago -->
+{{ 2 | relativeTimeFormat: 'day' : 'narrow' }}
+<!-- in 2d -->
+{{ 1 | relativeTimeFormat: 'day' : 'long' : 'es' }}
+<!-- dentro de 1 día -->
 ```
 
-The above example will display `dentro de 1 día` in Spanish locale, no matter what `LOCALE_ID` is set to.
+**Arguments:** `value | relativeTimeFormat: unit : style? : locale?`
 
-### Configuration
+| Argument | Type                                                                                                       | Description                  |
+| -------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| `unit`   | `'second' \| 'minute' \| 'hour' \| 'day' \| 'week' \| 'month' \| 'quarter' \| 'year'` (singular or plural) | Required. Unit of `value`.   |
+| `style`  | `'long' \| 'short' \| 'narrow'`                                                                            | Overrides the default style. |
+| `locale` | `string`                                                                                                   | Overrides `LOCALE_ID`.       |
 
-To explore additional configuration settings, you can customize the `RelativeTimeFormatPipe` by modifying the default options through the `provideRelativeTimeFormatOptions` provider:
+**Defaults:** `{ localeMatcher: 'best fit', numeric: 'always', style: 'long' }`. Set `numeric: 'auto'` to get words instead of numbers where the locale has them:
 
 ```ts
-import {Component} from "@angular/core";
-import {RelativeTimeFormatPipe, provideRelativeTimeFormatOptions} from 'ngxtension/intl';
-
-@Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [RelativeTimeFormatPipe],
-  providers: [
-    provideRelativeTimeFormatOptions({
-      numeric: 'auto',
-      style: 'long',
-    })
-  ],
-  template: `
-    <p>{{ 1 | relativeTimeFormat: 'day' }}</p>
-  `
-})
+providers: [provideRelativeTimeFormatOptions({ numeric: 'auto' })];
+// 1 day → tomorrow, -1 day → yesterday
 ```
 
-The default options are:
+**Fallback:** the number as a string.
 
-```ts
-const defaultOptions: Intl.RelativeTimeFormatOptions = {
-	localeMatcher: 'best fit', // other values: "lookup",
-	numeric: 'always', // other values: "auto"
-	style: 'long', // other values: "short" or "narrow"
-};
-```
-
-For more information, check the [RelativeTimeFormat API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat).
-
-### Error Handling
-
-If an error occurs, the pipe will return the value that was sent to it, and a console error will be displayed with more details.
-
-`{{ 1 | relativeTimeFormat: 'day' }}` will return `1`.
+:::tip
+The pipe doesn't compute the difference between two dates for you. Calculate the value and pick the unit in your component, for example with a `computed()`.
+:::
 
 ## SupportedValuesOf
 
-This is a utility transforms a key into an array containing the supported calendar, collation, currency, numbering systems, or unit values supported by the implementation.
+Returns the values the browser supports for a category. Wraps [`Intl.supportedValuesOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/supportedValuesOf). The class is named `SupportedValuesOf`, without the `Pipe` suffix. The result depends on the browser, not on the locale.
 
-### Usage
+Combine it with `displayNames` to build a currency picker:
 
-Import `SupportedValuesOf` and add it to your component:
-
-```ts
-
-import {Component} from "@angular/core";
-import {SupportedValuesOf} from 'ngxtension/intl';
+```angular-ts
+import { Component } from '@angular/core';
+import { DisplayNamesPipe, SupportedValuesOf } from 'ngxtension/intl';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [SupportedValuesOf],
-  template: `
-    <p>{{ 'currency' | supportedValuesOf }}</p>
-  `
+	selector: 'app-currency-select',
+	imports: [SupportedValuesOf, DisplayNamesPipe],
+	template: `
+		<select>
+			@for (code of 'currency' | supportedValuesOf; track code) {
+				<option [value]="code">{{ code | displayNames: 'currency' }}</option>
+			}
+		</select>
+	`,
 })
+export class CurrencySelectComponent {}
 ```
 
-The above example will display `["BRL", "CNY", "EUR", "GBP", "INR", "JPY", "KRW", "MXN", "RUB", "USD"]` if `LOCALE_ID` is set to `en-US`.
+**Argument:** the category key, one of `'calendar'`, `'collation'`, `'currency'`, `'numberingSystem'`, `'timeZone'` or `'unit'`.
 
-The key can be any of the following:
+**Fallback:** an empty array.
 
-- `calendar` - Supported calendar values, such as `buddhist`, `chinese`, `coptic`, and so on.
-- `collation` - Supported collation values, such as `big5han`, `compat`, `ebase`, `emoji`, and so on.
-- `currency` - Supported currency values, such as `BRL`, `CNY`, `EUR`, and so on.
-- `numberingSystem` - Supported numbering system values, such as `arab`, `arabext`, `bali`, and so on.
-- `timeZone` - Supported time zone values, such as `America/Los_Angeles`, `Asia/Kolkata`, `Asia/Tokyo`, and so on.
-- `unit` - Supported unit values, such as `acre`, `bit`, `byte`, `celsius`, and so on.
+## API
 
-Not sure how often you'll need this, but it's there if you do.
+```ts
+// Pipes (all standalone)
+class DisplayNamesPipe {
+	transform(
+		code: string,
+		type: Intl.DisplayNamesType,
+		style?: Intl.DisplayNamesOptions['style'],
+		locale?: string | string[],
+	): string | undefined;
+}
 
-For more information, check the [SupportedValuesOf API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/supportedValuesOf).
+class ListFormatPipe {
+	transform(
+		value: Iterable<string>,
+		style?: Intl.ListFormatOptions['style'],
+		locale?: string | string[],
+	): string;
+}
+
+class PluralRulesPipe {
+	transform(value: number, locale?: string): Intl.LDMLPluralRule | string;
+}
+
+class RelativeTimeFormatPipe {
+	transform(
+		value: number,
+		unit: Intl.RelativeTimeFormatUnit,
+		style?: Intl.RelativeTimeFormatOptions['style'],
+		locale?: string,
+	): string;
+}
+
+class SupportedValuesOf {
+	transform(
+		key:
+			| 'calendar'
+			| 'collation'
+			| 'currency'
+			| 'numberingSystem'
+			| 'timeZone'
+			| 'unit',
+	): string[];
+}
+
+// Default options providers
+function provideDisplayNamesOptions(
+	options: Partial<Omit<Intl.DisplayNamesOptions, 'type'>>,
+): Provider;
+function provideListFormatOptions(
+	options: Partial<Intl.ListFormatOptions>,
+): Provider;
+function providePluralRulesOptions(
+	options: Partial<Intl.PluralRulesOptions>,
+): Provider;
+function provideRelativeTimeFormatOptions(
+	options: Partial<Intl.RelativeTimeFormatOptions>,
+): Provider;
+```
+
+## Related
+
+- Angular's built-in [`DatePipe`, `DecimalPipe`, `CurrencyPipe` and `PercentPipe`](https://angular.dev/guide/templates/pipes#built-in-pipes) for dates and numbers.
+- Angular's [`I18nPluralPipe`](https://angular.dev/api/common/I18nPluralPipe) and ICU expressions for pluralized messages.

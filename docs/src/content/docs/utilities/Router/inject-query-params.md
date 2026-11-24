@@ -1,240 +1,177 @@
 ---
 title: injectQueryParams
-description: ngxtension/inject-query-params
+description: Read the current route's query params as a signal, as a whole object, a single value or an array.
 entryPoint: ngxtension/inject-query-params
 badge: stable
 contributors: ['enea-jahollari']
 ---
 
-:::note[Router outlet is required]
-`injectQueryParams` works on all components that are inside routing context. Make sure the component you are using `injectQueryParams` in, is part of your routes.
-For the same reason - `injectQueryParams` will not work correctly inside your root component (usually `AppComponent`)
+`injectQueryParams` gives you the query params of the current route as a signal. Read all of them, one key, or a repeated key as an array, and optionally parse the value. The signal updates on every navigation, so you can feed it straight into `computed()` or a resource instead of subscribing to `ActivatedRoute.queryParams`.
+
+:::note[Use it inside a routed component]
+`injectQueryParams` reads from the `ActivatedRoute` of the component that calls it. Use it in components that are rendered by a route. In the root component (usually `AppComponent`) the initial value is read before the first navigation, so it starts empty.
 :::
-
-`injectQueryParams` is a helper function that allows us to inject query params from the current route as a signal.
-
-Having query params as a signal helps in a modern angular signals based architecture.
-
-## Import
-
-```ts
-import { injectQueryParams } from 'ngxtension/inject-query-params';
-```
 
 ## Usage
 
-### Get all query params
+Pass the name of a query param to get its value as `Signal<string | null>`.
 
-`injectQueryParams` when it's called, returns a signal with the current query params.
-
-```ts
-import { injectQueryParams } from 'ngxtension/inject-query-params';
-
-@Component({
-	template: '<div>{{queryParams() | json}}</div>',
-})
-class TestComponent {
-	queryParams = injectQueryParams();
-}
-```
-
-Or, if we want to transform the query params, we can pass a function to `injectQueryParams`.
-
-```ts
-import { injectQueryParams } from 'ngxtension/inject-query-params';
-
-@Component()
-class TestComponent {
-	queryParamsKeys = injectQueryParams((params) => Object.keys(params)); // returns a signal with all keys of the query params
-
-	allQueryParamsArePassed = computed(() => {
-		const keys = this.queryParamsKeys();
-		return ['search', 'sort', 'page'].every((x) => keys.includes(x));
-	});
-}
-```
-
-### Get a single value
-
-If we want to get the value for a specific query param, we can pass the name of the query param to `injectQueryParams`.
-
-```ts
-// Example url: /users?search=nartc
-
+```angular-ts
+// URL: /users?search=nartc
+import { Component, inject } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { injectQueryParams } from 'ngxtension/inject-query-params';
 
 @Component({
 	template: `
-		Search results for: {{ searchParam() }}
+		<p>Search results for: {{ search() }}</p>
 
-		@for (user of filteredUsers(); track user.id) {
+		@for (user of users.value(); track user.id) {
 			<div>{{ user.name }}</div>
 		} @empty {
 			<div>No users!</div>
 		}
 	`,
 })
-class TestComponent {
-	searchParam = injectQueryParams('search'); // returns a signal with the value of the search query param
+export class UserList {
+	private userService = inject(UserService);
 
-	filteredUsers = derivedAsync(
-		() => this.userService.getUsers(this.searchParam() ?? ''),
-		{ initialValue: [] },
-	);
-}
-```
+	search = injectQueryParams('search'); // Signal<string | null>
 
-If we want to additional parse the value into any shape, we can pass a `parse` function.
-
-```ts
-// Example url: /users?pageNumber=1
-
-import { injectQueryParams } from 'ngxtension/inject-query-params';
-
-@Component({
-	template: `
-		Page number: {{ pageNumber() }} Multiplied number: {{ multipliedNumber() }}
-	`,
-})
-class TestComponent {
-	pageNumber = injectQueryParams('pageNumber', { parse: numberAttribute });
-
-	multipliedNumber = computed(() => this.pageNumber() * 2);
-}
-```
-
-If we want to use a default value if there is no value, we can pass a `defaultValue`.
-
-```ts
-// Example urls producing the same output: "/users?search=nartc", "/users"
-
-import { injectQueryParams } from 'ngxtension/inject-query-params';
-
-@Component({
-	template: `
-		Search results for: {{ searchParam() }}
-
-		@for (user of filteredUsers(); track user.id) {
-			<div>{{ user.name }}</div>
-		} @empty {
-			<div>No users!</div>
-		}
-	`,
-})
-class TestComponent {
-	// returns a signal with the value of the search query param or '' if not provided.
-	searchParam = injectQueryParams('search', { defaultValue: 'nartc' });
-
-	filteredUsers = derivedAsync(
-		() => this.userService.getUsers(this.searchParam()),
-		{ initialValue: [] },
-	);
-}
-```
-
-### Get an array value
-
-If we want to get the values for a specific query param, we can pass the name of the query param, to `injectQueryParams.array`.
-
-```ts
-// Example url: /search?products=Angular&products=Analog
-
-import { injectQueryParams } from 'ngxtension/inject-query-params';
-
-@Component({
-	template: `
-		Selected products: {{ productNames() }}
-
-		@for (product of products(); track product.id) {
-			<div>{{ product.name }}</div>
-		} @empty {
-			<div>No products!</div>
-		}
-	`,
-})
-class TestComponent {
-	productService = inject(ProductService);
-	// returns a signal with the array values of the product query param
-	productNames = injectQueryParams.array('products');
-
-	products = derivedAsync(
-		() => this.productService.getByNames(this.productNames()),
-		{ initialValue: [] },
-	);
-}
-```
-
-If we want to additional transform the values into any shape, we can pass a `transform` function.
-
-```ts
-// Example url: /search?productIds=Angular&productIds=Analog
-
-import { injectQueryParams } from 'ngxtension/inject-query-params';
-
-@Component({
-	template: `
-		Selected products: {{ productIds() }}
-
-		@for (product of products(); track product.id) {
-			<div>{{ product.name }}</div>
-		} @empty {
-			<div>No products!</div>
-		}
-	`,
-})
-class TestComponent {
-	productService = inject(ProductService);
-	// returns a signal with the array values of the product query param and parse each value
-	productIds = injectQueryParams.array('productIds', {
-		parse: numberAttribute,
+	users = rxResource({
+		request: () => this.search() ?? '',
+		loader: ({ request: search }) => this.userService.getUsers(search),
+		defaultValue: [],
 	});
+}
+```
 
-	products = derivedAsync(
-		() => this.productService.getByIds(this.productIds()),
-		{ initialValue: [] },
+When the URL changes to `/users?search=chau`, `search()` updates and the resource reloads the list.
+
+## Get all query params
+
+Call it without arguments to get the whole `Params` object.
+
+```angular-ts
+import { JsonPipe } from '@angular/common';
+import { Component } from '@angular/core';
+import { injectQueryParams } from 'ngxtension/inject-query-params';
+
+@Component({
+	imports: [JsonPipe],
+	template: `<pre>{{ queryParams() | json }}</pre>`,
+})
+export class Debug {
+	queryParams = injectQueryParams(); // Signal<Params>
+}
+```
+
+### Transform all query params
+
+Pass a function to derive any value from the full `Params` object. The function runs on every change.
+
+```ts
+export class Filters {
+	keys = injectQueryParams((params) => Object.keys(params)); // Signal<string[]>
+
+	hasAllFilters = computed(() =>
+		['search', 'sort', 'page'].every((key) => this.keys().includes(key)),
 	);
 }
 ```
 
-If we want to use a default value if there are no values, we can pass a `defaultValue`.
+## Parse a single value
+
+Query params are strings. Use `parse` to convert the value, for example with Angular's `numberAttribute`. `parse` only runs when the param is present.
 
 ```ts
-// Example urls producing the same output: "/search?products=Angular", "/search"
+// URL: /users?page=3
+import { computed, numberAttribute } from '@angular/core';
 
+export class Pagination {
+	page = injectQueryParams('page', { parse: numberAttribute }); // Signal<number | null>
+
+	nextPage = computed(() => (this.page() ?? 1) + 1);
+}
+```
+
+## Default value
+
+Use `defaultValue` for the value to return when the param is missing. It is returned as is, without going through `parse`.
+
+```ts
+// "/users?search=nartc" and "/users" both give 'nartc'
+search = injectQueryParams('search', { defaultValue: 'nartc' });
+```
+
+:::note
+The return type stays `Signal<T | null>` with `defaultValue`. Use `required: true` if you need a non-null type.
+:::
+
+## Required params
+
+With `required: true` the signal type is non-null, and reading a missing param throws an error (`Query parameter <key> is required but was not provided.`). Use it on routes that are never reached without the param.
+
+```ts
+// URL: /checkout?orderId=42
+orderId = injectQueryParams('orderId', { required: true }); // Signal<string>
+```
+
+## Array values
+
+When a key appears more than once (`?products=Angular&products=Analog`), use `injectQueryParams.array` to get every value. A single value is wrapped in an array.
+
+```angular-ts
+// URL: /search?products=Angular&products=Analog
+import { Component, inject } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { injectQueryParams } from 'ngxtension/inject-query-params';
 
 @Component({
 	template: `
-		Selected products: {{ productNames() }}
+		<p>Selected: {{ productNames()?.join(', ') }}</p>
 
-		@for (product of products(); track product.id) {
+		@for (product of products.value(); track product.id) {
 			<div>{{ product.name }}</div>
 		} @empty {
 			<div>No products!</div>
 		}
 	`,
 })
-class TestComponent {
-	productService = inject(ProductService);
-	// returns a signal with the array values of the product query param or 'Angular' if the user provides none
-	productNames = injectQueryParams.array('products', {
-		defaultValue: ['Angular'],
-	});
+export class ProductSearch {
+	private productService = inject(ProductService);
 
-	products = derivedAsync(
-		() => this.productService.getByNames(this.productNames()),
-		{ initialValue: [] },
-	);
+	productNames = injectQueryParams.array('products'); // Signal<string[] | null>
+
+	products = rxResource({
+		request: () => this.productNames() ?? [],
+		loader: ({ request: names }) => this.productService.getByNames(names),
+		defaultValue: [],
+	});
 }
 ```
 
-### Reusable transform functions
-
-When working with query params, there are times we need to get the same value from the query params multiple times on different components. For example, currentPage, pageSize, order and direction of the current page of a paginated list. We can create a reusable transform function to avoid repeating the code.
-
-We can have this shared code in a reusable function and then use it in the component.
+`parse`, `defaultValue` and `required` work with arrays too. `parse` runs on each item, and `defaultValue` is an array.
 
 ```ts
+// URL: /search?productIds=1&productIds=2
+productIds = injectQueryParams.array('productIds', {
+	parse: numberAttribute,
+}); // Signal<number[] | null>
+
+// URL: /search → ['Angular']
+productNames = injectQueryParams.array('products', {
+	defaultValue: ['Angular'],
+});
+```
+
+## Reusable transform functions
+
+When several pages read the same set of params (page, page size, sort order), put the transform in a shared function.
+
+```ts title="shared-filters.ts"
+import type { Params } from '@angular/router';
+
 export interface DefaultFilters {
 	currentPage: number;
 	pageSize: number;
@@ -250,46 +187,84 @@ export const withDefaultFilters = (p: Params): DefaultFilters => ({
 });
 ```
 
-Then we can use it in the component like this:
+Then use it in any component, and spread it if you need extra params:
 
-```ts
+```angular-ts
+import { Component, inject } from '@angular/core';
+import { Router, type Params } from '@angular/router';
+import { injectQueryParams } from 'ngxtension/inject-query-params';
 import { withDefaultFilters } from './shared-filters';
 
 @Component({
 	template: `
-		<pagination
-			[currentPage]="queryParams().currentPage"
-			[pageSize]="queryParams().pageSize"
+		<app-pagination
+			[currentPage]="filters().currentPage"
+			[pageSize]="filters().pageSize"
 			(currentPageChange)="updateParams({ currentPage: $event })"
 			(pageSizeChange)="updateParams({ pageSize: $event })"
 		/>
 	`,
 })
-export class MyComponent {
+export class UserTable {
 	private router = inject(Router);
 
-	queryParams = injectQueryParams((p) => withDefaultFilters(p));
-
-	// or we if also need some more params in the current page
-
-	queryParams = injectQueryParams((p) => ({
+	filters = injectQueryParams((p) => ({
 		...withDefaultFilters(p),
-		userId: p['userId'], // will be undefined if not in the query params
+		userId: p['userId'] as string | undefined,
 	}));
-
-	ngOnInit() {
-		// we can use the filters in the component
-		const { currentPage, pageSize, orderBy, direction } = this.queryParams();
-	}
 
 	updateParams(queryParams: Params) {
 		this.router.navigate([], {
-			// Update query params without changing the current page
-			queryParams, // The query params to update
-			queryParamsHandling: 'merge', // Merge with existing query params
+			queryParams,
+			queryParamsHandling: 'merge', // keep the other params
 		});
 	}
 }
 ```
 
-This should help you to avoid repeating code.
+:::tip
+If you also write to the URL, [`linkedQueryParam`](/utilities/router/linked-query-param/) gives you a writable signal that does the `router.navigate` call for you.
+:::
+
+## API
+
+```ts
+function injectQueryParams(): Signal<Params>;
+function injectQueryParams<T>(fn: (params: Params) => T): Signal<T>;
+function injectQueryParams(key: string): Signal<string | null>;
+function injectQueryParams<T = string>(
+	key: string,
+	options: QueryParamsOptions<T, T> & { required: true },
+): Signal<T>;
+function injectQueryParams<T>(
+	key: string,
+	options?: QueryParamsOptions<T, T>,
+): Signal<T | null>;
+
+namespace injectQueryParams {
+	function array<T = string>(
+		key: string,
+		options: QueryParamsOptions<T, T[]> & { required: true },
+	): Signal<T[]>;
+	function array<T = string>(
+		key: string,
+		options?: QueryParamsOptions<T, T[]>,
+	): Signal<T[] | null>;
+}
+```
+
+| Option         | Type                           | Default     | Description                                                               |
+| -------------- | ------------------------------ | ----------- | ------------------------------------------------------------------------- |
+| `parse`        | `(value: string \| null) => T` | `undefined` | Converts the raw string. For `.array`, runs on each item.                 |
+| `defaultValue` | `T` (or `T[]` for `.array`)    | `undefined` | Returned when the param is missing. Not passed through `parse`.           |
+| `required`     | `boolean`                      | `false`     | Throws when the param is missing and narrows the return type to non-null. |
+| `injector`     | `Injector`                     | `undefined` | Use it when you call `injectQueryParams` outside an injection context.    |
+| `transform`    | `(value: string \| null) => T` | `undefined` | Deprecated: use `parse`.                                                  |
+| `initialValue` | `T`                            | `undefined` | Deprecated: use `defaultValue`.                                           |
+
+If a single-value key appears more than once in the URL, `injectQueryParams(key)` returns the first value.
+
+## Related
+
+- [linkedQueryParam](/utilities/router/linked-query-param/): read and write a query param as a writable signal.
+- [injectParams](/utilities/router/inject-params/): the same API for route params.

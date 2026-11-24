@@ -1,0 +1,1012 @@
+---
+/**
+ * "I want to…" finder. A tool, not a show: no demo, no animation. It ranks every utility by the
+ * words you type (all of them must match), and the results box has a fixed height so typing never
+ * moves the page. Without JavaScript the chapters below are the same list as plain links.
+ */
+import { taglineHtml, type Lang, type Utility } from '../../data/utilities';
+import { examples, keywords, keywordsEs } from './keywords';
+import type { Strings } from './strings';
+
+/** Set in mono only when the name is code you can import (not "Testing Utilities"). */
+const isCode = (u: Utility) =>
+	u.importNames.length > 0 &&
+	/^[A-Za-z_$][\w$]*( \/ [A-Za-z_$][\w$]*)*$/.test(u.title);
+
+interface Props {
+	lang: Lang;
+	items: (Utility & { catLabel: string })[];
+	t: Strings;
+}
+
+const { lang, items, t } = Astro.props;
+const f = t.finder;
+const first = items[0];
+const kw = (key: string) =>
+	[keywords[key] ?? '', lang === 'es' ? (keywordsEs[key] ?? '') : '']
+		.join(' ')
+		.trim();
+const badge = (u: Utility) =>
+	u.badge && u.badge !== 'stable' ? t.badges[u.badge] : '';
+const importHtml = (line?: string) =>
+	(line ?? '')
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/ from /, '<br><span class="p-indent">  </span>from ');
+const clientStrings = {
+	countAll: f.countAll.replace('{n}', String(items.length)),
+	countSome: f.countSome,
+	countSomeOne: f.countSomeOne,
+	countNone: f.countNone,
+};
+---
+
+<div
+	class="finder"
+	data-finder
+	data-strings={JSON.stringify(clientStrings)}
+	data-lang={lang}
+>
+	<div class="field">
+		<label for="mx-q" class="field__label">{f.label}</label>
+		<input
+			id="mx-q"
+			class="field__input"
+			type="search"
+			role="combobox"
+			aria-expanded="true"
+			aria-controls="mx-list"
+			aria-autocomplete="list"
+			aria-describedby="mx-hints"
+			autocomplete="off"
+			autocapitalize="off"
+			spellcheck="false"
+			enterkeyhint="go"
+			placeholder={f.placeholder}
+		/>
+		<kbd class="field__slash" aria-hidden="true">/</kbd>
+	</div>
+
+	<div class="examples">
+		<span class="examples__label" id="mx-try">{f.try}</span>
+		<ul aria-labelledby="mx-try">
+			{
+				examples[lang].map((ex) => (
+					<li>
+						<button type="button" class="chip" data-example={ex}>
+							{ex}
+						</button>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+
+	<div class="body">
+		<div class="results">
+			<ul
+				id="mx-list"
+				role="listbox"
+				aria-label={f.list}
+				class="list"
+				data-list
+			>
+				{
+					items.map((u, i) => (
+						<li
+							role="option"
+							id={`mx-o-${i}`}
+							aria-selected={i === 0 ? 'true' : 'false'}
+							data-href={u.href}
+							data-title={u.title}
+							data-cat={u.catLabel}
+							data-kw={kw(u.key)}
+							data-entry={u.entryPoint ?? ''}
+							data-import={u.importLine ?? ''}
+							data-badge={badge(u)}
+							data-mono={isCode(u) ? '' : undefined}
+						>
+							<span class:list={['o-name', { 'is-code': isCode(u) }]}>
+								{u.title}
+							</span>
+							<span class="o-cat">{u.catLabel}</span>
+							<span class="o-tag" set:html={taglineHtml(u.tagline)} />
+							{u.importLine && <code class="o-import">{u.importLine}</code>}
+						</li>
+					))
+				}
+			</ul>
+			<div class="empty" data-empty hidden>
+				<p class="empty__title">{f.emptyTitle}</p>
+				<p>{f.emptyBody}</p>
+				<a href="https://github.com/ngxtension/ngxtension-platform/issues">
+					{f.emptyIssue}
+				</a>
+			</div>
+		</div>
+
+		<div class="preview" data-preview>
+			<p class="p-meta">
+				<span data-p-cat>{first.catLabel}</span>
+				<span class="p-badge" data-p-badge hidden={!badge(first)}>
+					{badge(first)}
+				</span>
+			</p>
+			<p class:list={['p-name', { 'is-code': isCode(first) }]} data-p-name>
+				{first.title}
+			</p>
+			<p class="p-tag" data-p-tag set:html={taglineHtml(first.tagline)} />
+			<div class="p-import" data-p-import-wrap hidden={!first.importLine}>
+				<code data-p-import set:html={importHtml(first.importLine)} />
+				<button
+					type="button"
+					class="p-copy"
+					data-mx-copy={first.importLine ?? ''}
+					data-p-copy
+					aria-label={f.copyImport}
+				>
+					<svg
+						viewBox="0 0 24 24"
+						width="16"
+						height="16"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="1.8"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						aria-hidden="true"
+					>
+						<rect x="9" y="9" width="12" height="12" rx="2.5"></rect><path
+							d="M5 15H4.5A1.5 1.5 0 0 1 3 13.5v-9A1.5 1.5 0 0 1 4.5 3h9A1.5 1.5 0 0 1 15 4.5V5"
+						>
+						</path>
+					</svg>
+					<span class="copied" aria-hidden="true">
+						<svg
+							viewBox="0 0 24 24"
+							width="16"
+							height="16"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2.2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<path d="M5 12.5l4.5 4.5L19 7.5"></path>
+						</svg>
+					</span>
+				</button>
+			</div>
+			<a class="p-open" href={first.href} data-p-open>
+				{f.openDocs}
+				<span aria-hidden="true">→</span>
+			</a>
+		</div>
+	</div>
+
+	<div class="status">
+		<p role="status" aria-live="polite" class="status__count" data-status>
+			{clientStrings.countAll}
+		</p>
+		<p class="hints" id="mx-hints">
+			<span><kbd>↑</kbd><kbd>↓</kbd> {f.move}</span>
+			<span><kbd>↵</kbd> {f.open}</span>
+			<span><kbd>esc</kbd> {f.clear}</span>
+			<span><kbd>/</kbd> {f.focus}</span>
+		</p>
+	</div>
+</div>
+
+<script>
+	type Opt = {
+		el: HTMLLIElement;
+		i: number;
+		title: string[];
+		flat: string;
+		flatText: string;
+		kw: string[];
+		tag: string[];
+		cat: string[];
+		entry: string[];
+	};
+
+	const STOP = new Set(
+		(
+			'a an the to of as with when while i want my on in for is it be by from into me make get use using can how do does that this some ' +
+			'un una unos unas el la los las lo de del al en con como para por que y o mi mis su sus se es quiero cuando mientras hacer'
+		).split(' '),
+	);
+
+	const stem = (w: string) =>
+		w.length > 5 && w.endsWith('ing')
+			? w.slice(0, -3)
+			: w.length > 4 && w.endsWith('ed')
+				? w.slice(0, -2)
+				: w.length > 3 && w.endsWith('s') && !w.endsWith('ss')
+					? w.slice(0, -1)
+					: w;
+
+	const plain = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '');
+
+	const words = (s: string) =>
+		plain(s)
+			.replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+			.toLowerCase()
+			.split(/[^a-z0-9]+/)
+			.filter(Boolean)
+			.map(stem);
+
+	/** One edit apart (insert, delete, replace or swap), for typos like "parms". */
+	function near(a: string, b: string) {
+		if (Math.abs(a.length - b.length) > 1) return false;
+		let i = 0;
+		while (i < a.length && i < b.length && a[i] === b[i]) i++;
+		const ra = a.slice(i + 1);
+		const rb = b.slice(i + 1);
+		return (
+			ra === rb ||
+			a.slice(i) === b.slice(i + 1) ||
+			a.slice(i + 1) === b.slice(i) ||
+			(a[i] === b[i + 1] &&
+				a[i + 1] === b[i] &&
+				a.slice(i + 2) === b.slice(i + 2))
+		);
+	}
+
+	function init(root: HTMLElement) {
+		if (root.dataset.ready) return;
+		root.dataset.ready = '1';
+
+		const strings = JSON.parse(root.dataset.strings ?? '{}') as Record<
+			string,
+			string
+		>;
+		const input = root.querySelector<HTMLInputElement>('.field__input')!;
+		const list = root.querySelector<HTMLUListElement>('[data-list]')!;
+		const empty = root.querySelector<HTMLElement>('[data-empty]')!;
+		const status = root.querySelector<HTMLElement>('[data-status]')!;
+		const p = {
+			cat: root.querySelector<HTMLElement>('[data-p-cat]')!,
+			badge: root.querySelector<HTMLElement>('[data-p-badge]')!,
+			name: root.querySelector<HTMLElement>('[data-p-name]')!,
+			tag: root.querySelector<HTMLElement>('[data-p-tag]')!,
+			importWrap: root.querySelector<HTMLElement>('[data-p-import-wrap]')!,
+			import: root.querySelector<HTMLElement>('[data-p-import]')!,
+			copy: root.querySelector<HTMLButtonElement>('[data-p-copy]')!,
+			open: root.querySelector<HTMLAnchorElement>('[data-p-open]')!,
+		};
+
+		const opts: Opt[] = [
+			...list.querySelectorAll<HTMLLIElement>('[role="option"]'),
+		].map((el, i) => {
+			const d = el.dataset;
+			const tag = el.querySelector('.o-tag')?.textContent ?? '';
+			return {
+				el,
+				i,
+				title: words(d.title ?? ''),
+				flat: plain(d.title ?? '')
+					.toLowerCase()
+					.replace(/[^a-z0-9]/g, ''),
+				flatText: plain(`${d.kw ?? ''} ${tag}`)
+					.toLowerCase()
+					.replace(/[^a-z0-9]/g, ''),
+				kw: words(d.kw ?? ''),
+				tag: words(tag),
+				cat: words(d.cat ?? ''),
+				entry: words(d.entry ?? ''),
+			};
+		});
+
+		let visible: Opt[] = opts;
+		let active: Opt | undefined = opts[0];
+
+		// Every query word has to match. Longer, sentence-like queries (4+ words) may miss one filler
+		// word ("run effect only once"); short ones never fall back to half-matches.
+		function score(
+			o: Opt,
+			tokens: string[],
+			flatQ: string,
+			identifier: boolean,
+		) {
+			let s = 0;
+			let misses = 0;
+			const fields: [string[], number, number][] = identifier
+				? [
+						[o.title, 10, 7],
+						[o.kw, 6, 4],
+						[o.entry, 3, 2],
+					]
+				: [
+						[o.title, 10, 7],
+						[o.kw, 6, 4],
+						[o.tag, 4, 2.5],
+						[o.cat, 3, 2],
+						[o.entry, 3, 2],
+					];
+			for (const tk of tokens) {
+				let best = 0;
+				for (const [field, exact, prefix] of fields) {
+					for (const w of field) {
+						if (w === tk) best = Math.max(best, exact);
+						else if (tk.length >= 2 && w.startsWith(tk))
+							best = Math.max(best, prefix);
+						else if (tk.length >= 4 && w.includes(tk))
+							best = Math.max(best, prefix * 0.5);
+						else if (tk.length >= 4 && near(w, tk))
+							best = Math.max(best, prefix * 0.5);
+					}
+				}
+				if (best) s += best;
+				else misses++;
+			}
+			const allowed = tokens.length >= 4 ? 1 : 0;
+			if (misses > allowed) return 0;
+			if (flatQ.length >= 3 && o.flat.includes(flatQ)) s += 20;
+			else if (flatQ.length >= 6 && o.flatText.includes(flatQ)) s += 12;
+			// Full matches always rank above results that skipped a word.
+			return s + (misses ? 0 : 100);
+		}
+
+		function setActive(o: Opt | undefined, scroll = true) {
+			if (active) active.el.setAttribute('aria-selected', 'false');
+			active = o;
+			if (!o) {
+				input.removeAttribute('aria-activedescendant');
+				return;
+			}
+			o.el.setAttribute('aria-selected', 'true');
+			input.setAttribute('aria-activedescendant', o.el.id);
+			const d = o.el.dataset;
+			p.cat.textContent = d.cat ?? '';
+			p.badge.textContent = d.badge ?? '';
+			p.badge.hidden = !d.badge;
+			p.name.textContent = d.title ?? '';
+			p.name.classList.toggle('is-code', 'mono' in d);
+			p.tag.innerHTML = o.el.querySelector('.o-tag')?.innerHTML ?? '';
+			p.import.innerHTML = (d.import ?? '')
+				.replace(/&/g, '&amp;')
+				.replace(/</g, '&lt;')
+				.replace(/ from /, '<br><span class="p-indent">  </span>from ');
+			p.copy.dataset.mxCopy = d.import ?? '';
+			p.importWrap.hidden = !d.import;
+			p.open.href = d.href ?? '#';
+			if (scroll) {
+				// Scroll inside the list only; never the page.
+				const top = o.el.offsetTop;
+				const bottom = top + o.el.offsetHeight;
+				if (top < list.scrollTop) list.scrollTop = top - 4;
+				else if (bottom > list.scrollTop + list.clientHeight)
+					list.scrollTop = bottom - list.clientHeight + 4;
+			}
+		}
+
+		let announceTimer: number | undefined;
+		const announce = (text: string) => {
+			clearTimeout(announceTimer);
+			announceTimer = window.setTimeout(() => (status.textContent = text), 350);
+		};
+
+		function filter(q: string) {
+			const query = q.trim();
+			const raw = words(query);
+			// A single identifier like "toSignal" keeps every part, even "to".
+			const identifier = /^[a-z]+[A-Z][A-Za-z0-9]*$/.test(query);
+			const tokens = identifier ? raw : raw.filter((w) => !STOP.has(w));
+			const use = tokens.length ? tokens : raw;
+			const flatQ = plain(query)
+				.toLowerCase()
+				.replace(/[^a-z0-9]/g, '');
+
+			if (!use.length) {
+				visible = opts;
+				for (const o of opts) {
+					o.el.hidden = false;
+					list.appendChild(o.el);
+				}
+			} else {
+				const ranked = opts
+					.map((o) => ({ o, s: score(o, use, flatQ, identifier) }))
+					.filter((r) => r.s > 0)
+					.sort((a, b) => b.s - a.s || a.o.i - b.o.i)
+					.map((r) => r.o);
+				const shown = new Set(ranked);
+				for (const o of opts) o.el.hidden = !shown.has(o);
+				for (const o of ranked) list.appendChild(o.el);
+				visible = ranked;
+			}
+
+			list.scrollTop = 0;
+			empty.hidden = visible.length > 0;
+			root.classList.toggle('is-empty', visible.length === 0);
+			setActive(visible[0], false);
+
+			announce(
+				!use.length
+					? strings.countAll
+					: visible.length === 0
+						? strings.countNone.replace('{q}', query)
+						: (visible.length === 1 ? strings.countSomeOne : strings.countSome)
+								.replace('{n}', String(visible.length))
+								.replace('{q}', query),
+			);
+		}
+
+		const go = (href: string | undefined, newTab = false) => {
+			if (!href) return;
+			if (newTab) window.open(href, '_blank', 'noopener');
+			else window.location.href = href;
+		};
+
+		input.addEventListener('input', () => filter(input.value));
+
+		input.addEventListener('keydown', (e) => {
+			const idx = active ? visible.indexOf(active) : -1;
+			if (e.key === 'ArrowDown') {
+				e.preventDefault();
+				setActive(visible[Math.min(idx + 1, visible.length - 1)]);
+			} else if (e.key === 'ArrowUp') {
+				e.preventDefault();
+				setActive(visible[Math.max(idx - 1, 0)]);
+			} else if (e.key === 'Enter') {
+				if (active) {
+					e.preventDefault();
+					go(active.el.dataset.href, e.metaKey || e.ctrlKey);
+				}
+			} else if (e.key === 'Escape') {
+				if (input.value) {
+					e.preventDefault();
+					input.value = '';
+					filter('');
+				} else input.blur();
+			}
+		});
+
+		// "/" jumps to the field from anywhere on the page.
+		document.addEventListener('keydown', (e) => {
+			if (
+				e.key !== '/' ||
+				e.metaKey ||
+				e.ctrlKey ||
+				e.altKey ||
+				!root.isConnected
+			)
+				return;
+			const target = e.target as HTMLElement;
+			if (
+				target.closest(
+					'input, textarea, select, [contenteditable=""], [contenteditable="true"], dialog[open]',
+				)
+			)
+				return;
+			e.preventDefault();
+			input.focus({ preventScroll: true });
+			const r = root.getBoundingClientRect();
+			const nav =
+				parseFloat(
+					getComputedStyle(document.documentElement).getPropertyValue(
+						'--sl-nav-height',
+					),
+				) * 16 || 64;
+			if (r.top < nav || r.top > innerHeight * 0.6) {
+				root.scrollIntoView({
+					block: 'start',
+					behavior: matchMedia('(prefers-reduced-motion: reduce)').matches
+						? 'auto'
+						: 'smooth',
+				});
+			}
+		});
+
+		list.addEventListener('pointermove', (e) => {
+			const li = (e.target as HTMLElement).closest<HTMLLIElement>(
+				'[role="option"]',
+			);
+			if (!li || li === active?.el) return;
+			const o = opts.find((x) => x.el === li);
+			if (o) setActive(o, false);
+		});
+
+		// The row itself opens the page (no link nested inside an option).
+		list.addEventListener('click', (e) => {
+			const li = (e.target as HTMLElement).closest<HTMLLIElement>(
+				'[role="option"]',
+			);
+			if (li) go(li.dataset.href, e.metaKey || e.ctrlKey);
+		});
+		list.addEventListener('auxclick', (e) => {
+			const li = (e.target as HTMLElement).closest<HTMLLIElement>(
+				'[role="option"]',
+			);
+			if (li && e.button === 1) go(li.dataset.href, true);
+		});
+
+		root.addEventListener('click', (e) => {
+			const chip = (e.target as HTMLElement).closest<HTMLButtonElement>(
+				'[data-example]',
+			);
+			if (!chip) return;
+			input.value = chip.dataset.example ?? '';
+			filter(input.value);
+			input.focus({ preventScroll: true });
+		});
+	}
+
+	const boot = () =>
+		document.querySelectorAll<HTMLElement>('[data-finder]').forEach(init);
+	boot();
+	document.addEventListener('astro:page-load', boot);
+</script>
+
+<style>
+	.finder {
+		--radius: 1rem;
+		border: 1px solid var(--nx-line-strong);
+		border-radius: var(--radius);
+		background: var(--nx-surface);
+		overflow: hidden;
+		scroll-margin-top: calc(var(--sl-nav-height) + 1rem);
+	}
+
+	:root[data-theme='light'] .finder {
+		background: var(--sl-color-black);
+	}
+
+	.finder :is(p, ul) {
+		margin: 0;
+	}
+
+	.finder ul {
+		list-style: none;
+		padding: 0;
+	}
+
+	/* ---- Field ---- */
+	.field {
+		display: flex;
+		align-items: center;
+		gap: clamp(0.6rem, 1.5vw, 1rem);
+		padding: clamp(0.85rem, 2vw, 1.2rem) clamp(1rem, 2.5vw, 1.5rem);
+		border-bottom: 1px solid var(--nx-line);
+	}
+
+	.field:focus-within {
+		background: color-mix(in oklab, var(--sl-color-accent) 5%, transparent);
+		box-shadow: inset 0 -2px 0 var(--sl-color-accent);
+	}
+
+	.field__label,
+	.field__input {
+		font-size: clamp(1.25rem, 0.9rem + 1.5vw, 2rem);
+		line-height: 1.2;
+		letter-spacing: -0.015em;
+	}
+
+	.field__label {
+		flex: none;
+		font-weight: 650;
+		font-stretch: 80%;
+		color: var(--sl-color-accent-high);
+	}
+
+	:root[data-theme='light'] .field__label {
+		color: var(--sl-color-accent);
+	}
+
+	.field__input {
+		flex: 1 1 auto;
+		min-width: 0;
+		padding: 0.1em 0;
+		border: 0;
+		outline: none;
+		background: transparent;
+		color: var(--sl-color-white);
+		caret-color: var(--sl-color-accent);
+		font-family: var(--__sl-font);
+		font-weight: 450;
+		-webkit-appearance: none;
+		appearance: none;
+	}
+
+	.field__input::-webkit-search-cancel-button {
+		-webkit-appearance: none;
+	}
+
+	.field__input::placeholder {
+		color: var(--sl-color-gray-4);
+		opacity: 1;
+	}
+
+	kbd {
+		font-family: var(--__sl-font-mono);
+		font-size: 0.72rem;
+		line-height: 1;
+		padding: 0.25rem 0.4rem;
+		border-radius: 0.35rem;
+		border: 1px solid var(--nx-line-strong);
+		background: var(--nx-surface-2);
+		color: var(--sl-color-gray-2);
+	}
+
+	.field__slash {
+		flex: none;
+		font-size: 0.85rem;
+		padding: 0.35rem 0.6rem;
+	}
+
+	.field:focus-within .field__slash {
+		visibility: hidden;
+	}
+
+	/* ---- Example problems ---- */
+	.examples {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.65rem clamp(1rem, 2.5vw, 1.5rem);
+		border-bottom: 1px solid var(--nx-line);
+		overflow-x: auto;
+		scrollbar-width: none;
+		mask-image: linear-gradient(90deg, #000 calc(100% - 3rem), transparent);
+	}
+
+	.examples::-webkit-scrollbar {
+		display: none;
+	}
+
+	.examples__label {
+		flex: none;
+		font-size: var(--sl-text-xs);
+		color: var(--sl-color-gray-3);
+	}
+
+	.examples ul {
+		display: flex;
+		gap: 0.4rem;
+	}
+
+	.examples li:last-child {
+		padding-inline-end: 2.5rem;
+	}
+
+	.chip {
+		height: 1.9rem;
+		padding: 0 0.75rem;
+		border-radius: 999px;
+		border: 1px solid var(--nx-line);
+		background: var(--nx-surface-2);
+		color: var(--sl-color-gray-2);
+		font: inherit;
+		font-size: var(--sl-text-xs);
+		white-space: nowrap;
+		cursor: pointer;
+		transition:
+			border-color 0.15s ease,
+			color 0.15s ease;
+	}
+
+	:root[data-theme='light'] .chip {
+		background: var(--nx-surface);
+	}
+
+	.chip:hover {
+		border-color: var(--sl-color-accent);
+		color: var(--sl-color-white);
+	}
+
+	/* ---- Results + preview: fixed height, typing never moves the page ---- */
+	.body {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		height: 17rem;
+	}
+
+	@media (min-width: 52rem) {
+		.body {
+			grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+			height: 19rem;
+		}
+
+		.results {
+			border-inline-end: 1px solid var(--nx-line);
+		}
+	}
+
+	.results {
+		position: relative;
+		min-height: 0;
+	}
+
+	.list {
+		height: 100%;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		padding: 0.4rem !important;
+		scrollbar-width: thin;
+		scrollbar-color: var(--nx-line-strong) transparent;
+	}
+
+	.list [role='option'] {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		column-gap: 1rem;
+		row-gap: 0.1rem;
+		padding: 0.55rem 0.8rem;
+		border-radius: 0.6rem;
+		cursor: pointer;
+	}
+
+	.list [role='option'][hidden] {
+		display: none;
+	}
+
+	.o-name {
+		font-size: 0.98rem;
+		font-weight: 600;
+		color: var(--sl-color-white);
+		overflow-wrap: anywhere;
+	}
+
+	.o-name.is-code,
+	.p-name.is-code {
+		font-family: var(--__sl-font-mono);
+		font-size: 0.92rem;
+		font-weight: 550;
+	}
+
+	.o-cat {
+		font-size: var(--sl-text-xs);
+		color: var(--sl-color-gray-4);
+		align-self: center;
+		text-align: end;
+	}
+
+	.o-tag {
+		grid-column: 1 / -1;
+		font-size: var(--sl-text-sm);
+		line-height: 1.45;
+		color: var(--sl-color-gray-3);
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
+	.o-import {
+		display: none;
+	}
+
+	.finder :global(.o-tag code),
+	.finder :global(.p-tag code) {
+		font-family: var(--__sl-font-mono);
+		font-size: 0.88em;
+		background: none;
+		border: 0;
+		padding: 0;
+		color: var(--sl-color-gray-2);
+	}
+
+	.list [aria-selected='true'] {
+		background: var(--nx-tint-strong);
+	}
+
+	.list [aria-selected='true'] .o-name {
+		color: var(--sl-color-accent-high);
+	}
+
+	:root[data-theme='light'] .list [aria-selected='true'] .o-name {
+		color: var(--sl-color-accent);
+	}
+
+	.empty {
+		position: absolute;
+		inset: 0;
+		display: grid;
+		align-content: center;
+		justify-items: start;
+		gap: 0.4rem;
+		padding: 1.5rem;
+		font-size: var(--sl-text-sm);
+		color: var(--sl-color-gray-3);
+	}
+
+	.empty[hidden] {
+		display: none;
+	}
+
+	.empty__title {
+		font-size: 1.125rem;
+		font-weight: 600;
+		color: var(--sl-color-white);
+	}
+
+	.empty a {
+		color: var(--sl-color-text-accent);
+		font-weight: 600;
+	}
+
+	/* ---- Preview (desktop) ---- */
+	.preview {
+		display: none;
+	}
+
+	@media (min-width: 52rem) {
+		.preview {
+			display: grid;
+			grid-template-rows: auto auto 1fr auto auto;
+			gap: 0.5rem;
+			min-height: 0;
+			padding: 1.25rem 1.5rem;
+		}
+	}
+
+	.is-empty .preview {
+		visibility: hidden;
+	}
+
+	.p-meta {
+		display: flex;
+		gap: 0.6rem;
+		align-items: center;
+		font-size: var(--sl-text-xs);
+		color: var(--sl-color-gray-3);
+	}
+
+	.p-badge {
+		padding: 0.05rem 0.45rem;
+		border-radius: 999px;
+		font-weight: 600;
+		color: var(--nx-deprecated);
+		background: color-mix(in oklab, var(--nx-deprecated) 12%, transparent);
+	}
+
+	.p-name {
+		font-size: 1.5rem;
+		font-weight: 650;
+		letter-spacing: -0.01em;
+		color: var(--sl-color-white);
+		overflow-wrap: anywhere;
+	}
+
+	.p-name.is-code {
+		font-size: 1.35rem;
+	}
+
+	.p-tag {
+		font-size: 1rem;
+		line-height: 1.5;
+		color: var(--sl-color-gray-2);
+	}
+
+	.p-import {
+		position: relative;
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 0.75rem;
+		height: 4.5rem;
+		padding: 0.7rem 0.8rem;
+		border-radius: 0.6rem;
+		border: 1px solid var(--nx-line);
+		background: var(--nx-code-bg);
+	}
+
+	.p-import[hidden] {
+		visibility: hidden;
+		display: flex;
+	}
+
+	.p-import code {
+		font-family: var(--__sl-font-mono);
+		font-size: 0.8rem;
+		line-height: 1.6;
+		color: var(--sl-color-white);
+		white-space: pre;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.p-copy {
+		position: relative;
+		flex: none;
+		display: grid;
+		place-items: center;
+		width: 2rem;
+		height: 2rem;
+		border-radius: 0.5rem;
+		border: 1px solid transparent;
+		background: transparent;
+		color: var(--sl-color-gray-3);
+		cursor: pointer;
+	}
+
+	.p-copy:hover {
+		border-color: var(--nx-line-strong);
+		color: var(--sl-color-white);
+	}
+
+	.copied {
+		position: absolute;
+		inset: -1px;
+		display: grid;
+		place-items: center;
+		border-radius: inherit;
+		background: var(--sl-color-accent);
+		color: var(--sl-color-black);
+		font-size: 0.65rem;
+		font-weight: 700;
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.15s ease;
+	}
+
+	:global(.is-copied) > .copied {
+		opacity: 1;
+	}
+
+	.p-open {
+		display: inline-flex;
+		gap: 0.4rem;
+		align-items: center;
+		width: fit-content;
+		font-weight: 600;
+		color: var(--sl-color-text-accent);
+		text-decoration: none;
+	}
+
+	/* ---- Status ---- */
+	.status {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 1rem;
+		min-height: 2.75rem;
+		padding: 0.5rem clamp(1rem, 2.5vw, 1.5rem);
+		border-top: 1px solid var(--nx-line);
+		font-size: var(--sl-text-xs);
+		color: var(--sl-color-gray-3);
+	}
+
+	/* One line, always: a long query never changes the box height. */
+	.status__count {
+		min-width: 0;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
+	.hints {
+		flex: none;
+		display: flex;
+		gap: 1rem;
+	}
+
+	.hints span {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+	}
+
+	@media (hover: none), (max-width: 52rem) {
+		.hints,
+		.field__slash {
+			display: none;
+		}
+	}
+
+	/* ---- Phone: no preview pane; the selected row carries its import ---- */
+	@media (max-width: 51.99rem) {
+		.o-cat {
+			display: none;
+		}
+
+		.list [aria-selected='true'] .o-import {
+			display: block;
+			grid-column: 1 / -1;
+			margin-top: 0.3rem;
+			font-family: var(--__sl-font-mono);
+			font-size: 0.72rem;
+			color: var(--sl-color-gray-2);
+			overflow-wrap: anywhere;
+		}
+	}
+</style>

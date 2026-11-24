@@ -55,43 +55,35 @@ import type { Props } from '@astrojs/starlight/props';
 
 <style>
 	.sponsor-section {
-		margin-top: 2rem;
+		margin: 1.5rem var(--sl-sidebar-pad-x, 1rem) 0;
 		padding: 1rem;
-		border: 1px solid var(--sl-color-gray-5);
-		border-radius: 8px;
-		background: var(--sl-color-bg-nav);
+		border: 1px solid var(--nx-line);
+		border-radius: var(--nx-radius);
+		background: var(--nx-surface);
 	}
 
 	.sponsor-section h2 {
 		font-size: var(--sl-text-sm);
-		font-weight: 600;
-		margin: 0 0 0.5rem 0;
+		font-weight: 650;
+		margin: 0 0 0.35rem 0;
 		color: var(--sl-color-white);
 	}
 
 	.sponsor-section p {
 		font-size: var(--sl-text-xs);
-		margin: 0 0 1rem 0;
-		color: var(--sl-color-gray-2);
+		margin: 0 0 0.9rem 0;
+		color: var(--sl-color-gray-3);
 		line-height: 1.5;
 	}
 
 	.support-actions {
-		display: flex;
-		flex-direction: column;
+		display: grid;
 		gap: 0.5rem;
 	}
 
-	.support-actions .secondary {
-		flex: 1;
-	}
-
-	.support-actions .primary {
-		width: 100%;
-	}
-
 	.sponsor-row {
-		display: flex;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
 		gap: 0.5rem;
 	}
 
@@ -99,39 +91,39 @@ import type { Props } from '@astrojs/starlight/props';
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		gap: 0.5rem;
-		padding: 0.5rem 0.75rem;
-		color: white;
+		gap: 0.45rem;
+		height: 2rem;
+		padding: 0 0.6rem;
+		border-radius: var(--nx-radius-sm);
+		border: 1px solid var(--nx-line-strong);
+		color: var(--sl-color-gray-2);
+		background: var(--sl-color-bg);
 		text-decoration: none;
-		border-radius: 6px;
 		font-size: var(--sl-text-xs);
-		font-weight: 500;
+		font-weight: 600;
 		transition:
-			transform 0.2s ease,
-			box-shadow 0.2s ease;
+			border-color 0.15s ease,
+			color 0.15s ease,
+			background-color 0.15s ease;
 	}
 
 	.sponsor-button.primary {
-		background: linear-gradient(135deg, #ea4aaa 0%, #ea4c89 100%);
+		color: var(--sl-color-accent-high);
+		background: var(--nx-tint);
+		border-color: color-mix(in oklab, var(--sl-color-accent) 35%, transparent);
 	}
 
-	.sponsor-button.primary:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 4px 12px rgba(234, 76, 137, 0.3);
+	:root[data-theme='light'] .sponsor-button.primary {
+		color: var(--sl-color-accent);
 	}
 
-	.sponsor-button.secondary {
-		background: var(--sl-color-gray-5);
-		color: var(--sl-color-gray-1);
-	}
-
-	.sponsor-button.secondary:hover {
-		background: var(--sl-color-gray-4);
-		transform: translateY(-1px);
+	.sponsor-button:hover {
+		border-color: var(--sl-color-accent);
+		color: var(--sl-color-white);
 	}
 
 	.sponsor-button svg {
-		width: 16px;
-		height: 16px;
+		width: 14px;
+		height: 14px;
 	}
 </style>

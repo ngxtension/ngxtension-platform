@@ -5,52 +5,75 @@ entryPoint: ngxtension/form-events
 badge: stable
 ---
 
-## Import
-
-```typescript
-import { allEventsObservable, allEventsSignal } from 'ngxtension/form-events';
-```
+`allEventsSignal` and `allEventsObservable` combine everything you usually track about a reactive form control into one object: value, status, `valid`/`invalid`/`pending`, `touched`/`untouched`, `pristine`/`dirty` and the current errors. Use the signal version in templates and `computed()`, and the Observable version in RxJS pipelines, instead of merging `valueChanges`, `statusChanges` and `events` yourself.
 
 ## Usage
 
-The form-events utilities provide a convenient way to react to all form control events and state changes using either RxJS Observables or Angular Signals.
-
-```typescript
+```angular-ts
 import { Component } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { allEventsSignal } from 'ngxtension/form-events';
 
 @Component({
-	selector: 'my-app',
-	standalone: true,
+	selector: 'app-username',
 	imports: [ReactiveFormsModule],
 	template: `
-		<input [formControl]="nameControl" />
-		<div>Value: {{ formState().value }}</div>
-		<div>Valid: {{ formState().valid }}</div>
-		<div>Dirty: {{ formState().dirty }}</div>
-		<div>Touched: {{ formState().touched }}</div>
+		<input [formControl]="username" />
+
+		@if (state().invalid && state().touched) {
+			<p>Please enter a username.</p>
+		}
+
+		<p>Value: {{ state().value }} | Status: {{ state().status }} | Dirty: {{ state().dirty }}</p>
 	`,
 })
-export class App {
-	nameControl = new FormControl('');
-	formState = allEventsSignal(this.nameControl);
+export class Username {
+	username = new FormControl('', Validators.required);
+	state = allEventsSignal(this.username);
 }
 ```
 
-### Examples
+`touched` and `pristine` are part of the state, so the template reacts to them too. With plain `valueChanges`/`statusChanges` you would miss a blur that only changes `touched`.
 
-#### Using with Observables
+## With signals
 
-```typescript
-import { Component, OnInit, OnDestroy } from '@angular/core';
+Because the result is a signal, you can derive from it with `computed()` or react with `effect()`:
+
+```ts
+export class Signup {
+	form = new FormGroup({
+		name: new FormControl('', { nonNullable: true }),
+		email: new FormControl('', {
+			nonNullable: true,
+			validators: Validators.email,
+		}),
+	});
+
+	formState = allEventsSignal(this.form);
+
+	canSubmit = computed(() => this.formState().valid && this.formState().dirty);
+
+	constructor() {
+		effect(() => console.log('Form value:', this.formState().value));
+	}
+}
+```
+
+Outside an injection context, pass an `Injector` as the second argument: `allEventsSignal(form, injector)`.
+
+## With Observables
+
+`allEventsObservable` emits the same object. Combine it with `takeUntilDestroyed()` to clean up the subscription.
+
+```angular-ts
+import { Component } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { allEventsObservable } from 'ngxtension/form-events';
-import { Subscription } from 'rxjs';
+import { debounceTime, filter } from 'rxjs';
 
 @Component({
-	selector: 'my-app',
-	standalone: true,
+	selector: 'app-profile-form',
 	imports: [ReactiveFormsModule],
 	template: `
 		<form [formGroup]="form">
@@ -59,98 +82,63 @@ import { Subscription } from 'rxjs';
 		</form>
 	`,
 })
-export class App implements OnInit, OnDestroy {
+export class ProfileForm {
 	form = new FormGroup({
 		name: new FormControl(''),
 		email: new FormControl(''),
 	});
 
-	private subscription = new Subscription();
-
-	ngOnInit() {
-		this.subscription.add(
-			allEventsObservable(this.form).subscribe((state) => {
-				console.log('Form value:', state.value);
-				console.log('Form valid:', state.valid);
-				console.log('Form dirty:', state.dirty);
-				console.log('Form touched:', state.touched);
-			}),
-		);
-	}
-
-	ngOnDestroy() {
-		this.subscription.unsubscribe();
-	}
-}
-```
-
-#### Using with Signals
-
-```typescript
-import { Component, effect } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { allEventsSignal } from 'ngxtension/form-events';
-
-@Component({
-	selector: 'my-app',
-	standalone: true,
-	imports: [ReactiveFormsModule],
-	template: `
-		<input [formControl]="usernameControl" />
-		<div *ngIf="formState().invalid && formState().dirty">
-			Please enter a valid username
-		</div>
-	`,
-})
-export class App {
-	usernameControl = new FormControl('', [Validators.required]);
-	formState = allEventsSignal(this.usernameControl);
-
 	constructor() {
-		effect(() => {
-			// React to any form state changes
-			const state = this.formState();
-			if (state.valid && state.dirty) {
-				console.log('Username is valid:', state.value);
-			}
-		});
+		allEventsObservable(this.form)
+			.pipe(
+				filter((state) => state.valid && state.dirty),
+				debounceTime(500),
+				takeUntilDestroyed(),
+			)
+			.subscribe((state) => this.autosave(state.value));
+	}
+
+	autosave(value: typeof this.form.value) {
+		/* ... */
 	}
 }
 ```
 
 ## API
 
-### Functions
+```ts
+function allEventsSignal<T>(
+	form: AbstractControl<T>,
+	injector?: Injector,
+): Signal<FormEventData<T>>;
 
-#### `allEventsObservable<T>(form: AbstractControl<T>): Observable<FormEventData<T>>`
+function allEventsObservable<T>(
+	form: AbstractControl<T>,
+): Observable<FormEventData<T>>;
 
-Creates an Observable that emits the form state data whenever any form event occurs (value, status, touched, or pristine changes).
-
-#### `allEventsSignal<T>(form: AbstractControl<T>): Signal<FormEventData<T>>`
-
-Creates a Signal that contains the form state data and updates whenever any form event occurs.
-
-### Return Type - `FormEventData<T>`
-
-Both functions return the same data structure with the following properties:
-
-```typescript
 type FormEventData<T> = {
-	value: T; // The current form value
-	status: FormControlStatus; // 'VALID', 'INVALID', 'PENDING', or 'DISABLED'
-	touched: boolean; // Whether the form has been touched
-	pristine: boolean; // Whether the form is pristine (hasn't been modified)
-	valid: boolean; // Whether the form is valid
-	invalid: boolean; // Whether the form is invalid
-	pending: boolean; // Whether validation is pending
-	dirty: boolean; // Whether the form is dirty (has been modified)
-	untouched: boolean; // Whether the form is untouched
+	value: T; // form.getRawValue(), includes disabled controls
+	status: FormControlStatus; // 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED'
+	valid: boolean;
+	invalid: boolean;
+	pending: boolean;
+	touched: boolean;
+	untouched: boolean;
+	pristine: boolean;
+	dirty: boolean;
+	controlErrors: ValidationErrors | null;
 };
 ```
 
+| Parameter  | Type              | Description                                                                       |
+| ---------- | ----------------- | --------------------------------------------------------------------------------- |
+| `form`     | `AbstractControl` | A `FormControl`, `FormGroup` or `FormArray`.                                      |
+| `injector` | `Injector`        | Only for `allEventsSignal`. Use it when you call it outside an injection context. |
+
 ### Notes
 
-- Works with any AbstractControl (FormControl, FormGroup, or FormArray)
-- The Observable/Signal emits only when there are actual changes to the form state
-- The `value` property uses `getRawValue()` to get the complete form value, including disabled controls
-- Value comparison uses JSON.stringify to detect changes in object/array values
+- `value` uses `getRawValue()`, so values of disabled controls are included.
+- Value changes are compared with `JSON.stringify`, so setting an equal object doesn't count as a new value. Status, touched and pristine events are passed through as they happen.
+- `controlErrors` holds `form.errors` for a `FormControl` or `FormArray`. For a `FormGroup`, it holds an object with the errors of each direct child control, keyed by control name (`null` for valid children).
+- `controlErrors` is recalculated when the value changes. Errors set later without a value change (for example by an async validator) show up after the next value change.
+- `allEventsObservable` emits the current state as soon as you subscribe. `allEventsSignal` starts with the current state of the control.

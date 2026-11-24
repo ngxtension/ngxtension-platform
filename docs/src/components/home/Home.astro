@@ -1,0 +1,773 @@
+---
+/**
+ * ngxtension homepage.
+ * 1. Hero: what it is, for whom, what to do next.
+ * 2. Before → After: real plain-Angular code collapses into the documented ngxtension version
+ *    (the one showpiece).
+ * 3. Every utility: an "I want to…" finder over numbered chapters (the library's own categories).
+ * 4. Start + the people credited on these pages.
+ */
+import { getCollection } from 'astro:content';
+import { getUtilityGroups, type Lang } from '../../data/utilities';
+import Chapters from './Chapters.astro';
+import Finder from './Finder.astro';
+import { pairs } from './pairs';
+import Stage from './Stage.astro';
+import { strings } from './strings';
+
+interface Props {
+	lang?: Lang;
+}
+
+const { lang = 'en' } = Astro.props;
+const t = strings[lang] ?? strings.en;
+const base = lang === 'en' ? '' : `/${lang}`;
+
+const groups = await getUtilityGroups(lang);
+const items = groups.flatMap((g) =>
+	g.items.map((u) => ({ ...u, catLabel: g.label })),
+);
+const count = items.length;
+const rounded =
+	lang === 'es'
+		? `más de ${Math.floor(count / 10) * 10}`
+		: `${Math.floor(count / 10) * 10}+`;
+const chapterCount =
+	groups.filter((g) => g.items.length > 2).length +
+	(groups.some((g) => g.items.length <= 2) ? 1 : 0);
+
+// People credited on a doc page (frontmatter `contributors`), most-credited first.
+const credits = new Map<string, number>();
+for (const page of await getCollection('docs')) {
+	for (const ref of (page.data.contributors ?? []) as { id: string }[]) {
+		credits.set(ref.id, (credits.get(ref.id) ?? 0) + 1);
+	}
+}
+const people = (await getCollection('contributors'))
+	.filter((c) => credits.has(c.id))
+	.sort(
+		(a, b) =>
+			credits.get(b.id)! - credits.get(a.id)! ||
+			a.data.name.localeCompare(b.data.name),
+	)
+	.map((c) => ({
+		name: c.data.name,
+		handle: c.data.github?.replace(/\/$/, '').split('/').pop(),
+		href: c.data.github ?? c.data.twitter ?? c.data.website ?? c.data.linkedin,
+		initials: c.data.name
+			.split(/\s+/)
+			.map((w) => w[0])
+			.join('')
+			.slice(0, 2)
+			.toUpperCase(),
+	}));
+
+const copyIcon = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2.5"/><path d="M5 15H4.5A1.5 1.5 0 0 1 3 13.5v-9A1.5 1.5 0 0 1 4.5 3h9A1.5 1.5 0 0 1 15 4.5V5"/></svg>`;
+---
+
+<div class="home not-content">
+	<p
+		class="sr-only"
+		role="status"
+		aria-live="polite"
+		data-copy-status
+		data-copied={t.copied}
+	>
+	</p>
+	<!-- 1 · Hero -->
+	<section class="hero wrap" aria-labelledby="home-title">
+		<p class="hero__eyebrow">{t.eyebrow}</p>
+		<h1 id="home-title" class="hero__title">
+			<span class="hero__line">
+				{t.titleA}
+				<span class="strike">{t.titleStrike}</span>
+			</span>
+			<span class="hero__line hero__line--b">{t.titleB}</span>
+		</h1>
+
+		<div class="hero__row">
+			<p class="hero__lead">{t.lead.replace('{n}', rounded)}</p>
+			<div class="hero__side">
+				<div class="actions">
+					<a
+						class="btn btn--primary"
+						href={`${base}/getting-started/introduction/`}
+					>
+						{t.start}
+						<span aria-hidden="true">→</span>
+					</a>
+					<button
+						type="button"
+						class="npm"
+						data-mx-copy="npm i ngxtension"
+						aria-label={`${t.copyInstall}: npm i ngxtension`}
+					>
+						<span class="npm__prompt" aria-hidden="true">$</span>
+						<code>npm i ngxtension</code>
+						<Fragment set:html={copyIcon} />
+						<span class="copied" aria-hidden="true">{t.copied}</span>
+					</button>
+					<a
+						class="btn btn--quiet btn--gh"
+						href="https://github.com/ngxtension/ngxtension-platform"
+						aria-label={t.githubLabel}
+					>
+						<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+							<path
+								fill="currentColor"
+								d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
+							>
+							</path>
+						</svg>
+						<span class="btn__label">{t.github}</span>
+					</a>
+				</div>
+				<a class="browse" href="#find">
+					{t.browse.replace('{n}', String(count))}
+					<span aria-hidden="true">↓</span>
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<!-- 2 · Before → After -->
+	<section class="demo wrap" aria-labelledby="home-demo">
+		<header class="demo__head">
+			<h2 id="home-demo" class="h2">{t.demoTitle}</h2>
+			<p class="lead">{t.demoLead}</p>
+		</header>
+		{
+			pairs.map((pair, i) => (
+				<Stage
+					pair={{ ...pair, href: `${base}${pair.href}` }}
+					index={i}
+					title={t.stages[i].title}
+					caption={t.stages[i].caption}
+					t={t.stage}
+				/>
+			))
+		}
+	</section>
+
+	<!-- 3 · Every utility -->
+	<section class="index wrap" id="find" aria-labelledby="home-index">
+		<header class="index__head">
+			<h2 id="home-index" class="h2">{t.indexTitle}</h2>
+			<p class="lead">
+				{
+					t.indexLead
+						.replace('{count}', String(count))
+						.replace('{chapters}', String(chapterCount))
+				}
+			</p>
+		</header>
+		<Finder lang={lang} items={items} t={t} />
+		<Chapters groups={groups} t={t} />
+	</section>
+
+	<!-- 4 · Start -->
+	<section class="end wrap" aria-labelledby="home-end">
+		<div class="end__main">
+			<h2 id="home-end" class="end__title">{t.endTitle}</h2>
+			<p class="end__lead">{t.endLead}</p>
+			<div class="actions">
+				<a
+					class="btn btn--primary"
+					href={`${base}/getting-started/introduction/`}
+				>
+					{t.endStart}
+					<span aria-hidden="true">→</span>
+				</a>
+				<a class="btn btn--quiet" href="https://opencollective.com/ngxtension">
+					<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+						<path
+							fill="currentColor"
+							d="m8 14.25.345.666a.75.75 0 0 1-.69 0l-.008-.004-.018-.01a7.152 7.152 0 0 1-.31-.17 22.055 22.055 0 0 1-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.066 22.066 0 0 1-3.744 2.584l-.018.01-.006.003h-.002ZM4.25 2.5c-1.336 0-2.75 1.164-2.75 3 0 2.15 1.58 4.144 3.365 5.682A20.58 20.58 0 0 0 8 13.393a20.58 20.58 0 0 0 3.135-2.211C12.92 9.644 14.5 7.65 14.5 5.5c0-1.836-1.414-3-2.75-3-1.373 0-2.609.986-3.029 2.456a.749.749 0 0 1-1.442 0C6.859 3.486 5.623 2.5 4.25 2.5Z"
+						>
+						</path>
+					</svg>
+					{t.endSponsor}
+				</a>
+			</div>
+		</div>
+
+		<div class="credits">
+			<ul class="faces" aria-label={t.creditsLabel}>
+				{
+					people.map((p) => (
+						<li>
+							<a
+								href={p.href}
+								target="_blank"
+								rel="noreferrer"
+								title={p.name}
+								class:list={{ 'no-img': !p.handle }}
+							>
+								<span class="face__initials" aria-hidden="true">
+									{p.initials}
+								</span>
+								{p.handle && (
+									<img
+										src={`https://github.com/${p.handle}.png?size=64`}
+										alt=""
+										width="32"
+										height="32"
+										loading="lazy"
+										decoding="async"
+										onerror="this.parentElement.classList.add('no-img');this.remove()"
+									/>
+								)}
+								<span class="sr-only">{p.name}</span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+			<p class="credits__text">
+				{t.credits.replace('{n}', String(people.length))}
+			</p>
+		</div>
+	</section>
+</div>
+
+<script>
+	const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+
+	function setMode(
+		stage: HTMLElement,
+		mode: 'before' | 'after',
+		animate = true,
+	) {
+		if (stage.dataset.mode === 'diff' || stage.dataset.mode === mode) return;
+		stage.dataset.mode = mode;
+		stage.querySelectorAll<HTMLButtonElement>('[data-set]').forEach((b) => {
+			b.setAttribute('aria-pressed', String(b.dataset.set === mode));
+		});
+		const counter = stage.querySelector<HTMLElement>('[data-count]');
+		const live = stage.querySelector<HTMLElement>('[data-live]');
+		const to = Number(
+			mode === 'after' ? stage.dataset.after : stage.dataset.before,
+		);
+		const say = () => {
+			// Only the final number is announced, once.
+			if (live)
+				live.textContent =
+					(mode === 'after'
+						? stage.dataset.liveAfter
+						: stage.dataset.liveBefore) ?? '';
+		};
+		if (!counter) return say();
+		const from = Number(counter.textContent);
+		if (!animate || reduce.matches) {
+			counter.textContent = String(to);
+			return say();
+		}
+		const start = performance.now();
+		const dur = 650;
+		const tick = (now: number) => {
+			const k = Math.min(1, (now - start) / dur);
+			counter.textContent = String(
+				Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3))),
+			);
+			if (k < 1) requestAnimationFrame(tick);
+			else say();
+		};
+		requestAnimationFrame(tick);
+	}
+
+	function init() {
+		const stages = document.querySelectorAll<HTMLElement>('[data-stage]');
+		if (stages.length) {
+			const io = new IntersectionObserver(
+				(entries) => {
+					for (const e of entries) {
+						const stage = e.target as HTMLElement;
+						if (!e.isIntersecting || stage.dataset.touched) continue;
+						io.unobserve(stage);
+						// Let the reader see "before" for a beat, then collapse it.
+						setTimeout(() => {
+							if (!stage.dataset.touched) setMode(stage, 'after');
+						}, 900);
+					}
+				},
+				{ threshold: 0.55 },
+			);
+			stages.forEach((stage) => {
+				if (stage.dataset.bound) return;
+				stage.dataset.bound = '1';
+				stage
+					.querySelectorAll<HTMLButtonElement>('[data-set]')
+					.forEach((btn) => {
+						btn.addEventListener('click', () => {
+							stage.dataset.touched = '1';
+							setMode(stage, btn.dataset.set as 'before' | 'after');
+						});
+					});
+				if (!reduce.matches) io.observe(stage);
+			});
+		}
+
+		const root = document.querySelector<HTMLElement>('.home');
+		if (root && !root.dataset.copyBound) {
+			root.dataset.copyBound = '1';
+			// Copy buttons: the "Copied" overlay keeps every button's width.
+			root.addEventListener('click', async (e) => {
+				const btn = (e.target as HTMLElement).closest<HTMLButtonElement>(
+					'[data-mx-copy]',
+				);
+				if (!btn) return;
+				try {
+					await navigator.clipboard.writeText(btn.dataset.mxCopy ?? '');
+					btn.classList.add('is-copied');
+					// Visual feedback is an overlay; screen readers get the same news here.
+					const live = root.querySelector<HTMLElement>('[data-copy-status]');
+					if (live) {
+						live.textContent = '';
+						requestAnimationFrame(
+							() => (live.textContent = live.dataset.copied ?? ''),
+						);
+					}
+					setTimeout(() => btn.classList.remove('is-copied'), 1400);
+				} catch {
+					/* clipboard blocked; the text stays selectable */
+				}
+			});
+		}
+	}
+
+	init();
+	document.addEventListener('astro:page-load', init);
+</script>
+
+<style>
+	.home {
+		--wrap: 80rem;
+		--gutter: clamp(1rem, 4vw, 2.5rem);
+		color: var(--sl-color-gray-2);
+	}
+
+	.home :where(h1, h2, p) {
+		margin: 0;
+	}
+
+	.wrap {
+		max-width: var(--wrap);
+		margin-inline: auto;
+		padding-inline: var(--gutter);
+	}
+
+	.h2 {
+		font-size: clamp(2rem, 1.3rem + 3vw, 3.75rem);
+		font-weight: 700;
+		font-stretch: 80%;
+		letter-spacing: -0.035em;
+		line-height: 0.98;
+		color: var(--sl-color-white);
+		text-wrap: balance;
+	}
+
+	.lead {
+		margin-top: 1rem !important;
+		max-width: 52ch;
+		font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+		line-height: 1.55;
+		color: var(--sl-color-gray-2);
+		text-wrap: pretty;
+	}
+
+	/* ---------- Hero ---------- */
+	.hero {
+		padding-block: clamp(2rem, 3.5vw, 3rem) clamp(2rem, 4vw, 3rem);
+	}
+
+	.hero__eyebrow {
+		margin-bottom: 1.1rem !important;
+		font-family: var(--__sl-font-mono);
+		font-size: var(--sl-text-sm);
+		color: var(--sl-color-gray-3);
+	}
+
+	.hero__title {
+		display: grid;
+		font-size: clamp(2.9rem, 0.9rem + 8vw, 7.75rem);
+		font-weight: 700;
+		font-stretch: 78%;
+		letter-spacing: -0.045em;
+		line-height: 0.92;
+		color: var(--sl-color-white);
+	}
+
+	.hero__line--b {
+		color: var(--sl-color-accent);
+	}
+
+	.strike {
+		position: relative;
+		white-space: nowrap;
+	}
+
+	/* The one decorative motion on the hero: the word gets crossed out, once. */
+	.strike::after {
+		content: '';
+		position: absolute;
+		left: -0.02em;
+		right: 0.12em;
+		top: 54%;
+		height: max(3px, 0.06em);
+		border-radius: 1px;
+		background: var(--sl-color-accent);
+		transform-origin: left center;
+		animation: strike 0.7s var(--nx-ease) 0.5s both;
+	}
+
+	@keyframes strike {
+		from {
+			transform: scaleX(0);
+		}
+	}
+
+	.hero__row {
+		display: grid;
+		gap: 1.75rem;
+		margin-top: clamp(1.5rem, 3vw, 2.25rem);
+	}
+
+	@media (min-width: 64rem) {
+		.hero__row {
+			grid-template-columns: minmax(0, 1fr) auto;
+			align-items: end;
+			gap: 3rem;
+		}
+	}
+
+	.hero__lead {
+		max-width: 48ch;
+		font-size: clamp(1.125rem, 1rem + 0.5vw, 1.3rem);
+		line-height: 1.5;
+		color: var(--sl-color-gray-2);
+		text-wrap: pretty;
+	}
+
+	.hero__side {
+		display: grid;
+		gap: 1rem;
+		justify-items: start;
+	}
+
+	@media (min-width: 64rem) {
+		.hero__side {
+			justify-items: end;
+		}
+	}
+
+	.actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+	}
+
+	.browse {
+		font-size: var(--sl-text-sm);
+		font-weight: 600;
+		color: var(--sl-color-gray-2);
+		text-decoration: underline;
+		text-decoration-color: var(--nx-line-strong);
+		text-underline-offset: 0.3em;
+	}
+
+	.browse:hover {
+		color: var(--sl-color-white);
+		text-decoration-color: currentColor;
+	}
+
+	.btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		height: 3rem;
+		padding: 0 1.25rem;
+		border-radius: 999px;
+		font-weight: 600;
+		text-decoration: none;
+		white-space: nowrap;
+		transition:
+			background-color 0.2s ease,
+			border-color 0.2s ease,
+			color 0.2s ease;
+	}
+
+	.btn > span[aria-hidden] {
+		transition: transform 0.2s var(--nx-ease);
+	}
+
+	.btn:hover > span[aria-hidden] {
+		transform: translateX(3px);
+	}
+
+	.btn--primary {
+		background: var(--sl-color-white);
+		color: var(--sl-color-black);
+	}
+
+	.btn--primary:hover {
+		background: var(--sl-color-accent-high);
+		color: var(--sl-color-black);
+	}
+
+	:root[data-theme='light'] .btn--primary:hover {
+		background: var(--sl-color-accent);
+	}
+
+	.btn--quiet {
+		border: 1px solid var(--nx-line-strong);
+		color: var(--sl-color-white);
+	}
+
+	.btn--quiet:hover {
+		border-color: var(--sl-color-gray-3);
+		background: var(--nx-surface);
+	}
+
+	.npm {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		height: 3rem;
+		padding: 0 1.1rem;
+		border-radius: 999px;
+		border: 1px solid var(--nx-line-strong);
+		background: var(--nx-surface);
+		color: var(--sl-color-white);
+		font: inherit;
+		cursor: pointer;
+		transition: border-color 0.2s ease;
+	}
+
+	.npm:hover {
+		border-color: var(--sl-color-gray-3);
+	}
+
+	.npm code {
+		font-family: var(--__sl-font-mono);
+		font-size: 0.875rem;
+	}
+
+	.npm__prompt,
+	.npm :global(svg) {
+		font-family: var(--__sl-font-mono);
+		color: var(--sl-color-gray-3);
+	}
+
+	.copied {
+		position: absolute;
+		inset: -1px;
+		display: grid;
+		place-items: center;
+		border-radius: inherit;
+		background: var(--sl-color-accent);
+		color: var(--sl-color-black);
+		font-weight: 600;
+		opacity: 0;
+		transition: opacity 0.15s ease;
+		pointer-events: none;
+	}
+
+	:global(.is-copied) > .copied {
+		opacity: 1;
+	}
+
+	/* ---------- Demo ---------- */
+	.demo__head {
+		padding-bottom: clamp(1.5rem, 3vw, 2rem);
+	}
+
+	/* Heading and intro share a row on desktop, so the first stage starts above the fold. */
+	@media (min-width: 64rem) {
+		.demo__head {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+			align-items: end;
+			gap: 3rem;
+		}
+
+		.demo__head .h2 {
+			font-size: clamp(2rem, 1rem + 2.2vw, 3rem);
+		}
+
+		.demo__head .lead {
+			margin-top: 0 !important;
+			justify-self: end;
+			font-size: 1.0625rem;
+		}
+	}
+
+	.demo :global(.stage:first-of-type) {
+		padding-top: clamp(2rem, 4vw, 3rem);
+	}
+
+	/* ---------- Index ---------- */
+	.index {
+		padding-block: clamp(3rem, 7vw, 6rem) clamp(2rem, 5vw, 4rem);
+		border-top: 1px solid var(--nx-line);
+		scroll-margin-top: var(--sl-nav-height);
+	}
+
+	.index__head {
+		margin-bottom: clamp(1.75rem, 3vw, 2.5rem);
+	}
+
+	/* ---------- Start + credits ---------- */
+	.end {
+		display: grid;
+		gap: 2.5rem;
+		padding-block: clamp(3.5rem, 8vw, 7rem);
+		border-top: 1px solid var(--nx-line-strong);
+	}
+
+	@media (min-width: 64rem) {
+		.end {
+			grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
+			align-items: end;
+			gap: 4rem;
+		}
+	}
+
+	.end__title {
+		font-size: clamp(2.5rem, 1.4rem + 4.4vw, 5rem);
+		font-weight: 700;
+		font-stretch: 78%;
+		letter-spacing: -0.04em;
+		line-height: 0.95;
+		color: var(--sl-color-white);
+	}
+
+	.end__lead {
+		margin-top: 1.1rem !important;
+		max-width: 44ch;
+		font-size: 1.125rem;
+		line-height: 1.55;
+	}
+
+	.end .actions {
+		margin-top: 2rem;
+	}
+
+	.faces {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.faces a {
+		text-decoration: none;
+		position: relative;
+		display: grid;
+		width: 2rem;
+		height: 2rem;
+		border-radius: 50%;
+	}
+
+	.face__initials,
+	.faces img {
+		grid-area: 1 / 1;
+		width: 2rem;
+		height: 2rem;
+		border-radius: 50%;
+	}
+
+	/* Initials only show when there is no avatar (no GitHub link, or the image failed). */
+	.face__initials {
+		display: none;
+		place-items: center;
+		background: var(--nx-surface-2);
+		border: 1px solid var(--nx-line);
+		font-size: 0.65rem;
+		font-weight: 700;
+		color: var(--sl-color-gray-3);
+	}
+
+	.faces a.no-img .face__initials {
+		display: grid;
+	}
+
+	.faces img {
+		display: block;
+		background: var(--nx-surface-2);
+		filter: grayscale(1);
+		transition: filter 0.2s ease;
+	}
+
+	.faces a:hover img,
+	.faces a:focus-visible img {
+		filter: none;
+	}
+
+	.credits__text {
+		margin-top: 1rem !important;
+		font-size: var(--sl-text-sm);
+		line-height: 1.55;
+		color: var(--sl-color-gray-3);
+	}
+
+	/* ---------- Focus ---------- */
+	.home a:focus-visible,
+	.home button:focus-visible {
+		outline: 2px solid var(--sl-color-accent);
+		outline-offset: 3px;
+	}
+
+	.btn--gh .btn__label {
+		transform: none !important;
+	}
+
+	@media (max-width: 40rem) {
+		.actions {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) auto;
+			width: 100%;
+		}
+
+		.actions .btn--primary {
+			grid-column: 1 / -1;
+			justify-content: center;
+		}
+
+		.actions .npm {
+			justify-content: center;
+		}
+
+		/* GitHub collapses to an icon button next to the install command */
+		.actions .btn--gh {
+			width: 3rem;
+			padding: 0;
+			justify-content: center;
+		}
+
+		.btn--gh .btn__label {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			overflow: hidden;
+			clip: rect(0 0 0 0);
+		}
+
+		.end .actions .btn {
+			grid-column: 1 / -1;
+			justify-content: center;
+		}
+
+		.hero__side {
+			width: 100%;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.strike::after {
+			animation: none;
+		}
+	}
+</style>

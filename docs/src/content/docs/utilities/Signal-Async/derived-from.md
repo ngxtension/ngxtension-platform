@@ -1,238 +1,186 @@
 ---
 title: derivedFrom
-description: ngxtension/derived-from
+description: Combines signals and observables into one signal, with optional RxJS operators in between (like combineLatest for signals).
 entryPoint: ngxtension/derived-from
 badge: stable
 contributors: ['enea-jahollari']
 ---
 
-`derivedFrom` is a helper function that combines the values of `Observable`s or `Signal`s and emits the combined value.
-It also gives us the possibility to change the combined value before emitting it using rxjs operators.
+`derivedFrom` combines several signals and observables into a single signal, like RxJS `combineLatest`. Because the combined value goes through an RxJS pipeline, you can add operators such as `debounceTime` or `switchMap` before the result lands back in a signal, which `computed` can't do.
 
-It is similar to `combineLatest`, but it also takes `Signals` into consideration.
-
-```ts
-import { derivedFrom } from 'ngxtension/derived-from';
-```
-
-:::tip[Inside story of the function]
-Read more here: [A sweet spot between signals and observables 🍬](https://itnext.io/a-sweet-spot-between-signals-and-observables-a3c9620768f1)
+:::tip[Background]
+Read the story behind it: [A sweet spot between signals and observables](https://itnext.io/a-sweet-spot-between-signals-and-observables-a3c9620768f1).
 :::
 
 ## Usage
 
-`derivedFrom` accepts an array or object of `Observable`s or `Signal`s and returns a `Signal` that emits the combined value of the `Observable`s or `Signal`s.
-By default, it needs to be called in an injection context, but it can also be called outside of it by passing the `Injector` in the third argument `options` object.
-If your Observable doesn't emit synchronously, you can use the `startWith` operator to change the starting value, or pass an `initialValue` in the third argument `options` object.
+```angular-ts
+import { Component, inject, Injectable, signal } from '@angular/core';
+import { derivedFrom } from 'ngxtension/derived-from';
+import { BehaviorSubject, debounceTime, map, Observable, of, pipe, switchMap } from 'rxjs';
 
-```ts
-const a = signal(1);
-const b$ = new BehaviorSubject(2);
+interface Filters {
+	name: string;
+}
 
-// array type
-const combined = derivedFrom([a, b$]);
-console.log(combined()); // [1, 2]
+@Injectable({ providedIn: 'root' })
+export class PeopleService {
+	readonly filters$ = new BehaviorSubject<Filters>({ name: '' });
 
-// object type
-const combined = derivedFrom({ a, b: b$ });
-console.log(combined()); // { a: 1, b: 2 }
+	search(page: number, filters: Filters): Observable<string[]> {
+		return of([`${filters.name} (page ${page})`]);
+	}
+}
+
+@Component({
+	selector: 'app-people',
+	template: `
+		@for (person of people(); track person) {
+			<p>{{ person }}</p>
+		}
+		<button (click)="page.set(page() + 1)">Next page</button>
+	`,
+})
+export class People {
+	private readonly peopleService = inject(PeopleService);
+
+	readonly page = signal(1);
+
+	readonly people = derivedFrom(
+		[this.page, this.peopleService.filters$],
+		pipe(
+			debounceTime(300),
+			switchMap(([page, filters]) => this.peopleService.search(page, filters)),
+		),
+		{ initialValue: [] },
+	);
+}
 ```
 
-It can be used in multiple ways:
+`people` updates whenever `page` or `filters$` changes, after a 300 ms debounce. `initialValue` is required here because the pipeline doesn't emit synchronously (see [The first value](#the-first-value)).
 
-1. Combine multiple `Signal`s
-2. Combine multiple `Observable`s
-3. Combine multiple `Signal`s and `Observable`s
-4. Using initialValue param
-5. Use it outside of an injection context
+## Combine values
 
-### 1. Combine multiple `Signal`s
-
-We can use `derivedFrom` to combine multiple `Signal`s into one `Signal`, which will emit the combined value of the `Signal`s.
+Pass an array to get a tuple, or an object to get an object with the same keys:
 
 ```ts
 const page = signal(1);
-const filters = signal({ name: 'John' });
+const filters$ = new BehaviorSubject({ name: 'John' });
 
-const combined = derivedFrom([page, filters]);
+const asArray = derivedFrom([page, filters$]);
+asArray(); // [1, { name: 'John' }]
 
-console.log(combined()); // [1, { name: 'John' }]
+const asObject = derivedFrom({ page, filters: filters$ });
+asObject(); // { page: 1, filters: { name: 'John' } }
 ```
 
-At this point we still don't get any benefit from using `derivedFrom` because we can already combine multiple `Signal`s using `computed` function.
-But, what's better is that `derivedFrom` allows us to change the combined value before emitting it using rxjs operators (applying asynchronous operations), which is not possible with `computed`.
+Sources can be signals, observables, functions that read signals (`() => page() * 10`), or any other RxJS `ObservableInput` such as a Promise. Consecutive duplicate values from observable sources are skipped.
+
+Without an operator, combining only signals gives the same result as `computed`. The benefit comes when you mix in observables, or when you add operators.
+
+## Transform with RxJS operators
+
+The second argument is an RxJS operator. Use `pipe()` to chain several:
 
 ```ts
-import { derivedFrom } from 'ngxtension/derived-from';
-import { delay, of, pipe, switchMap } from 'rxjs';
-
-let a = signal(1);
-let b = signal(2);
-
-let c = derivedFrom(
-	[a, b],
+readonly result = derivedFrom(
+	[this.a, this.b],
 	pipe(
-		switchMap(
-			([a, b]) =>
-				// of(a + b) is supposed to be an asynchronous operation (e.g. http request)
-				of(a + b).pipe(delay(1000)), // delay the emission of the combined value by 1 second for demonstration purposes
-		),
+		switchMap(([a, b]) => this.api.sum(a, b)), // async, e.g. an HTTP request
+		map((sum) => sum * 2),
 	),
-);
-
-effect(() => console.log(c())); // 👈 will throw an error!! 💥
-
-setTimeout(() => {
-	a.set(3);
-}, 3000);
-
-// You can copy the above example inside an Angular constructor and see the result in the console.
-```
-
-This will _throw an error_ because the operation pipeline will produce an observable that will **not have a sync value** because they emit their values later on, so the resulting `c` signal doesn't have an initial value, and this causes the error.
-
-You can solve this by using the `initialValue` param in the third argument `options` object, to define the starting value of the resulting Signal and _prevent throwing an error_ in case of _real async_ observable.
-
-```ts
-let c = derivedFrom(
-	[a, b],
-	pipe(
-		switchMap(
-			([a, b]) => of(a + b).pipe(delay(1000)), // later async emit value
-		),
-	),
-	{ initialValue: 42 }, // 👈 pass the initial value of the resulting signal
+	{ initialValue: 0 },
 );
 ```
 
-This works, and you can copy the above example inside a component constructor and see the result in the console:
+## The first value
+
+A signal must always have a value, so `derivedFrom` needs one right away. Signal sources and `BehaviorSubject`s provide one synchronously. A plain `Subject`, an HTTP request or an async operator (`delay`, `debounceTime`, `switchMap` to a request) don't, and then `derivedFrom` **throws**:
 
 ```ts
-42 - // initial value passed as third argument
-	3 - // combined value after 1 second
-	5; // combined value after 3 seconds
+const page$ = new Subject<number>(); // no current value
+const combined = derivedFrom([page$, filters$]); // throws
 ```
 
-Another way to solve this problem is using the `startWith` rxjs operator in the pipe to force the observable to have a starting value like below.
+There are two fixes.
+
+**Pass `initialValue`** in the options. The signal holds it until the pipeline emits:
 
 ```ts
-let c = derivedFrom(
+const c = derivedFrom(
+	[a, b],
+	pipe(switchMap(([a, b]) => of(a + b).pipe(delay(1000)))),
+	{ initialValue: 42 },
+);
+// 42 right away, then a + b about 1 second later
+```
+
+**Or add `startWith`** to the pipeline (or to a single source), so it emits synchronously:
+
+```ts
+const c = derivedFrom(
 	[a, b],
 	pipe(
 		switchMap(([a, b]) => of(a + b).pipe(delay(1000))),
-		startWith(0), // 👈 change the starting value (emits synchronously)
+		startWith(0),
 	),
 );
+
+const combined = derivedFrom([page$.pipe(startWith(1)), filters$]);
 ```
 
-The console log will be:
+When you pass only `initialValue` and no operator, use the two-argument form: `derivedFrom(sources, { initialValue })`.
+
+## Outside an injection context
+
+`derivedFrom` uses `toSignal` and `toObservable`, so it needs an injection context. Elsewhere, pass an `injector`:
 
 ```ts
-0 - // starting value (initial sync emit)
-	3 - // combined value after 1 second
-	5; // combined value after 3 seconds
-```
+private readonly injector = inject(Injector);
+readonly page = signal(1);
+data!: Signal<string[]>;
 
-### 2. Combine multiple `Observable`s
-
-We can use `derivedFrom` to combine multiple `Observable`s into one `Signal`, which will emit the combined value of the `Observable`s.
-
-```ts
-const page$ = new BehaviorSubject(1);
-const filters$ = new BehaviorSubject({ name: 'John' });
-
-const combined = derivedFrom([page$, filters$]);
-
-console.log(combined()); // [1, { name: 'John' }]
-```
-
-This is just a better version of:
-
-```ts
-const combined = toSignal(combineLatest([page$, filters$]));
-```
-
-And it can be used in the same way as in the previous example with rxjs operators.
-
-### 3. Combine multiple `Signal`s and `Observable`s
-
-This is where `derivedFrom` shines. We can use it to combine multiple `Signal`s and `Observable`s into one `Signal`.
-
-```ts
-const page = signal(1);
-const filters$ = new BehaviorSubject({ name: 'John' });
-
-const combined = derivedFrom([page, filters$]);
-console.log(combined()); // [1, { name: 'John' }]
-
-// or using the object notation
-const combinedObject = derivedFrom({ page, filters: filters$ });
-console.log(combinedObject()); // { page: 1, filters: { name: 'John' } }
-```
-
-:::note[Tricky part]
-For `Observable`s that don't emit synchronously `derivedFrom` will **throw an error** forcing you to fix this situation either by passing an `initialValue` in the third argument, or using `startWith` operator to force observable to have a sync starting value.
-:::
-
-```ts
-const page$ = new Subject<number>(); // Subject doesn't have an initial value
-const filters$ = new BehaviorSubject({ name: 'John' });
-const combined = derivedFrom([page$, filters$]); // 👈 will throw an error!! 💥
-```
-
-But, we can always use the `startWith` operator to change the initial value.
-
-```ts
-const combined = derivedFrom([
-	page$.pipe(startWith(0)), // change the initial value to 0
-	filters$,
-]);
-
-console.log(combined()); // [0, { name: 'John' }]
-```
-
-### 4. Using initialValue param
-
-Or you can pass `initialValue` to `derivedFrom` in the third argument `options` object, to define the starting value of the resulting Signal and **prevent throwing error** in case of observables that emit later.
-
-```ts
-const combined = derivedFrom(
-	[page$, filters$],
-	switchMap(([page, filters]) => this.dataService.getArrInfo$(page, filters)),
-	{ initialValue: [] as Info[] }, // define the initial value of resulting signal
-); // inferred ad Signal<Info[]>
-```
-
-### 5. Use it outside of an injection context
-
-By default, `derivedFrom` needs to be called in an injection context, but it can also be called outside of it by passing the `Injector` in the third argument `options` object.
-
-```ts
-@Component()
-export class MyComponent {
-	private readonly injector = inject(Injector);
-	private readonly dataService = inject(DataService);
-
-	// we can read the userId inside ngOnInit and not in the constructor
-	@Input() userId!: number;
-
-	data!: Signal<string[]>;
-
-	ngOnInit() {
-		// not an injection context
-		const page = signal(1);
-		const filters$ = new BehaviorSubject({ name: 'John' });
-
-		this.data = derivedFrom(
-			[page, filters$],
-			pipe(
-				switchMap(([page, filters]) =>
-					this.dataService.getUserData(this.userId, page, filters),
-				),
-				startWith([] as string[]), // change the initial value
-			),
-			{ injector: this.injector }, // 👈 pass the injector in the options object
-		);
-	}
+ngOnInit() {
+	this.data = derivedFrom(
+		[this.page, this.peopleService.filters$],
+		switchMap(([page, filters]) => this.peopleService.search(page, filters)),
+		{ initialValue: [], injector: this.injector },
+	);
 }
 ```
+
+## API
+
+```ts
+// array of sources → tuple
+function derivedFrom<Input extends readonly unknown[], Output = Input>(
+	sources: readonly [...Sources<Input>],
+	operator?: OperatorFunction<Input, Output>,
+	options?: DerivedFromOptions<Output>,
+): Signal<Output>;
+
+// object of sources → object
+function derivedFrom<Input extends object, Output = Input>(
+	sources: Sources<Input>,
+	operator?: OperatorFunction<Input, Output>,
+	options?: DerivedFromOptions<Output>,
+): Signal<Output>;
+
+// both also accept (sources, options) without an operator
+```
+
+Each source is a `Signal<T>`, an `ObservableInput<T>` or a `() => T` function.
+
+| Option         | Type       | Default         | Description                                                                                                    |
+| -------------- | ---------- | --------------- | -------------------------------------------------------------------------------------------------------------- |
+| `initialValue` | `Output`   | none            | Value until the pipeline first emits. Without it, the first value must be synchronous or `derivedFrom` throws. |
+| `injector`     | `Injector` | current context | Needed outside an injection context.                                                                           |
+
+:::note[Timing]
+Signal sources are read through `toObservable`, so a signal change reaches the pipeline when Angular runs effects, not synchronously at `set()` time. Subscriptions end when the injector (usually the component) is destroyed.
+:::
+
+## Related
+
+- [`mergeFrom`](/utilities/signal-async/merge-from/) emits the latest value of any source instead of combining them.
+- For loading data from signals, Angular's [`rxResource`](https://angular.dev/api/core/rxjs-interop/rxResource) also gives you loading and error state.

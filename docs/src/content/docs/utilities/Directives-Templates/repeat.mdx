@@ -6,75 +6,72 @@ badge: stable
 contributors: ['chau-tran']
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+The `Repeat` directive extends Angular's `NgFor` so you can write `*ngFor="let i; repeat: 3"` to render a template a
+fixed number of times, without creating an array in your component. It also sets a `trackBy` for you.
 
-## Import
+:::tip[Using `@for`? Use the RepeatPipe instead]
+This directive is for templates that use the structural `*ngFor` directive. With Angular's built-in control flow,
+which is the recommended way to loop since Angular 17, use [`RepeatPipe`](/utilities/directives-templates/repeat-pipe/)
+instead. It also supports a start value and counting down:
 
-```ts
-import { Repeat } from 'ngxtension/repeat';
-```
-
-## Usage
-
-<Aside type="tip">
-
-If you wish to use the Angular built-in control flow, check out the [`Repeat Pipe`](/utilities/pipes/repeat) as an alternative.
-
-```ts
+```angular-ts
 import { Component } from '@angular/core';
 import { RepeatPipe } from 'ngxtension/repeat-pipe';
 
 @Component({
+	selector: 'app-example',
 	imports: [RepeatPipe],
 	template: `
-		<ul>
-			@for (i of 3 | repeat: 10; track i) {
-				<li>{{ i }}</li>
-			}
-		</ul>
+		@for (i of 3 | repeat; track i) {
+			<li>{{ i }}</li>
+		}
 	`,
 })
-export class App {}
+export class Example {}
 ```
 
-This will produce the same output as the directive variant.
+Reach for this directive only when you are maintaining templates that still use `*ngFor`.
+:::
 
-</Aside>
+## Usage
 
-### Basic
+Import `Repeat` (you don't need to import `NgFor` separately) and use `repeat: n` in place of `of items`.
 
-Use the `Repeat` directive as an extension of Angular's `NgFor` to iterate over a fixed number of iterations. The [`TrackByFunction`](https://angular.dev/api/core/TrackByFunction) is automatically set to efficiently iterate.
-
-```ts
+```angular-ts
 import { Component } from '@angular/core';
 import { Repeat } from 'ngxtension/repeat';
 
 @Component({
+	selector: 'app-skeleton-list',
 	imports: [Repeat],
 	template: `
 		<ul>
-			<li *ngFor="let i; repeat: 3">{{ i }}</li>
+			<li *ngFor="let i; repeat: 3">Row {{ i }}</li>
 		</ul>
 	`,
 })
-export class App {}
+export class SkeletonList {}
 ```
 
-This will produce the following output:
+This renders:
 
 ```html
-<!-- Output -->
-<!-- <li>0</li> -->
-<!-- <li>1</li> -->
-<!-- <li>2</li> -->
+<li>Row 0</li>
+<li>Row 1</li>
+<li>Row 2</li>
 ```
+
+`i` goes from `0` to `n - 1`, and the items are tracked by their number. The other `NgFor` context variables, such as
+`index`, `first`, `last`, `even` and `odd`, work as usual.
 
 ## API
 
-### Inputs
+`Repeat` is a standalone directive with the selector `[ngFor][ngForRepeat]`, which is what
+`*ngFor="let i; repeat: n"` desugars to.
 
-- `n: number` - A non-negative integer, specifying the number of iterations.
+| Input         | Type     | Description                                                |
+| ------------- | -------- | ---------------------------------------------------------- |
+| `ngForRepeat` | `number` | How many times to render the template. Must be an integer. |
 
-### Validation
-
-- An error is thrown if the input is either negative or not an integer.
+Passing a value that isn't an integer (including `NaN`) throws
+`[Repeat] repeat requires an integer but <value> is passed in`. A negative integer renders nothing.

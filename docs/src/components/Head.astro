@@ -1,0 +1,14 @@
+---
+import Default from '@astrojs/starlight/components/Head.astro';
+// Preload the Latin face used for display type, so big headings don't reflow when it arrives.
+import instrumentSans from '@fontsource-variable/instrument-sans/files/instrument-sans-latin-wdth-normal.woff2?url';
+---
+
+<link
+	rel="preload"
+	href={instrumentSans}
+	as="font"
+	type="font/woff2"
+	crossorigin
+/>
+<Default {...Astro.props}><slot /></Default>

@@ -1,29 +1,71 @@
 ---
 title: injectInputs
-description: ngxtension/inject-inputs
+description: Get all signal inputs of a component or directive as one computed object.
 entryPoint: ngxtension/inject-inputs
 badge: stable
 contributors: ['chau-tran']
 ---
 
-`injectInputs` is a utility function that provides a reactive signal for all Signal Inputs in a Directive or Component as an object. This is useful for tracking the state of all Inputs in a component or directive without having to create the `computed` manually.
+`injectInputs` gives you a single signal that holds the current values of all signal inputs (`input()`) of a component or directive, as one object. Use it when you want to react to "any input changed" or pass all inputs along together, without writing the `computed` by hand.
 
-```ts
-import { injectInputs } from 'ngxtension/inject-inputs';
-```
+:::caution[Renamed to `inputs`]
+`injectInputs` is deprecated. Use `inputs` from the same entry point instead; it has the same signature and behaviour. The examples below use `inputs`.
+:::
 
 ## Usage
 
-```ts
-@Component({ standalone: true, template: '' })
-class Foo {
-	foo = input(1);
-	bar = input('');
+Pass the instance (`this`) and the class itself.
 
-	inputs = injectInputs(this, Foo);
+```angular-ts
+import { JsonPipe } from '@angular/common';
+import { Component, effect, input } from '@angular/core';
+import { inputs } from 'ngxtension/inject-inputs';
+
+@Component({
+	selector: 'app-chart',
+	imports: [JsonPipe],
+	template: `<pre>{{ allInputs() | json }}</pre>`,
+})
+export class Chart {
+	type = input<'bar' | 'line'>('bar');
+	title = input('');
+
+	allInputs = inputs(this, Chart); // Signal<{ type: 'bar' | 'line'; title: string }>
 
 	constructor() {
-		console.log(this.inputs()); // { foo: 1, bar: '' }
+		effect(() => console.log(this.allInputs())); // { type: 'bar', title: '' }
 	}
 }
 ```
+
+The returned signal is a `computed`, so reading one property of it in another `computed` still re-runs when any input changes.
+
+## API
+
+```ts
+function inputs<TDir extends Type<any>>(
+	dir: InstanceType<TDir>,
+	dirType: TDir,
+): Signal<InjectedInputs<InstanceType<TDir>>>;
+
+/** @deprecated use `inputs` */
+function injectInputs<TDir extends Type<any>>(
+	dir: InstanceType<TDir>,
+	dirType: TDir,
+): Signal<InjectedInputs<InstanceType<TDir>>>;
+```
+
+| Parameter | Type                 | Description                                          |
+| --------- | -------------------- | ---------------------------------------------------- |
+| `dir`     | `InstanceType<TDir>` | The component or directive instance, usually `this`. |
+| `dirType` | `TDir`               | The component or directive class.                    |
+
+`InjectedInputs<T>` maps each `InputSignal<U>` property of the class to `U`. Only signal inputs are included; `@Input()` decorator inputs are skipped. Passing a class that is not a component or directive throws an error.
+
+:::note
+Declare the `inputs(...)` field after the inputs it reads, because class fields are initialized in order.
+:::
+
+## Related
+
+- [mergeInputs](/utilities/component-utilities/merge-inputs/): merge a partial object input with its default value.

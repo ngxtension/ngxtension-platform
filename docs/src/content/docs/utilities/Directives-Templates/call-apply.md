@@ -6,82 +6,118 @@ badge: stable
 contributors: ['daniele-morosinotto']
 ---
 
-## Import
+`CallPipe` and `ApplyPipe` let you call a function from a template through a pure pipe. Angular then only runs the
+function again when its arguments change, instead of on every change detection cycle as with a plain `{{ format(date) }}`
+call.
 
-```typescript
-import { CallPipe, ApplyPipe } from 'ngxtension/call-apply';
-```
+- `call` passes the piped **value** to a function: `{{ value | call: fn }}`.
+- `apply` calls the piped **function** with arguments: `{{ fn | apply: arg1 : arg2 }}`.
 
 ## Usage
 
-Both `CallPipe` and `ApplyPipe` require a PURE function. They are designed to take advantage of Angular's pure pipe memoization. Using `this` inside the function body will throw an error.
+```angular-ts
+import { Component } from '@angular/core';
+import { ApplyPipe, CallPipe } from 'ngxtension/call-apply';
 
-### CallPipe
-
-For functions with a single argument.
-
-```typescript
 @Component({
-	selector: 'my-app',
-	imports: [CallPipe],
+	selector: 'app-order-summary',
+	imports: [CallPipe, ApplyPipe],
 	template: `
-		<b>call UTC: {{ now | call: ISOFormat }}</b>
+		<p>Placed: {{ placedAt | call: toIso }}</p>
+		<p>{{ formatPrice | apply: total : 'EUR' }}</p>
 	`,
-	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class App {
-	public now = new Date();
-	public ISOFormat = (date: Date) => date.toISOString();
+export class OrderSummary {
+	readonly placedAt = new Date();
+	readonly total = 42.5;
+
+	readonly toIso = (date: Date) => date.toISOString();
+
+	formatPrice(amount: number, currency: string) {
+		return new Intl.NumberFormat('en', { style: 'currency', currency }).format(amount);
+	}
 }
 ```
 
-### ApplyPipe
+`toIso` runs again only when `placedAt` changes, and `formatPrice` only when `total` or the currency changes.
 
-For functions with multiple arguments.
+## `call`: one argument
 
-```typescript
-template: `<p>{{ join | apply : 'Hello' : 'world' : '!' }}</p>`;
+`call` takes the value on the left and passes it as the only argument to the function on the right.
+
+```html
+<b>{{ now | call: toIso }}</b>
 ```
 
-```typescript
-public join(...rest: string[]) {
-  return rest.join(' ');
+## `apply`: any number of arguments
+
+`apply` takes the function on the left and calls it with the arguments after the colons. It also works with no
+arguments.
+
+```html
+<p>{{ join | apply: 'Hello' : 'world' : '!' }}</p>
+<p>{{ getAnswer | apply }}</p>
+```
+
+```ts
+join(...words: string[]) {
+	return words.join(' ');
+}
+
+getAnswer() {
+	return 42;
 }
 ```
 
-### Error Handling
+## Functions must be pure
 
-Using non-pure functions will throw an error. For instance, using `updateClock`, which is not pure, would cause an error:
+Both pipes are pure, so the function must return the same output for the same arguments and must not read or change
+component state. To catch mistakes, the pipes call your function with a guarded `this`: reading or writing any
+property on `this` throws.
 
-```typescript
-public updateClock() {
-  this.now = new Date();
-  return this.now;
+```ts
+updateClock() {
+	this.now = new Date(); // throws when called through | call or | apply
+	return this.now;
 }
 ```
 
 ```html
-<!-- Throws Error -->
-<!-- <h1>THIS IS NOT PURE: {{ updateClock | apply }}</h1> -->
+<!-- Throws: "DON'T USE this INSIDE A FUNCTION CALLED BY | call OR | apply IT MUST BE A PURE FUNCTION!" -->
+<h1>{{ updateClock | apply }}</h1>
 ```
 
-The function `updateClock` modifies the state (`this.now`), making it a non-pure function. Using it with `ApplyPipe` or `CallPipe` will result in an error.
+:::caution[Arrow functions aren't guarded]
+Arrow functions keep the `this` of the component, so the guard can't catch them. An arrow function such as
+`toIso = (date: Date) => this.locale + date` won't throw, but it returns stale results when `this.locale` changes,
+because the pipe doesn't re-run. Keep arrow functions free of `this` too.
+:::
+
+Passing something that isn't a function throws a `TypeError`.
 
 ## API
 
-### Inputs for CallPipe
+```ts
+// {{ value | call: fn }}
+class CallPipe {
+	transform<T, R>(value: T, fn: (param: T) => R): R;
+}
 
-- `value: T`
-- `args: (param: T) => R`
+// {{ fn | apply: ...args }}
+class ApplyPipe {
+	transform<TFunction extends (...args: any[]) => any>(
+		fn: TFunction,
+		...args: Parameters<TFunction>
+	): ReturnType<TFunction>;
+}
+```
 
-### Inputs for ApplyPipe
+| Pipe        | Name in template | Left side       | Arguments                        | Returns                 |
+| ----------- | ---------------- | --------------- | -------------------------------- | ----------------------- |
+| `CallPipe`  | `call`           | `value: T`      | `fn: (param: T) => R`            | `R`                     |
+| `ApplyPipe` | `apply`          | `fn: TFunction` | `...args: Parameters<TFunction>` | `ReturnType<TFunction>` |
 
-- `fn: TFunction`
-- `...args: Parameters<TFunction>`
+## Related
 
-### Validation
-
-- Throws an error if a non-pure function is used.
-- Throws an error if `this` is used inside the function body.
-
-Both pipes are designed to work with Angular's pure pipe memoization, providing an efficient way to pass arguments to pure functions.
+- [`computed`](https://angular.dev/guide/signals#computed-signals): when the inputs are signals, a `computed` in the
+  component is usually clearer than a pipe and is memoized the same way.

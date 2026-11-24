@@ -1,184 +1,115 @@
 ---
 title: injectParams
-description: ngxtension/inject-params
+description: Read the current route's path params as a signal, with parsing, defaults and access to the whole route hierarchy.
 entryPoint: ngxtension/inject-params
 badge: stable
 contributors: ['enea-jahollari']
 ---
 
-:::note[Router outlet is required]
-`injectParams` works on all components that are inside routing context. Make sure the component you are using `injectParams` in, is part of your routes.
-For the same reason - `injectParams` will not work correctly inside your root component (usually `AppComponent`)
+`injectParams` gives you the path params of the current route (the `:id` in `users/:id`) as a signal. Read all of them, a single one, or derive a value with a function. The signal updates when the params change, for example when you navigate from `/users/1` to `/users/2` and Angular reuses the component.
+
+:::note[Use it inside a routed component]
+`injectParams` reads from the `ActivatedRoute` of the component that calls it, so it only sees the params of that route. In the root component (usually `AppComponent`) there are no params. Use [`injectParams.global()`](#params-from-the-whole-route-hierarchy) to read params of child routes.
 :::
-
-`injectParams` is a helper function that allows us to inject params from the current route as a signal.
-
-Having params as a signal helps in a modern angular signals based architecture.
-
-```ts
-import { injectParams } from 'ngxtension/inject-params';
-```
 
 ## Usage
 
-### Get all route params
+```angular-ts
+// Route: { path: 'users/:id', component: UserDetail }
+import { Component, inject } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { injectParams } from 'ngxtension/inject-params';
 
-`injectParams` returns a signal with the current route params.
-
-```ts
-@Component({
-	standalone: true,
-	template: '<div>{{params() | json}}</div>',
-})
-class TestComponent {
-	params = injectParams();
-}
-```
-
-#### Transform all params
-
-Or, if we want to transform the params, we can pass a function to `injectParams`.
-
-```ts
-@Component()
-class TestComponent {
-	paramsKeys = injectParams((params) => Object.keys(params)); // returns a signal with the keys of the params
-}
-```
-
-### Specific param
-
-If we want to get the value for a specific param, we can pass the name of the param to `injectParams`.
-
-```ts
 @Component({
 	template: `
-		@if (user(); as user) {
-			<div>{{ user.name }}</div>
-		} @else {
-			<div>No user!</div>
+		@if (user.value(); as user) {
+			<h1>{{ user.name }}</h1>
+		} @else if (user.isLoading()) {
+			<p>Loading...</p>
 		}
 	`,
 })
-class TestComponent {
-	userId = injectParams('id'); // returns a signal with the value of the id param
+export class UserDetail {
+	private userService = inject(UserService);
 
-	user = derivedFrom(
-		[this.userId],
-		switchMap((id) => this.userService.getUser(id).pipe(startWith(null))),
-	);
-}
-```
+	userId = injectParams('id'); // Signal<string | null>
 
-#### Transform
-
-If you want to parse the specific param, you can pass a `parse` function.
-
-```ts
-@Component({
-	template: `
-		@if (user(); as user) {
-			<div>{{ user.name }}</div>
-		} @else {
-			<div>No user!</div>
-		}
-	`,
-})
-class TestComponent {
-	userId = injectParams('id', { parse: numberAttribute }); // returns a signal with the value of the id param parsed to a number
-
-	user = derivedFrom(
-		[this.userId],
-		switchMap((id) => this.userService.getUser(id).pipe(startWith(null))),
-	);
-}
-```
-
-#### Default value
-
-If we want to use a default value if there is no value, we can pass a `defaultValue`.
-
-```ts
-@Component({
-	template: `
-		@if (angular(); as angular) {
-			<div>{{ angular.name }}</div>
-		} @else {
-			<div>No Angular version found!</div>
-		}
-	`,
-})
-class TestComponent {
-	angularVersion = injectParams('version', { defaultValue: '19' }); // returns a signal with the value of the version param or '19' if not present
-
-	angular = derivedFrom(
-		[this.angularVersion],
-		switchMap((version) =>
-			this.angularService.getAngular(version).pipe(startWith(null)),
-		),
-	);
-}
-```
-
-## Global Params
-
-`injectParams.global()` allows you to access route params from the entire route hierarchy, including all parent and child routes. This is similar to Angular's `input()` and `input.required()` pattern.
-
-:::note[Use Case]
-Use `.global()` when you need to access params from child routes or when your component needs to be aware of the full routing context, not just its own route params.
-:::
-
-### Get all params from route hierarchy
-
-```ts
-@Component()
-class ParentComponent {
-	// Gets all params from parent and all child routes
-	// Child params override parent params if they have the same name
-	allParams = injectParams.global();
-}
-```
-
-### Get specific param from route hierarchy
-
-```ts
-@Component()
-class ParentComponent {
-	// Gets the 'id' param from anywhere in the route hierarchy
-	id = injectParams.global('id');
-}
-```
-
-### Transform global params
-
-```ts
-@Component()
-class ParentComponent {
-	// Transform all params from the route hierarchy
-	paramCount = injectParams.global((params) => Object.keys(params).length);
-}
-```
-
-### With options
-
-All the same options work with `.global()`:
-
-```ts
-@Component()
-class TestComponent {
-	// Parse param as number
-	userId = injectParams.global('id', {
-		parse: numberAttribute,
+	user = rxResource({
+		request: () => this.userId() ?? undefined, // undefined skips the loader
+		loader: ({ request: id }) => this.userService.getUser(id),
 	});
 }
 ```
 
-### Example: Breadcrumbs
+## Get all params
 
-A common use case is building breadcrumbs that need access to all route params:
+Call it without arguments to get the whole `Params` object, or pass a function to derive a value from it.
 
 ```ts
+params = injectParams(); // Signal<Params>
+
+paramKeys = injectParams((params) => Object.keys(params)); // Signal<string[]>
+```
+
+## Parse a param
+
+Path params are strings. Use `parse` to convert the value, for example with Angular's `numberAttribute`.
+
+```ts
+import { numberAttribute } from '@angular/core';
+
+// Route: products/:id, URL: /products/42
+productId = injectParams('id', { parse: numberAttribute }); // Signal<number | null>
+```
+
+## Default value
+
+`defaultValue` is returned when the param is missing or empty. With a default, the signal type is non-null.
+
+```ts
+// Routes 'docs' and 'docs/:version' share this component. URL: /docs → '19'
+version = injectParams('version', { defaultValue: '19' }); // Signal<string>
+
+// With parse, the default must have the parsed type
+page = injectParams('page', { parse: numberAttribute, defaultValue: 1 }); // Signal<number>
+```
+
+The default value is returned as is, without going through `parse`.
+
+## Required params
+
+With `required: true` the signal type is non-null, and reading a missing param throws an error (`Parameter <key> is required but was not provided.`).
+
+```ts
+userId = injectParams('id', { required: true }); // Signal<string>
+```
+
+## Params from the whole route hierarchy
+
+`injectParams` only sees the params of its own route. A layout component that renders a `<router-outlet>` doesn't see the `:id` of its child route. `injectParams.global()` reads the deepest active route (in the primary outlet) and merges the params of every route from the root down to it. When two routes use the same name, the deeper route wins.
+
+It accepts the same arguments and options as `injectParams`.
+
+```ts
+// Routes: 'orgs/:orgId' → children: 'users/:userId'
+// URL: /orgs/acme/users/7
+export class OrgLayout {
+	allParams = injectParams.global(); // { orgId: 'acme', userId: '7' }
+	userId = injectParams.global('userId'); // '7'
+	userIdAsNumber = injectParams.global('userId', { parse: numberAttribute }); // 7
+	paramCount = injectParams.global((params) => Object.keys(params).length); // 2
+}
+```
+
+A common use case is breadcrumbs in a layout component:
+
+```angular-ts
+import { Component, computed } from '@angular/core';
+import { RouterLink, RouterOutlet, type Params } from '@angular/router';
+import { injectParams } from 'ngxtension/inject-params';
+
 @Component({
+	imports: [RouterLink, RouterOutlet],
 	template: `
 		<nav>
 			@for (crumb of breadcrumbs(); track crumb.path) {
@@ -188,10 +119,37 @@ A common use case is building breadcrumbs that need access to all route params:
 		<router-outlet />
 	`,
 })
-class LayoutComponent {
+export class Layout {
 	allParams = injectParams.global();
 
-	// Build breadcrumbs using all params from route hierarchy
 	breadcrumbs = computed(() => buildBreadcrumbs(this.allParams()));
 }
 ```
+
+## API
+
+```ts
+function injectParams(): Signal<Params>;
+function injectParams<T>(fn: (params: Params) => T, options?: { injector?: Injector }): Signal<T>;
+function injectParams(key: string): Signal<string | null>;
+function injectParams<T = string>(key: string, options: ParamsOptions & { required: true }): Signal<T>;
+function injectParams<T>(key: string, options: ParamsOptions & { defaultValue: T }): Signal<T>;
+function injectParams<T>(key: string, options: ParamsOptions & { parse: (v: string) => T }): Signal<T | null>;
+
+// Same overloads, reading the merged params of the whole route hierarchy
+injectParams.global(...);
+```
+
+| Option         | Type                   | Default     | Description                                                                  |
+| -------------- | ---------------------- | ----------- | ---------------------------------------------------------------------------- |
+| `parse`        | `(value: string) => T` | `undefined` | Converts the raw string param.                                               |
+| `defaultValue` | `T`                    | `undefined` | Returned when the param is missing or empty. Makes the return type non-null. |
+| `required`     | `boolean`              | `false`     | Throws when the param is missing. Makes the return type non-null.            |
+| `injector`     | `Injector`             | `undefined` | Use it when you call `injectParams` outside an injection context.            |
+
+## Related
+
+- [injectQueryParams](/utilities/router/inject-query-params/): the same API for query params.
+- [injectRouteData](/utilities/router/inject-route-data/): the same API for route `data`.
+- [injectLeafActivatedRoute](/utilities/router/inject-leaf-activated-route/): the deepest active route as a signal.
+- Angular's [`withComponentInputBinding()`](https://angular.dev/api/router/withComponentInputBinding) binds params to `input()`s of the routed component. Prefer it when only the routed component needs the param.

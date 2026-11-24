@@ -1,100 +1,148 @@
 ---
 title: on
-description: ngxtension/reactive-on
+description: Makes an effect's dependencies explicit inside effect(), and gives you the previous inputs and result.
 entryPoint: ngxtension/reactive-on
 badge: experimental
 contributors: ['jeanmeche']
 ---
 
-`on` is a helper function that allows you to create an effect with explicit dependencies. It is designed to be used directly inside `effect()`.
+`on` wraps an effect callback so that only the signals you list are tracked; the rest of the body runs untracked. You pass the result straight to Angular's `effect()`. It also hands you the previous input values and the value your callback returned last time, which is handy for "what changed?" logic.
 
-It is similar to `explicitEffect`, but intended for inline usage within `effect()`.
+It is similar to [`explicitEffect`](/utilities/effects-side-effects/explicit-effect/), but you keep using `effect()` itself.
 
 ## Usage
 
-`on` accepts dependencies (a signal, an array of signals, or a record of signals) and a callback function. The callback is executed only when the dependencies change.
-
-### Basic Usage
-
-```ts
-import { effect, signal } from '@angular/core';
+```angular-ts
+import { Component, effect, signal } from '@angular/core';
 import { on } from 'ngxtension/reactive-on';
 
-const count = signal(0);
-const doubleJson = signal(0);
+@Component({
+	selector: 'app-counter',
+	template: `<button (click)="count.set(count() + 1)">{{ count() }}</button>`,
+})
+export class Counter {
+	readonly count = signal(0);
+	readonly step = signal(1);
 
-effect(
-	on([count, doubleJson], ([c, d]) => {
-		console.log(`Count: ${c}, Double: ${d}`);
-	}),
-);
+	constructor() {
+		effect(
+			on([this.count, this.step], ([count, step]) => {
+				console.log(`count: ${count}, step: ${step}`);
+			}),
+		);
+	}
+}
 ```
 
 This is equivalent to:
 
 ```ts
 effect(() => {
-	const c = count();
-	const d = doubleJson();
+	const count = this.count();
+	const step = this.step();
 	untracked(() => {
-		console.log(`Count: ${c}, Double: ${d}`);
+		console.log(`count: ${count}, step: ${step}`);
 	});
 });
 ```
 
-### Accessing Previous Values
+## Dependencies
 
-The callback provides access to:
+Pass one of:
 
-1. The current input values (dependencies).
-2. The previous input values.
-3. The returned value from the previous execution of the callback.
+- a single signal or function: `on(count, (count) => …)`
+- an array: `on([a, b], ([a, b]) => …)`
+- an object: `on({ a, b }, ({ a, b }) => …)`
+
+Each dependency can be a signal or a function that reads signals, like `() => this.count() * 2`.
 
 ```ts
-const count = signal(1);
-
 effect(
-	on(count, (currentCount, prevCount, prevResult) => {
-		console.log(`Current: ${currentCount}`);
-		console.log(`Previous Input: ${prevCount}`);
-		console.log(`Previous Result: ${prevResult}`);
-
-		// This value will be available as `prevResult` in the next run
-		return `Count is ${currentCount}`;
+	on({ user: this.user, page: this.page }, ({ user, page }) => {
+		console.log(user.name, page);
 	}),
 );
 ```
 
-### Defer Execution
+## Previous values
 
-You can defer the initial execution of the effect using the `defer` option.
+The callback receives four arguments:
+
+1. the current input values,
+2. the previous input values (`undefined` on the first run),
+3. the value the callback returned on its previous run (`undefined` on the first run),
+4. the `onCleanup` function of the effect.
+
+```ts
+effect(
+	on(this.count, (count, prevCount, prevMessage) => {
+		console.log(`now ${count}, before ${prevCount}`);
+		console.log(`last message: ${prevMessage}`);
+
+		// available as prevMessage on the next run
+		return `Count was ${count}`;
+	}),
+);
+```
+
+## Cleanup
+
+Register cleanup logic with the fourth argument. It runs before the next run and when the effect is destroyed:
+
+```ts
+effect(
+	on(this.count, (count, _prevCount, _prevResult, onCleanup) => {
+		const timer = setInterval(() => console.log(count), 1000);
+		onCleanup(() => clearInterval(timer));
+	}),
+);
+```
+
+## Skip the first run
+
+Pass `{ defer: true }` as the third argument to skip the effect's initial run:
 
 ```ts
 effect(
 	on(
-		count,
-		(value) => {
-			console.log(`Value changed: ${value}`);
+		this.count,
+		(count) => {
+			console.log(`count changed to ${count}`);
 		},
 		{ defer: true },
 	),
 );
 ```
 
-### Cleanup Function
+:::note
+With `defer`, the skipped run doesn't record its inputs, so on the first real run the previous input is `undefined`, not the initial value.
+:::
 
-The callback receives a cleanup function registration callback as the last argument.
+## API
 
 ```ts
-effect(
-	on(count, (value, prev, prevVal, cleanup) => {
-		const timer = setInterval(() => {
-			console.log(value);
-		}, 1000);
+// simplified; the real overloads infer DepsValues from deps
+function on<U>(
+	deps:
+		| Accessor<unknown>
+		| readonly Accessor<unknown>[]
+		| Record<string, Accessor<unknown>>,
+	fn: (
+		input: DepsValues,
+		prevInput: DepsValues | undefined,
+		prevValue: U | undefined,
+		onCleanup: EffectCleanupRegisterFn,
+	) => U,
+	options?: { defer?: boolean },
+): (onCleanup: EffectCleanupRegisterFn) => void;
 
-		cleanup(() => {
-			clearInterval(timer);
-		});
-	}),
-);
+type Accessor<T> = Signal<T> | (() => T);
 ```
+
+`DepsValues` has the same shape as `deps`: a single value, a tuple or an object.
+
+| Option  | Type      | Default | Description                       |
+| ------- | --------- | ------- | --------------------------------- |
+| `defer` | `boolean` | `false` | Skip the first run of the effect. |
+
+`on` returns a function you pass to `effect()`. Pass injector and other effect options to `effect()` as usual.

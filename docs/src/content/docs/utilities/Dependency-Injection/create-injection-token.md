@@ -6,17 +6,14 @@ badge: stable
 contributors: ['chau-tran']
 ---
 
-`createInjectionToken` is an abstraction over the creation of an [`InjectionToken`](https://angular.dev/api/core/InjectionToken) and returns a tuple of `[injectFn, provideFn, TOKEN]`
-
-Creating an `InjectionToken` is usually not a big deal but consuming the `InjectionToken` might be a bit of a chore/boilerplate if the project utilizes `InjectionToken` a lot.
-
-```ts
-import { createInjectionToken } from 'ngxtension/create-injection-token';
-```
+`createInjectionToken` creates an [`InjectionToken`](https://angular.dev/api/core/InjectionToken) from a factory function and returns a tuple of `[injectFn, provideFn, TOKEN, provideInitializerFn]`. Instead of writing `new InjectionToken(...)`, an `inject(TOKEN)` wrapper and a provider helper for every token, you get typed helpers for all of them in one call.
 
 ## Usage
 
 ```ts
+import { Component, signal } from '@angular/core';
+import { createInjectionToken } from 'ngxtension/create-injection-token';
+
 function countFactory() {
 	return signal(0);
 }
@@ -27,30 +24,33 @@ export const [
 	/* COUNT */
 ] = createInjectionToken(countFactory);
 
-@Component({})
+@Component({ selector: 'app-counter', template: '{{ count() }}' })
 export class Counter {
 	count = injectCount(); // WritableSignal<number>
 	/* count = inject(COUNT); // WritableSignal<number> */
 }
 ```
 
-### `CreateInjectionTokenOptions`
+`injectFn` also accepts Angular's inject options, for example `injectCount({ optional: true })`, which returns `null` when the token isn't provided.
 
-`createInjectionToken` accepts a second argument of type `CreateInjectionTokenOptions` which allows us to customize the `InjectionToken` that we are creating:
+## Options
+
+`createInjectionToken` accepts a second argument to customize the token:
 
 ```ts
-export interface CreateInjectionTokenOptions<T = unknown> {
-	isRoot?: boolean;
-	deps?: unknown[];
-	extraProviders?: Provider[];
+type CreateInjectionTokenOptions = {
+	isRoot?: boolean; // default: true
+	deps?: [...]; // required when the factory has parameters, typed from them
+	extraProviders?: Provider | EnvironmentProviders;
 	multi?: boolean;
-	token?: InjectionToken<T>;
-}
+	token?: InjectionToken<ReturnType<TFactory>>;
+	isFunctionValue?: boolean;
+};
 ```
 
-#### `isRoot`
+### `isRoot`
 
-By default, `createInjectionToken` creates a `providedIn: 'root'` token so we do not have to _provide_ it anywhere to use it. To create a non-root token, pass in `isRoot: false`
+By default, `createInjectionToken` creates a `providedIn: 'root'` token, so you don't have to provide it anywhere to use it. To create a non-root token, pass `isRoot: false` and provide it with `provideFn()`.
 
 ```ts
 export const [injectCount, provideCount] = createInjectionToken(countFactory, {
@@ -66,9 +66,9 @@ export class Counter {
 }
 ```
 
-#### `deps`
+### `deps`
 
-More than often, `InjectionToken` can depend on other `InjectionToken`. This is where `deps` come in and what we can pass in `deps` depends on the signature of the `factoryFn` that `createInjectionToken` accepts.
+When the factory has parameters, pass the tokens to inject for them in `deps`, in the same order. The types are checked against the factory's parameters.
 
 ```ts
 export const [, , DEFAULT] = createInjectionToken(() => 5);
@@ -83,9 +83,15 @@ export const [injectCount, provideCount] = createInjectionToken(countFactory, {
 });
 ```
 
-#### `extraProviders`
+You can also wrap a dep with modifiers, like `[new Optional(), new SkipSelf(), SOME_TOKEN]` (see [`token`](#token) below).
 
-We can also pass in other providers, via `extraProviders`, to `createInjectionToken` so when we call `provideFn()`, we provide those providers as well.
+:::caution
+For root tokens (the default), the factory gets its deps with a plain `inject()`, so modifiers such as `Optional` or `SkipSelf` are ignored. Use `isRoot: false` when you need them.
+:::
+
+### `extraProviders`
+
+Use `extraProviders` for providers that should be registered together with the token. Calling `provideFn()` then provides them as well.
 
 ```ts
 import { bookReducer } from './book.reducer';
@@ -109,21 +115,21 @@ export const [injectBookService, provideBookService] = createInjectionToken(
 export const routes = [
 	{
 		path: 'book/:id',
-		//          👇 will also provideState() and provideEffects
+		// also provides provideState() and provideEffects()
 		providers: [provideBookService()],
 		loadComponent: () => import('./book/book.component'),
 	},
 ];
 ```
 
-#### `multi`
+### `multi`
 
-As the name suggested, we can also create a multi `InjectionToken` via `createInjectionToken` by passing `multi: true` to the `CreateInjectionTokenOptions`.
+Pass `multi: true` to create a multi token. Every `provideFn(value)` call adds one value, and `injectFn()` returns all of them as an array.
 
 :::caution
 
-- When `multi: true`, the return type will be altered.
-- When `multi: true`, then `isRoot` option will be skipped entirely. The `InjectionToken` will be forced to be a non-root token.
+- With `multi: true`, `injectFn()` returns an array.
+- With `multi: true`, `isRoot` is ignored: multi tokens are always non-root, so you must call `provideFn`.
 
 :::
 
@@ -132,15 +138,14 @@ const [injectFn, provideFn] = createInjectionToken(() => 1, { multi: true });
 
 const values = injectFn(); // number[] instead of number
 
-provideFn(value);
-//        👆 this STILL accepts a number
+provideFn(2); // takes a single number, not an array
 ```
 
-#### `token`
+### `token`
 
-If we already have an `InjectionToken` that we want to turn into `injectFn` and `provideFn`, we can pass that token, via `token`, to `createInjectionToken`.
+To get `injectFn` and `provideFn` for an `InjectionToken` you already have, pass it as `token`.
 
-One use-case is if our factory has a dependency on the same `InjectionToken` (i.e: a hierarchical tree-like structure where child `Service` might optionally have a parent `Service`)
+One use case is a factory that depends on the same token, like a tree where a child service optionally has a parent service:
 
 ```ts
 export const SERVICE = new InjectionToken<TreeService>('TreeService');
@@ -159,13 +164,15 @@ export const [injectService, provideService] = createInjectionToken(
 );
 ```
 
-Note that if `token` is passed in and `isRoot: true`, `createInjectionToken` will throw an error.
+Passing `token` together with `isRoot: true` (the default) throws an error, so set `isRoot: false`.
 
-### `createNoopInjectionToken`
+### `isFunctionValue`
 
-As the name suggested, `createNoopInjectionToken` is the same as `createInjectionToken` but instead of factory function, it accepts description and options. This is useful when we want to create a `multi` token but we do not have a factory function.
+Sets the default for the second argument of `provideFn`. See [`provideFn`](#providefn).
 
-It also **supports a generic type** for the `InjectionToken` that it creates:
+## `createNoopInjectionToken`
+
+`createNoopInjectionToken` works like `createInjectionToken` but takes a description and options instead of a factory. Use it when there is no sensible default value, typically for `multi` tokens. Pass the value type as a generic:
 
 ```ts
 const [injectFn, provideFn] = createNoopInjectionToken<number, true>(
@@ -178,11 +185,11 @@ provideFn(1); // accepts number
 provideFn(() => 1); // accepts a factory returning a number;
 ```
 
-:::tip[Note]
-Note **true** inside `createNoopInjectionToken<number, true>` and in `multi: true`. This is to help TypeScript to return the correct type for `injectFn` and `provideFn`
+:::tip
+Pass `true` both as the second generic (`createNoopInjectionToken<number, true>`) and as `multi: true`. The generic is what lets TypeScript type `injectFn` as returning an array.
 :::
 
-Even though it's meant for `multi` token, it can be used for non-multi token as well:
+It works for non-multi tokens too:
 
 ```ts
 const [injectFn, provideFn] = createNoopInjectionToken<number>('description');
@@ -191,30 +198,29 @@ provideFn(1); // accepts number
 provideFn(() => 1); // accepts a factory returning a number;
 ```
 
-## `ProvideFn`
+## `provideFn`
 
-`createInjectionToken` and `createNoopInjectionToken` returns a `provideFn` which is a function that accepts either a value or a **factory function** that returns the value.
+The `provideFn` returned by `createInjectionToken` and `createNoopInjectionToken` accepts a value or a **factory function** that returns the value. Called without arguments (only for `createInjectionToken`), it provides the token with its own factory and `deps`.
 
-In the case where the value of the token is a `Function` (i.e: `NG_VALIDATORS` is a multi token whose values are functions), `provideFn` accepts a 2nd argument to distinguish between a **factory function** or a **function as value**
+When the token's value is itself a function (like the validator functions in `NG_VALIDATORS`), `provideFn` can't tell a factory from a value. Pass a second argument to say which one it is:
 
 ```ts
 const [injectFn, provideFn] = createInjectionToken(() => {
-	// this token returns Function as value
-	return () => 1;
+	// the value of this token is a function
+	return (): number => 1;
 });
 
-// NOTE: this is providing the function value as-is
+// provides `() => 2` itself as the value
 provideFn(() => 2, true);
-// NOTE: this is providing the function as a factory
+// calls the outer function as a factory; its result is the value
 provideFn(() => () => injectDepFn(), false);
 ```
 
-By default, `provideFn` will treat the function as a factory function. If we want to provide the function as-is, we need to pass in `true` as the second argument.
+By default, `provideFn` treats a function as a factory. Pass `true` as the second argument to provide the function as is (or set `isFunctionValue: true` in the options).
 
-## Custom Injector
+## Outside an injection context
 
-The `injectFn` returned by `createInjectionToken` also accepts a custom `Injector` to allow the consumers to call the `injectFn`
-outside of an Injection Context.
+`injectFn` accepts an `injector` option, so you can call it outside an injection context:
 
 ```ts
 function countFactory() {
@@ -223,8 +229,8 @@ function countFactory() {
 
 export const [injectCount] = createInjectionToken(countFactory);
 
-@Component()
-export class Counter {
+@Component({ selector: 'app-counter', template: '' })
+export class Counter implements OnInit {
 	#injector = inject(Injector);
 
 	ngOnInit() {
@@ -233,23 +239,52 @@ export class Counter {
 }
 ```
 
-## Environment Initializer
+## Environment initializer
 
-Sometimes, it is required for **root** tokens to be initialized in `ENVIRONMENT_INITIALIZER`. Instead of providing `ENVIRONMENT_INITIALIZER` manually, we can retrieve the initializer provider function from `createInjectionToken` to do so.
+Root tokens are created lazily, the first time they're injected. To create one eagerly when the app starts (for example a token whose factory sets up a global listener), use the fourth item of the tuple. It provides an `ENVIRONMENT_INITIALIZER` that injects the token.
 
 :::caution
-The **initializer provider** function is a **noop** for non-root tokens.
+For non-root tokens, the initializer provider function provides nothing.
 :::
 
 ```ts
-const [
-	injectOne /* skip provider fn */ /* skip the token */,
-	,
-	,
-	provideOneInitializer,
-] = createInjectionToken(() => 1);
+const [injectOne, , , provideOneInitializer] = createInjectionToken(() => 1);
 
 bootstrapApplication(App, {
 	providers: [provideOneInitializer()],
 });
 ```
+
+## API
+
+```ts
+function createInjectionToken<TFactory extends (...args: any[]) => any>(
+	factory: TFactory,
+	options?: CreateInjectionTokenOptions<TFactory>,
+): [
+	injectFn: InjectFn<ReturnType<TFactory>>, // array type when multi: true
+	provideFn: ProvideFn,
+	TOKEN: InjectionToken<ReturnType<TFactory>>,
+	provideInitializerFn: () => Provider,
+];
+
+function createNoopInjectionToken<TValue, TMulti extends boolean = false>(
+	description: string,
+	options?: {
+		multi?: TMulti;
+		isFunctionValue?: boolean;
+		extraProviders?: Provider | EnvironmentProviders;
+	},
+): [injectFn, provideFn, TOKEN, provideInitializerFn];
+```
+
+| Option            | Type                               | Default | Description                                                                              |
+| ----------------- | ---------------------------------- | ------- | ---------------------------------------------------------------------------------------- |
+| `isRoot`          | `boolean`                          | `true`  | Create a `providedIn: 'root'` token. Ignored (forced to `false`) when `multi` is `true`. |
+| `deps`            | tokens matching the factory params |         | Tokens injected and passed to the factory. Required when the factory has parameters.     |
+| `extraProviders`  | `Provider \| EnvironmentProviders` | `[]`    | Provided together with the token by `provideFn`.                                         |
+| `multi`           | `boolean`                          | `false` | Create a multi token; `injectFn` returns an array.                                       |
+| `token`           | `InjectionToken`                   |         | Use an existing token instead of creating one. Requires `isRoot: false`.                 |
+| `isFunctionValue` | `boolean`                          | `false` | Default for `provideFn`'s second argument: treat a function as the value, not a factory. |
+
+`injectFn(options?)` accepts Angular's `InjectOptions` (`optional`, `self`, `skipSelf`, `host`) plus `injector`.

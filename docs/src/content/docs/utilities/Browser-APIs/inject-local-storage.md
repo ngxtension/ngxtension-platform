@@ -1,106 +1,184 @@
 ---
 title: injectLocalStorage
-description: ngxtension/inject-local-storage
+description: A writable signal backed by localStorage, with default values, custom serialization, dynamic keys and sync across browser tabs.
 entryPoint: ngxtension/inject-local-storage
 badge: stable
 contributors: ['enea-jahollari']
 ---
 
-This injector provides a reactive local storage management system using Angular's dependency injection and reactivity model. This API allows for easy integration and manipulation of local storage with real-time synchronization across browser tabs and dynamic key support.
-
-## API
-
-### Injection Token: `NGXTENSION_LOCAL_STORAGE`
-
-- **Description**: Token for the local storage service, allowing for custom implementations to be provided.
-- **Factory Default**: Uses the browser's `localStorage`.
-
-### Function: `provideLocalStorageImpl`
-
-- **Parameters**:
-  - `impl`: A custom implementation of the `localStorage` interface.
-- **Returns**: An Angular provider object that uses the given implementation.
-
-### Type: `LocalStorageOptions<T>`
-
-Options to configure the behavior of the local storage signal.
-
-- **Fields**:
-  - `defaultValue`: The default value used if the key is not present in local storage. It can be a direct value or a function returning a value.
-  - `storageSync`: If set to `true`, synchronizes data across browser tabs. Defaults to `true`.
-  - `stringify`: A custom function to serialize stored data. Defaults to `JSON.stringify`.
-  - `parse`: A custom function to deserialize stored data. Defaults to a function handling JSON parsing with support for `undefined`.
-  - `injector`: Optional custom injector for dependency resolution.
-  - `clearOnKeyChange`: If set to true, removes the value stored under the previous key from localStorage when the computed key changes. Applies only when a key-computation function is provided. Defaults to `true`.
-
-### Function: `injectLocalStorage`
-
-- **Parameters**:
-  - `keyOrComputation`: A string key or a computation function returning a key string under which data is stored. If a function is provided, the signal will reinitialize whenever the computed key changes.
-  - `options`: Configuration options of type `LocalStorageOptions`.
-- **Returns**: A reactive signal (`LocalStorageSignal<T>`) with `set` and `update` methods representing the state of the local storage item. Updates to this signal are reflected in local storage (and emit a `storage` event), and external storage events update the signal if `storageSync` is enabled.
+`injectLocalStorage` gives you a `WritableSignal` whose value lives in `localStorage`. Read it like any signal, and
+`set()` or `update()` it to write through to storage. By default it also stays in sync when another tab, or another
+signal for the same key, changes the value.
 
 ## Usage
 
-1. **Injecting Custom Local Storage**:
-   Use `provideLocalStorageImpl` to override the default local storage implementation if necessary.
+```angular-ts
+import { Component } from '@angular/core';
+import { injectLocalStorage } from 'ngxtension/inject-local-storage';
 
-2. **Creating a Local Storage Signal**:
-   Use `injectLocalStorage` to create a reactive local storage signal. Configure behavior with `LocalStorageOptions`.
+@Component({
+	selector: 'app-theme-toggle',
+	template: `
+		<button type="button" (click)="toggle()">Theme: {{ theme() }}</button>
+	`,
+})
+export class ThemeToggle {
+	readonly theme = injectLocalStorage<'light' | 'dark'>('theme', {
+		defaultValue: 'light',
+	});
 
-## Example
+	toggle() {
+		this.theme.update((theme) => (theme === 'light' ? 'dark' : 'light'));
+	}
+}
+```
 
-Here's a basic example of using `injectLocalStorage`:
+The choice survives reloads, and every open tab of your app updates when the user toggles it.
 
-```typescript
-const username = injectLocalStorage<string>('username');
+## Default value
+
+Without `defaultValue`, the signal is `undefined` until something is stored under the key:
+
+```ts
+const username = injectLocalStorage<string>('username'); // WritableSignal<string | undefined>
 
 username.set('John Doe');
 username.update((name) => 'Guest ' + name);
-
-effect(() => {
-	console.log(username());
-});
 ```
 
-Use `username` in your component to get or set the username stored in local storage. The value might be `undefined` if no default value is provided.
+With `defaultValue`, the signal uses it when the key is missing (or its value can't be parsed), and the type no longer
+includes `undefined`:
 
-**Fallback value**:
-
-```typescript
+```ts
 const username = injectLocalStorage<string>('username', {
 	defaultValue: 'Guest',
-});
+}); // WritableSignal<string>
 ```
 
-Uses 'Guest' if 'username' is not in local storage.
+The default isn't written to storage until you call `set()` or `update()`. You can also pass a function,
+`defaultValue: () => computeDefault()`, which is called only when the default is needed.
 
-**Storage synchronization**:
+## Objects
 
-```typescript
-const username = injectLocalStorage<string>('username', {
-	storageSync: true,
+Values are stored with `JSON.stringify` and read back with `JSON.parse`, so objects and arrays work out of the box.
+
+```ts
+interface Settings {
+	theme: 'light' | 'dark';
+	pageSize: number;
+}
+
+const settings = injectLocalStorage<Settings>('settings', {
+	defaultValue: { theme: 'light', pageSize: 20 },
 });
+
+settings.update((s) => ({ ...s, pageSize: 50 }));
 ```
 
-Changes reflect across browser tabs (default = true).
+Create a new object when you update, as above. Mutating the current object doesn't write anything to storage.
 
-**Dynamic key support**:
+## Remove the item
 
-```typescript
-const currentUserId = signal('user-1');
-const settings = injectLocalStorage(() => `settings-${currentUserId()}`, {
-	defaultValue: { theme: 'light' },
-});
-```
+Set the signal to `undefined` to remove the key from `localStorage`:
 
-Reinitializes when currentUserId() changes.
-
-**Remove LocalStorage Item**:
-
-```typescript
+```ts
 const username = injectLocalStorage<string>('username');
 username.set(undefined);
 ```
 
-Setting `undefined` removes the item from local storage. Note that setting the value to `null` will store the string `'null'` and will **not** remove the item.
+Setting `null` stores the string `'null'` and does **not** remove the item.
+
+## Dynamic keys
+
+Pass a function instead of a string to compute the key from signals. When the key changes, the signal reads the value
+stored under the new key.
+
+```ts
+const currentUserId = signal('user-1');
+
+const settings = injectLocalStorage(() => `settings-${currentUserId()}`, {
+	defaultValue: { theme: 'light' },
+	clearOnKeyChange: false,
+});
+```
+
+:::caution[The previous key is removed by default]
+With a key function, `clearOnKeyChange` defaults to `true`: when the key changes, the value stored under the previous
+key is **removed** from `localStorage`. In the example above, switching from `user-1` to `user-2` would delete
+`settings-user-1`. Set `clearOnKeyChange: false` when each key holds data you want to keep, such as per-user settings.
+:::
+
+## Sync across tabs
+
+With `storageSync: true` (the default), the signal:
+
+- listens to the browser's `storage` event, so it updates when another tab writes the same key;
+- dispatches a `storage` event in the current tab when you write, so other `injectLocalStorage` signals for the same
+  key in this tab update too.
+
+Set `storageSync: false` to opt out of both.
+
+```ts
+const draft = injectLocalStorage<string>('draft', { storageSync: false });
+```
+
+## Custom serialization
+
+Use `stringify` and `parse` for values that JSON can't round-trip, such as dates:
+
+```ts
+const lastVisit = injectLocalStorage<Date>('last-visit', {
+	defaultValue: () => new Date(),
+	stringify: (date) => date.toISOString(),
+	parse: (value) => new Date(value),
+});
+```
+
+## Use another storage
+
+`provideLocalStorageImpl` replaces the storage behind every `injectLocalStorage` call in that injector tree. Any object
+that implements the `Storage` interface works, for example `sessionStorage`:
+
+```ts
+import { provideLocalStorageImpl } from 'ngxtension/inject-local-storage';
+
+bootstrapApplication(App, {
+	providers: [provideLocalStorageImpl(sessionStorage)],
+});
+```
+
+:::note[SSR]
+The default implementation reads the global `localStorage`. If your server runtime doesn't have one, provide another
+`Storage` implementation (for example an in-memory one) in your server providers with `provideLocalStorageImpl`.
+:::
+
+## API
+
+```ts
+function injectLocalStorage<T>(
+	key: string | (() => string),
+	options?: LocalStorageOptions<T>,
+): WritableSignal<T | undefined>; // WritableSignal<T> when `defaultValue` is set
+
+function provideLocalStorageImpl(impl: Storage): Provider;
+
+const NGXTENSION_LOCAL_STORAGE: InjectionToken<Storage>;
+```
+
+### Options
+
+| Option             | Type                   | Default                                   | Description                                                                                      |
+| ------------------ | ---------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `defaultValue`     | `T \| (() => T)`       | -                                         | Value used when the key is missing or can't be parsed. Removes `undefined` from the signal type. |
+| `storageSync`      | `boolean`              | `true`                                    | Sync with other tabs and with other signals for the same key in this tab.                        |
+| `stringify`        | `(value: T) => string` | `JSON.stringify`                          | Serializes the value before it is stored.                                                        |
+| `parse`            | `(value: string) => T` | `JSON.parse` (also handles `'undefined'`) | Deserializes the stored string.                                                                  |
+| `clearOnKeyChange` | `boolean`              | `true`                                    | Only with a key function: remove the previous key's value when the key changes.                  |
+| `injector`         | `Injector`             | -                                         | Injector to use when you call it outside an injection context.                                   |
+
+Errors from storage reads and writes (such as a full quota) are caught, so the signal keeps working in memory.
+
+## Related
+
+- [Angular signals](https://angular.dev/guide/signals): the returned value is a regular `WritableSignal`, so you can use
+  it in `computed`, `effect` and templates.

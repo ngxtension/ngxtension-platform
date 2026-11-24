@@ -1,42 +1,63 @@
 ---
 title: filterArray
-description: An RxJS operator to simplify the process of filtering arrays within an Observable stream.
+description: An RxJS operator that filters the items of each array an Observable emits, like Array.prototype.filter inside map.
 entryPoint: ngxtension/filter-array
 badge: stable
 contributors: ['thomas-laforge']
 ---
 
-## Import
+`filterArray` filters the items inside each array a stream emits. It's shorthand for `map((items) => items.filter(fn))`, which is a pattern you write often when an API returns a list.
 
-```ts
-import { filterArray } from 'ngxtension/filter-array';
+```txt
+[1, 2, 3, 4]  ──filterArray(n => n % 2 === 0)──▶  [2, 4]
 ```
 
 ## Usage
 
-### Basic
-
-Apply a filtering function to an array emitted by an Observable.
-
 ```ts
-import { of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { filterArray } from 'ngxtension/filter-array';
 
-const source$ = of([1, 2, 3]);
-const filtered$ = source$.pipe(filterArray((element) => element <= 2));
+interface Todo {
+	id: number;
+	title: string;
+	done: boolean;
+}
+
+@Injectable({ providedIn: 'root' })
+export class TodoService {
+	readonly #http = inject(HttpClient);
+
+	getOpenTodos() {
+		return this.#http
+			.get<Todo[]>('/api/todos')
+			.pipe(filterArray((todo) => !todo.done));
+	}
+}
 ```
 
-## Examples
-
-### Example 1: Filter Even Numbers
+The predicate also receives the item's index, just like `Array.prototype.filter`:
 
 ```ts
-const source$ = of([1, 2, 3, 4, 5]);
-const filtered$ = source$.pipe(filterArray((element) => element % 2 === 0));
+// Keep the first ten items
+source$.pipe(filterArray((_, index) => index < 10));
 ```
+
+It filters the items of an array. To drop whole emissions, use RxJS `filter`.
 
 ## API
 
-### Inputs
+```ts
+function filterArray<T>(
+	filterFn: (item: T, index: number) => boolean,
+): OperatorFunction<T[], T[]>;
+```
 
-- `filterFn: (item: T, index: number) => boolean` - A function to filter the array, similar to JavaScript's `.filter()` method.
+| Argument   | Type                                  | Description                                          |
+| ---------- | ------------------------------------- | ---------------------------------------------------- |
+| `filterFn` | `(item: T, index: number) => boolean` | Return `true` to keep the item in the emitted array. |
+
+## Related
+
+- [`mapArray`](/utilities/rxjs-operators/map-array/) and [`reduceArray`](/utilities/rxjs-operators/reduce-array/) for the other array methods.

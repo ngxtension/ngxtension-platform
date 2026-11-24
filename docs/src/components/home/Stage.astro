@@ -1,0 +1,604 @@
+---
+/**
+ * One Before → After stage. Lines are absolutely positioned and only move with transforms; the
+ * window shrinks inside a box that always keeps the "before" height, so nothing around it moves.
+ */
+import { Code } from 'astro:components';
+import type { ShikiTransformer } from 'shiki';
+import { parsePair, type Pair } from './pairs';
+
+interface Props {
+	pair: Pair;
+	index: number;
+	title: string;
+	caption: string;
+	t: {
+		before: string;
+		after: string;
+		lines: string;
+		removed: string;
+		docs: string;
+		toggle: string;
+		live: string;
+	};
+}
+
+const { pair, index, title, caption, t } = Astro.props;
+const p = parsePair(pair);
+const removed = p.beforeLines - p.afterLines;
+const beforeCode = p.lines
+	.filter((l) => l.kind !== 'add')
+	.map((l) => l.text)
+	.join('\n');
+const afterCode = p.lines
+	.filter((l) => l.kind !== 'del')
+	.map((l) => l.text)
+	.join('\n');
+
+const diffLines: ShikiTransformer = {
+	name: 'nx-diff-lines',
+	// The code always fits its box (no scrolling) and is hidden from assistive tech, so it must not take focus.
+	pre(node) {
+		delete node.properties.tabindex;
+	},
+	code(node) {
+		node.children = node.children.filter((c) => c.type !== 'text');
+	},
+	line(node, n) {
+		const l = p.lines[n - 1];
+		this.addClassToHast(node, `d-${l.kind}`);
+		node.properties['style'] = `--b:${l.b};--a:${l.a};--d:${l.d};--o:${l.o}`;
+		if (l.kind !== 'keep')
+			node.properties['data-mark'] = l.kind === 'add' ? '+' : '−';
+	},
+};
+const num = String(index + 1).padStart(2, '0');
+const headingId = `stage-${p.id}`;
+---
+
+<article
+	class="stage"
+	aria-labelledby={headingId}
+	data-stage
+	data-mode="diff"
+	data-small-gap={p.beforeRows - p.afterRows < 6 ? '' : undefined}
+	data-before={p.beforeLines}
+	data-after={p.afterLines}
+	data-live-before={t.live
+		.replace('{n}', String(p.beforeLines))
+		.replace('{state}', t.before)}
+	data-live-after={t.live
+		.replace('{n}', String(p.afterLines))
+		.replace('{state}', t.after)}
+	style={`--rows-all:${p.totalLines};--rows-ba:${Math.max(p.beforeRows, p.afterRows)};--rows-after:${p.afterRows};--cols:${p.cols}`}
+>
+	<script is:inline>
+		// Before paint: start in "before" unless the reader prefers reduced motion (then the diff stays).
+		(function (s) {
+			if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
+				s.dataset.mode = 'before';
+		})(document.currentScript.parentElement);
+	</script>
+
+	<div class="stage__text">
+		<p class="stage__num" aria-hidden="true">{num}</p>
+		<h3 class="stage__title" id={headingId}>{title}</h3>
+		<p class="stage__caption" set:html={caption} />
+
+		<div class="stage__count" aria-hidden="true">
+			<span class="count__unit">{t.lines}</span>
+			<span class="count__num" data-count>{p.beforeLines}</span>
+			<span class="count__diff">
+				<span>{p.beforeLines}</span>
+				<span class="count__arrow">→</span>
+				<span class="count__to">{p.afterLines}</span>
+			</span>
+		</div>
+		<span class="sr-only" aria-live="polite" data-live></span>
+
+		<div class="seg" role="group" aria-label={t.toggle}>
+			<button
+				type="button"
+				class="seg__btn"
+				data-set="before"
+				aria-pressed="true"
+			>
+				{t.before}
+			</button>
+			<button
+				type="button"
+				class="seg__btn"
+				data-set="after"
+				aria-pressed="false"
+			>
+				{t.after}
+			</button>
+		</div>
+
+		<a class="stage__link" href={p.href}>
+			{t.docs.replace('{name}', p.utility)}
+			<span aria-hidden="true">→</span>
+		</a>
+	</div>
+
+	<div class="stage__code">
+		<!-- Screen readers get both versions, labelled, instead of the animated block -->
+		<div class="sr-only">
+			<div role="group" aria-label={`${t.before}, ${p.beforeLines} ${t.lines}`}>
+				<pre>{beforeCode}</pre>
+			</div>
+			<div role="group" aria-label={`${t.after}, ${p.afterLines} ${t.lines}`}>
+				<pre>{afterCode}</pre>
+			</div>
+		</div>
+
+		<div class="box" aria-hidden="true">
+			<figure class="win">
+				<figcaption class="win__bar">
+					<span class="win__file">{p.file}</span>
+					<span class="win__state">
+						<span class="lbl lbl--before">{t.before}</span>
+						<span class="lbl lbl--after">{t.after}</span>
+						<span class="lbl lbl--diff">
+							{p.beforeLines} → {p.afterLines}
+							{t.lines}
+						</span>
+					</span>
+				</figcaption>
+				<div class="win__body">
+					<Code
+						code={p.code}
+						lang="ts"
+						themes={{
+							light: 'github-light-default',
+							dark: 'github-dark-default',
+						}}
+						defaultColor={false}
+						transformers={[diffLines]}
+					/>
+				</div>
+			</figure>
+			<p class="gone">
+				<span class="gone__num">−{removed}</span>
+				<span class="gone__text">{t.removed}</span>
+			</p>
+		</div>
+	</div>
+</article>
+
+<style>
+	.stage {
+		display: grid;
+		grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+		gap: clamp(1.5rem, 4vw, 4rem);
+		align-items: start;
+		padding-block: clamp(2.5rem, 6vw, 5rem);
+		border-top: 1px solid var(--nx-line);
+	}
+
+	.stage__text {
+		position: sticky;
+		top: calc(var(--sl-nav-height) + 2rem);
+		display: grid;
+		gap: 1rem;
+		justify-items: start;
+	}
+
+	.stage__num {
+		font-family: var(--__sl-font-mono);
+		font-size: var(--sl-text-sm);
+		color: var(--sl-color-gray-3);
+		margin: 0;
+	}
+
+	.stage__title {
+		margin: 0;
+		font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
+		font-weight: 700;
+		font-stretch: 84%;
+		letter-spacing: -0.03em;
+		line-height: 1.02;
+		color: var(--sl-color-white);
+		text-wrap: balance;
+	}
+
+	.stage__caption {
+		margin: 0;
+		max-width: 36ch;
+		font-size: 1.0625rem;
+		line-height: 1.6;
+		color: var(--sl-color-gray-2);
+		text-wrap: pretty;
+	}
+
+	.stage__caption :global(code) {
+		font-family: var(--__sl-font-mono);
+		font-size: 0.86em;
+		color: var(--sl-color-white);
+	}
+
+	/* ---- Line counter ---- */
+	.stage__count {
+		display: grid;
+		gap: 0.35rem;
+		margin-top: 0.5rem;
+	}
+
+	.count__unit {
+		font-family: var(--__sl-font-mono);
+		font-size: var(--sl-text-xs);
+		color: var(--sl-color-gray-3);
+	}
+
+	.count__num {
+		font-size: clamp(3.5rem, 2.5rem + 4vw, 5.5rem);
+		font-weight: 700;
+		font-stretch: 78%;
+		letter-spacing: -0.04em;
+		line-height: 0.85;
+		font-variant-numeric: tabular-nums;
+		color: var(--sl-color-white);
+		transition: color 0.4s ease;
+	}
+
+	[data-mode='after'] .count__num {
+		color: var(--sl-color-accent);
+	}
+
+	.count__diff {
+		display: none;
+	}
+
+	/* ---- Segmented control ---- */
+	.seg {
+		display: inline-grid;
+		grid-auto-flow: column;
+		grid-auto-columns: 1fr;
+		padding: 0.25rem;
+		border-radius: 999px;
+		background: var(--nx-surface-2);
+		border: 1px solid var(--nx-line);
+	}
+
+	.seg__btn {
+		height: 2.25rem;
+		padding: 0 1rem;
+		border: 0;
+		border-radius: 999px;
+		background: transparent;
+		color: var(--sl-color-gray-3);
+		font: inherit;
+		font-size: var(--sl-text-sm);
+		font-weight: 600;
+		cursor: pointer;
+		white-space: nowrap;
+		transition:
+			background-color 0.2s ease,
+			color 0.2s ease,
+			box-shadow 0.2s ease;
+	}
+
+	.seg__btn:hover {
+		color: var(--sl-color-white);
+	}
+
+	.seg__btn[aria-pressed='true'] {
+		background: var(--sl-color-black);
+		color: var(--sl-color-white);
+		box-shadow:
+			0 0 0 1px var(--nx-line-strong),
+			0 1px 2px rgb(0 0 0 / 0.12);
+	}
+
+	.stage__link {
+		display: inline-flex;
+		gap: 0.4rem;
+		align-items: center;
+		font-weight: 600;
+		color: var(--sl-color-text-accent);
+		text-decoration: none;
+	}
+
+	.stage__link span {
+		transition: transform 0.2s var(--nx-ease);
+	}
+
+	.stage__link:hover span {
+		transform: translateX(3px);
+	}
+
+	/* ---- Code box ----
+	 * The font size is fitted to the column (container units), so the longest line always fits:
+	 * no sideways scrolling on a phone. Every vertical size below is in `em` of that font size.
+	 */
+	.stage__code {
+		container-type: inline-size;
+		min-width: 0;
+	}
+
+	.box {
+		--bar: 2.5rem;
+		--lh: 1.75em;
+		--pad: 1.15em;
+		--rows: var(--rows-ba);
+		position: relative;
+		font-size: clamp(
+			0.625rem,
+			calc((100cqi - 2px) / (var(--cols) * 0.6 + 3.75)),
+			0.8125rem
+		);
+		/* Always the tallest state: switching never moves anything around it. */
+		height: calc(var(--bar) + 2px + var(--rows) * var(--lh) + var(--pad) * 2);
+	}
+
+	.win {
+		position: absolute;
+		inset: 0 0 auto 0;
+		height: 100%;
+		margin: 0;
+		border: 1px solid var(--nx-line);
+		border-radius: var(--nx-radius);
+		background: var(--nx-code-bg);
+		overflow: hidden;
+		transition: height 0.55s var(--nx-ease) 0.3s;
+	}
+
+	.win__bar {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 1rem;
+		height: var(--bar);
+		padding: 0 1rem;
+		border-bottom: 1px solid var(--nx-line);
+		background: var(--nx-surface);
+		font-family: var(--__sl-font-mono);
+		font-size: var(--sl-text-xs);
+		color: var(--sl-color-gray-3);
+	}
+
+	.win__state {
+		display: grid;
+	}
+
+	/* One label at a time: the old one fades out before the new one fades in. */
+	.lbl {
+		grid-area: 1 / 1;
+		text-align: end;
+		opacity: 0;
+		transition: opacity 0.14s ease;
+	}
+
+	[data-mode='before'] .lbl--before,
+	[data-mode='after'] .lbl--after,
+	[data-mode='diff'] .lbl--diff {
+		opacity: 1;
+		transition-delay: 0.14s;
+	}
+
+	.win__body :global(pre.astro-code) {
+		margin: 0;
+		padding: var(--pad) 0;
+		background: transparent !important;
+		overflow: hidden;
+		font-family: var(--__sl-font-mono);
+		font-size: 1em;
+		line-height: var(--lh);
+		tab-size: 2;
+	}
+
+	.win__body :global(pre.astro-code code) {
+		position: relative;
+		display: block;
+		height: calc(var(--rows) * var(--lh));
+	}
+
+	.win__body :global(.astro-code span) {
+		color: var(--shiki-dark);
+	}
+
+	:root[data-theme='light'] .win__body :global(.astro-code span) {
+		color: var(--shiki-light);
+	}
+
+	.win__body :global(.line) {
+		--pos: var(--d);
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: var(--lh);
+		padding: 0 1.25em 0 2.5em;
+		white-space: pre;
+		transform: translateY(calc(var(--pos) * var(--lh)));
+		transition:
+			transform 0.55s var(--nx-ease),
+			opacity 0.3s ease,
+			background-color 0.25s ease;
+	}
+
+	.win__body :global(.line[data-mark])::before {
+		content: attr(data-mark);
+		position: absolute;
+		left: 1em;
+		color: var(--sl-color-gray-3);
+	}
+
+	/* --- Diff (no JS / reduced motion): every line visible, tinted --- */
+	[data-mode='diff'] .win__body :global(.d-del) {
+		background: color-mix(in oklab, var(--nx-deprecated) 10%, transparent);
+	}
+
+	[data-mode='diff'] .win__body :global(.d-add) {
+		background: var(--nx-tint-strong);
+	}
+
+	[data-mode='before'] .win__body :global(.line[data-mark])::before,
+	[data-mode='after'] .win__body :global(.line[data-mark])::before {
+		content: none;
+	}
+
+	/* --- Before --- */
+	[data-mode='before'] .win__body :global(.line) {
+		--pos: var(--b);
+	}
+
+	[data-mode='before'] .win__body :global(.d-add) {
+		opacity: 0;
+		transition-delay: 0s;
+	}
+
+	/* --- After: deletions flash and fade in place, the rest slides up, additions fade in --- */
+	[data-mode='after'] .win__body :global(.line) {
+		--pos: var(--a);
+		transition-delay: 0.32s, 0s, 0s;
+	}
+
+	[data-mode='after'] .win__body :global(.d-del) {
+		--pos: var(--b);
+		opacity: 0;
+		background: color-mix(in oklab, var(--nx-deprecated) 16%, transparent);
+		transition-delay: 0s, calc(var(--o) * 16ms + 60ms), 0s;
+	}
+
+	[data-mode='after'] .win__body :global(.d-add) {
+		background: var(--nx-tint);
+		transition-delay: 0.32s, calc(var(--o) * 50ms + 0.55s), 0s;
+	}
+
+	/* The window closes up around the code that is left… */
+	.stage[data-mode='after'] .win {
+		height: calc(
+			var(--bar) + 2px + var(--rows-after) * var(--lh) + var(--pad) * 2
+		);
+	}
+
+	.stage[data-mode='before'] .win {
+		transition-delay: 0s;
+	}
+
+	/* …and a short note right under it says how much went. The rest of the reserved height stays empty. */
+	.gone {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: calc(
+			var(--bar) + 2px + var(--rows-after) * var(--lh) + var(--pad) * 2 +
+				0.75rem
+		);
+		height: 5.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.85rem;
+		margin: 0;
+		border: 1px dashed var(--nx-line-strong);
+		border-radius: var(--nx-radius);
+		font-size: 1rem;
+		opacity: 0;
+		transition: opacity 0.45s ease 0s;
+		pointer-events: none;
+	}
+
+	.gone__num {
+		font-size: clamp(2.25rem, 1.8rem + 2vw, 3.25rem);
+		font-weight: 700;
+		font-stretch: 78%;
+		letter-spacing: -0.04em;
+		line-height: 0.9;
+		color: var(--sl-color-white);
+	}
+
+	.gone__text {
+		max-width: 12ch;
+		font-family: var(--__sl-font-mono);
+		font-size: var(--sl-text-xs);
+		line-height: 1.35;
+		color: var(--sl-color-gray-3);
+	}
+
+	.stage[data-mode='after'] .gone {
+		opacity: 1;
+		transition-delay: 0.8s;
+	}
+
+	/* Short pairs free too little space for the note; the counter already says it. */
+	.stage[data-small-gap] .gone {
+		display: none;
+	}
+
+	/* ---- Diff mode: all lines, from → to instead of the toggle ---- */
+	.stage[data-mode='diff'] .box {
+		--rows: var(--rows-all);
+	}
+
+	[data-mode='diff'] .seg,
+	[data-mode='diff'] .count__num,
+	[data-mode='diff'] .gone {
+		display: none;
+	}
+
+	[data-mode='diff'] .count__diff {
+		display: inline-flex;
+		gap: 0.5rem;
+		font-size: clamp(2.5rem, 1.8rem + 3vw, 4rem);
+		font-weight: 700;
+		font-stretch: 78%;
+		letter-spacing: -0.03em;
+		line-height: 0.9;
+		color: var(--sl-color-white);
+	}
+
+	[data-mode='diff'] .count__to {
+		color: var(--sl-color-accent);
+	}
+
+	@media (max-width: 56rem) {
+		.stage {
+			grid-template-columns: minmax(0, 1fr);
+		}
+
+		.stage__text {
+			position: static;
+		}
+
+		.stage__caption {
+			max-width: 46ch;
+		}
+	}
+
+	@media (max-width: 40rem) {
+		.stage {
+			grid-template-columns: minmax(0, 1fr) auto;
+			row-gap: 1rem;
+			column-gap: 1rem;
+			align-items: end;
+		}
+
+		/* Phone: counter + toggle sit right above the code they switch; the docs link follows it. */
+		.stage__text {
+			display: contents;
+		}
+
+		.stage__num,
+		.stage__title,
+		.stage__caption,
+		.stage__code,
+		.stage__link {
+			grid-column: 1 / -1;
+		}
+
+		/* The docs link sits above the code, so the space the collapse frees is only ever trailing. */
+		.stage__link {
+			order: 4;
+		}
+
+		.stage__code {
+			order: 5;
+		}
+
+		.count__num {
+			font-size: 3.25rem;
+		}
+	}
+</style>

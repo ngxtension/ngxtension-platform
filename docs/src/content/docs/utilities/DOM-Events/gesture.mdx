@@ -1,152 +1,250 @@
 ---
 title: Gesture
-description: ngxtension/gestures
+description: Bind drag, move, hover, scroll, wheel and pinch gestures to elements with a directive or an inject function, and configure them.
 badge: stable
 entryPoint: ngxtension/gestures
 contributors: ['chau-tran']
+sidebar:
+  order: 40
+  label: Gesture usage
 ---
 
-import { Tabs, TabItem } from '@astrojs/starlight/components';
+This page shows how to use the gestures from `ngxtension/gestures` in your components: as a directive in a template, as
+an `inject*` function on a host element, with configuration and with zone control. The examples use drag. Every other
+gesture (move, hover, scroll, wheel, pinch) works the same way; see [Gestures](/utilities/dom-events/gesture-intro/)
+for the full list and when to choose them over the Angular CDK.
 
-## Usage
-
-First you need to install the package
+Install the peer dependency first:
 
 ```bash
 npm i @use-gesture/vanilla
 ```
 
-There are various ways we can utilize the Gesture from `ngxtension/gestures`
+## Usage
 
-The examples show using `NgxDrag`, for `DragGesture`, but they can apply to other gestures as well.
+Add the `NgxDrag` directive to any element and listen to `(ngxDrag)`. The handler receives the gesture state on every
+drag update.
 
-### Directive
-
-```ts
+```angular-ts
+import { Component, computed, signal } from '@angular/core';
 import { NgxDrag, type NgxInjectDrag } from 'ngxtension/gestures';
-```
 
-`NgxDrag` is a directive that we can use to attach on any element to capture that element's drag events.
-
-<Tabs>
-	<TabItem label="html">
-
-```html
-<div class="draggable-box" (ngxDrag)="onDrag($event)">
-	<!-- content -->
-</div>
-```
-
-  </TabItem>
-	<TabItem label="ts">
-
-```ts
 @Component({
+	selector: 'app-draggable-card',
 	imports: [NgxDrag],
-	templateUrl: './app.html',
+	template: `
+		<div
+			class="card"
+			style="touch-action: none"
+			[style.transform]="transform()"
+			(ngxDrag)="onDrag($event)"
+		>
+			Drag me
+		</div>
+	`,
 })
-export class App {
-	onDrag(state: NgxInjectDrag['state']) {
-		// fire every time a drag event happens
+export class DraggableCard {
+	private readonly position = signal<[number, number]>([0, 0]);
+	protected readonly transform = computed(() => {
+		const [x, y] = this.position();
+		return `translate(${x}px, ${y}px)`;
+	});
+
+	onDrag({ offset }: NgxInjectDrag['state']) {
+		this.position.set(offset);
 	}
 }
 ```
 
-  </TabItem>
-</Tabs>
+`offset` is the accumulated movement across drags, so the card stays where you drop it. The state also has `movement`,
+`velocity`, `direction`, `active`, `first`, `last` and more; see the
+[use-gesture state reference](https://use-gesture.netlify.app/docs/state/).
 
-#### As `hostDirective`
+:::tip
+Set `touch-action: none` on draggable elements so touch devices don't scroll the page while you drag.
+:::
 
-We can also use `NgxDrag` on a Host element by leveraging `hostDirectives`
+## On the host element with `inject*`
 
-```ts
+Each gesture has an `inject*` function (`injectDrag`, `injectPinch`, …) that binds the gesture to the host element of
+the component or directive that calls it. Call it in an injection context, such as the constructor.
+
+```angular-ts
+import { Component } from '@angular/core';
+import { injectDrag } from 'ngxtension/gestures';
+
 @Component({
 	selector: 'app-draggable-box',
-	standalone: true,
-	hostDirectives: [{ directive: NgxDrag, outputs: ['ngxDrag'] }],
-	template: ``,
-})
-export class DraggableBox {
-	@HostListener('ngxDrag', ['$event'])
-	onDrag(state: NgxInjectDrag['state']) {
-		// fire every time a drag event happens
-	}
-}
-```
-
-### `injectDrag`
-
-Another way of enabling Drag Gesture is to use the CIF `injectDrag`.
-
-```ts
-@Component({
-	selector: 'app-draggable-box',
-	standalone: true,
-	template: ``,
+	template: `
+		<ng-content />
+	`,
 })
 export class DraggableBox {
 	constructor() {
-		injectDrag((state) => {
-			// fire every time a drag event happens
+		injectDrag(({ offset: [x, y] }) => {
+			console.log('dragged to', x, y);
 		});
 	}
 }
 ```
 
-With that in mind, the true power of `injectDrag` is the ease of composing different behaviors on top of Drag Gesture. For example, we can have a CIF
-that both enables Drag Gesture and returns a `Signal<Vector2>` that can trigger other effects.
+The listeners are removed when the component is destroyed.
+
+### Compose your own gesture helpers
+
+Because `inject*` functions are plain functions, you can wrap them into reusable helpers. This one enables drag on the
+host and returns the position as a signal:
 
 ```ts
+import { signal } from '@angular/core';
+import type { Vector2 } from '@use-gesture/vanilla';
+import { injectDrag } from 'ngxtension/gestures';
+
 export function injectDragPosition() {
 	const position = signal<Vector2>([0, 0]);
 
-	injectDrag(({ offset }) => {
-		position.set(offset);
-	});
+	injectDrag(({ offset }) => position.set(offset));
 
 	return position.asReadonly();
 }
 ```
 
+### With `hostDirectives`
+
+You can also attach the directive to a component's host with `hostDirectives` and forward its output:
+
+```angular-ts
+import { Component } from '@angular/core';
+import { NgxDrag, type NgxInjectDrag } from 'ngxtension/gestures';
+
+@Component({
+	selector: 'app-draggable-box',
+	hostDirectives: [{ directive: NgxDrag, outputs: ['ngxDrag'] }],
+	host: { '(ngxDrag)': 'onDrag($event)' },
+	template: `
+		<ng-content />
+	`,
+})
+export class DraggableBox {
+	onDrag(state: NgxInjectDrag['state']) {
+		// runs on every drag update
+	}
+}
+```
+
 ## Configuration
 
-- For `NgxDrag`, we can provide a config object via `[ngxDragConfig]` Input.
-- For `injectDrag`, we can provide a config `Signal<DragConfig>` (or a `Function` that returns `DragConfig`) in the 2nd argument
-  ```ts
-  injectDrag(dragHandler, {
-  	config: () => dragConfig,
-  });
-  ```
+Every gesture accepts the matching [use-gesture options](https://use-gesture.netlify.app/docs/options/), for example
+`axis`, `bounds`, `threshold` or `filterTaps` for drag.
 
-## Zone
+With the directive, pass them to the `[ngxDragConfig]` input:
 
-Drag Gesture is enabled inside of Zone by default.
+```html
+<div (ngxDrag)="onDrag($event)" [ngxDragConfig]="{ axis: 'x' }"></div>
+```
 
-- For `NgxDrag`, we can go into zoneless mode via `[ngxDragZoneless]` Input.
-- For `injectDrag`, we can go into zoneless mode via `zoneless` option in the 2nd argument
-  ```ts
-  injectDrag(dragHandler, { zoneless: true });
-  ```
-
-### Global Zoneless
-
-Additionally, we can allow all gestures in a certain component tree to automatically opt-in to zoneless mode by calling `provideZonelessGesture()`
+With an `inject*` function, pass a function that returns the config. Pass a signal to update the config at runtime: the
+gesture picks up the new value when the signal changes.
 
 ```ts
-// application wise
+import { Component, signal } from '@angular/core';
+import { injectDrag, type NgxInjectDrag } from 'ngxtension/gestures';
+
+@Component({ selector: 'app-slider-thumb', template: '' })
+export class SliderThumb {
+	readonly dragConfig = signal<NgxInjectDrag['config']>({ axis: 'x' });
+
+	constructor() {
+		injectDrag(({ offset: [x] }) => console.log(x), {
+			config: this.dragConfig,
+		});
+	}
+}
+```
+
+## Running outside the Angular zone
+
+By default, gesture handlers run inside the Angular zone, so every gesture update triggers change detection in apps that
+use zone.js. For high-frequency gestures such as drag, wheel or move, you can run them outside the zone instead. Your
+handler then runs without triggering change detection; use the `cdr` (`ChangeDetectorRef`) that every gesture state
+includes to update the view yourself.
+
+- On a directive, set the `[ngxDragZoneless]` input:
+
+  ```html
+  <div (ngxDrag)="onDrag($event)" [ngxDragZoneless]="true"></div>
+  ```
+
+- On an `inject*` function, pass `zoneless: true`:
+
+  ```ts
+  injectDrag(
+  	({ offset, cdr }) => {
+  		// update the DOM directly, or call cdr.detectChanges() when needed
+  	},
+  	{ zoneless: true },
+  );
+  ```
+
+The option name is about the Angular zone. It isn't required for apps that use zoneless change detection, and it makes
+no difference there.
+
+### For a whole component tree
+
+`provideZonelessGesture()` makes every gesture below it run outside the zone by default. A `zoneless` option or
+`[ngx…Zoneless]` input on a single gesture still takes priority.
+
+```ts
+import { bootstrapApplication } from '@angular/platform-browser';
+import type { Routes } from '@angular/router';
+import { provideZonelessGesture } from 'ngxtension/gestures';
+
+// the whole application
 bootstrapApplication(App, { providers: [provideZonelessGesture()] });
 
-// route provider
-const routes = [
-	{
-		path: '',
-		providers: [provideZonelessGesture()],
-	},
+// a route and its children
+const routes: Routes = [
+	{ path: 'editor', component: Editor, providers: [provideZonelessGesture()] },
 ];
 
-// component provider
-@Component({
-	providers: [provideZonelessGesture()],
-})
-export class MyComponent {}
+// a component and its children
+@Component({ providers: [provideZonelessGesture()] })
+export class Canvas {}
 ```
+
+## API
+
+The API below uses drag. Replace `Drag` with `Move`, `Hover`, `Scroll`, `Wheel` or `Pinch` (and `drag` with `move`,
+`hover`, …) for the other gestures.
+
+```ts
+function injectDrag(
+	handler: (state: NgxInjectDrag['state']) => unknown,
+	options?: {
+		injector?: Injector;
+		zoneless?: boolean;
+		config?: () => NgxInjectDrag['config'];
+	},
+): void;
+
+function provideZonelessGesture(): Provider;
+```
+
+### `injectDrag` options
+
+| Option     | Type                            | Default                                             | Description                                                                          |
+| ---------- | ------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `injector` | `Injector`                      | -                                                   | Injector to use outside an injection context. The gesture binds to its host element. |
+| `zoneless` | `boolean`                       | value from `provideZonelessGesture()`, else `false` | Run the gesture and its handler outside the Angular zone.                            |
+| `config`   | `() => NgxInjectDrag['config']` | `() => ({})`                                        | use-gesture options. Re-applied when signals read inside it change.                  |
+
+### `NgxDrag` directive
+
+| Name              | Kind   | Type                      | Description                                       |
+| ----------------- | ------ | ------------------------- | ------------------------------------------------- |
+| `ngxDrag`         | Output | `NgxInjectDrag['state']`  | Emits the gesture state on every update.          |
+| `ngxDragConfig`   | Input  | `NgxInjectDrag['config']` | use-gesture options for this gesture.             |
+| `ngxDragZoneless` | Input  | `boolean`                 | Run outside the Angular zone. Read once, on init. |
+
+`NgxInjectDrag` (and `NgxInjectMove`, `NgxInjectPinch`, …) exposes `['state']` for the handler state (the use-gesture
+state plus `cdr`) and `['config']` for the options type.

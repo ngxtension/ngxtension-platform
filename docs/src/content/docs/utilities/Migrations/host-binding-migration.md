@@ -1,35 +1,60 @@
 ---
 title: Host Binding Migration
-description: Schematics for migrating from decorator-based Host Bindings to the new host properties in Angular
+description: A generator that moves @HostBinding and @HostListener decorators into the host property of your components and directives.
 entryPoint: plugin/src/generators/convert-host-binding
 badge: stable
 contributors: ['pawel-ostromecki']
 ---
 
-Recent Angular releases recommend using the `host` property instead of the `@HostBinding` and `@HostListener` decorators, as these decorators are retained primarily for backward compatibility. This schematic will assist you in migrating your code to utilize the new `host` property.
+Angular recommends the `host` property of `@Component` and `@Directive` over the `@HostBinding` and `@HostListener` decorators, which remain for backward compatibility. The `convert-host-binding` generator from `ngxtension-plugin` rewrites those decorators into `host` entries for you, across a whole workspace, one project or a single file.
 
-### How it works?
+## Usage
 
-The moment you run the schematics, it will look for all the decorators that have binding and replace them with `host` properties.
+Install the plugin if you don't have it yet:
 
-- It will keep the same name for the attributes and properties bindings.
-- It will update the component's decorators by adding the `host` property if it does not exist or by adding additional properties within it.
-- It won't convert properties to signals.
-- It will remove the `@HostListener`, `@HostBinding` decorators.
+```shell
+npm install -D ngxtension-plugin
+```
 
-### Example
+Then run the generator. Without options it converts every project in the workspace:
 
-Before running the schematics:
+```shell
+ng g ngxtension-plugin:convert-host-binding
+```
 
-```typescript
+In an Nx workspace, use `nx` instead of `ng`:
+
+```shell
+nx g ngxtension-plugin:convert-host-binding
+```
+
+Limit it to one project or one file:
+
+```shell
+ng g ngxtension-plugin:convert-host-binding --project=my-app
+ng g ngxtension-plugin:convert-host-binding --path=src/app/slider/slider.component.ts
+```
+
+Commit or stash your work first, so you can review the changes with `git diff`.
+
+## What it changes
+
+Before:
+
+```ts
 import { Component, HostBinding, HostListener } from '@angular/core';
 
 @Component({
-	/* ... */
+	selector: 'app-slider',
+	template: '…',
 })
-export class CustomSlider {
-	@HostBinding('attr.aria-valuenow')
-	value: number = 0;
+export class SliderComponent {
+	@HostBinding('attr.aria-valuenow') value = 0;
+
+	@HostBinding('class.disabled')
+	get isDisabled() {
+		return this.disabled;
+	}
 
 	@HostBinding('tabIndex')
 	getTabIndex() {
@@ -37,59 +62,72 @@ export class CustomSlider {
 	}
 
 	@HostListener('keydown', ['$event'])
-	updateValue(event: KeyboardEvent) {
-		/* ... */
+	onKeydown(event: KeyboardEvent) {
+		/* … */
 	}
+
+	disabled = false;
 }
 ```
 
-After running the schematics:
+After:
 
-```typescript
+```ts
 import { Component } from '@angular/core';
 
 @Component({
+	selector: 'app-slider',
+	template: '…',
 	host: {
 		'[attr.aria-valuenow]': 'value',
-		'[tabIndex]': 'disabled ? -1 : 0',
-		'(keydown)': 'updateValue($event)',
+		'[class.disabled]': 'isDisabled',
+		'[tabIndex]': 'getTabIndex()',
+		'(keydown)': 'onKeydown($event)',
 	},
 })
-export class CustomSlider {
-	value: number = 0;
-	disabled: boolean = false;
-	updateValue(event: KeyboardEvent) {
-		/* ... */
+export class SliderComponent {
+	value = 0;
+
+	get isDisabled() {
+		return this.disabled;
 	}
+
+	getTabIndex() {
+		return this.disabled ? -1 : 0;
+	}
+
+	onKeydown(event: KeyboardEvent) {
+		/* … */
+	}
+
+	disabled = false;
 }
 ```
 
-### Usage
+- Properties and getters become bindings to the member name. Methods become a call: `'getTabIndex()'`.
+- `@HostListener` arguments are passed through as written, so `['$event.target']` becomes `'onMousedown($event.target)'`. If the method takes no parameters, the call has no arguments.
+- Global targets like `'document:keydown.escape'` are kept.
+- If the decorator already has a `host` object, the new entries are added to it.
+- The decorators and their `HostBinding` / `HostListener` imports are removed.
+- Members stay as they are. Nothing is converted to signals.
 
-In order to run the schematics for all the project in the app you have to run the following script:
+:::caution
+Review the result before you commit:
 
-```bash
-ng g ngxtension-plugin:convert-host-binding
-```
+- If two members bind the same key (for example two `@HostBinding('class.active')`), only the last one is kept.
+- The generator doesn't run your formatter, so the `host` object can be oddly indented. Run Prettier (or your formatter) afterwards.
+  :::
 
-If you want to specify the project name you can pass the `--project` param.
+## Options
 
-```bash
-ng g ngxtension-plugin:convert-host-binding --project=<project-name>
-```
+| Option      | Type     | Description                                                             |
+| ----------- | -------- | ----------------------------------------------------------------------- |
+| `--project` | `string` | Only convert files in this project. Aliases: `--name`, `--projectName`. |
+| `--path`    | `string` | Only convert this file, relative to the workspace root.                 |
 
-If you want to run the schematic for a specific component or directive you can pass the `--path` param.
+Pass either `--project` or `--path`, not both. With neither, every project in the workspace is converted. Only `.ts` files that contain `@Component` or `@Directive` and use `@HostBinding` or `@HostListener` are touched.
 
-```bash
-ng g ngxtension-plugin:convert-host-binding --path=<path-to-ts-file>
-```
+## Related
 
-### Usage with Nx
-
-To use the schematics on a Nx monorepo you just swap `ng` with `nx`
-
-Example:
-
-```bash
-nx g ngxtension-plugin:convert-host-binding --project=<project-name>
-```
+- [`hostBinding`](/utilities/component-utilities/host-binding/) to bind a host property to a signal you can also write to.
+- [SFC components migration](/utilities/migrations/sfc-migration/), the other generator in `ngxtension-plugin`.

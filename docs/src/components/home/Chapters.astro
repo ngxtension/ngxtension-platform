@@ -1,0 +1,495 @@
+---
+/**
+ * Every utility, as numbered chapters (the library's own categories), with a contents strip that
+ * follows your reading position: a left column on desktop, a horizontal strip on phones.
+ * Categories with one or two utilities share a final "More" chapter, each still keeping its own id.
+ */
+import { taglineHtml, type Utility } from '../../data/utilities';
+import type { Strings } from './strings';
+
+/** Set in mono only when the name is code you can import (not "Testing Utilities"). */
+const isCode = (u: Utility) =>
+	u.importNames.length > 0 &&
+	/^[A-Za-z_$][\w$]*( \/ [A-Za-z_$][\w$]*)*$/.test(u.title);
+
+interface Group {
+	dir: string;
+	label: string;
+	blurb: string;
+	items: Utility[];
+}
+
+interface Props {
+	groups: Group[];
+	t: Strings;
+}
+
+const { groups, t } = Astro.props;
+
+const small = groups.filter((g) => g.items.length <= 2);
+const big = groups.filter((g) => g.items.length > 2);
+const chapters = [
+	...big.map((g) => ({
+		id: g.dir,
+		label: g.label,
+		blurb: g.blurb,
+		parts: [{ ...g, sub: false }],
+	})),
+	...(small.length
+		? [
+				{
+					id: 'more',
+					label: t.more,
+					blurb: t.moreBlurb,
+					parts: small.map((g) => ({ ...g, sub: true })),
+				},
+			]
+		: []),
+];
+const nn = (i: number) => String(i + 1).padStart(2, '0');
+const count = (c: (typeof chapters)[number]) =>
+	c.parts.reduce((n, p) => n + p.items.length, 0);
+---
+
+<div class="chapters" data-chapters>
+	<nav class="rail" aria-label={t.chapters} data-rail>
+		<ol>
+			{
+				chapters.map((c, i) => (
+					<li>
+						<a href={`#${c.id}`} data-rail-link={c.id}>
+							<span class="rail__num">{nn(i)}</span>
+							<span class="rail__label">{c.label}</span>
+						</a>
+					</li>
+				))
+			}
+		</ol>
+	</nav>
+
+	<div class="list">
+		{
+			chapters.map((c, i) => (
+				<section
+					class="ch"
+					id={c.id}
+					data-chapter
+					aria-labelledby={`${c.id}-h`}
+				>
+					<header class="ch__head">
+						<span class="ch__num" aria-hidden="true">
+							{nn(i)}
+						</span>
+						<div class="ch__titles">
+							<h3 id={`${c.id}-h`} class="ch__title">
+								{c.label}
+							</h3>
+							<p class="ch__blurb">{c.blurb}</p>
+						</div>
+						<p class="ch__count">{t.utilities(count(c))}</p>
+					</header>
+
+					{c.parts.map((part) => (
+						<div class="part" id={part.sub ? part.dir : undefined}>
+							{part.sub && <h4 class="part__title">{part.label}</h4>}
+							<ul class="items">
+								{part.items.map((u) => (
+									<li>
+										<a href={u.href} class="item">
+											<span class="item__title">
+												<span
+													class:list={['item__name', { 'is-code': isCode(u) }]}
+												>
+													{u.title}
+												</span>
+												{u.badge && u.badge !== 'stable' && (
+													<span class={`badge badge--${u.badge}`}>
+														{t.badges[u.badge]}
+													</span>
+												)}
+											</span>
+											<span
+												class="item__tag"
+												set:html={taglineHtml(u.tagline)}
+											/>
+										</a>
+									</li>
+								))}
+							</ul>
+						</div>
+					))}
+				</section>
+			))
+		}
+	</div>
+</div>
+
+<script>
+	type W = Window & { __mxRailCleanup?: () => void };
+	const w = window as W;
+
+	function init() {
+		w.__mxRailCleanup?.();
+		const root = document.querySelector<HTMLElement>('[data-chapters]');
+		if (!root) return;
+
+		const strip = root.querySelector<HTMLElement>('[data-rail] ol');
+		const chapters = [...root.querySelectorAll<HTMLElement>('[data-chapter]')];
+		const links = new Map(
+			[...root.querySelectorAll<HTMLAnchorElement>('[data-rail-link]')].map(
+				(a) => [a.dataset.railLink!, a],
+			),
+		);
+		const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+		let current = '';
+
+		const setActive = (id: string) => {
+			if (id === current) return;
+			current = id;
+			chapters.forEach((c) => c.classList.toggle('is-active', c.id === id));
+			links.forEach((a, key) => {
+				if (key === id) a.setAttribute('aria-current', 'location');
+				else a.removeAttribute('aria-current');
+			});
+			// Phone strip: keep the active chapter centred by scrolling the strip only, never the page.
+			const a = links.get(id);
+			if (strip && a && strip.scrollWidth > strip.clientWidth + 1) {
+				const left = a.offsetLeft - (strip.clientWidth - a.offsetWidth) / 2;
+				strip.scrollTo({ left, behavior: reduce.matches ? 'auto' : 'smooth' });
+			}
+		};
+
+		// The current chapter is the last one whose top has passed a line a third of the way down.
+		let ticking = false;
+		const update = () => {
+			ticking = false;
+			const line = innerHeight * 0.33;
+			let active: HTMLElement | undefined;
+			for (const c of chapters) {
+				if (c.getBoundingClientRect().top <= line) active = c;
+				else break;
+			}
+			if (!active) {
+				current = '';
+				links.forEach((a) => a.removeAttribute('aria-current'));
+				chapters.forEach((c) => c.classList.remove('is-active'));
+				return;
+			}
+			setActive(active.id);
+		};
+		const onScroll = () => {
+			if (!ticking) {
+				ticking = true;
+				requestAnimationFrame(update);
+			}
+		};
+		addEventListener('scroll', onScroll, { passive: true });
+		addEventListener('resize', onScroll, { passive: true });
+		w.__mxRailCleanup = () => {
+			removeEventListener('scroll', onScroll);
+			removeEventListener('resize', onScroll);
+		};
+		update();
+	}
+
+	init();
+	document.addEventListener('astro:page-load', init);
+</script>
+
+<style>
+	.chapters {
+		--top: calc(var(--sl-nav-height) + 1.5rem);
+		margin-top: clamp(2.5rem, 5vw, 4rem);
+	}
+
+	.chapters :where(h3, h4, p, ol, ul) {
+		margin: 0;
+	}
+
+	.chapters :where(ol, ul) {
+		list-style: none;
+		padding: 0;
+	}
+
+	@media (min-width: 72rem) {
+		.chapters {
+			display: grid;
+			grid-template-columns: 13rem minmax(0, 1fr);
+			gap: clamp(2rem, 1rem + 2.5vw, 4rem);
+		}
+	}
+
+	/* ---- Contents rail ---- */
+	.rail {
+		position: sticky;
+		z-index: 2;
+	}
+
+	.rail a {
+		color: var(--sl-color-gray-3);
+		text-decoration: none;
+	}
+
+	.rail__num {
+		font-family: var(--__sl-font-mono);
+		font-size: 0.75rem;
+		font-feature-settings: 'zero' 1;
+	}
+
+	.rail a[aria-current] .rail__num {
+		color: var(--sl-color-accent);
+	}
+
+	@media (min-width: 72rem) {
+		.rail {
+			top: var(--top);
+			align-self: start;
+		}
+
+		.rail ol {
+			display: grid;
+			gap: 0.1rem;
+		}
+
+		.rail a {
+			display: flex;
+			align-items: baseline;
+			gap: 0.75rem;
+			padding: 0.3rem 0.6rem;
+			margin-inline: -0.6rem;
+			border-radius: var(--nx-radius-sm);
+			font-size: var(--sl-text-sm);
+			line-height: 1.35;
+			transition:
+				color 0.2s ease,
+				background-color 0.2s ease;
+		}
+
+		.rail a:hover {
+			color: var(--sl-color-white);
+		}
+
+		.rail a[aria-current] {
+			background: var(--nx-tint);
+			color: var(--sl-color-white);
+			font-weight: 600;
+		}
+	}
+
+	@media (max-width: 71.99rem) {
+		.rail {
+			top: var(--sl-nav-height);
+			margin-inline: calc(var(--gutter) * -1);
+			background: var(--sl-color-bg);
+			border-bottom: 1px solid var(--nx-line);
+		}
+
+		.rail ol {
+			display: flex;
+			gap: 0.35rem;
+			overflow-x: auto;
+			padding: 0.6rem var(--gutter);
+			scrollbar-width: none;
+			overscroll-behavior-x: contain;
+		}
+
+		.rail ol::-webkit-scrollbar {
+			display: none;
+		}
+
+		.rail a {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.45rem;
+			height: 2.25rem;
+			padding: 0 0.8rem;
+			border-radius: 999px;
+			border: 1px solid var(--nx-line);
+			font-size: var(--sl-text-sm);
+			white-space: nowrap;
+			transition:
+				color 0.2s ease,
+				background-color 0.2s ease,
+				border-color 0.2s ease;
+		}
+
+		.rail a[aria-current] {
+			background: var(--nx-tint-strong);
+			border-color: transparent;
+			color: var(--sl-color-white);
+			font-weight: 600;
+		}
+	}
+
+	/* ---- Chapters ---- */
+	.ch {
+		padding-block: clamp(2rem, 1.5rem + 2vw, 3rem);
+		scroll-margin-top: calc(var(--sl-nav-height) + 1rem);
+	}
+
+	.ch + .ch {
+		border-top: 1px solid var(--nx-line);
+	}
+
+	@media (max-width: 71.99rem) {
+		.ch,
+		.part {
+			scroll-margin-top: calc(var(--sl-nav-height) + 3.75rem);
+		}
+	}
+
+	.ch__head {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr) auto;
+		align-items: baseline;
+		column-gap: clamp(1rem, 2vw, 1.75rem);
+	}
+
+	.ch__num {
+		font-family: var(--__sl-font-mono);
+		font-weight: 300;
+		font-size: clamp(2.25rem, 1.6rem + 2vw, 3.25rem);
+		line-height: 0.9;
+		letter-spacing: -0.05em;
+		font-feature-settings: 'zero' 1;
+		color: var(--nx-line-strong);
+		transition: color 0.4s var(--nx-ease);
+	}
+
+	.ch.is-active .ch__num {
+		color: var(--sl-color-accent);
+	}
+
+	.ch__title {
+		font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.25rem);
+		font-weight: 700;
+		font-stretch: 80%;
+		line-height: 1;
+		letter-spacing: -0.03em;
+		color: var(--sl-color-white);
+		text-wrap: balance;
+	}
+
+	.ch__blurb {
+		margin-top: 0.45rem !important;
+		max-width: 40rem;
+		font-size: 1rem;
+		line-height: 1.5;
+		color: var(--sl-color-gray-2);
+		text-wrap: pretty;
+	}
+
+	.ch__count {
+		font-family: var(--__sl-font-mono);
+		font-size: var(--sl-text-xs);
+		color: var(--sl-color-gray-3);
+		white-space: nowrap;
+	}
+
+	@media (max-width: 40rem) {
+		.ch__head {
+			grid-template-columns: auto minmax(0, 1fr);
+		}
+
+		.ch__count {
+			grid-column: 2;
+			margin-top: 0.5rem !important;
+		}
+	}
+
+	.part + .part {
+		margin-top: 1.75rem;
+	}
+
+	.part__title {
+		margin-top: 1.75rem !important;
+		font-size: 1.0625rem;
+		font-weight: 650;
+		color: var(--sl-color-white);
+	}
+
+	.items {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 16.5rem), 1fr));
+		column-gap: clamp(1.25rem, 1rem + 1.5vw, 2.5rem);
+		margin-top: 1.5rem !important;
+	}
+
+	.part__title + .items {
+		margin-top: 0.5rem !important;
+	}
+
+	.item {
+		display: grid;
+		align-content: start;
+		gap: 0.2rem;
+		height: 100%;
+		padding: 0.85rem 0 0.95rem;
+		border-top: 1px solid var(--nx-line);
+		text-decoration: none;
+		transition: border-color 0.15s ease;
+	}
+
+	.item__title {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.item__name {
+		font-size: 1rem;
+		font-weight: 600;
+		color: var(--sl-color-white);
+		overflow-wrap: anywhere;
+		transition: color 0.15s ease;
+	}
+
+	.item__name.is-code {
+		font-family: var(--__sl-font-mono);
+		font-size: 0.92rem;
+	}
+
+	.item__tag {
+		font-size: 0.9375rem;
+		line-height: 1.45;
+		color: var(--sl-color-gray-3);
+	}
+
+	.item__tag :global(code) {
+		font-family: var(--__sl-font-mono);
+		font-size: 0.85em;
+		color: var(--sl-color-gray-2);
+	}
+
+	.item:hover {
+		border-top-color: var(--sl-color-accent);
+	}
+
+	.item:hover .item__name {
+		color: var(--sl-color-text-accent);
+	}
+
+	.badge {
+		--c: var(--nx-experimental);
+		display: inline-flex;
+		align-items: center;
+		height: 1.25rem;
+		padding: 0 0.45rem;
+		border-radius: 999px;
+		font-size: 0.7rem;
+		font-weight: 600;
+		color: var(--c);
+		background: color-mix(in oklab, var(--c) 12%, transparent);
+	}
+
+	.badge--deprecated {
+		--c: var(--nx-deprecated);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.ch__num {
+			transition: none;
+		}
+	}
+</style>

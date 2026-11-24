@@ -1,92 +1,453 @@
 ---
-import Default from '@astrojs/starlight/components/PageTitle.astro';
-import type { Props } from '@astrojs/starlight/props';
 import { Icon } from '@astrojs/starlight/components';
+import Default from '@astrojs/starlight/components/PageTitle.astro';
+import { getEntry } from 'astro:content';
+import { categories } from '../data/utilities';
+import { importLine as toImportLine, importNames } from '../data/exports';
 
-const badge = Astro.locals.starlightRoute?.entry?.data?.badge;
-const entryPoint = Astro.locals.starlightRoute?.entry?.data?.entryPoint;
-const bundleJsUrl = entryPoint ? `https://deno.bundlejs.com?q=${entryPoint}&treeshake=[*]&config={%22esbuild%22:{%22external%22:[%22rxjs%22,%22@angular/core%22,%22@angular/common%22,%22@angular/forms%22,%22@angular/router%22]}}` : null;
-const sourceCodeUrl = entryPoint ? `https://github.com/ngxtension/ngxtension-platform/tree/main/libs/${entryPoint}` : null;
+const route = Astro.locals.starlightRoute;
+const data = route?.entry?.data;
+const id: string = route?.entry?.id ?? '';
+const lang = route?.lang?.startsWith('es') ? 'es' : 'en';
 
-let size = 'N/A';
+const badge = data?.badge as string | undefined;
+const entryPoint = data?.entryPoint as string | undefined;
+const title = String(data?.title ?? '');
+
+// Category eyebrow for utility pages: utilities/<category>/<file>
+const categoryDir =
+	id.replace(/^es\//, '').split('/')[0] === 'utilities'
+		? id.replace(/^es\//, '').split('/')[1]
+		: undefined;
+const category = categories.find((c) => c.dir === categoryDir?.toLowerCase());
+
+// Real export names: the page's own import line, else the library's public API. Never the title.
+const importLine = toImportLine(
+	entryPoint,
+	importNames(entryPoint, title, route?.entry?.body),
+);
+const isLibEntry = entryPoint?.startsWith('ngxtension/');
+
+const bundleJsUrl = isLibEntry
+	? `https://deno.bundlejs.com?q=${entryPoint}&treeshake=[*]&config={%22esbuild%22:{%22external%22:[%22rxjs%22,%22@angular/core%22,%22@angular/common%22,%22@angular/forms%22,%22@angular/router%22]}}`
+	: undefined;
+const sourceCodeUrl = entryPoint
+	? `https://github.com/ngxtension/ngxtension-platform/tree/main/libs/${entryPoint}`
+	: undefined;
+
+// Bundle size is fetched at build time; a slow or failed response just hides the chip.
+const g = globalThis as unknown as {
+	__nxSizes?: Map<string, Promise<string | undefined>>;
+};
+g.__nxSizes ??= new Map();
+let size: string | undefined;
 if (bundleJsUrl) {
-	try {
-		const response = await fetch(bundleJsUrl);
-		if (response.ok) {
-			const data = await response.json();
-			size = data.size?.size || 'N/A';
-		}
-	} catch (error) {
-		console.error('Failed to fetch bundle size:', error);
+	if (!g.__nxSizes.has(bundleJsUrl)) {
+		g.__nxSizes.set(
+			bundleJsUrl,
+			fetch(bundleJsUrl, { signal: AbortSignal.timeout(8000) })
+				.then((r) => (r.ok ? r.json() : undefined))
+				.then((d) =>
+					(d?.size?.size as string | undefined)
+						?.replace(/\s*\(gzip\)\s*/i, '')
+						.trim(),
+				)
+				.catch(() => undefined),
+		);
 	}
+	size = await g.__nxSizes.get(bundleJsUrl);
 }
+
+const contributorRefs = (data?.contributors ?? []) as Parameters<
+	typeof getEntry
+>[0][];
+const contributors = (
+	await Promise.all(contributorRefs.map((c) => getEntry(c)))
+)
+	.filter(Boolean)
+	.map((c) => {
+		const d = (c as any).data as {
+			name: string;
+			github?: string;
+			twitter?: string;
+			website?: string;
+			linkedin?: string;
+		};
+		const handle = d.github?.replace(/\/$/, '').split('/').pop();
+		return {
+			name: d.name,
+			href: d.github ?? d.twitter ?? d.website ?? d.linkedin,
+			avatar: handle ? `https://github.com/${handle}.png?size=64` : undefined,
+			initials: d.name
+				.split(/\s+/)
+				.map((p) => p[0])
+				.join('')
+				.slice(0, 2)
+				.toUpperCase(),
+		};
+	});
+
+const badgeLabel: Record<string, { en: string; es: string }> = {
+	stable: { en: 'Stable', es: 'Estable' },
+	unstable: { en: 'Unstable', es: 'Inestable' },
+	experimental: { en: 'Experimental', es: 'Experimental' },
+	deprecated: { en: 'Deprecated', es: 'Obsoleto' },
+};
+const t = {
+	copy: lang === 'es' ? 'Copiar import' : 'Copy import',
+	copied: lang === 'es' ? 'Copiado' : 'Copied',
+	size: lang === 'es' ? 'gzip, ver en bundlejs' : 'gzipped, see on bundlejs',
+	source: lang === 'es' ? 'Código' : 'Source',
+	by: lang === 'es' ? 'Creado por' : 'Created by',
+};
 ---
 
-<div class="page-title-content">
+<header class="nx-title">
+	{
+		category && (
+			<a
+				class="nx-eyebrow"
+				href={`${lang === 'es' ? '/es/' : '/'}#${category.dir}`}
+			>
+				{category[lang].label}
+			</a>
+		)
+	}
 	<Default {...Astro.props}><slot /></Default>
-	<div class="chip-container">
-		{badge && <div class="chip">{badge}</div>}
-		{
-			entryPoint && (
-				<>
-					<div
-						class="chip"
-						title="This is the compressed bundled size that includes all entry points this entry point depends on."
+
+	{
+		(badge || importLine || contributors.length > 0) && (
+			<div class="nx-meta">
+				{badge && (
+					<span class={`nx-pill nx-pill--${badge}`}>
+						<span class="nx-dot" aria-hidden="true" />
+						{badgeLabel[badge]?.[lang] ?? badge}
+					</span>
+				)}
+
+				{importLine && (
+					<button
+						type="button"
+						class="nx-import"
+						data-copy={importLine}
+						data-copied={t.copied}
+						aria-label={`${t.copy}: ${importLine}`}
 					>
-						<a href={bundleJsUrl} target="_blank" rel="noreferrer noreferrer">
-							{size}
-						</a>
+						<code>{importLine}</code>
+						<span class="nx-import__icon" aria-hidden="true">
+							<svg
+								width="15"
+								height="15"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"
+							>
+								<rect x="9" y="9" width="12" height="12" rx="2" />
+								<path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" />
+							</svg>
+						</span>
+						<span class="nx-import__done" aria-hidden="true">
+							{t.copied}
+						</span>
+					</button>
+				)}
+
+				{size && bundleJsUrl && (
+					<a
+						class="nx-chip"
+						href={bundleJsUrl}
+						target="_blank"
+						rel="noreferrer"
+						title={t.size}
+					>
+						<span class="nx-chip__num">{size}</span>
+						<span class="nx-chip__unit">gzip</span>
+					</a>
+				)}
+
+				{sourceCodeUrl && (
+					<a
+						class="nx-chip"
+						href={sourceCodeUrl}
+						target="_blank"
+						rel="noreferrer"
+					>
+						<Icon name="github" size="0.95rem" />
+						{t.source}
+					</a>
+				)}
+
+				{contributors.length > 0 && (
+					<div
+						class="nx-people"
+						aria-label={`${t.by} ${contributors.map((c) => c.name).join(', ')}`}
+					>
+						<ul class="nx-faces">
+							{contributors.map((c) => (
+								<li>
+									<a
+										href={c.href}
+										title={c.name}
+										target="_blank"
+										rel="noreferrer"
+										tabindex={c.href ? undefined : -1}
+									>
+										{c.avatar ? (
+											<img
+												src={c.avatar}
+												alt=""
+												width="28"
+												height="28"
+												loading="lazy"
+												decoding="async"
+											/>
+										) : (
+											<span class="nx-initials">{c.initials}</span>
+										)}
+										<span class="sr-only">{c.name}</span>
+									</a>
+								</li>
+							))}
+						</ul>
+						<span class="nx-people__names">
+							{t.by} {contributors.map((c) => c.name).join(', ')}
+						</span>
 					</div>
-					<div class="chip">
-						<a href={sourceCodeUrl} target="_blank" rel="noreferrer noreferrer">
-							<Icon class="icon" name="github" size="1rem" />
-							Code
-						</a>
-					</div>
-				</>
-			)
-		}
-	</div>
-</div>
+				)}
+			</div>
+		)
+	}
+</header>
+
+<script>
+	// Delegated once, so it keeps working across view-transition navigations.
+	const w = window as unknown as { __nxCopy?: boolean };
+	if (!w.__nxCopy) {
+		w.__nxCopy = true;
+		document.addEventListener('click', async (e) => {
+			const btn = (e.target as HTMLElement).closest<HTMLButtonElement>(
+				'[data-copy]',
+			);
+			if (!btn) return;
+			try {
+				await navigator.clipboard.writeText(btn.dataset.copy ?? '');
+				btn.classList.add('is-copied');
+				setTimeout(() => btn.classList.remove('is-copied'), 1400);
+			} catch {
+				/* clipboard blocked: the text is still selectable */
+			}
+		});
+	}
+</script>
 
 <style>
-	.page-title-content {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
+	.nx-title {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 0.25rem;
 	}
 
-	@media (max-width: 1010px) {
-		.page-title-content {
-			flex-direction: column;
-			align-items: flex-start;
-		}
-	}
-
-	.chip-container {
-		display: flex;
-		gap: 0.5rem;
-		align-items: center;
-	}
-
-	.chip {
-		border-width: 1px;
-		border-style: solid;
-		border-radius: 6px;
-		padding: 2px 8px;
-		color: var(--sl-color-text);
-		width: fit-content;
-		height: fit-content;
-		margin-top: 1rem;
-	}
-
-	.chip a {
+	.nx-eyebrow {
+		font-family: var(--__sl-font-mono);
+		font-size: var(--sl-text-xs);
+		color: var(--sl-color-gray-3);
 		text-decoration: none;
-		color: var(--sl-color-text);
+		width: fit-content;
 	}
 
-	.icon {
-		margin-top: -3px;
-		vertical-align: middle;
+	.nx-eyebrow:hover {
+		color: var(--sl-color-accent);
+	}
+
+	.nx-meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem;
+		margin-top: 1.1rem;
+		font-size: var(--sl-text-sm);
+	}
+
+	.nx-pill,
+	.nx-chip,
+	.nx-import {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		height: 2rem;
+		padding: 0 0.7rem;
+		border-radius: 999px;
+		border: 1px solid var(--nx-line);
+		background: var(--nx-surface);
+		color: var(--sl-color-gray-2);
+		font: inherit;
+		line-height: 1;
+		text-decoration: none;
+		white-space: nowrap;
+	}
+
+	.nx-pill {
+		--c: var(--sl-color-gray-3);
+		color: var(--c);
+		background: color-mix(in oklab, var(--c) 10%, var(--sl-color-bg));
+		border-color: color-mix(in oklab, var(--c) 30%, transparent);
+		font-weight: 600;
+	}
+
+	.nx-pill--stable {
+		--c: var(--nx-stable);
+	}
+	.nx-pill--experimental,
+	.nx-pill--unstable {
+		--c: var(--nx-experimental);
+	}
+	.nx-pill--deprecated {
+		--c: var(--nx-deprecated);
+	}
+
+	.nx-dot {
+		width: 0.45rem;
+		height: 0.45rem;
+		border-radius: 50%;
+		background: currentColor;
+	}
+
+	.nx-import {
+		position: relative;
+		cursor: pointer;
+		max-width: 100%;
+		min-width: 0;
+		overflow: hidden;
+		font-family: var(--__sl-font-mono);
+		font-size: 0.8rem;
+		color: var(--sl-color-white);
+		transition:
+			border-color 0.15s ease,
+			background-color 0.15s ease;
+	}
+
+	.nx-import code {
+		flex: 1 1 auto;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		background: none;
+		border: 0;
+		padding: 0;
+		font-size: inherit;
+	}
+
+	.nx-import:hover {
+		border-color: var(--nx-line-strong);
+		background: var(--nx-surface-2);
+	}
+
+	.nx-import__icon {
+		display: inline-flex;
+		color: var(--sl-color-gray-3);
+	}
+
+	/* Copied state overlays the button so its width never changes */
+	.nx-import__done {
+		position: absolute;
+		inset: 0;
+		display: grid;
+		place-items: center;
+		border-radius: inherit;
+		background: var(--sl-color-accent);
+		color: var(--sl-color-black);
+		font-family: var(--__sl-font);
+		font-weight: 600;
+		opacity: 0;
+		transition: opacity 0.15s ease;
+		pointer-events: none;
+	}
+
+	:global(.nx-import.is-copied) .nx-import__done {
+		opacity: 1;
+	}
+
+	.nx-chip {
+		transition:
+			border-color 0.15s ease,
+			color 0.15s ease;
+	}
+
+	.nx-chip:hover {
+		border-color: var(--nx-line-strong);
+		color: var(--sl-color-white);
+	}
+
+	.nx-chip__num {
+		font-family: var(--__sl-font-mono);
+		font-size: 0.8rem;
+		color: var(--sl-color-white);
+	}
+
+	.nx-chip__unit {
+		color: var(--sl-color-gray-3);
+		font-size: var(--sl-text-xs);
+	}
+
+	.nx-people {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		min-width: 0;
+		margin-inline-start: 0.25rem;
+	}
+
+	.nx-faces {
+		display: flex;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.nx-faces li + li {
+		margin-inline-start: -0.45rem;
+	}
+
+	.nx-faces a {
+		display: block;
+		border-radius: 50%;
+	}
+
+	.nx-faces img,
+	.nx-initials {
+		display: grid;
+		place-items: center;
+		width: 1.75rem;
+		height: 1.75rem;
+		border-radius: 50%;
+		border: 2px solid var(--sl-color-bg);
+		background: var(--nx-surface-2);
+		font-size: 0.6rem;
+		font-weight: 700;
+		color: var(--sl-color-gray-2);
+		transition: transform 0.15s var(--nx-ease);
+	}
+
+	.nx-faces a:hover img,
+	.nx-faces a:hover .nx-initials {
+		transform: translateY(-2px);
+	}
+
+	.nx-people__names {
+		font-size: var(--sl-text-xs);
+		color: var(--sl-color-gray-3);
+		line-height: 1.35;
+	}
+
+	@media (max-width: 40rem) {
+		.nx-import {
+			order: 10;
+			width: 100%;
+			justify-content: space-between;
+		}
 	}
 </style>

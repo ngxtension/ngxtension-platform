@@ -1,86 +1,94 @@
 ---
 title: injectDestroy
-description: ngxtension/inject-destroy
+description: An Observable that emits when the current component, directive or service is destroyed, for use with takeUntil.
 entryPoint: ngxtension/inject-destroy
 badge: stable
 contributors: ['enea-jahollari']
 ---
 
-`injectDestroy` is a helper function that returns an observable that emits when the component is destroyed.
-
-It helps us to avoid memory leaks by unsubscribing from `Observable`s when the component is destroyed.
-
-```ts
-import { injectDestroy } from 'ngxtension/inject-destroy';
-```
+`injectDestroy` returns an Observable that emits once and completes when the current component, directive or service is destroyed. Pass it to `takeUntil()` to end subscriptions without implementing `OnDestroy` or managing a `Subject` yourself.
 
 ## Usage
 
-If you are familiar with this pattern:
+This is the pattern it replaces:
 
 ```ts
-@Component({})
-export class MyComponent implements OnInit, OnDestroy {
-  private dataService = inject(DataService);
-  private destroy$ = new Subject<void>();
+export class UserList implements OnInit, OnDestroy {
+	private userService = inject(UserService);
+	private destroy$ = new Subject<void>();
 
-  ngOnInit() {
-    this.dataService.getData()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(...);
-  }
+	ngOnInit() {
+		this.userService
+			.getUsers()
+			.pipe(takeUntil(this.destroy$))
+			.subscribe((users) => (this.users = users));
+	}
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+	ngOnDestroy() {
+		this.destroy$.next();
+		this.destroy$.complete();
+	}
 }
 ```
 
-You can replace it with `injectDestroy` and remove the boilerplate code:
+With `injectDestroy`, you create `destroy$` in a field initializer and drop `ngOnDestroy`:
 
-```ts
-@Component({})
-export class MyComponent {
-  private dataService = inject(DataService);
-  private destroy$ = injectDestroy();
+```angular-ts
+import { Component, inject, OnInit } from '@angular/core';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { takeUntil } from 'rxjs';
 
-  ngOnInit() {
-    this.dataService.getData()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(...);
-  }
+@Component({ selector: 'app-user-list', template: '...' })
+export class UserList implements OnInit {
+	private userService = inject(UserService);
+	private destroy$ = injectDestroy();
+
+	users: User[] = [];
+
+	ngOnInit() {
+		this.userService
+			.getUsers()
+			.pipe(takeUntil(this.destroy$))
+			.subscribe((users) => (this.users = users));
+	}
 }
 ```
 
-As you can see, we don't need to implement `OnDestroy` anymore and we don't need to manually emit from the `Subject` when the component is destroyed.
+Because `destroy$` is created in an injection context, you can use it later anywhere in the class: in `ngOnInit`, event handlers or other methods.
 
-### `onDestroy`
+## Register destroy callbacks
 
-The value returned by `injectDestroy()` also includes `onDestroy()` function to register arbitrary destroy logic callbacks.
+The returned Observable also has an `onDestroy()` method, the same as `DestroyRef.onDestroy`, for other cleanup logic.
 
 ```ts
+export class Chart {
+	private destroy$ = injectDestroy();
 
-@Component({})
-export class MyComponent {
-  private dataService = inject(DataService);
-  private destroy$ = injectDestroy();
+	ngOnInit() {
+		const chart = createChart();
 
-  ngOnInit() {
-    this.dataService.getData()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(...);
+		this.destroy$.onDestroy(() => chart.dispose());
+	}
+}
+```
 
-    this.destroy$.onDestroy(() => {
-      /* other destroy logics, similar to DestroyRef#onDestroy */
-    });
-  }
+## Outside an injection context
+
+Pass an `Injector` to create it somewhere else:
+
+```ts
+export class UserList {
+	private injector = inject(Injector);
+
+	ngOnInit() {
+		const destroy$ = injectDestroy(this.injector);
+	}
 }
 ```
 
 ## How it works
 
-The helper functions injects the `DestroyRef` class from Angular, and on the `onDestroy` lifecycle hook, it emits from the `Subject` and completes it.
+It injects `DestroyRef` and emits on a `ReplaySubject` when it is destroyed:
 
 ```ts
 const destroyRef = inject(DestroyRef);
@@ -94,40 +102,47 @@ destroyRef.onDestroy(() => {
 return subject$;
 ```
 
-## Difference with `takeUntilDestroy` from Angular
+Because it is a `ReplaySubject`, subscribing after the destroy still gets the emission, so `takeUntil(destroy$)` ends the stream right away.
 
-Angular provides a `takeUntilDestroy` operator that does the same thing. But it requires us to pass the `DestroyRef` to the operator when we are not in an injection context.
+## Compared to `takeUntilDestroyed`
+
+Angular's [`takeUntilDestroyed`](https://angular.dev/api/core/rxjs-interop/takeUntilDestroyed) does the same job. Outside an injection context, such as `ngOnInit`, it needs a `DestroyRef`:
 
 ```ts
-@Component({})
-export class MyComponent {
-  private dataService = inject(DataService);
-  private destroyRef = inject(DestroyRef);
+export class UserList {
+	private destroyRef = inject(DestroyRef);
 
-  ngOnInit() {
-    this.dataService.getData()
-      .pipe(takeUntilDestroy(this.destroyRef))
-      .subscribe(...);
-  }
+	ngOnInit() {
+		this.userService
+			.getUsers()
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe();
+	}
 }
 ```
 
-While `injectDestroy` doesn't require us to pass the `DestroyRef` to the operator.
-
-With `takeUntilDestroyed` we can also initialize the operator and use it later.
+You can also create the operator once in a field initializer and reuse it:
 
 ```ts
-@Component({})
-export class MyComponent {
-  private dataService = inject(DataService);
-  private takeUntilDestroyed$ = takeUntilDestroyed();
+export class UserList {
+	private untilDestroyed = takeUntilDestroyed<User[]>();
 
-  ngOnInit() {
-    this.dataService.getData()
-      .pipe(this.takeUntilDestroyed$)
-      .subscribe(...);
-  }
+	ngOnInit() {
+		this.userService.getUsers().pipe(this.untilDestroyed).subscribe();
+	}
 }
 ```
 
-So, it's up to you to choose which one you prefer to use.
+Use `takeUntilDestroyed` if you prefer Angular built-ins. Use `injectDestroy` if your codebase already uses `takeUntil(destroy$)`, or if you need the destroy signal as an Observable (for example to combine it with other streams).
+
+## API
+
+```ts
+function injectDestroy(
+	injector?: Injector,
+): ReplaySubject<void> & { onDestroy: DestroyRef['onDestroy'] };
+```
+
+| Parameter  | Type       | Description                                                                  |
+| ---------- | ---------- | ---------------------------------------------------------------------------- |
+| `injector` | `Injector` | Optional. Use it when you call `injectDestroy` outside an injection context. |

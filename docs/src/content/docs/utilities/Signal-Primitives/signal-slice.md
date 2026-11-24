@@ -1,263 +1,288 @@
 ---
 title: signalSlice
-description: ngxtension/signal-slice
+description: Declarative signal state where every way to update the state is declared up front with observable sources and actions.
 entryPoint: ngxtension/signal-slice
 badge: stable
 contributors: ['josh-morony']
 ---
 
-`signalSlice` is loosely inspired by the `createSlice` API from Redux Toolkit. The general idea is that it allows you to declaratively create a "slice" of state. This state will be available as a **readonly** signal.
+`signalSlice` creates a **read-only** state signal and declares, up front, every way that state can change: `sources` (streams that update it automatically) and `actionSources` (actions you call). It is loosely inspired by Redux Toolkit's `createSlice`. Because there is no `set()`, all updates are visible in one place.
 
-The key motivation, and what makes this declarative, is that all the ways for
-updating this signal are declared upfront with `sources` and `actionSources`.
-It is not possible to imperatively update the state.
+## Usage
 
-## Basic Usage
-
-```ts
+```angular-ts
+import { Component, inject, Injectable } from '@angular/core';
 import { signalSlice } from 'ngxtension/signal-slice';
+import { map, Observable, of } from 'rxjs';
+
+interface Checklist {
+	id: string;
+	title: string;
+}
+
+interface ChecklistsState {
+	checklists: Checklist[];
+	loaded: boolean;
+}
+
+@Injectable({ providedIn: 'root' })
+export class ChecklistApi {
+	load(): Observable<Checklist[]> {
+		return of([{ id: '1', title: 'Groceries' }]);
+	}
+}
+
+@Component({
+	selector: 'app-checklists',
+	template: `
+		@if (state.loaded()) {
+			@for (checklist of state.checklists(); track checklist.id) {
+				<p>
+					{{ checklist.title }}
+					<button (click)="state.remove(checklist.id)">Remove</button>
+				</p>
+			}
+		}
+		<button (click)="state.add({ id: '2', title: 'Packing' })">Add</button>
+	`,
+})
+export class Checklists {
+	private readonly api = inject(ChecklistApi);
+
+	private readonly initialState: ChecklistsState = {
+		checklists: [],
+		loaded: false,
+	};
+
+	readonly state = signalSlice({
+		initialState: this.initialState,
+		sources: [
+			this.api.load().pipe(map((checklists) => ({ checklists, loaded: true }))),
+		],
+		actionSources: {
+			add: (state, action$: Observable<Checklist>) =>
+				action$.pipe(
+					map((checklist) => ({
+						checklists: [...state().checklists, checklist],
+					})),
+				),
+			remove: (state, action$: Observable<string>) =>
+				action$.pipe(
+					map((id) => ({
+						checklists: state().checklists.filter((c) => c.id !== id),
+					})),
+				),
+		},
+	});
+}
 ```
 
-```ts
-  private initialState: ChecklistsState = {
-    checklists: [],
-    loaded: false,
-    error: null,
-  };
+`state` is a normal read-only signal (`state().loaded`), and every top-level property of `initialState` also gets its own `computed` selector (`state.loaded()`).
 
-  state = signalSlice({
-    initialState: this.initialState,
-  });
-```
-
-The returned `state` object will be a standard **readonly** signal, but it will also have properties attached to it that will be discussed below.
-
-You can access the state as you would with a typical signal:
-
-```ts
-this.state().loaded;
-```
-
-However, by default `computed` selectors will be created for each top-level property in the initial state:
-
-```ts
-this.state.loaded();
-```
+:::note
+Call `signalSlice` in an injection context (a field initializer or constructor). It uses `DestroyRef` to clean up its subscriptions.
+:::
 
 ## Sources
 
-One way to update state is through the use of `sources`. These are intended to be used for "auto sources" — as in, observable streams that will emit automatically like an `http.get()`. Although it will work with a `Subject` that you `next` as well, it is recommended that you use an **actionSource** for these imperative style state updates.
-
-You can supply a source like this:
+Use `sources` for streams that update the state on their own, like an HTTP request or a websocket. Each emission must be a partial of the state; it is merged into the current state.
 
 ```ts
-loadChecklists$ = this.checklistsLoaded$.pipe(
-	map((checklists) => ({ checklists, loaded: true })),
-);
-
-state = signalSlice({
+readonly state = signalSlice({
 	initialState: this.initialState,
-	sources: [this.loadChecklists$],
+	sources: [
+		this.api.load().pipe(map((checklists) => ({ checklists, loaded: true }))),
+	],
 });
 ```
 
-The `source` should be mapped to a partial of the `initialState`. In the example above, when the source emits it will update both the `checklists` and the `loaded` properties in the state signal.
-
-If you need to utilise the current state in a source, instead of supplying the
-observable directly as a source you can supply a function that accepts the state
-signal and returns the source:
+To use the current state inside a source, pass a function that receives the state signal and returns the stream:
 
 ```ts
-state = signalSlice({
+readonly state = signalSlice({
 	initialState: this.initialState,
 	sources: [
-		this.loadChecklists$,
 		(state) =>
-			this.newMessage$.pipe(
-				map((newMessage) => ({
-					messages: [...state().messages, newMessage],
+			this.newChecklist$.pipe(
+				map((checklist) => ({
+					checklists: [...state().checklists, checklist],
 				})),
 			),
 	],
 });
 ```
 
-:::tip[Lazy Loading]
-If you want any sources to be loaded only _after_ the `signalSlice` is accessed, you can use the `lazySources` configuration.
+The state signal passed to these functions also has an observable for each top-level property (`state.checklists$`), so a source can react to another part of the state.
+
+### Lazy sources
+
+`lazySources` work like `sources`, but they are only connected the first time you read the state or one of its properties. Use them to avoid loading data that nobody displays.
+
+```ts
+readonly state = signalSlice({
+	initialState: this.initialState,
+	lazySources: [this.api.load().pipe(map((checklists) => ({ checklists, loaded: true })))],
+});
+```
+
+## Action sources
+
+Use `actionSources` for updates you trigger yourself. Each entry receives the state signal and a stream of the action's payloads, and returns a stream of partial state. `signalSlice` turns each entry into a method with the same name:
+
+```ts
+this.state.add({ id: '3', title: 'Chores' });
+this.state.remove('3');
+```
+
+An action can also take an observable instead of a value. Every emission is dispatched as an action.
+
+Every action returns a `Promise` that resolves with the updated state:
+
+```ts
+const updated = await this.state.add(checklist);
+```
+
+### Actions without a payload
+
+Type the stream as `Observable<void>` to create an action you call with no arguments, for example a manual reload:
+
+```ts
+readonly state = signalSlice({
+	initialState: this.initialState,
+	actionSources: {
+		load: (_state, action$: Observable<void>) =>
+			action$.pipe(
+				switchMap(() => this.api.load()),
+				map((checklists) => ({ checklists, loaded: true })),
+			),
+	},
+});
+
+// later
+this.state.load();
+```
+
+If the data should load as soon as the component starts, put the stream in `sources` instead; you don't need an action for it.
+
+### External subjects
+
+You can also pass an existing `Subject` as an action source. Calling the action calls `next()` on the subject. This is useful when one of your `sources` needs to react to that action, because sources can't react to actions created inside `actionSources`.
+
+```ts
+readonly reset$ = new Subject<void>();
+
+readonly state = signalSlice({
+	initialState: this.initialState,
+	sources: [this.reset$.pipe(map(() => this.initialState))],
+	actionSources: {
+		reset: this.reset$,
+	},
+});
+
+// later
+this.state.reset();
+```
+
+## Action streams
+
+Each action is also exposed as an observable named after it with a `$` suffix:
+
+```ts
+this.state.add$.subscribe((checklist) => console.log('added', checklist));
+```
+
+## Action updates
+
+:::caution[Experimental]
+Action updates may change or be removed. Feedback is welcome in a GitHub issue.
 :::
 
-## Action Sources
-
-Another way to update the state is through `actionSources`. An action source creates an **action** that you can call, and it returns a **source** that is used to update the state.
-
-This is good for situations where you need to manually/imperatively trigger some action, and then use the current state in some way in order to calculate the new state.
-
-When you supply an `actionSource`, it will automatically create an `action` that you can call. Action Sources can be created like this:
-
-```ts
-state = signalSlice({
-	initialState: this.initialState,
-	actionSources: {
-		add: (state, action$: Observable<AddChecklist>) =>
-			action$.pipe(
-				map((checklist) => ({
-					checklists: [...state().checklists, checklist],
-				})),
-			),
-		remove: (state, action$: Observable<RemoveChecklist>) =>
-			action$.pipe(
-				map((id) => ({
-					checklists: state().checklists.filter(
-						(checklist) => checklist.id !== id,
-					),
-				})),
-			),
-	},
-});
-```
-
-Actions are created automatically using whatever name you provide for the
-`actionSource` and can be called like this:
-
-```ts
-this.state.add(checklist);
-```
-
-It is also possible to have an `actionSource` without any payload. For example
-sometimes people might want to manually trigger a load:
-
-```ts
-  state = signalSlice({
-    initialState: this.initialState,
-    actionSources: {
-      load: (_state, $: Observable<void>) => $.pipe(
-        switchMap(() => this.someService.load()),
-        map(data => ({ someProperty: data })
-      )
-    }
-  })
-```
-
-In this particular case, a `load` action will be created that can be called with
-`this.state.load()`.
-
-**NOTE:** This example covers the use case where data _needs_ to be manually
-triggered with a `load()` action. It is also possible to just have your data
-load automatically — in this case the observable that loads the data can just be
-supplied directly through `sources` rather than `actionSources` and it will be
-loaded automatically without needing to trigger the `load()` action.
-
-It is also possible to supply an external subject as an `actionSource` like
-this:
-
-```ts
-someAction$ = new Subject<void>();
-
-state = signalSlice({
-	initialState: this.initialState,
-	actionSources: {
-		someAction: someAction$,
-	},
-});
-```
-
-This is useful for circumstances where you need any of your `sources` to react
-to `someAction$` being triggered. A source can not react to internally created
-`actionSources`, but it can react to the externally created subject. Supplying
-this subject as an `actionSource` allows you to still trigger it through
-`state.someAction()`. This makes using actions more consistent, as everything
-can be accessed on the state object, even if you need to create an external
-subject.
-
-## Action Updates
-
-:::caution Action Updates are currently experimental, the API may be changed or removed entirely. Please feel free to reach out to joshuamorony with feedback or open an issue. :::
-
-Each `actionSource` will have an equivalent `Updated` version signal automatically generated that will be incremented each time the `actionSource` emits or completes, e.g:
-
-```ts
-  state = signalSlice({
-    initialState: this.initialState,
-    actionSources: {
-      load: (_state, $: Observable<void>) => $.pipe(
-        switchMap(() => this.someService.load()),
-        map(data => ({ someProperty: data })
-      )
-    }
-  })
-
-  effect(() => {
-    // triggered when `load` emits/completes and on init
-    console.log(state.loadUpdated())
-  })
-```
-
-This signal will return the current version, starting at `0`. If you do not want your `effect` to be triggered on initialisation you can check for the `0` version value, e.g:
+Each action also gets a `<name>Updated` signal. It starts at `0` and goes up every time the action dispatches a value (and once more when an observable you passed to the action completes). Use it to run an effect after an action:
 
 ```ts
 effect(() => {
-	if (state.loadUpdated()) {
-		// triggered ONLY when `load` emits/completes
-		// NOT on init
+	if (this.state.loadUpdated()) {
+		// runs after load() is called, not on init
 	}
 });
 ```
-
-## Action Streams
-
-The source/stream for each action is also exposed on the state object. That means that you can access:
-
-```ts
-this.state.add$;
-```
-
-Which will allow you to react to the `add` action being called via an observable.
 
 ## Selectors
 
-By default, all of the top-level properties from the initial state will be exposed as selectors which are `computed` signals on the state object.
-
-It is also possible to create more selectors simply using `computed` and the values of the signal created by `signalSlice`, however, it is awkward to have some selectors available directly on the state object (our default selectors) and others defined outside of the state object.
-
-It is therefore recommended to define all of your selectors using the `selectors` config of `signalSlice`:
+Every top-level property of `initialState` is a selector by default. Add derived values with `selectors`, so all selectors live on the state object:
 
 ```ts
-state = signalSlice({
+readonly state = signalSlice({
 	initialState: this.initialState,
 	selectors: (state) => ({
-		loadedAndError: () => state().loaded && state().error,
-		whatever: () => 'hi',
+		count: () => state().checklists.length,
+		isEmpty: () => state.loaded() && state().checklists.length === 0,
 	}),
 });
+
+// in the template: {{ state.count() }}
 ```
 
-This will also make these additional computed values available on the state object:
-
-```ts
-this.state.loadedAndError();
-```
+Each selector is wrapped in `computed`.
 
 ## Effects
 
-:::caution
-The `effects` property of `signalSlice` has been deprecated and will eventually be removed. Please use standard signal effects outside of the `signalSlice` instead.
+:::caution[Deprecated]
+The `effects` option is deprecated and will be removed. Use a standard Angular `effect` outside of `signalSlice` instead.
 :::
 
-To create side effects for state changes, you can use the standard Angular `effect` to react to the state signal or selectors from `signalSlice` changing, e.g:
+```ts
+constructor() {
+	effect(() => {
+		if (this.state.loaded()) {
+			// do something
+		}
+	});
+}
+```
+
+## API
 
 ```ts
-const state = signalSlice({
-	initialState,
-	actionSources: {
-		selectVideo,
-		generateAudio,
-		uploadAudio,
-	},
-});
-
-effect(() => {
-	if (state.status() === 'complete') {
-		// do something
-	}
-});
+// simplified signature
+function signalSlice<TState, TActionSources, TSelectors>(config: {
+	initialState: TState;
+	sources?: Array<
+		Observable<Partial<TState>> | ((state) => Observable<Partial<TState>>)
+	>;
+	lazySources?: Array<
+		Observable<Partial<TState>> | ((state) => Observable<Partial<TState>>)
+	>;
+	actionSources?: {
+		[name: string]:
+			| Subject<any>
+			| ((
+					state: Signal<TState>,
+					action$: Observable<any>,
+			  ) => Observable<Partial<TState>>);
+	};
+	selectors?: (state) => { [name: string]: () => any };
+	/** @deprecated */
+	effects?: (state) => { [name: string]: () => void | (() => void) };
+}): SignalSlice<TState, TActionSources, TSelectors>;
 ```
+
+| Option          | Description                                                                                         |
+| --------------- | --------------------------------------------------------------------------------------------------- |
+| `initialState`  | The starting state. Optional properties (`foo?: string`) aren't allowed; use `foo: string \| null`. |
+| `sources`       | Streams (or functions returning streams) that emit partial state. Connected immediately.            |
+| `lazySources`   | Like `sources`, but connected the first time the state is read.                                     |
+| `actionSources` | Named action reducers or external subjects. Each becomes a method on the state.                     |
+| `selectors`     | Function returning named selector functions. Each becomes a `computed` on the state.                |
+| `effects`       | Deprecated. Use Angular `effect` instead.                                                           |
+
+The returned object is a read-only `Signal<TState>` with these extra properties:
+
+| Property                | Type                            | Description                                       |
+| ----------------------- | ------------------------------- | ------------------------------------------------- |
+| `state.<key>`           | `Signal`                        | One selector per top-level state property.        |
+| `state.<key>$`          | `Observable`                    | One observable per top-level state property.      |
+| `state.<selector>`      | `Signal`                        | Your custom selectors.                            |
+| `state.<action>(...)`   | `(payload?) => Promise<TState>` | One method per action source.                     |
+| `state.<action>$`       | `Observable`                    | The payload stream of each action.                |
+| `state.<action>Updated` | `Signal<number>`                | Counter that increases on each dispatched action. |

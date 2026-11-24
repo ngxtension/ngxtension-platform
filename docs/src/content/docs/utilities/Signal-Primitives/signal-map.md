@@ -1,500 +1,191 @@
 ---
 title: SignalMap
-description: ngxtension/collections
+description: A reactive Map with per-key reactivity, so computeds and effects only re-run when the keys they read change.
 entryPoint: ngxtension/collections
 badge: stable
 contributors: ['enea-jahollari']
 ---
 
-`SignalMap` is a reactive Map implementation that integrates with Angular's signals system. It provides fine-grained reactivity, ensuring that changes to individual keys or the map structure trigger only the necessary updates.
-
-## Import
-
-```typescript
-import { SignalMap } from 'ngxtension/collections';
-```
+`SignalMap` is a `Map` that works with Angular signals. Reading it inside a `computed`, `effect` or template tracks what you read, and writing to it notifies only the readers that care. Each key has its own signal, so updating one key doesn't re-run code that reads a different key.
 
 ## Usage
 
-### Basic Usage
-
-```typescript
+```angular-ts
+import { Component, computed } from '@angular/core';
 import { SignalMap } from 'ngxtension/collections';
-import { Component, computed, effect } from '@angular/core';
+
+interface User {
+	name: string;
+	role: 'admin' | 'user';
+}
 
 @Component({
-	selector: 'app-user-manager',
+	selector: 'app-users',
 	template: `
-		<div>
-			<p>Total users: {{ totalUsers() }}</p>
-			<p>Admin name: {{ adminName() }}</p>
-		</div>
+		<p>Total users: {{ totalUsers() }}</p>
+		<p>Admin: {{ adminName() }}</p>
+
+		@for (entry of entries(); track entry[0]) {
+			<p>{{ entry[0] }}: {{ entry[1].name }}</p>
+		}
+
+		<button (click)="addUser()">Add user</button>
 	`,
 })
-export class UserManagerComponent {
-	readonly users = new SignalMap<number, { name: string; role: string }>();
+export class Users {
+	readonly users = new SignalMap<number, User>([
+		[1, { name: 'Alice', role: 'admin' }],
+		[2, { name: 'Bob', role: 'user' }],
+	]);
 
 	readonly totalUsers = computed(() => this.users.size);
 	readonly adminName = computed(() => this.users.get(1)?.name ?? 'No admin');
+	readonly entries = computed(() => [...this.users.entries()]);
 
-	constructor() {
-		// Initialize with data
-		this.users.set(1, { name: 'Alice', role: 'admin' });
-		this.users.set(2, { name: 'Bob', role: 'user' });
-
-		// React to changes
-		effect(() => {
-			console.log('User count:', this.users.size);
-		});
+	addUser() {
+		const id = this.users.size + 1;
+		this.users.set(id, { name: `User ${id}`, role: 'user' });
 	}
 }
 ```
 
-### Fine-Grained Reactivity
+You use the normal `Map` methods (`get`, `set`, `has`, `delete`, `clear`, `size`, `keys`, `values`, `entries`, `forEach`, `for...of`). There is no `.set()` on a signal to remember: the map itself is the reactive state.
 
-One of the key features of `SignalMap` is its fine-grained reactivity. Changes to individual keys only trigger effects that depend on those specific keys, not all effects watching the map.
+## Fine-grained reactivity
 
-```typescript
-import { SignalMap } from 'ngxtension/collections';
-import { Component, computed, effect } from '@angular/core';
+`SignalMap` tracks two things separately:
 
-@Component({
-	selector: 'app-counter',
-	template: `
-		<div>
-			<p>Counter A: {{ counterA() }}</p>
-			<p>Counter B: {{ counterB() }}</p>
-		</div>
-	`,
-})
-export class CounterComponent {
-	counters = new SignalMap<string, number>();
+- **Each key's value.** `get(key)` on an existing key tracks only that key.
+- **The structure** (which keys exist). Adding or deleting a key notifies structure readers. Updating an existing key does not.
 
-	counterA = computed(() => this.counters.get('a') ?? 0);
-	counterB = computed(() => this.counters.get('b') ?? 0);
-
-	constructor() {
-		this.counters.set('a', 0);
-		this.counters.set('b', 0);
-
-		// This effect only runs when 'a' changes
-		effect(() => {
-			console.log('Counter A changed:', this.counters.get('a'));
-		});
-
-		// This effect only runs when 'b' changes
-		effect(() => {
-			console.log('Counter B changed:', this.counters.get('b'));
-		});
-
-		// Updating 'a' won't trigger the effect watching 'b'
-		this.counters.set('a', 1); // Only first effect runs
-		this.counters.set('b', 1); // Only second effect runs
-	}
-}
-```
-
-### Initialization
-
-```typescript
-// Empty map
-const map = new SignalMap<string, number>();
-
-// With initial entries
-const map = new SignalMap<string, number>([
-	['a', 1],
-	['b', 2],
-	['c', 3],
+```ts
+const counters = new SignalMap<string, number>([
+	['a', 0],
+	['b', 0],
 ]);
+
+const a = computed(() => counters.get('a')); // tracks key 'a' only
+const b = computed(() => counters.get('b')); // tracks key 'b' only
+const size = computed(() => counters.size); // tracks structure only
+
+counters.set('a', 1); // re-runs `a` only
+counters.set('c', 0); // new key: re-runs `size`, not `a` or `b`
+counters.delete('b'); // re-runs `b` and `size`
 ```
 
-### Iteration
+What each operation tracks when you read it reactively:
 
-`SignalMap` supports standard Map iteration methods that are fully reactive:
+| Read                                             | Re-runs when                                         |
+| ------------------------------------------------ | ---------------------------------------------------- |
+| `get(key)` (key exists)                          | that key's value changes or the key is deleted       |
+| `get(key)` (key missing)                         | any key is added or deleted                          |
+| `has(key)`, `size`, `keys()`                     | any key is added or deleted                          |
+| `values()`, `entries()`, `forEach()`, `for...of` | any key is added or deleted, or any value is updated |
 
-```typescript
+| Write                            | Notifies                                                                   |
+| -------------------------------- | -------------------------------------------------------------------------- |
+| `set(key, value)` (new key)      | structure readers                                                          |
+| `set(key, value)` (existing key) | readers of that key (only if the value changed, compared with `Object.is`) |
+| `delete(key)`                    | readers of that key and structure readers                                  |
+| `clear()`                        | readers of every key and structure readers (no-op on an empty map)         |
+
+:::caution[Replace values, don't mutate them]
+Values are compared with `Object.is`. To change an object stored in the map, set a new object (`map.set(id, { ...user, name })`). Mutating the stored object in place doesn't notify anyone.
+:::
+
+## Iteration
+
+All iteration methods are reactive and work inside `computed`:
+
+```ts
+const users = new SignalMap<number, { name: string }>();
+
+const ids = computed(() => [...users.keys()]);
+const names = computed(() => [...users.values()].map((u) => u.name));
+const entries = computed(() => [...users]); // same as entries()
+```
+
+## Edge cases
+
+`undefined` is a valid value, separate from a missing key:
+
+```ts
+const map = new SignalMap<string, number | undefined>();
+map.set('a', undefined);
+
+map.has('a'); // true
+map.get('a'); // undefined
+map.has('b'); // false
+```
+
+Any value can be a key, including objects and symbols. Object keys are compared by identity, like a native `Map`.
+
+## Example: an entity store
+
+```ts
+import { computed, Injectable } from '@angular/core';
 import { SignalMap } from 'ngxtension/collections';
-import { Component, computed } from '@angular/core';
 
-@Component({
-	selector: 'app-user-list',
-	template: `
-		<ul>
-			@for (user of allUsers(); track user[0]) {
-				<li>{{ user[1].name }}</li>
-			}
-		</ul>
-	`,
-})
-export class UserListComponent {
-	users = new SignalMap<number, { name: string }>();
+interface Todo {
+	id: string;
+	title: string;
+	done: boolean;
+}
 
-	// All iteration methods are reactive
-	allUsers = computed(() => Array.from(this.users.entries()));
-	allNames = computed(() => Array.from(this.users.values()).map((u) => u.name));
-	allIds = computed(() => Array.from(this.users.keys()));
+@Injectable({ providedIn: 'root' })
+export class TodoStore {
+	private readonly todos = new SignalMap<string, Todo>();
 
-	constructor() {
-		this.users.set(1, { name: 'Alice' });
-		this.users.set(2, { name: 'Bob' });
+	readonly all = computed(() => [...this.todos.values()]);
+	readonly count = computed(() => this.todos.size);
 
-		// Using forEach
-		const totalComputed = computed(() => {
-			let sum = 0;
-			this.users.forEach((_, key) => {
-				sum += key;
-			});
-			return sum;
-		});
+	byId(id: string) {
+		return computed(() => this.todos.get(id));
+	}
 
-		// Using for...of (SignalMap is iterable)
-		const namesComputed = computed(() => {
-			const names: string[] = [];
-			for (const [_, user] of this.users) {
-				names.push(user.name);
-			}
-			return names;
-		});
+	upsert(todo: Todo) {
+		this.todos.set(todo.id, todo);
+	}
 
-		// Using spread operator
-		const entriesArray = computed(() => [...this.users]);
+	toggle(id: string) {
+		const todo = this.todos.get(id);
+		if (todo) {
+			this.todos.set(id, { ...todo, done: !todo.done });
+		}
+	}
+
+	remove(id: string) {
+		this.todos.delete(id);
 	}
 }
 ```
 
 ## API
 
-### Constructor
-
-```typescript
-constructor(entries?: readonly (readonly [K, V])[] | null)
-```
-
-Creates a new `SignalMap` instance, optionally initialized with entries.
-
-**Parameters:**
-
-- `entries` - Optional array of key-value pairs to initialize the map
-
-**Example:**
-
-```typescript
-const map = new SignalMap<string, number>([
-	['a', 1],
-	['b', 2],
-]);
-```
-
-### Methods
-
-#### `get(key: K): V | undefined`
-
-Retrieves the value for a given key. This operation is reactive and will track both:
-
-- Changes to the specific key's value
-- Addition of the key if it doesn't exist
-
-**Returns:** The value associated with the key, or `undefined` if not found
-
-**Example:**
-
-```typescript
-const value = computed(() => map.get('key'));
-```
-
-#### `set(key: K, value: V): this`
-
-Sets a value for a given key. Returns `this` for method chaining.
-
-**Key behavior:**
-
-- If the key exists, only updates the value (doesn't trigger structure changes)
-- If the key is new, adds it to the map and triggers structure changes
-
-**Example:**
-
-```typescript
-map.set('a', 1).set('b', 2).set('c', 3);
-```
-
-#### `delete(key: K): boolean`
-
-Removes a key-value pair from the map.
-
-**Returns:** `true` if the key existed and was deleted, `false` otherwise
-
-**Example:**
-
-```typescript
-const deleted = map.delete('key');
-```
-
-#### `has(key: K): boolean`
-
-Checks if a key exists in the map. This operation tracks structure changes.
-
-**Returns:** `true` if the key exists, `false` otherwise
-
-**Example:**
-
-```typescript
-const exists = computed(() => map.has('key'));
-```
-
-#### `clear(): void`
-
-Removes all entries from the map. Triggers both value changes for all existing keys and a structure change.
-
-**Example:**
-
-```typescript
-map.clear();
-```
-
-#### `keys(): IterableIterator<K>`
-
-Returns an iterator of all keys. This operation tracks structure changes.
-
-**Example:**
-
-```typescript
-const allKeys = computed(() => Array.from(map.keys()));
-```
-
-#### `values(): IterableIterator<V>`
-
-Returns an iterator of all values. This operation tracks structure changes.
-
-**Example:**
-
-```typescript
-const allValues = computed(() => Array.from(map.values()));
-```
-
-#### `entries(): IterableIterator<[K, V]>`
-
-Returns an iterator of all key-value pairs. This operation tracks structure changes.
-
-**Example:**
-
-```typescript
-const allEntries = computed(() => Array.from(map.entries()));
-```
-
-#### `forEach(callback: (value: V, key: K, map: SignalMap<K, V>) => void): void`
-
-Executes a callback for each entry in the map. This operation tracks structure changes.
-
-**Example:**
-
-```typescript
-map.forEach((value, key) => {
-	console.log(`${key}: ${value}`);
-});
-```
-
-#### `[Symbol.iterator](): IterableIterator<[K, V]>`
-
-Makes `SignalMap` iterable, allowing it to be used with `for...of` loops and spread operators. Returns the same iterator as `entries()`.
-
-**Example:**
-
-```typescript
-// for...of loop
-for (const [key, value] of map) {
-	console.log(`${key}: ${value}`);
-}
-
-// Spread operator
-const entries = [...map];
-
-// Array.from
-const entriesArray = Array.from(map);
-```
-
-### Properties
-
-#### `size: number`
-
-Gets the number of entries in the map. This property tracks structure changes.
-
-**Example:**
-
-```typescript
-const count = computed(() => map.size);
-```
-
-## Reactivity Model
-
-`SignalMap` implements a sophisticated reactivity model with two levels of tracking:
-
-### 1. Value-Level Reactivity
-
-Each key in the map has its own signal. When you call `get(key)`:
-
-- If the key exists, you track that specific key's signal
-- Changes to that key's value will trigger your computed/effect
-- Changes to other keys won't affect you
-
-### 2. Structure-Level Reactivity
-
-Operations that change the map's structure (keys, size) use a separate structure signal:
-
-- `size`, `has()`, `keys()`, `values()`, `entries()`, and `forEach()` track structure
-- Adding new keys or deleting keys triggers structure changes
-- Updating existing key values does NOT trigger structure changes
-
-This dual-tracking system ensures optimal performance by minimizing unnecessary updates.
-
-## Edge Cases
-
-### Supporting `undefined` as a Value
-
-`SignalMap` correctly handles `undefined` as a legitimate value, distinguishing it from missing keys:
-
-```typescript
-const map = new SignalMap<string, number | undefined>();
-map.set('a', undefined);
-
-map.has('a'); // true
-map.get('a'); // undefined
-
-// Different from a missing key
-map.get('b'); // undefined (but 'b' doesn't exist)
-map.has('b'); // false
-```
-
-### Working with Complex Types
-
-```typescript
-interface User {
-	id: number;
-	name: string;
-	metadata?: Record<string, unknown>;
-}
-
-const users = new SignalMap<number, User>();
-users.set(1, { id: 1, name: 'Alice' });
-
-// Update entire object (triggers reactive update)
-users.set(1, { id: 1, name: 'Alice Updated' });
-
-// The computed will reflect the new value
-const userName = computed(() => users.get(1)?.name);
-```
-
-### Using Non-Primitive Keys
-
-`SignalMap` supports any type as keys, including objects and symbols:
-
-```typescript
-const objKey = { id: 1 };
-const symKey = Symbol('unique');
-
-const map = new SignalMap<object | symbol, string>();
-map.set(objKey, 'object value');
-map.set(symKey, 'symbol value');
-
-map.get(objKey); // 'object value'
-map.get(symKey); // 'symbol value'
-```
-
-## Performance Considerations
-
-- **Fine-grained updates**: Only computations depending on changed keys re-run
-- **Efficient iteration**: Structure operations only trigger when keys are added/removed
-- **Memory efficient**: Uses native Map under the hood with signal wrappers
-- **Bulk operations**: `clear()` efficiently notifies all affected signals at once
-
-## Use Cases
-
-### State Management
-
-```typescript
-class TodoStore {
-	private todos = new SignalMap<string, Todo>();
-
-	getTodo = (id: string) => computed(() => this.todos.get(id));
-	allTodos = computed(() => Array.from(this.todos.values()));
-	todoCount = computed(() => this.todos.size);
-
-	addTodo(todo: Todo) {
-		this.todos.set(todo.id, todo);
-	}
-
-	updateTodo(id: string, updates: Partial<Todo>) {
-		const todo = this.todos.get(id);
-		if (todo) {
-			this.todos.set(id, { ...todo, ...updates });
-		}
-	}
-
-	deleteTodo(id: string) {
-		this.todos.delete(id);
-	}
+```ts
+class SignalMap<K, V> {
+	constructor(entries?: readonly (readonly [K, V])[] | null);
+
+	get(key: K): V | undefined;
+	set(key: K, value: V): this;
+	has(key: K): boolean;
+	delete(key: K): boolean;
+	clear(): void;
+	get size(): number;
+
+	keys(): IterableIterator<K>;
+	values(): IterableIterator<V>;
+	entries(): IterableIterator<[K, V]>;
+	forEach(callback: (value: V, key: K, map: SignalMap<K, V>) => void): void;
+	[Symbol.iterator](): IterableIterator<[K, V]>;
 }
 ```
 
-### Caching
+The methods behave like their native `Map` counterparts: `set` returns the map for chaining, `delete` returns whether the key existed. `SignalMap` doesn't extend or implement `Map`, so it can't be passed where a `Map` type is required. Convert it with `new Map(signalMap)` when you need one.
 
-```typescript
-class DataCache {
-	private cache = new SignalMap<string, { data: unknown; timestamp: number }>();
+`SignalMap` doesn't need an injection context; you can create it anywhere.
 
-	getCached = (key: string) =>
-		computed(() => {
-			const entry = this.cache.get(key);
-			if (!entry) return null;
+## Related
 
-			const isExpired = Date.now() - entry.timestamp > 60000; // 1 minute
-			return isExpired ? null : entry.data;
-		});
-
-	set(key: string, data: unknown) {
-		this.cache.set(key, { data, timestamp: Date.now() });
-	}
-
-	clear() {
-		this.cache.clear();
-	}
-}
-```
-
-### Entity Management
-
-```typescript
-class EntityManager<T extends { id: string }> {
-	private entities = new SignalMap<string, T>();
-
-	getById = (id: string) => computed(() => this.entities.get(id));
-	getAll = computed(() => Array.from(this.entities.values()));
-	count = computed(() => this.entities.size);
-
-	upsert(entity: T) {
-		this.entities.set(entity.id, entity);
-	}
-
-	remove(id: string) {
-		return this.entities.delete(id);
-	}
-
-	exists(id: string) {
-		return computed(() => this.entities.has(id));
-	}
-}
-```
-
-## Comparison with Regular Map
-
-| Feature              | Regular Map  | SignalMap                 |
-| -------------------- | ------------ | ------------------------- |
-| Reactivity           | ❌ No        | ✅ Yes                    |
-| Fine-grained updates | ❌ No        | ✅ Yes (per-key)          |
-| Works with computed  | ❌ No        | ✅ Yes                    |
-| Works with effect    | ❌ No        | ✅ Yes                    |
-| Memory overhead      | Lower        | Slightly higher (signals) |
-| API compatibility    | Full Map API | Core Map methods          |
-
-## See Also
-
-- [Angular Signals](https://angular.io/guide/signals) - Official Angular Signals guide
+- [`SignalSet`](/utilities/signal-primitives/signal-set/) is the reactive `Set` counterpart.
+- [`createNotifier`](/utilities/signal-primitives/create-notifier/) for making other mutable structures reactive.
