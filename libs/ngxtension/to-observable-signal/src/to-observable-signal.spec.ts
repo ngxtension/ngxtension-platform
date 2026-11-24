@@ -1,6 +1,6 @@
 import { Injector, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, of, Subject } from 'rxjs';
 import { toObservableSignal } from './to-observable-signal';
 
 describe('toObservableSignal()', () => {
@@ -72,11 +72,27 @@ describe('toObservableSignal()', () => {
 		});
 
 		// these assignments only compile if T is inferred (not `unknown`)
-		const num: number = fromObservable();
-		const str: string = fromSubject();
+		const num: number | undefined = fromObservable();
+		const str: string | undefined = fromSubject();
 
 		expect(num).toBe(1);
 		expect(str).toBe('Hello');
+	});
+
+	it('should type an Observable source as a read-only signal that can be undefined', () => {
+		const injector = TestBed.inject(Injector);
+		const subject = new Subject<number>();
+		const observableSignal = toObservableSignal(subject, { injector });
+
+		// @ts-expect-error the value is undefined until the first emission
+		const before: number = observableSignal();
+		expect(before).toBeUndefined();
+
+		subject.next(1);
+		expect(observableSignal()).toBe(1);
+
+		// @ts-expect-error an Observable source is not writable
+		expect(observableSignal.set).toBeUndefined();
 	});
 
 	it('should emit the value of the original signal as an observable', (done) => {
