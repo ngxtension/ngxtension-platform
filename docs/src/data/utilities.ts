@@ -508,6 +508,8 @@ export interface Utility {
 	importNames: string[];
 	/** `import { … } from 'ngxtension/…';` or undefined when the page has no import */
 	importLine?: string;
+	/** `sidebar.order` from frontmatter, when the page sets one */
+	sidebarOrder?: number;
 }
 
 function firstSentence(body: string | undefined): string {
@@ -555,12 +557,15 @@ export async function getUtilities(lang: Lang = 'en'): Promise<Utility[]> {
 				tagline: taglines[key]?.[lang] ?? firstSentence(e.body),
 				importNames: names,
 				importLine: importLine(e.data.entryPoint, names),
+				sidebarOrder: e.data.sidebar?.order,
 			} satisfies Utility;
 		})
 		.filter((u) => order.has(u.category))
 		.sort(
 			(a, b) =>
 				order.get(a.category)! - order.get(b.category)! ||
+				// Pages with an explicit sidebar order keep it (and come first), like Starlight's sidebar.
+				(a.sidebarOrder ?? Infinity) - (b.sidebarOrder ?? Infinity) ||
 				a.title.localeCompare(b.title, 'en', { sensitivity: 'base' }),
 		);
 }

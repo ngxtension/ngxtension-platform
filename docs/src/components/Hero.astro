@@ -4,9 +4,7 @@ import Default from '@astrojs/starlight/components/Hero.astro';
 const data = Astro.locals.starlightRoute?.entry?.data as
 	| { nxHome?: boolean }
 	| undefined;
-// <StarlightPage> validates against Starlight's default schema and drops `nxHome`,
-// so the temporary concept routes are matched by path.
-const isHome = data?.nxHome || Astro.url.pathname.startsWith('/concepts/');
+const isHome = data?.nxHome;
 ---
 
 {

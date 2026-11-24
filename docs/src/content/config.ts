@@ -20,6 +20,8 @@ const docs = defineCollection({
 				.optional(),
 			entryPoint: z.string().optional(),
 			contributors: z.array(reference('contributors')).optional(),
+			/** Full-bleed custom homepage: hides Starlight's hero and width limits. */
+			nxHome: z.boolean().optional(),
 		}),
 });
 
