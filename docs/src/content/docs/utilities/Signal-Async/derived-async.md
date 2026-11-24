@@ -2,9 +2,13 @@
 title: derivedAsync
 description: ngxtension/derived-async
 entryPoint: ngxtension/derived-async
-badge: stable
+badge: deprecated
 contributors: ['enea-jahollari']
 ---
+
+:::caution[Deprecated]
+`derivedAsync` will be discontinued. For new code, use Angular's own resource APIs instead: [`resource`](https://angular.dev/guide/signals/resource) for Promises, [`rxResource`](https://angular.dev/api/core/rxjs-interop/rxResource) for Observables and [`httpResource`](https://angular.dev/guide/http/http-resource) for `HttpClient` requests.
+:::
 
 `derivedAsync` is a helper function that allows us to compute a value based on a Promise or Observable, but also supports returning regular values (that are not Promises or Observables).
 It also gives us the possibility to change the behavior of the computation by choosing the flattening strategy (switch, merge, concat, exhaust) and the initial value of the computed value.
