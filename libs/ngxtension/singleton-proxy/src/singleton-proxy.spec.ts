@@ -98,4 +98,15 @@ describe('createSingletonProxy', () => {
 		// Get the property - should still be 42
 		expect(result.proxy.value).toBe(42);
 	});
+
+	it('should infer the instance type from the creation function', () => {
+		const { proxy } = createSingletonProxy(() => new TestClass());
+
+		// typed as TestClass, not `object`, without passing the generic
+		const value: number = proxy.value;
+		const called: string = proxy.method();
+
+		expect(value).toBe(0);
+		expect(called).toBe('called');
+	});
 });

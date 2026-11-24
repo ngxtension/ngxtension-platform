@@ -15,7 +15,7 @@ export function createSingletonProxy<
 	/**
 	 * A function that returns a new instance of the class
 	 */
-	createInstance: CreationFn,
+	createInstance: CreationFn & (() => SingletonClass),
 ): { proxy: SingletonClass; reset: () => void } {
 	let instance: SingletonClass | undefined;
 
