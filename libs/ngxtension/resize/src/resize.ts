@@ -15,6 +15,7 @@ import { createInjectionToken } from 'ngxtension/create-injection-token';
 import {
 	Observable,
 	ReplaySubject,
+	Subject,
 	debounceTime,
 	fromEvent,
 	of,
@@ -171,10 +172,13 @@ function createResizeStream(
 			: debounce.resize
 		: null;
 
+	// a debounce of 0 (or none) means events are emitted right away
 	const debounceAndTorndown = <T>(
 		debounce: number | null,
 	): MonoTypeOperatorFunction<T> => {
-		return pipe(debounceTime(debounce ?? 0), takeUntil(torndown$));
+		return debounce
+			? pipe(debounceTime(debounce), takeUntil(torndown$))
+			: takeUntil(torndown$);
 	};
 
 	return new Observable<ResizeResult>((subscriber) => {
@@ -209,7 +213,15 @@ function createResizeStream(
 
 			const boundCallback = () => void callback(lastEntries);
 
-			observer = new ResizeObserver(callback);
+			// ResizeObserver callbacks use the scroll debounce (as react-use-measure does)
+			const resizeObserverEntries$ = new Subject<ResizeObserverEntry[]>();
+			resizeObserverEntries$
+				.pipe(debounceAndTorndown(scrollDebounce))
+				.subscribe(callback);
+
+			observer = new ResizeObserver((entries) =>
+				resizeObserverEntries$.next(entries),
+			);
 
 			observer.observe(nativeElement, { box });
 			if (scroll) {
@@ -256,10 +268,7 @@ function createResizeStream(
 			torndown$.next();
 			torndown$.complete();
 		};
-	}).pipe(
-		debounceTime(scrollDebounce ?? 0),
-		share({ connector: () => new ReplaySubject(1) }),
-	);
+	}).pipe(share({ connector: () => new ReplaySubject(1) }));
 }
 
 function calculateResult(
