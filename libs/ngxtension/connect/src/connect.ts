@@ -183,13 +183,15 @@ export function connect(signal: WritableSignal<unknown>, ...args: any[]) {
 				console.info(`[ngxtension connect] ConnectedSignal has been closed.`);
 				return this;
 			}
+			const connection = connect(
+				signal,
+				...(args as any),
+				injectorOrDestroyRef as any,
+				useUntracked,
+			) as unknown as Subscription | EffectRef;
+			// a signal source returns an EffectRef, which has destroy() and no unsubscribe()
 			this.subscription.add(
-				connect(
-					signal,
-					...(args as any),
-					injectorOrDestroyRef as any,
-					useUntracked,
-				) as unknown as Subscription,
+				'destroy' in connection ? () => connection.destroy() : connection,
 			);
 			return this;
 		},
