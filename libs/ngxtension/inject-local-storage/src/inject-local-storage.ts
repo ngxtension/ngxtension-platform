@@ -69,7 +69,7 @@ type ClearOnKeyChange = {
 	/**
 	 * Specifies whether the value stored under the previous key
 	 * should be removed from `localStorage` when the key changes.
-	 * @default true
+	 * @default false
 	 */
 	clearOnKeyChange?: boolean;
 };
@@ -172,7 +172,7 @@ const internalInjectLocalStorage = <T, R = T>(
 	const parse = isFunction(options.parse) ? options.parse : parseJSON;
 	const storageSync = options.storageSync ?? true;
 	const clearOnKeyChange =
-		'clearOnKeyChange' in options ? (options.clearOnKeyChange ?? true) : true;
+		'clearOnKeyChange' in options ? (options.clearOnKeyChange ?? false) : false;
 
 	return assertInjector(injectLocalStorage, options.injector, () => {
 		const localStorage = inject(NGXTENSION_LOCAL_STORAGE);
