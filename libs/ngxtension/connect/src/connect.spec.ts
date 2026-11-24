@@ -116,6 +116,23 @@ describe(connect.name, () => {
 				expect(state()).toEqual(sourceSignalOne());
 			});
 		});
+
+		it('should stop the signal connection when the subscription is unsubscribed', () => {
+			const state = signal(0);
+
+			TestBed.runInInjectionContext(() => {
+				const source = signal(1);
+				const connectedSignal = connect(state).with(() => source());
+				TestBed.flushEffects();
+				expect(state()).toEqual(1);
+
+				expect(() => connectedSignal.subscription.unsubscribe()).not.toThrow();
+
+				source.set(2);
+				TestBed.flushEffects();
+				expect(state()).toEqual(1);
+			});
+		});
 	});
 
 	describe('connects an observable to a signal in injection context', () => {
