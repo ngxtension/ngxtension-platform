@@ -65,5 +65,6 @@ export function injectDocumentVisibility(
 		injectDocumentVisibilityStream(options);
 	return toSignal<DocumentVisibilityState>(docVisible$, {
 		requireSync: true,
+		injector: options?.injector,
 	});
 }
