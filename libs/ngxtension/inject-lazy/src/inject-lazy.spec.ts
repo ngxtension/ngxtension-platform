@@ -14,7 +14,7 @@ import {
 	TestBed,
 	tick,
 } from '@angular/core/testing';
-import { catchError, of, switchMap } from 'rxjs';
+import { catchError, Observable, of, switchMap } from 'rxjs';
 import { injectLazy } from './inject-lazy';
 import { mockLazyProvider } from './inject-lazy-impl';
 
@@ -43,6 +43,16 @@ const lazyDefaultServiceImport = () =>
 			return resolve({ default: MyService });
 		}, 500);
 	});
+
+// Mimics `import('./my-service')`: a module namespace with a named and a default export
+const lazyModuleImport = () =>
+	new Promise<{ MyService: Type<MyService>; default: Type<MyService> }>(
+		(resolve) => {
+			setTimeout(() => {
+				return resolve({ MyService, default: MyService });
+			}, 500);
+		},
+	);
 
 describe(injectLazy.name, () => {
 	describe('lazy loads a service', () => {
@@ -98,6 +108,39 @@ describe(injectLazy.name, () => {
 			fixture.detectChanges();
 			expect(fixture.nativeElement.textContent).toBe('');
 			tick(1);
+			fixture.detectChanges();
+			expect(fixture.nativeElement.textContent).toBe('1');
+		}));
+	});
+
+	describe('lazy loads a service picked from the module with .then()', () => {
+		@Component({
+			standalone: true,
+			imports: [AsyncPipe],
+			template: '<div>{{data$ | async}}</div>',
+		})
+		class TestComponent {
+			// same shape as `injectLazy(() => import('./x').then((m) => m.X))`
+			private myLazyService$ = injectLazy(() =>
+				lazyModuleImport().then((m) => m.MyService),
+			);
+			data$ = this.myLazyService$.pipe(switchMap((service) => service.data$));
+		}
+
+		let fixture: ComponentFixture<TestComponent>;
+
+		beforeEach(async () => {
+			fixture = TestBed.createComponent(TestComponent);
+		});
+
+		it('infers the service type and loads it', fakeAsync(() => {
+			const service$: Observable<MyService> =
+				fixture.componentInstance['myLazyService$'];
+			expect(service$).toBeTruthy();
+
+			fixture.detectChanges();
+			expect(fixture.nativeElement.textContent).toBe('');
+			tick(500);
 			fixture.detectChanges();
 			expect(fixture.nativeElement.textContent).toBe('1');
 		}));

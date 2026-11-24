@@ -16,9 +16,9 @@ import { defer } from 'rxjs';
 /**
  * Lazy import type that includes default and normal imports
  */
-export type LazyImportLoaderFn<T> = () =>
-	| Promise<ProviderToken<T>>
-	| Promise<{ default: ProviderToken<T> }>;
+export type LazyImportLoaderFn<T> = () => Promise<
+	ProviderToken<T> | { default: ProviderToken<T> }
+>;
 
 @Injectable({ providedIn: 'root' })
 export class InjectLazyImpl<T> {
