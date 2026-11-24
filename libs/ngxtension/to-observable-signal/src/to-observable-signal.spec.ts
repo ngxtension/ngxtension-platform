@@ -64,6 +64,21 @@ describe('toObservableSignal()', () => {
 		expect(observableSignal()).toEqual('Hello');
 	});
 
+	it('should infer the value type from an Observable source', () => {
+		const injector = TestBed.inject(Injector);
+		const fromObservable = toObservableSignal(of(1), { injector });
+		const fromSubject = toObservableSignal(new BehaviorSubject('Hello'), {
+			injector,
+		});
+
+		// these assignments only compile if T is inferred (not `unknown`)
+		const num: number = fromObservable();
+		const str: string = fromSubject();
+
+		expect(num).toBe(1);
+		expect(str).toBe('Hello');
+	});
+
 	it('should emit the value of the original signal as an observable', (done) => {
 		const s = signal<string>('Hello');
 
