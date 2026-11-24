@@ -48,7 +48,9 @@ export async function convertHostBindingGenerator(
 ) {
 	const contentsStore = new ContentsStore();
 	const packageJson = readJson(tree, 'package.json');
-	const angularCorePackage = packageJson['dependencies']['@angular/core'];
+	const angularCorePackage =
+		packageJson['dependencies']?.['@angular/core'] ||
+		packageJson['devDependencies']?.['@angular/core'];
 
 	if (!angularCorePackage) {
 		logger.error(`[ngxtension] No @angular/core detected`);
@@ -135,6 +137,18 @@ const addHostProperty = (sourceFile) => {
 		const hostBindings: Record<string, string> = {};
 		const hostListeners: Record<string, string> = {};
 
+		const warnIfDuplicate = (
+			hostProperties: Record<string, string>,
+			key: string,
+			element,
+		) => {
+			if (key in hostProperties) {
+				logger.warn(
+					`[ngxtension] ${klass.getName()} in ${sourceFile.getFilePath()} uses the host key ${key} on more than one member. Only the last one (${element.getName()}) is kept and ${hostProperties[key]} is dropped, please merge them by hand.`,
+				);
+			}
+		};
+
 		const processHostDecorators = (elements, hostBindings, hostListeners) => {
 			elements.forEach((element) => {
 				const hostBindingDecorator = element.getDecorator('HostBinding');
@@ -144,6 +158,7 @@ const addHostProperty = (sourceFile) => {
 						? getHostBindingKey(argument.getText())
 						: element.getName();
 
+					warnIfDuplicate(hostBindings, binding, element);
 					hostBindings[binding] = isMethodDeclaration(element)
 						? `'${element.getName()}()'`
 						: `'${element.getName()}'`;
@@ -155,6 +170,7 @@ const addHostProperty = (sourceFile) => {
 				if (hostListenerDecorator) {
 					const [event, ...args] = hostListenerDecorator.getArguments();
 					const binding = getHostListenerKey(event.getText());
+					warnIfDuplicate(hostListeners, binding, element);
 					hostListeners[binding] =
 						args.length && element.getParameters().length
 							? `'${element.getName()}(${args.map((arg) => arg.getText().replace(/^\['|'\]$/g, '')).join(', ')})'`

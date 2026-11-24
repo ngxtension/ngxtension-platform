@@ -1,4 +1,4 @@
-import { Tree } from '@nx/devkit';
+import { logger, Tree } from '@nx/devkit';
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
 
 import { convertHostBindingGenerator } from './generator';
@@ -117,9 +117,12 @@ describe('convert-host-binding generator', () => {
 		path: 'libs/my-file.ts',
 	};
 
-	function setup(file: keyof typeof filesMap) {
+	function setup(
+		file: keyof typeof filesMap,
+		packageJson = `{"dependencies": {"@angular/core": "17.3.0"}}`,
+	) {
 		tree = createTreeWithEmptyWorkspace({ layout: 'apps-libs' });
-		tree.write('package.json', `{"dependencies": {"@angular/core": "17.3.0"}}`);
+		tree.write('package.json', packageJson);
 		tree.write(`libs/my-file.ts`, filesMap[file]);
 
 		return () => {
@@ -190,4 +193,63 @@ describe('convert-host-binding generator', () => {
 		const [updated] = readContent();
 		expect(updated).toMatchSnapshot();
 	});
+
+	it('should warn when two members bind the same host key', async () => {
+		const warn = jest.spyOn(logger, 'warn').mockImplementation(() => {});
+		setup('componentWithDuplicateHostBinding');
+
+		await convertHostBindingGenerator(tree, options);
+
+		expect(warn).toHaveBeenCalledWith(
+			expect.stringContaining(`'[class.active]'`),
+		);
+		warn.mockRestore();
+	});
+
+	it('should warn when two methods listen to the same host event', async () => {
+		const warn = jest.spyOn(logger, 'warn').mockImplementation(() => {});
+		tree = createTreeWithEmptyWorkspace({ layout: 'apps-libs' });
+		tree.write('package.json', `{"dependencies": {"@angular/core": "17.3.0"}}`);
+		tree.write(
+			'libs/my-file.ts',
+			`
+import { Directive, HostListener } from '@angular/core';
+
+@Directive({ selector: '[myDir]' })
+export class MyDirective {
+  @HostListener('click') onClick() {}
+  @HostListener('click') track() {}
+}
+`,
+		);
+
+		await convertHostBindingGenerator(tree, options);
+
+		expect(warn).toHaveBeenCalledWith(expect.stringContaining(`'(click)'`));
+		warn.mockRestore();
+	});
+
+	it.each([
+		['devDependencies', `{"devDependencies": {"@angular/core": "17.3.0"}}`],
+		[
+			'devDependencies with an empty dependencies object',
+			`{"dependencies": {}, "devDependencies": {"@angular/core": "17.3.0"}}`,
+		],
+	])(
+		'should convert when @angular/core is only in %s',
+		async (_, packageJson) => {
+			const exit = jest
+				.spyOn(process, 'exit')
+				.mockImplementation((() => undefined) as never);
+			const readContent = setup('componentWithHostBinding', packageJson);
+
+			await convertHostBindingGenerator(tree, options);
+
+			const [updated] = readContent();
+			expect(exit).not.toHaveBeenCalled();
+			expect(updated).not.toContain('@HostBinding');
+			expect(updated).toContain('host:');
+			exit.mockRestore();
+		},
+	);
 });
