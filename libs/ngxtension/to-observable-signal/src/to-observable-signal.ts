@@ -15,11 +15,11 @@ import type { Observable, Subscribable } from 'rxjs';
 export type ObservableSignal<T> = Signal<T> & Observable<T>;
 
 export function toObservableSignal<T>(
-	s: WritableSignal<T> | Subscribable<T>,
+	s: WritableSignal<T> | Observable<T> | Subscribable<T>,
 	options?: ToObservableOptions,
 ): WritableSignal<T> & Observable<T>;
 export function toObservableSignal<T>(
-	s: Signal<T> | Subscribable<T>,
+	s: Signal<T> | Observable<T> | Subscribable<T>,
 	options?: ToObservableOptions,
 ): ObservableSignal<T>;
 
