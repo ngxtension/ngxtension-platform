@@ -506,29 +506,55 @@ describe('injectLocalStorage', () => {
 		);
 
 		it.injectable(
-			'should remove old key when clearOnKeyChange is true (default)',
+			'should keep the value of the previous key by default',
 			() => {
-				key = signal('k1');
-				localStorage.setItem('k1', JSON.stringify('v1'));
+				key = signal('settings-user-1');
+				const settings = injectLocalStorage<string>(key);
 
-				const localStorageSignal = injectLocalStorage<string>(key);
+				settings.set('dark');
+				expect(localStorage.getItem('settings-user-1')).toEqual(
+					JSON.stringify('dark'),
+				);
 
-				expect(localStorageSignal()).toBe('v1');
+				key.set('settings-user-2');
+				expect(settings()).toBeUndefined();
+				settings.set('light');
 
-				key.set('k2');
+				key.set('settings-user-1');
+				expect(settings()).toBe('dark');
 
-				// should preserve value until next read
-				expect(localStorage.getItem('k1')).toEqual(JSON.stringify('v1'));
-
-				expect(localStorageSignal()).toBeUndefined();
-
-				expect(localStorage.getItem('k1')).toBeNull();
-				expect(localStorage.getItem('k2')).toBeNull();
-
-				localStorageSignal.set('v2');
-				expect(localStorage.getItem('k2')).toEqual(JSON.stringify('v2'));
+				expect(localStorage.getItem('settings-user-1')).toEqual(
+					JSON.stringify('dark'),
+				);
+				expect(localStorage.getItem('settings-user-2')).toEqual(
+					JSON.stringify('light'),
+				);
 			},
 		);
+
+		it.injectable('should remove old key when clearOnKeyChange is true', () => {
+			key = signal('k1');
+			localStorage.setItem('k1', JSON.stringify('v1'));
+
+			const localStorageSignal = injectLocalStorage<string>(key, {
+				clearOnKeyChange: true,
+			});
+
+			expect(localStorageSignal()).toBe('v1');
+
+			key.set('k2');
+
+			// should preserve value until next read
+			expect(localStorage.getItem('k1')).toEqual(JSON.stringify('v1'));
+
+			expect(localStorageSignal()).toBeUndefined();
+
+			expect(localStorage.getItem('k1')).toBeNull();
+			expect(localStorage.getItem('k2')).toBeNull();
+
+			localStorageSignal.set('v2');
+			expect(localStorage.getItem('k2')).toEqual(JSON.stringify('v2'));
+		});
 
 		it.injectable('should keep old key when clearOnKeyChange is false', () => {
 			key = signal('k1');
