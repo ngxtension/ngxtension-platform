@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { injectDocumentVisibility } from './inject-document-visibility';
 
@@ -33,5 +33,15 @@ describe(injectDocumentVisibility.name, () => {
 		expect(cmp.visibilityState()).toEqual('hidden');
 		triggerVisibilityChange('visible');
 		expect(cmp.visibilityState()).toEqual('visible');
+	});
+
+	it('should work outside an injection context when an injector is passed', () => {
+		const visibilityState = injectDocumentVisibility({
+			injector: TestBed.inject(Injector),
+		});
+		triggerVisibilityChange('hidden');
+		expect(visibilityState()).toEqual('hidden');
+		triggerVisibilityChange('visible');
+		expect(visibilityState()).toEqual('visible');
 	});
 });
