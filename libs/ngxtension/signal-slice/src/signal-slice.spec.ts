@@ -1,3 +1,4 @@
+import { DestroyRef } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
 import { Observable, Subject, of, timer } from 'rxjs';
@@ -242,6 +243,32 @@ describe(signalSlice.name, () => {
 				expect(state.increaseAgeUpdated()).toEqual(1);
 				state.increaseAge(1);
 				expect(state.increaseAgeUpdated()).toEqual(2);
+			});
+		});
+
+		it('should not register a new permanent subscription teardown on every call with a plain value', () => {
+			TestBed.runInInjectionContext(() => {
+				const destroyRef = TestBed.inject(DestroyRef);
+				const onDestroySpy = jest.spyOn(destroyRef, 'onDestroy');
+
+				const state = signalSlice({
+					initialState,
+					actionSources: {
+						increaseAge: (state, $: Observable<number>) =>
+							$.pipe(map((amount) => ({ age: state().age + amount }))),
+					},
+				});
+
+				// one permanent subscription is made at slice-creation time by
+				// the internal `connect(state, sharedObservable)` call
+				const baseline = onDestroySpy.mock.calls.length;
+				expect(baseline).toBeGreaterThan(0);
+
+				state.increaseAge(1);
+				state.increaseAge(1);
+				state.increaseAge(1);
+
+				expect(onDestroySpy.mock.calls.length).toEqual(baseline);
 			});
 		});
 
