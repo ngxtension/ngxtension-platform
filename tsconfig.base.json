@@ -108,6 +108,9 @@
 			"ngxtension/inject-query-params": [
 				"libs/ngxtension/inject-query-params/src/index.ts"
 			],
+			"ngxtension/inject-rate-limited": [
+				"libs/ngxtension/inject-rate-limited/src/index.ts"
+			],
 			"ngxtension/inject-route-data": [
 				"libs/ngxtension/inject-route-data/src/index.ts"
 			],
