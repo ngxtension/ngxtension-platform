@@ -9,6 +9,11 @@
 			"version": "3.0.1",
 			"description": "Rename 'computedFrom' and 'computedAsync' to 'derivedFrom' and 'derivedAsync'",
 			"implementation": "./src/migrations/rename-computeds/rename-computeds"
+		},
+		"migrate-inject-lazy": {
+			"version": "8.0.0",
+			"description": "Migrate injectLazy to Angular's built-in injectAsync (available from Angular v22)",
+			"implementation": "./src/migrations/migrate-inject-lazy/migrate-inject-lazy"
 		}
 	},
 	"schematics": {
@@ -21,6 +26,11 @@
 			"version": "3.0.1",
 			"description": "Rename 'computedFrom' and 'computedAsync' to 'derivedFrom' and 'derivedAsync'",
 			"factory": "./src/migrations/rename-computeds/compat"
+		},
+		"migrate-inject-lazy": {
+			"version": "8.0.0",
+			"description": "Migrate injectLazy to Angular's built-in injectAsync (available from Angular v22)",
+			"factory": "./src/migrations/migrate-inject-lazy/compat"
 		}
 	}
 }
