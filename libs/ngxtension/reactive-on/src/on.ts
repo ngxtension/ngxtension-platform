@@ -1,15 +1,12 @@
-import { EffectCleanupRegisterFn, Signal, untracked } from '@angular/core';
-
-export type Accessor<T> = Signal<T> | (() => T);
+import { untracked } from '@angular/core';
 
 /**
- * Makes dependencies of a computation explicit
-
- * @param deps list of reactive dependencies or a single reactive dependency
- * @param fn computation on input; the current previous content(s) of input and the previous value are given as arguments and it returns a new value
- * @returns an effect function that is passed into `effect`. For example:
+ * Makes dependencies of a computation explicit.
  *
- * ```typescript
+ * Works with `effect`, `computed`, and `afterRenderEffect`.
+ *
+ * @example
+ * // With effect
  * effect(on(a, (v) => console.log(v, b())));
  *
  * // is equivalent to:
@@ -17,106 +14,36 @@ export type Accessor<T> = Signal<T> | (() => T);
  *   const v = a();
  *   untracked(() => console.log(v, b()));
  * });
- * ```
+ *
+ * @example
+ * // With afterRenderEffect and phases
+ * afterRenderEffect({
+ *   read: on(a, (v) => {
+ *     console.log('read phase', v);
+ *     return v;
+ *   }),
+ *   write: on(b, (v, phaseValue) => {
+ *     console.log('write phase', v, phaseValue);
+ *   })
+ * });
  */
-export function on<
-	const Deps extends readonly Accessor<unknown>[],
-	U,
-	V = U | undefined,
->(
-	deps: readonly [...Deps],
-	fn: (
-		input: {
-			-readonly [K in keyof Deps]: Deps[K] extends Accessor<infer T>
-				? T
-				: never;
-		},
-		prevInput:
-			| {
-					-readonly [K in keyof Deps]: Deps[K] extends Accessor<infer T>
-						? T
-						: never;
-			  }
-			| undefined,
-		prevValue: V | undefined,
-		cleanupFn: EffectCleanupRegisterFn,
-	) => U,
-	options?: { defer?: boolean },
-): (onCleanup: EffectCleanupRegisterFn) => void;
+export interface OnOptions {
+	defer?: boolean;
+}
 
-export function on<
-	const Deps extends Record<string, Accessor<unknown>>,
-	U,
-	V = U | undefined,
->(
-	deps: Deps,
-	fn: (
-		input: { [K in keyof Deps]: Deps[K] extends Accessor<infer T> ? T : never },
-		prevInput:
-			| { [K in keyof Deps]: Deps[K] extends Accessor<infer T> ? T : never }
-			| undefined,
-		prevValue: V | undefined,
-		cleanupFn: EffectCleanupRegisterFn,
-	) => U,
-	options?: { defer?: boolean },
-): (onCleanup: EffectCleanupRegisterFn) => void;
-
-export function on<S, U, V = U | undefined>(
-	deps: Accessor<S>,
-	fn: (
-		input: S,
-		prevInput: S | undefined,
-		prevValue: V | undefined,
-		cleanupFn: EffectCleanupRegisterFn,
-	) => U,
-	options?: { defer?: boolean },
-): (onCleanup: EffectCleanupRegisterFn) => void;
-
-export function on(
-	deps:
-		| Accessor<unknown>
-		| readonly Accessor<unknown>[]
-		| Record<string, Accessor<unknown>>,
-	fn: (
-		input: any,
-		prevInput: any,
-		prevValue: any,
-		cleanupFn: EffectCleanupRegisterFn,
-	) => any,
-	options?: { defer?: boolean },
-): (onCleanup: EffectCleanupRegisterFn) => void {
-	const isArray = Array.isArray(deps);
-	const isAccessor = typeof deps === 'function';
-	let prevInput: unknown;
-	let prevValue: unknown;
-	let defer = options && options.defer;
-
-	return (onCleanup: EffectCleanupRegisterFn) => {
-		let input: unknown;
-
-		if (isArray) {
-			input = (deps as readonly Accessor<unknown>[]).map((d) => d());
-		} else if (isAccessor) {
-			input = (deps as Accessor<unknown>)();
-		} else {
-			// Object
-			input = Object.keys(deps).reduce(
-				(acc, key) => {
-					acc[key] = (deps as Record<string, Accessor<unknown>>)[key]();
-					return acc;
-				},
-				{} as Record<string, unknown>,
-			);
+export function on<T, Ret, Args extends any[]>(
+	track: () => T,
+	execute: (tracked: T, ...args: Args) => Ret,
+	options?: OnOptions,
+): (...args: Args) => Ret | undefined {
+	let isFirstRun = true;
+	return (...args: Args) => {
+		const trackedValue = track();
+		if (options?.defer && isFirstRun) {
+			isFirstRun = false;
+			return undefined as Ret;
 		}
-
-		if (defer) {
-			defer = false;
-			return;
-		}
-
-		untracked(() => {
-			prevValue = fn(input, prevInput, prevValue, onCleanup);
-			prevInput = input;
-		});
+		isFirstRun = false;
+		return untracked(() => execute(trackedValue, ...args));
 	};
 }
