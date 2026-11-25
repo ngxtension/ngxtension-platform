@@ -442,6 +442,67 @@ describe(connect.name, () => {
 			expect(component.count()).toBe(2); // should not change because we only took 2 values
 		});
 	});
+	describe('injector overload is not confused with reducer (#572)', () => {
+		type SelectionChange<T> = { added: T[]; removed: T[]; selected: T[] };
+
+		@Component({ standalone: true, template: '' })
+		class TestComponent implements OnInit {
+			empty = signal(false);
+			selectionChanged$ = new Subject<SelectionChange<string>>();
+			injector = inject(Injector);
+
+			ngOnInit() {
+				// Observable value is not assignable to boolean — a reducer is required.
+				// Without the dedicated Injector overload, TypeScript reported that
+				// Injector did not match the reducer signature instead.
+				connect(
+					this.empty,
+					this.selectionChanged$,
+					(_prev, change) => change.selected.length === 0,
+					this.injector,
+				);
+			}
+		}
+
+		it('accepts Injector after a reducer when observable and signal types differ', () => {
+			const fixture = TestBed.createComponent(TestComponent);
+			const component = fixture.componentInstance;
+			component.ngOnInit();
+
+			component.selectionChanged$.next({
+				added: ['a'],
+				removed: [],
+				selected: ['a'],
+			});
+			expect(component.empty()).toBe(false);
+
+			component.selectionChanged$.next({
+				added: [],
+				removed: ['a'],
+				selected: [],
+			});
+			expect(component.empty()).toBe(true);
+		});
+
+		it('rejects Injector-as-third-arg when observable value is not assignable to the signal', () => {
+			// Compile-time only: must not invoke — @ts-expect-error still emits the call.
+			const typeCheck = () => {
+				const empty = signal(false);
+				const changed$ = of({
+					added: [] as string[],
+					removed: [] as string[],
+					selected: [] as string[],
+				});
+				const injector = {} as Injector;
+
+				// @ts-expect-error Observable value is not assignable to the signal without a reducer
+				connect(empty, changed$, injector);
+			};
+
+			expect(typeCheck).toEqual(expect.any(Function));
+		});
+	});
+
 	describe('connects an observable to a signal not in injection context using destroyRef', () => {
 		@Component({ standalone: true, template: '' })
 		class TestComponent implements OnInit {
