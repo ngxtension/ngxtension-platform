@@ -71,6 +71,10 @@ export default defineConfig({
 				},
 			},
 			lastUpdated: true,
+			editLink: {
+				baseUrl:
+					'https://github.com/ngxtension/ngxtension-platform/edit/main/docs/',
+			},
 			sidebar: [
 				{
 					label: 'Getting Started',
