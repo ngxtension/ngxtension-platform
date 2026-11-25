@@ -80,11 +80,41 @@
 			"ngxtension/gestures": ["libs/ngxtension/gestures/src/index.ts"],
 			"ngxtension/host-binding": ["libs/ngxtension/host-binding/src/index.ts"],
 			"ngxtension/if-validator": ["libs/ngxtension/if-validator/src/index.ts"],
+			"ngxtension/inject-clipboard": [
+				"libs/ngxtension/inject-clipboard/src/index.ts"
+			],
+			"ngxtension/inject-clipboard-items": [
+				"libs/ngxtension/inject-clipboard-items/src/index.ts"
+			],
+			"ngxtension/inject-color-mode": [
+				"libs/ngxtension/inject-color-mode/src/index.ts"
+			],
 			"ngxtension/inject-destroy": [
 				"libs/ngxtension/inject-destroy/src/index.ts"
 			],
+			"ngxtension/inject-bluetooth": [
+				"libs/ngxtension/inject-bluetooth/src/index.ts"
+			],
 			"ngxtension/inject-document-visibility": [
 				"libs/ngxtension/inject-document-visibility/src/index.ts"
+			],
+			"ngxtension/inject-element-bounding": [
+				"libs/ngxtension/inject-element-bounding/src/index.ts"
+			],
+			"ngxtension/inject-element-size": [
+				"libs/ngxtension/inject-element-size/src/index.ts"
+			],
+			"ngxtension/inject-element-visibility": [
+				"libs/ngxtension/inject-element-visibility/src/index.ts"
+			],
+			"ngxtension/inject-eye-dropper": [
+				"libs/ngxtension/inject-eye-dropper/src/index.ts"
+			],
+			"ngxtension/inject-file-dialog": [
+				"libs/ngxtension/inject-file-dialog/src/index.ts"
+			],
+			"ngxtension/inject-fullscreen": [
+				"libs/ngxtension/inject-fullscreen/src/index.ts"
 			],
 			"ngxtension/inject-inputs": [
 				"libs/ngxtension/inject-inputs/src/index.ts"
@@ -99,11 +129,20 @@
 			"ngxtension/inject-local-storage": [
 				"libs/ngxtension/inject-local-storage/src/index.ts"
 			],
+			"ngxtension/inject-media-controls": [
+				"libs/ngxtension/inject-media-controls/src/index.ts"
+			],
+			"ngxtension/inject-media-query": [
+				"libs/ngxtension/inject-media-query/src/index.ts"
+			],
 			"ngxtension/inject-network": [
 				"libs/ngxtension/inject-network/src/index.ts"
 			],
 			"ngxtension/inject-params": [
 				"libs/ngxtension/inject-params/src/index.ts"
+			],
+			"ngxtension/inject-permission": [
+				"libs/ngxtension/inject-permission/src/index.ts"
 			],
 			"ngxtension/inject-query-params": [
 				"libs/ngxtension/inject-query-params/src/index.ts"
@@ -114,10 +153,15 @@
 			"ngxtension/inject-route-fragment": [
 				"libs/ngxtension/inject-route-fragment/src/index.ts"
 			],
+			"ngxtension/inject-share": ["libs/ngxtension/inject-share/src/index.ts"],
 			"ngxtension/inject-text-selection": [
 				"libs/ngxtension/inject-text-selection/src/index.ts"
 			],
+			"ngxtension/inject-wake-lock": [
+				"libs/ngxtension/inject-wake-lock/src/index.ts"
+			],
 			"ngxtension/intl": ["libs/ngxtension/intl/src/index.ts"],
+			"ngxtension/last-changed": ["libs/ngxtension/last-changed/src/index.ts"],
 			"ngxtension/linked-query-param": [
 				"libs/ngxtension/linked-query-param/src/index.ts"
 			],
